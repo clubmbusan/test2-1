@@ -56,16 +56,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // "다시 하기" 버튼 클릭 이벤트 처리
-     document.addEventListener('click', (event) => {
-        if (event.target.classList.contains('removeAssetButton')) {
-           const assetEntry = event.target.closest('.asset-entry');
-           if (assetEntry) {
-              assetEntry.remove(); // 선택된 재산 항목 삭제
-          } else {
-               console.error('삭제할 .asset-entry 요소를 찾을 수 없습니다.');
-          }
-      }
-  });
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('removeAssetButton')) {
+        const assetEntry = event.target.closest('.asset-entry');
+        if (assetEntry) {
+            // 입력 필드 초기화
+            const inputs = assetEntry.querySelectorAll('input');
+            inputs.forEach(input => {
+                if (input.type === 'text' || input.type === 'number') {
+                    input.value = ''; // 텍스트와 숫자 필드 초기화
+                }
+            });
+
+            // 드롭다운 초기화
+            const selects = assetEntry.querySelectorAll('select');
+            selects.forEach(select => {
+                select.selectedIndex = 0; // 첫 번째 옵션으로 초기화
+            });
+        } else {
+            console.error('초기화할 .asset-entry 요소를 찾을 수 없습니다.');
+        }
+    }
+});
 
     // 모든 assetType에 이벤트 리스너 추가
     document.querySelectorAll('.assetType').forEach(select => {
