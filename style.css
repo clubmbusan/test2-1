@@ -267,7 +267,7 @@ select:focus {
 
 /* 상단 "상속 유형" 글자 스타일 */
 label[for="inheritanceType"] {
-    font-size: 18px; /* 글자 크기를 크게 설정 */
+    font-size: 20px; /* 글자 크기를 크게 설정 */
     font-weight: bold; /* 글자를 굵게 */
     color: #333; /* 기본 텍스트 색상 */
     margin-bottom: 10px; /* 아래 간격 */
