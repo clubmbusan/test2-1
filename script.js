@@ -30,9 +30,25 @@ document.addEventListener('DOMContentLoaded', () => {
         businessPersonalSection.style.display = 'none';
         businessGroupSection.style.display = 'none';
         businessTypeContainer.style.display = 'none';
+        addHeirButton.style.display = 'none'; // "상속인 추가" 버튼 숨김
+        heirContainer.style.display = 'none'; // 상속인 입력 필드 숨김
     }
-  
-    // 상속 유형 변경 시
+
+    // 선택 이벤트 (가업 개인/단체 전환)
+    businessType.addEventListener('change', () => {
+        // 모든 섹션 초기화
+        businessPersonalSection.style.display = 'none';
+        businessGroupSection.style.display = 'none';
+
+        // 선택에 따라 표시
+        if (businessType.value === 'businessPersonal') {
+            businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
+        } else if (businessType.value === 'businessGroup') {
+            businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
+        }
+    });
+    
+            // 상속 유형 변경 시
     inheritanceType.addEventListener('change', () => {
         resetSections();
 
@@ -42,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
             groupSection.style.display = 'block'; // 전체 상속 섹션 표시
         } else if (inheritanceType.value === 'business') {
             businessTypeContainer.style.display = 'block'; // 가업 상속 하위 필드 표시
-           
             // 가업 상속 기본값에 따라 페이지 표시
             if (businessType.value === 'businessPersonal') {
                 businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
@@ -52,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 가업 상속 유형 변경 시
-    businessType.addEventListener('change', () => {
+        // 상속 유형 변경 시
+      businessType.addEventListener('change', () => {
         resetSections();
         businessTypeContainer.style.display = 'block'; // 가업 상속 유형 선택 표시
 
@@ -89,9 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         businessGroupHeirContainer.appendChild(newHeirEntry);
         console.log('가업 단체 상속인 추가');
     });
-                             
- 
-                             
+                          
     // 초기화: 모든 .assetValue 필드에 콤마 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
