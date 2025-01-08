@@ -331,35 +331,88 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-         // 계산 버튼 이벤트
-    calculateButton.addEventListener('click', () => {
-        const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-            const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-            return sum + value;
-        }, 0);
+     // 계산 버튼 이벤트
+calculateButton.addEventListener('click', () => {
+    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+        return sum + value;
+    }, 0);
 
-        switch (inheritanceType.value) {
-            case 'personal':
-                calculatePersonalMode(totalAssetValue); // 개인 상속 계산
-                break;
-            case 'group':
-                calculateGroupMode(totalAssetValue); // 전체 상속 계산
-                break;
-            case 'businessPersonal':
-                calculateBusinessPersonalMode(totalAssetValue); // 가업 개인 상속 계산
-                break;
-            case 'businessGroup':
-                calculateBusinessGroupMode(totalAssetValue); // 가업 단체 상속 계산
-                break;
-            default:
-                console.error('잘못된 계산 요청');
-                break;
-        }
-    });
-
-    // 숫자 포맷 함수
-    function formatNumberWithCommas(value) {
-        return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
+    switch (inheritanceType.value) {
+        case 'personal':
+            calculatePersonalMode(totalAssetValue); // 개인 상속 계산
+            break;
+        case 'group':
+            calculateGroupMode(totalAssetValue); // 전체 상속 계산
+            break;
+        case 'businessPersonal':
+            calculateBusinessPersonalMode(totalAssetValue); // 가업 개인 상속 계산
+            break;
+        case 'businessGroup':
+            calculateBusinessGroupMode(totalAssetValue); // 가업 단체 상속 계산
+            break;
+        default:
+            console.error('잘못된 계산 요청');
+            break;
     }
-   
-});                  
+});
+
+// 숫자 포맷 함수
+function formatNumberWithCommas(value) {
+    return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
+}
+
+// 숫자 입력 필드에 콤마 추가
+document.addEventListener('input', function (event) {
+    const target = event.target;
+
+    // 콤마 적용 대상 필드 ID
+    const applicableFields = [
+        'cashAmount',
+        'realEstateValue',
+        'stockPrice',
+        'mixedCashAmount',
+        'mixedRealEstateValue',
+        'mixedStockPrice',
+        'fatherAmountInput',
+        'motherAmountInput'
+    ];
+
+    // 콤마 적용 여부 확인
+    if (applicableFields.includes(target.id)) {
+        const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
+        if (rawValue === '') {
+            target.value = ''; // 빈 값 처리
+            return;
+        }
+        target.value = parseInt(rawValue, 10).toLocaleString(); // 숫자에 콤마 추가
+    }
+});
+
+// 주식 총 금액 계산
+document.addEventListener('input', function () {
+    const stockQuantity = document.getElementById('stockQuantity');
+    const stockPrice = document.getElementById('stockPrice');
+    const stockTotal = document.getElementById('stockTotal');
+
+    if (stockQuantity && stockPrice && stockTotal) {
+        const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+        const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
+    }
+
+    const mixedStockQuantity = document.getElementById('mixedStockQuantity');
+    const mixedStockPrice = document.getElementById('mixedStockPrice');
+    const mixedTotalAmount = document.getElementById('mixedTotalAmount');
+
+    if (mixedStockQuantity && mixedStockPrice && mixedTotalAmount) {
+        const quantity = parseInt(mixedStockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+        const price = parseInt(mixedStockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+        const total = quantity * price;
+        const cash = parseInt(document.getElementById('mixedCashAmount').value.replace(/[^0-9]/g, '') || '0', 10);
+        const realEstate = parseInt(document.getElementById('mixedRealEstateValue').value.replace(/[^0-9]/g, '') || '0', 10);
+
+        mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 금액 계산 및 콤마 추가
+    }
+});
+  
