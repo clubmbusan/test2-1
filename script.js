@@ -55,6 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // "다시 하기" 버튼 클릭 이벤트 처리
+     document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('removeAssetButton')) {
+           const assetEntry = event.target.closest('.asset-entry');
+           if (assetEntry) {
+              assetEntry.remove(); // 선택된 재산 항목 삭제
+          } else {
+               console.error('삭제할 .asset-entry 요소를 찾을 수 없습니다.');
+          }
+      }
+  });
+
     // 모든 assetType에 이벤트 리스너 추가
     document.querySelectorAll('.assetType').forEach(select => {
         select.addEventListener('change', () => handleAssetTypeChange(select));
