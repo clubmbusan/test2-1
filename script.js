@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             groupSection.style.display = 'block'; // 전체 상속 섹션 표시
         } else if (inheritanceType.value === 'business') {
             businessTypeContainer.style.display = 'block'; // 가업 상속 하위 필드 표시
+           
             // 가업 상속 기본값에 따라 페이지 표시
             if (businessType.value === 'businessPersonal') {
                 businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
