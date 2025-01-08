@@ -13,6 +13,86 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    // 재산 유형 선택과 필드 동적 표시 관련 코드 추가
+    const assetTypeSelect = document.getElementById('assetType');
+    const cashInputField = document.getElementById('cashInputField');
+    const realEstateInputField = document.getElementById('realEstateInputField');
+    const stockInputField = document.getElementById('stockInputField');
+    const mixedInputField = document.getElementById('mixedInputField');
+
+    function handleAssetTypeChange() {
+        cashInputField.style.display = 'none';
+        realEstateInputField.style.display = 'none';
+        stockInputField.style.display = 'none';
+        mixedInputField.style.display = 'none';
+
+        switch (assetTypeSelect.value) {
+            case 'cash':
+                cashInputField.style.display = 'block';
+                break;
+            case 'realEstate':
+                realEstateInputField.style.display = 'block';
+                break;
+            case 'stock':
+                stockInputField.style.display = 'block';
+                break;
+            case 'mixed':
+                mixedInputField.style.display = 'block';
+                break;
+        }
+    }
+
+    assetTypeSelect.addEventListener('change', handleAssetTypeChange);
+    handleAssetTypeChange(); // 초기 실행
+
+    // 콤마 적용 대상 필드의 입력 이벤트 처리
+    document.addEventListener('input', function (event) {
+        const target = event.target;
+
+        // 콤마 적용 대상 필드 ID
+        const applicableFields = [
+            'cashAmount',
+            'realEstateValue',
+            'stockPrice',
+            'mixedCashAmount',
+            'mixedRealEstateValue',
+            'mixedStockPrice'
+        ];
+
+        // 콤마 적용 여부 확인
+        if (applicableFields.includes(target.id)) {
+            const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
+            target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : ''; // 콤마 추가
+        }
+    });
+
+    // 주식 총 금액 계산
+    document.addEventListener('input', () => {
+        const stockQuantity = document.getElementById('stockQuantity');
+        const stockPrice = document.getElementById('stockPrice');
+        const stockTotal = document.getElementById('stockTotal');
+
+        if (stockQuantity && stockPrice && stockTotal) {
+            const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+            const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+            stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
+        }
+
+        const mixedStockQuantity = document.getElementById('mixedStockQuantity');
+        const mixedStockPrice = document.getElementById('mixedStockPrice');
+        const mixedTotalAmount = document.getElementById('mixedTotalAmount');
+
+        if (mixedStockQuantity && mixedStockPrice && mixedTotalAmount) {
+            const quantity = parseInt(mixedStockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+            const price = parseInt(mixedStockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+            const total = quantity * price;
+            const cash = parseInt(document.getElementById('mixedCashAmount').value.replace(/[^0-9]/g, '') || '0', 10);
+            const realEstate = parseInt(document.getElementById('mixedRealEstateValue').value.replace(/[^0-9]/g, '') || '0', 10);
+
+            mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 금액 계산 및 콤마 추가
+        }
+    });
+   
     // 상속 유형 버튼 클릭 시 애니메이션 제거
     const inheritanceTypeButton = document.getElementById('inheritanceType');
     if (inheritanceTypeButton) {
