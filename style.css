@@ -18,46 +18,200 @@ body {
 }
 
 /* 폼 요소 공통 스타일 */
-form input, form select, #inheritanceType {
-    width: 100%; /* 너비 */
-    padding: 10px; /* 내부 여백 */
-    margin-bottom: 15px; /* 하단 여백 */
-    border: 1px solid #ddd; /* 테두리 */
-    border-radius: 5px; /* 모서리 둥글게 */
+form input, form select {
+    width: 100%; /* 입력 필드와 선택 필드의 너비 통일 */
+    padding: 10px; /* 내부 여백 통일 */
+    margin-bottom: 15px; /* 하단 여백 통일 */
+    border: 1px solid #ddd; /* 테두리 통일 */
+    border-radius: 5px; /* 모서리 둥글게 처리 */
     box-sizing: border-box; /* 박스 크기 계산 */
-    font-size: 14px; /* 글자 크기 */
-    background-color: white; /* 기본 배경 */
-    color: #333; /* 텍스트 색상 */
-    line-height: normal; /* 줄 높이 */
-    cursor: pointer; /* 마우스 포인터 */
-    transition: border-color 0.3s ease; /* 부드러운 테두리 전환 */
+    font-size: 14px; /* 글자 크기 통일 */
+    appearance: none; /* 선택 필드의 기본 스타일 제거 */
+    background-color: white; /* 선택 필드 배경색 */
+    color: #333; /* 선택 필드 텍스트 색상 */
+    line-height: normal; /* 텍스트 줄 높이 통일 */
+    cursor: pointer; /* 드롭다운 선택 가능 표시 */
 }
 
-/* 상속 유형 선택 필드 스타일 */
+/* 선택 필드 아이콘 중앙 정렬 (필요시) */
+form select {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg==');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+}
+
+/* 버튼 스타일 */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* 상속인 정보 입력 필드 스타일 */
+.heir-entry {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.heir-entry input, .heir-entry select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* 추가 재산 유형 입력 필드 */
+#additionalFields > div {
+    display: none;
+}
+
+#additionalFields > div:target {
+    display: block;
+}
+
+/* 결과 출력 스타일 */
+#result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    line-height: 1.6;
+}
+
+/* 섹션 헤더 스타일 */
+h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 공제 금액 입력 비활성화 스타일 */
+#exemptionAmount[readonly] {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* 반응형 스타일 */
+@media screen and (max-width: 768px) {
+    .calculator {
+        padding: 15px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+
+    .heir-entry {
+        flex-direction: column;
+    }
+
+    .heir-entry input, .heir-entry select {
+        width: 100%;
+    }
+}
+/* 재산 유형 필드 초기 숨김 설정 */
+.cashField,
+.realEstateField,
+.stockQuantityField,
+.stockPriceField,
+.stockTotalField,
+.othersField {
+    display: none; /* 기본적으로 숨김 */
+}
+
+/* JavaScript에서 display 속성을 변경하면 적용 */
+.cashField[style*="display: block"],
+.realEstateField[style*="display: block"],
+.stockQuantityField[style*="display: block"],
+.stockPriceField[style*="display: block"],
+.stockTotalField[style*="display: block"],
+.othersField[style*="display: block"] {
+    display: block !important;
+}
+@keyframes gentleBlink {
+    0%, 100% {
+        background-color: #2196F3; /* 기본 파란색 */
+        color: white;
+        box-shadow: 0 0 5px rgba(33, 150, 243, 0.2); /* 은은한 파란빛 */
+    }
+    50% {
+        background-color: #64B5F6; /* 밝은 파란색 */
+        color: white;
+        box-shadow: 0 0 10px rgba(100, 181, 246, 0.6); /* 밝은 파란빛 */
+    }
+}
+
+/* 기본 상태: 작게 */
 #inheritanceType {
     animation: gentleBlink 2.5s infinite; /* 애니메이션 설정 */
     border-radius: 5px; /* 둥근 모서리 */
-    padding: 5px 10px; /* 크기 설정 */
-    font-size: 14px; /* 글자 크기 */
-    font-weight: bold; /* 강조 */
-    cursor: pointer; /* 마우스 포인터 */
-    transition: all 0.3s ease; /* 부드러운 전환 */
+    padding: 5px 10px; /* 작게 설정 */
+    font-size: 14px; /* 글자 크기 작게 */
+    font-weight: bold; /* 강조된 글꼴 */
+    cursor: pointer; /* 마우스 포인터 변경 */
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
     border: 2px solid #2196F3; /* 파란 테두리 */
-    background-color: #f0f8ff; /* 부드러운 파란 배경 */
-    color: #333; /* 텍스트 색상 */
 }
 
+/* 클릭 시 확대 */
 #inheritanceType:focus {
     padding: 10px 15px; /* 커지게 설정 */
-    font-size: 16px; /* 글자 확대 */
+    font-size: 16px; /* 글자 크기 확대 */
     border: 3px solid #64B5F6; /* 밝은 파란 테두리 */
-    box-shadow: 0 0 15px rgba(100, 181, 246, 0.8); /* 빛나는 효과 */
+    box-shadow: 0 0 15px rgba(100, 181, 246, 0.8); /* 빛나는 파란 효과 */
 }
 
+/* 포커스가 사라지면 원래 크기로 복귀 */
 #inheritanceType:not(:focus) {
     padding: 5px 10px; /* 원래 크기로 복귀 */
     font-size: 14px;
     box-shadow: none;
 }
 
-/* 기타 스타일 계속 유지 */
+/* 취득세 계산기 버튼 스타일 */
+#acquisitionTaxButton {
+    background-color: #007bff; /* 파란색 */
+    color: white; /* 텍스트 색상 */
+    border: none; /* 테두리 제거 */
+    padding: 10px 20px; /* 여백 */
+    font-size: 16px; /* 글자 크기 */
+    cursor: pointer; /* 포인터 표시 */
+    border-radius: 5px; /* 둥근 모서리 */
+    width: 100%; /* 버튼 너비 맞춤 */
+    margin-top: 15px; /* 결과 영역과 간격 */
+    transition: background-color 0.3s ease; /* 색상 전환 효과 */
+}
+
+#acquisitionTaxButton:hover {
+    background-color: #0056b3; /* 마우스 오버 시 어두운 파란색 */
+}
+
+/* 결과 영역 스타일 */
+#result {
+    margin-top: 15px; /* 계산하기 버튼과의 간격 */
+    margin-bottom: 10px; /* 취득세 계산기 버튼과의 간격 */
+    padding: 15px;
+    background-color: #f1f1f1; /* 연한 회색 */
+    border: 1px solid #ddd; /* 테두리 */
+    border-radius: 5px; /* 둥근 모서리 */
+    line-height: 1.6; /* 줄 간격 */
+}
