@@ -33,6 +33,33 @@ form input, form select {
     cursor: pointer; /* 드롭다운 선택 가능 표시 */
 }
 
+/* 상속 유형 선택 필드 스타일 */
+#inheritanceType {
+    animation: gentleBlink 2.5s infinite; /* 애니메이션 설정 */
+    border-radius: 5px; /* 둥근 모서리 */
+    padding: 5px 10px; /* 크기 설정 */
+    font-size: 14px; /* 글자 크기 */
+    font-weight: bold; /* 강조 */
+    cursor: pointer; /* 마우스 포인터 */
+    transition: all 0.3s ease; /* 부드러운 전환 */
+    border: 2px solid #2196F3; /* 파란 테두리 */
+    background-color: #f0f8ff; /* 부드러운 파란 배경 */
+    color: #333; /* 텍스트 색상 */
+}
+
+#inheritanceType:focus {
+    padding: 10px 15px; /* 커지게 설정 */
+    font-size: 16px; /* 글자 확대 */
+    border: 3px solid #64B5F6; /* 밝은 파란 테두리 */
+    box-shadow: 0 0 15px rgba(100, 181, 246, 0.8); /* 빛나는 효과 */
+}
+
+#inheritanceType:not(:focus) {
+    padding: 5px 10px; /* 원래 크기로 복귀 */
+    font-size: 14px;
+    box-shadow: none;
+}
+
 /* 선택 필드 아이콘 중앙 정렬 (필요시) */
 form select {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg==');
