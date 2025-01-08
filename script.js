@@ -416,3 +416,4 @@ document.addEventListener('input', function () {
     }
 });
   
+}); // document.addEventListener 닫는 괄호
