@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상속세 계산기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="calculator">
+        <h1>2025 상속세 계산기</h1>
+        <!-- 상속 유형 선택 -->
+        <label for="inheritanceType">상속 유형:</label>
+        <select id="inheritanceType">
+            <option value="personal" selected>개인분</option>
+            <option value="group">전체분</option>
+        </select>
+
+        <form id="inheritanceForm">
+            <!-- 재산 유형 및 금액 -->
+            <div id="assetContainer">
+                <h2>상속 재산</h2>
+                <div class="asset-entry">
+                    <label for="assetType">재산 유형:</label>
+                    <select class="assetType">
+                        <option value="cash" selected>현금</option>
+                        <option value="realEstate">부동산</option>
+                        <option value="stock">주식</option>
+                        <option value="others">기타</option>
+                    </select>
+                    <div class="assetFields">
+                        <!-- 현금 입력 -->
+                        <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
+                        <!-- 부동산 입력 -->
+                        <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
+                        <!-- 주식 입력 -->
+                        <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
+                        <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
+                        <input type="text" class="stockTotalField" placeholder="금액 (원)" style="display: none;">
+                        <!-- 기타 입력 -->
+                        <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
+                    </div>
+                    <!-- 삭제 버튼 추가 -->
+                    <button class="removeAssetButton" style="margin-top: 10px;">다시 하기</button>
+                </div>
+                <button type="button" id="addAssetButton">재산 추가</button>
+            </div>
+
+            <!-- 개인분 계산 -->
+            <div id="personalSection">
+                <h2>개인분 계산</h2>
+                <label for="relationshipPersonal">관계:</label>
+                <select id="relationshipPersonal">
+                    <option value="spouse">배우자</option>
+                    <option value="adultChild">자녀(성년)</option>
+                    <option value="minorChild">자녀(미성년)</option>
+                    <option value="parent">부모</option>
+                    <option value="sibling">형제자매</option>
+                    <option value="other">기타</option>
+                </select>
+            </div>
+
+            <!-- 전체분 계산 -->
+            <div id="groupSection" style="display: none;">
+                <h2>전체분 계산</h2>
+                <label for="heirContainer">상속인 정보:</label>
+                <div id="heirContainer">
+                    <div class="heir-entry">
+                        <input type="text" placeholder="이름">
+                        <select>
+                            <option value="spouse">배우자</option>
+                            <option value="adultChild">자녀(성년)</option>
+                            <option value="minorChild">자녀(미성년)</option>
+                            <option value="parent">부모</option>
+                            <option value="sibling">형제자매</option>
+                            <option value="other">기타</option>
+                        </select>
+                        <input type="number" placeholder="상속 비율 (%)">
+                    </div>
+                </div>
+                <button type="button" id="addHeirButton">상속인 추가</button>
+            </div>
+
+            <!-- 계산하기 버튼 -->
+            <button type="button" id="calculateButton">계산 하기</button>
+        </form>
+
+       <!-- 결과 영역 -->
+       <div id="result" class="result-area"></div>
+        
+        <!-- 추가: 상속세 계산기와 취득세 계산기 버튼 섹션 -->
+    <div id="extraTaxButtons">
+        <button type="button" id="acquisitionTaxButton" onclick="window.location.href='https://your-blog-link.com';">취득세 계산기</button>
+    </div>
+        
+    <script src="script.js"></script>
+</body>
+</html>
