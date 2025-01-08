@@ -208,7 +208,7 @@ h2 {
 /* 결과 영역 스타일 */
 #result {
     margin-top: 15px; /* 계산하기 버튼과의 간격 */
-    margin-bottom: 10px; /* 취득세 계산기 버튼과의 간격 */
+    margin-bottom: 15px; /* 취득세 계산기 버튼과의 간격 */
     padding: 15px;
     background-color: #f1f1f1; /* 연한 회색 */
     border: 1px solid #ddd; /* 테두리 */
