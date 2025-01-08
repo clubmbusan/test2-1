@@ -31,16 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         businessGroupSection.style.display = 'none';
         businessTypeContainer.style.display = 'none';
     }
-
-    // 초기 로딩 시 개인 상속을 기본값으로 설정
-    function initializeDefaultView() {
-        resetSections();
-        inheritanceType.value = 'personal'; // 기본값 설정
-        personalSection.style.display = 'block'; // 개인 상속 섹션 표시
-    }
-
-    initializeDefaultView(); // 초기화 호출
-
+  
     // 상속 유형 변경 시
     inheritanceType.addEventListener('change', () => {
         resetSections();
