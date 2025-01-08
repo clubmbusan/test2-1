@@ -14,49 +14,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const result = document.getElementById('result');
 
     function handleAssetTypeChange(assetTypeSelect) {
-    const assetEntry = assetTypeSelect.closest('.asset-entry');
-    if (!assetEntry) {
-        console.error('assetTypeSelect의 상위 .asset-entry 요소를 찾을 수 없습니다.');
-        return; // 더 이상 진행하지 않음
+        const assetEntry = assetTypeSelect.closest('.asset-entry');
+        if (!assetEntry) {
+            console.error('assetTypeSelect의 상위 .asset-entry 요소를 찾을 수 없습니다.');
+            return; // 더 이상 진행하지 않음
+        }
+
+        const assetFields = assetEntry.querySelector('.assetFields');
+        const cashField = assetFields.querySelector('.cashField');
+        const realEstateField = assetFields.querySelector('.realEstateField');
+        const stockQuantityField = assetFields.querySelector('.stockQuantityField');
+        const stockPriceField = assetFields.querySelector('.stockPriceField');
+        const stockTotalField = assetFields.querySelector('.stockTotalField');
+        const othersField = assetFields.querySelector('.othersField');
+
+        // 모든 필드 숨기기
+        cashField.style.display = 'none';
+        realEstateField.style.display = 'none';
+        stockQuantityField.style.display = 'none';
+        stockPriceField.style.display = 'none';
+        stockTotalField.style.display = 'none';
+        othersField.style.display = 'none';
+
+        // 선택된 유형에 따라 표시
+        switch (assetTypeSelect.value) {
+            case 'cash':
+                cashField.style.display = 'block';
+                break;
+            case 'realEstate':
+                realEstateField.style.display = 'block';
+                break;
+            case 'stock':
+                stockQuantityField.style.display = 'block';
+                stockPriceField.style.display = 'block';
+                stockTotalField.style.display = 'block';
+                break;
+            case 'others':
+                othersField.style.display = 'block';
+                break;
+        }
     }
 
-    const assetFields = assetEntry.querySelector('.assetFields');
-    const cashField = assetFields.querySelector('.cashField');
-    const realEstateField = assetFields.querySelector('.realEstateField');
-    const stockQuantityField = assetFields.querySelector('.stockQuantityField');
-    const stockPriceField = assetFields.querySelector('.stockPriceField');
-    const stockTotalField = assetFields.querySelector('.stockTotalField');
-    const othersField = assetFields.querySelector('.othersField');
-
-    // 모든 필드 숨기기
-    cashField.style.display = 'none';
-    realEstateField.style.display = 'none';
-    stockQuantityField.style.display = 'none';
-    stockPriceField.style.display = 'none';
-    stockTotalField.style.display = 'none';
-    othersField.style.display = 'none';
-
-    // 선택된 유형에 따라 표시
-    switch (assetTypeSelect.value) {
-        case 'cash':
-            cashField.style.display = 'block';
-            break;
-        case 'realEstate':
-            realEstateField.style.display = 'block';
-            break;
-        case 'stock':
-            stockQuantityField.style.display = 'block';
-            stockPriceField.style.display = 'block';
-            stockTotalField.style.display = 'block';
-            break;
-        case 'others':
-            othersField.style.display = 'block';
-            break;
-    }
-}
-    
-    assetTypeSelect.addEventListener('change', handleAssetTypeChange);
-    handleAssetTypeChange(); // 초기 실행
+    // 모든 assetType에 이벤트 리스너 추가
+    document.querySelectorAll('.assetType').forEach(select => {
+        select.addEventListener('change', () => handleAssetTypeChange(select));
+    });
 
     // 콤마 적용 대상 필드의 입력 이벤트 처리
     document.addEventListener('input', function (event) {
