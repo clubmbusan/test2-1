@@ -1,15 +1,49 @@
-/* 기존 스타일 유지 */
-form input, form select, #inheritanceType {
-    width: 100%; /* 통일된 너비 */
-    padding: 12px; /* 내부 여백 */
-    margin-bottom: 15px; /* 하단 여백 */
-    border: 1px solid #ddd; /* 테두리 */
+/* 전체 페이지 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 20px;
+    padding: 0;
+}
+
+/* 계산기 컨테이너 */
+.calculator {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+/* 폼 요소 공통 스타일 */
+form input, form select, button {
+    width: 100%; /* 너비 동일하게 설정 */
+    padding: 12px; /* 여백 통일 */
+    margin-bottom: 15px; /* 하단 간격 통일 */
+    border: 1px solid #ddd; /* 기본 테두리 */
     border-radius: 5px; /* 둥근 모서리 */
-    font-size: 16px; /* 글자 크기 */
+    box-sizing: border-box; /* 박스 크기 계산 */
+    font-size: 16px; /* 글자 크기 통일 */
     background-color: white; /* 배경색 */
     color: #333; /* 텍스트 색상 */
-    box-sizing: border-box; /* 박스 크기 계산 */
-    cursor: pointer; /* 마우스 포인터 */
+    line-height: normal; /* 줄 높이 */
+}
+
+/* 선택 필드 스타일 */
+form select {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg==');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+}
+
+/* 포커스 시 효과 */
+form input:focus, form select:focus, button:focus {
+    outline: none; /* 기본 포커스 제거 */
+    border: 2px solid #007bff; /* 포커스 테두리 색상 */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 외곽선 효과 */
 }
 
 /* 버튼 스타일 */
@@ -17,7 +51,7 @@ button {
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px;
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
@@ -28,20 +62,67 @@ button:hover {
     background-color: #45a049;
 }
 
-/* 새로운 추가 기능 */
-.result-area {
+/* 재산 항목 제거 버튼 */
+.removeAssetButton {
+    background-color: #f44336; /* 빨간색 */
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.removeAssetButton:hover {
+    background-color: #d32f2f;
+}
+
+/* 결과 출력 스타일 */
+#result {
     margin-top: 20px;
     padding: 15px;
     background-color: #f1f1f1;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    border: 1px solid #ddd; /* 추가 */
-    line-height: 1.6; /* 추가 */
+    line-height: 1.6;
+    font-size: 16px;
+    color: #333;
 }
 
-/* 선택 필드 아이콘 조정 */
-form select {
-    background-image: url('data:image/svg+xml;base64,....'); /* 드롭다운 화살표 */
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px 12px;
+/* 섹션 헤더 스타일 */
+h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 반응형 스타일 */
+@media screen and (max-width: 768px) {
+    .calculator {
+        padding: 15px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
+
+/* 재산 유형 필드 숨김 초기화 */
+.cashField,
+.realEstateField,
+.stockQuantityField,
+.stockPriceField,
+.stockTotalField,
+.othersField {
+    display: none; /* 기본적으로 숨김 */
+}
+
+/* JavaScript에서 display 속성을 변경하면 적용 */
+.cashField[style*="display: block"],
+.realEstateField[style*="display: block"],
+.stockQuantityField[style*="display: block"],
+.stockPriceField[style*="display: block"],
+.stockTotalField[style*="display: block"],
+.othersField[style*="display: block"] {
+    display: block !important;
 }
