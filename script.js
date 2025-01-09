@@ -567,23 +567,28 @@ function formatNumberWithCommas(value) {
 document.addEventListener('input', function (event) {
     const target = event.target;
 
+    // 콤마 적용 대상 필드 ID
     const applicableFields = [
-        'cashAmount',
-        'realEstateValue',
-        'stockPrice',
-        'mixedCashAmount',
-        'mixedRealEstateValue',
-        'mixedStockPrice',
-        'fatherAmountInput',
-        'motherAmountInput'
+        'cashAmount',          // 현금
+        'realEstateValue',     // 부동산 평가액
+        'stockQuantity',       // 주식 수량
+        'stockPrice',          // 주당 가격
+        'stockTotal',          // 주식 총액
+        'mixedCashAmount',     // 혼합 자산 현금
+        'mixedRealEstateValue',// 혼합 자산 부동산
+        'mixedStockPrice',     // 혼합 자산 주식
+        'fatherAmountInput',   // 아버지 금액
+        'motherAmountInput',   // 어머니 금액
+        'othersField'          // 기타 자산
     ];
 
+    // 해당 필드에 대해 콤마 적용
     if (applicableFields.includes(target.id)) {
-        const rawValue = target.value.replace(/[^0-9]/g, '');
-        target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : '';
+        const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 이외 문자 제거
+        target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : ''; // 숫자에 콤마 추가
     }
 });
-
+    
 // 주식 총 금액 계산
 document.addEventListener('input', function () {
     const stockQuantity = document.getElementById('stockQuantity');
