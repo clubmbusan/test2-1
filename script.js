@@ -288,33 +288,46 @@ document.addEventListener('click', (event) => {
     // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', createAssetEntry);
 
-     // 공제 계산
-    function calculateExemption(relationship, assetValue) {
-        let exemption = 600000000;
+     // 상속세 계산 로직에 기초공제를 추가
+function calculateTotalExemption(totalInheritance, relationship, spouseShare = 0) {
+    const basicExemption = 600000000; // 기본공제 (6억 원)
+    const baseExemption = 200000000; // 기초공제 (2억 원)
 
-        switch (relationship) {
-            case 'spouse':
-                exemption += 3500000000;
-                break;
-            case 'minorChild':
-                exemption += 30000000;
-                break;
-            case 'adultChild':
-                exemption += 100000000;
-                break;
-            case 'parent':
-                exemption += 100000000;
-                break;
-            case 'sibling':
-                exemption += 10000000;
-                break;
-            case 'other':
-                exemption += 10000000;
-                break;
-        }
-
-        return Math.min(exemption, assetValue);
+    // 관계공제 계산
+    let relationshipExemption = 0;
+    switch (relationship) {
+        case 'spouse':
+            relationshipExemption = Math.min(spouseShare, totalInheritance * 0.5, 3500000000); // 배우자 공제 (최대 35억)
+            break;
+        case 'adultChild':
+            relationshipExemption = 500000000; // 성년 자녀 공제 (1인당 5억 원)
+            break;
+        case 'minorChild':
+            relationshipExemption = 30000000; // 미성년 자녀 공제 (1인당 3천만 원)
+            break;
+        case 'parent':
+            relationshipExemption = 100000000; // 부모 공제 (1인당 1억 원)
+            break;
+        case 'sibling':
+        case 'other':
+            relationshipExemption = 10000000; // 형제자매 및 기타 공제 (1천만 원)
+            break;
+        default:
+            console.error('잘못된 관계 선택');
     }
+
+    // 총 공제 금액 계산
+    return basicExemption + baseExemption + relationshipExemption;
+}
+
+// 과세표준 계산 로직
+function calculateTaxableAmount(totalInheritance, relationship, spouseShare = 0) {
+    // 총 공제 금액 계산
+    const totalExemption = calculateTotalExemption(totalInheritance, relationship, spouseShare);
+
+    // 과세표준 = 총 상속 재산 - 총 공제 금액
+    return Math.max(totalInheritance - totalExemption, 0); // 음수일 경우 0으로 처리
+}
 
     // 상속세 계산 함수 (누진세율 적용)
    function calculateTax(taxableAmount) {
