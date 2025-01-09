@@ -329,11 +329,6 @@ document.addEventListener('click', (event) => {
     return basicExemption + baseExemption + relationshipExemption;
 }
 
-    // 총 공제 금액 계산
-    return basicExemption + baseExemption + relationshipExemption;
-}
-
-
 // 과세표준 계산 로직
 function calculateTaxableAmount(totalInheritance, relationship, spouseShare = 0) {
     // 총 공제 금액 계산
