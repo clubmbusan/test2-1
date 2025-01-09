@@ -160,96 +160,44 @@ h2 {
     cursor: not-allowed;
 }
 
-/* 모든 드롭다운 필드 스타일 통일 */
-select {
-    width: 100%; /* 너비를 다른 필드와 동일하게 설정 */
-    padding: 10px; /* 버튼 두께와 동일하게 설정 */
-    font-size: 16px; /* 글자 크기 통일 */
-    border: 1px solid #ddd; /* 테두리 통일 */
-    border-radius: 5px; /* 모서리를 둥글게 처리 */
-    background-color: white; /* 배경색 */
-    color: #333; /* 텍스트 색상 */
-    box-sizing: border-box; /* 박스 크기 계산 */
-    margin-bottom: 15px; /* 간격 통일 */
-    appearance: none; /* 기본 화살표 스타일 제거 (필요한 경우) */
-    cursor: pointer; /* 드롭다운 클릭 가능 표시 */
-}
-
-/* 선택 필드 아이콘 위치 중앙 정렬 */
-select {
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=='); /* 기본 화살표 아이콘 */
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px 12px;
-}
-
-/* 드롭다운 필드 포커스 시 효과 */
-select:focus {
-    outline: none; /* 기본 포커스 제거 */
-    border: 2px solid #007bff; /* 파란 테두리 */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 외곽선 효과 */
-}
-
-/* 상속인 정보 입력 필드 - 한 줄에 3칸 정렬 */
-.heir-entry {
-    display: grid; /* Grid 사용 */
-    grid-template-columns: repeat(3, 1fr); /* 3칸으로 나눔 */
-    gap: 10px; /* 각 필드 간격 */
-    margin-bottom: 15px; /* 아래 간격 */
-}
-
-/* 상속인 정보 필드 스타일 */
-.heir-entry input, .heir-entry select {
-    height: 40px; /* 필드 높이 통일 */
-    padding: 10px; /* 내부 여백 */
-    border: 1px solid #ddd; /* 테두리 스타일 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    font-size: 16px; /* 글자 크기 통일 */
-    box-sizing: border-box; /* 박스 크기 계산 */
-    width: 100%; /* 필드 너비 통일 */
-}
-
 /* 상속 유형 드롭다운 기본 스타일 */
 #inheritanceType {
     width: 100%; /* 다른 입력 필드와 동일한 너비 */
-    padding: 7px; /* 두께를 8px로 설정 */
-    margin-bottom: 15px; /* 아래 간격 */
+    padding: 10px; /* 적절한 여백 */
+    margin-bottom: 15px; /* 하단 간격 */
     font-size: 16px; /* 글자 크기 */
-    border: 1px solid #2196F3; /* 기본 파란 테두리 */
-    border-radius: 5px; /* 모서리 둥글게 */
+    border: 1px solid #2196F3; /* 파란 테두리 */
+    border-radius: 5px; /* 둥근 모서리 */
     box-sizing: border-box; /* 박스 크기 계산 */
-    background-color: #f0f8ff; /* 부드러운 파란색 배경 */
+    background-color: #e3f2fd; /* 밝은 파란 배경 */
     color: #333; /* 텍스트 색상 */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzAwMDAwMCIvPjwvc3ZnPg=='); /* 화살표 이미지 */
+    background-repeat: no-repeat;
+    background-position: right 10px center; /* 화살표 위치 */
+    background-size: 14px; /* 화살표 크기 */
     transition: all 0.3s ease; /* 부드러운 전환 효과 */
-    animation: gentleBlink 2.5s infinite; /* 애니메이션 적용 */
 }
 
 /* 포커스 시 효과 */
 #inheritanceType:focus {
-    padding: 9px; /* 포커스 시 약간 커짐 */
-    border: 2px solid #64B5F6; /* 밝은 파란 테두리 */
-    box-shadow: 0 0 8px rgba(100, 181, 246, 0.6); /* 부드러운 빛나는 효과 */
     outline: none; /* 기본 포커스 제거 */
+    border: 2px solid #64B5F6; /* 밝은 파란 테두리 */
+    background-color: #bbdefb; /* 더 밝은 파란 배경 */
+    box-shadow: 0 0 8px rgba(100, 181, 246, 0.6); /* 외곽선 효과 */
 }
 
-/* 포커스가 사라지면 원래 크기로 복귀 */
-#inheritanceType:not(:focus) {
-    padding: 8px; /* 원래 크기로 복귀 */
-    box-shadow: none;
-}
-
-/* 애니메이션 효과 정의 */
-@keyframes gentleBlink {
+/* 애니메이션 효과 */
+@keyframes gentlePulse {
     0%, 100% {
-        background-color: #2196F3; /* 기본 파란색 */
-        color: white;
-        box-shadow: 0 0 4px rgba(33, 150, 243, 0.2); /* 은은한 파란빛 */
+        background-color: #e3f2fd; /* 기본 배경색 */
     }
     50% {
-        background-color: #64B5F6; /* 밝은 파란색 */
-        color: white;
-        box-shadow: 0 0 8px rgba(100, 181, 246, 0.6); /* 밝은 파란빛 */
+        background-color: #bbdefb; /* 중간 단계 배경색 */
     }
+}
+
+#inheritanceType {
+    animation: gentlePulse 2s infinite; /* 애니메이션 추가 */
 }
 
 /* 상단 "상속 유형" 글자 스타일 */
