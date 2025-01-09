@@ -329,7 +329,14 @@ button {
     margin-top: 15px; /* 계산하기 버튼 상단 간격 */
 }
 
-/* 상속인 입력 필드 스타일 통일 */
+/* 상속인 입력 필드 및 버튼 스타일 */
+.heir-entry {
+    display: flex; /* 가로 정렬 */
+    gap: 5px; /* 필드 간격 일정하게 */
+    align-items: center; /* 세로 가운데 정렬 */
+    margin-bottom: 10px; /* 상속인 필드 아래 간격 */
+}
+
 .heir-entry input[type="text"],
 .heir-entry input[type="number"],
 .heir-entry select {
@@ -339,31 +346,31 @@ button {
     font-size: 16px; /* 글자 크기 통일 */
     box-sizing: border-box; /* 테두리와 패딩 포함 크기 계산 */
     margin-bottom: 5px; /* 아래 간격 */
-}
-
-/* 각 필드의 동일한 너비 설정 */
-.heir-entry input[type="text"],
-.heir-entry input[type="number"],
-.heir-entry select {
     width: calc(33.333% - 10px); /* 전체 가로 크기의 1/3에서 간격 10px 제외 */
 }
 
-/* heir-entry 레이아웃 정렬 */
-.heir-entry {
-    display: flex; /* 가로 정렬 */
-    gap: 5px; /* 필드 간격 일정하게 */
-    align-items: center; /* 세로 가운데 정렬 */
-}
-
-#addHeirButton {
-    margin-top: 5px; /* 상속인 추가 버튼 상단 간격 */
-    margin-bottom: 5px; /* 필요하면 하단 간격도 조정 가능 */
-}
-
-/* 입력 필드 포커스 효과 */
 .heir-entry input:focus,
 .heir-entry select:focus {
     border-color: #007bff; /* 포커스 시 파란색 테두리 */
     outline: none; /* 기본 포커스 제거 */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 외곽선 효과 */
+}
+
+#addHeirButton {
+    margin-top: 5px; /* 상속인 추가 버튼 상단 간격 */
+    margin-bottom: 10px; /* 하단 간격 */
+    background-color: #4CAF50; /* 녹색 버튼 배경 */
+    color: white; /* 텍스트 색상 */
+    border: 1px solid #ddd; /* 테두리 */
+    padding: 10px; /* 버튼 두께 */
+    font-size: 16px; /* 글자 크기 */
+    cursor: pointer; /* 클릭 가능한 포인터 표시 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    width: 100%; /* 버튼 너비 */
+    box-sizing: border-box; /* 테두리와 패딩 포함한 크기 계산 */
+    transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+}
+
+#addHeirButton:hover {
+    background-color: #45a049; /* 호버 시 더 어두운 녹색 */
 }
