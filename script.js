@@ -541,7 +541,7 @@ document.addEventListener('input', function (event) {
         'mixedStockPrice',     // 혼합 자산 주식
         'fatherAmountInput',   // 아버지 금액
         'motherAmountInput',   // 어머니 금액
-        'othersField'          // 기타 자산
+        'totalAssetValue', // 추가된 필드
     ];
 
     // 해당 필드에 대해 콤마 적용
