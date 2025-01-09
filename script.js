@@ -288,9 +288,9 @@ document.addEventListener('click', (event) => {
     }
 
     // 재산 추가 버튼 이벤트
-    addAssetButton.addEventListener('click', createAssetEntry);
+    addAssetButton.addEventListener('click', createAssetEntry);   
 
-      // 공제 계산 로직 ---- 상속세 계산 로직에 기초공제를 추가
+    // 공제 계산 로직 ---- 상속세 계산 로직에 기초공제를 추가
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
     const basicExemption = 600000000; // 기본 공제 (6억 원)
     const baseExemption = 200000000; // 기초 공제 (2억 원)
