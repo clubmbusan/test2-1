@@ -251,11 +251,6 @@ select:hover, select:focus {
 
 /* src/styles/calculator.css */
 
-/* 재산유형 드롭다운과 입력 필드 간격 조정 */
-form select, form input {
-    margin-bottom: 20px; /* 기존 15px에서 20px으로 간격 증가 */
-}
-
 /* "다시 하기"와 "재산 추가" 버튼 간격 조정 */
 button.removeAssetButton, #addAssetButton {
     margin-top: 10px; /* 버튼 상단 간격 추가 */
