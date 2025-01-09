@@ -275,6 +275,7 @@ document.addEventListener('click', (event) => {
             case 'realEstate':
                 realEstateField.style.display = 'block';
                 break;
+                
             case 'stock':
                 stockQuantityField.style.display = 'block';
                 stockPriceField.style.display = 'block';
