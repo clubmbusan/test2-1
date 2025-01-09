@@ -425,68 +425,68 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     }
 });
    
-          // 가업 개인 상속 계산 함수
-    function calculateBusinessPersonalMode(totalAssetValue) {
-        const heirType = document.getElementById('businessHeirTypePersonal').value;
-        let exemption = 6000000000; // 기본 공제 (60억 원)
+  // 가업 개인 상속 계산 함수
+function calculateBusinessPersonalMode(totalAssetValue) {
+    const heirType = document.getElementById('businessHeirTypePersonal').value;
+    let exemption = 6000000000; // 기본 공제 (60억 원)
 
-        if (heirType === 'minor') {
-            exemption += 30000000; // 미성년 후계자 공제
-        } else if (heirType === 'other') {
-            exemption = 0; // 기타 후계자는 공제 없음
+    if (heirType === 'minor') {
+        exemption += 30000000; // 미성년 후계자 공제
+    } else if (heirType === 'other') {
+        exemption = 0; // 기타 후계자는 공제 없음
+    }
+
+    const taxableAmount = Math.max(totalAssetValue - exemption, 0);
+    const tax = calculateTax(taxableAmount);
+
+    document.getElementById('result').innerHTML = `
+        <h3>계산 결과 (가업 개인 상속)</h3>
+        <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
+        <p>공제 금액: ${formatNumberWithCommas(exemption.toString())} 원</p>
+        <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
+        <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
+    `;
+}
+
+// 가업 단체 상속 계산 함수
+function calculateBusinessGroupMode(totalAssetValue) {
+    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
+        const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
+        const relationship = heir.querySelector('select').value || "기타";
+        const shareField = heir.querySelector('input[type="number"]');
+        const share = parseFloat(shareField.value) || 0;
+
+        if (!shareField.value || share === 0) {
+            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+            throw new Error("상속 비율 누락");
         }
 
-        const taxableAmount = Math.max(totalAssetValue - exemption, 0);
+        const heirAssetValue = (totalAssetValue * share) / 100;
+        const exemption = calculateTotalExemption(relationship, heirAssetValue);
+        const taxableAmount = Math.max(heirAssetValue - exemption, 0);
         const tax = calculateTax(taxableAmount);
 
-        result.innerHTML = `
-            <h3>계산 결과 (가업 개인 상속)</h3>
-            <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
-            <p>공제 금액: ${formatNumberWithCommas(exemption.toString())} 원</p>
-            <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
-            <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
-        `;
-    }
+        return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
+    });
 
-    // 가업 단체 상속 계산 함수
-    function calculateBusinessGroupMode(totalAssetValue) {
-        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
-            const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
-            const relationship = heir.querySelector('select').value || "기타";
-            const shareField = heir.querySelector('input[type="number"]');
-            const share = parseFloat(shareField.value) || 0;
+    const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
 
-            if (!shareField.value || share === 0) {
-                alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
-                throw new Error("상속 비율 누락");
-            }
+    document.getElementById('result').innerHTML = `
+        <h3>계산 결과 (가업 단체 상속)</h3>
+        <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
+        ${heirs.map(heir => `
+            <p>
+                <strong>${heir.name}</strong>: ${heir.assetValue.toLocaleString()} 원<br>
+                공제 금액: ${heir.exemption.toLocaleString()} 원<br>
+                과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
+                상속세: ${heir.tax.toLocaleString()} 원
+            </p>
+        `).join('')}
+    `;
+}
 
-            const heirAssetValue = (totalAssetValue * share) / 100;
-            const exemption = calculateTotalExemption(relationship, heirAssetValue);
-            const taxableAmount = Math.max(heirAssetValue - exemption, 0);
-            const tax = calculateTax(taxableAmount);
-
-            return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
-        });
-
-        const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
-
-        result.innerHTML = `
-            <h3>계산 결과 (가업 단체 상속)</h3>
-            <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
-            ${heirs.map(heir => `
-                <p>
-                    <strong>${heir.name}</strong>: ${formatNumberWithCommas(heir.assetValue.toString())} 원<br>
-                    공제 금액: ${formatNumberWithCommas(heir.exemption.toString())} 원<br>
-                    과세 금액: ${formatNumberWithCommas(heir.taxableAmount.toString())} 원<br>
-                    상속세: ${formatNumberWithCommas(heir.tax.toString())} 원
-                </p>
-            `).join('')}
-        `;
-    }
-
-     // 계산 버튼 이벤트
-calculateButton.addEventListener('click', () => {
+// 계산 버튼 이벤트
+document.getElementById('calculateButton').addEventListener('click', () => {
     const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
         return sum + value;
@@ -520,7 +520,6 @@ function formatNumberWithCommas(value) {
 document.addEventListener('input', function (event) {
     const target = event.target;
 
-    // 콤마 적용 대상 필드 ID
     const applicableFields = [
         'cashAmount',
         'realEstateValue',
@@ -532,14 +531,9 @@ document.addEventListener('input', function (event) {
         'motherAmountInput'
     ];
 
-    // 콤마 적용 여부 확인
     if (applicableFields.includes(target.id)) {
-        const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
-        if (rawValue === '') {
-            target.value = ''; // 빈 값 처리
-            return;
-        }
-        target.value = parseInt(rawValue, 10).toLocaleString(); // 숫자에 콤마 추가
+        const rawValue = target.value.replace(/[^0-9]/g, '');
+        target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : '';
     }
 });
 
@@ -552,7 +546,7 @@ document.addEventListener('input', function () {
     if (stockQuantity && stockPrice && stockTotal) {
         const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
         const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
+        stockTotal.value = (quantity * price).toLocaleString();
     }
 
     const mixedStockQuantity = document.getElementById('mixedStockQuantity');
@@ -566,8 +560,8 @@ document.addEventListener('input', function () {
         const cash = parseInt(document.getElementById('mixedCashAmount').value.replace(/[^0-9]/g, '') || '0', 10);
         const realEstate = parseInt(document.getElementById('mixedRealEstateValue').value.replace(/[^0-9]/g, '') || '0', 10);
 
-        mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 금액 계산 및 콤마 추가
+        mixedTotalAmount.value = (total + cash + realEstate).toLocaleString();
     }
 });
-  
+       
 }); // document.addEventListener 닫는 괄호
