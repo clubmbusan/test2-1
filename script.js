@@ -56,12 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-      // "다시 하기" 버튼 클릭 이벤트 처리
-document.addEventListener('click', (event) => {
-    if (event.target.id === 'resetButton') {
-        location.reload(); // 페이지 새로고침
-    }
-});
+     
+        // "다시하기" 버튼 클릭 이벤트
+        document.getElementById('startButton').addEventListener('click', () => {
+       location.reload(); // 페이지 새로 고침
+     });
 
      // 모든 assetType에 이벤트 리스너 추가
     document.querySelectorAll('.assetType').forEach(select => {
