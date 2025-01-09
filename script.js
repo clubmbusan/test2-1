@@ -55,36 +55,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // "다시 하기" 버튼 클릭 이벤트 처리
-    document.addEventListener('click', (event) => {
-    console.log(`클릭된 요소: ${event.target.className}`);
+        // "다시 하기" 버튼 클릭 이벤트 처리
+document.addEventListener('click', (event) => {
     if (event.target.classList.contains('removeAssetButton')) {
-        console.log('"다시 하기" 버튼 클릭됨');
         const assetEntry = event.target.closest('.asset-entry');
         if (assetEntry) {
-            console.log('초기화할 asset-entry 요소 찾음');
             // 입력 필드 초기화
             const inputs = assetEntry.querySelectorAll('input');
             inputs.forEach(input => {
                 if (input.type === 'text' || input.type === 'number') {
-                    input.value = '';
+                    input.value = ''; // 필드 초기화
                 }
             });
 
             // 드롭다운 초기화
             const selects = assetEntry.querySelectorAll('select');
             selects.forEach(select => {
-                select.selectedIndex = 0;
+                select.selectedIndex = 0; // 드롭다운 초기화
             });
-
-            console.log('필드 초기화 완료');
-        } else {
-            console.error('초기화할 asset-entry 요소를 찾을 수 없음');
         }
     }
 });
 
-    // 모든 assetType에 이벤트 리스너 추가
+     // 모든 assetType에 이벤트 리스너 추가
     document.querySelectorAll('.assetType').forEach(select => {
         select.addEventListener('change', () => handleAssetTypeChange(select));
     });
