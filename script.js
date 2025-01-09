@@ -291,7 +291,7 @@ document.addEventListener('click', (event) => {
     addAssetButton.addEventListener('click', createAssetEntry);
 
       // 공제 계산 로직 ---- 상속세 계산 로직에 기초공제를 추가
-    function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
+function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
     const basicExemption = 600000000; // 기본 공제 (6억 원)
     const baseExemption = 200000000; // 기초 공제 (2억 원)
 
@@ -360,15 +360,8 @@ function calculatePersonalMode(totalAssetValue) {
     const spouseShare = totalAssetValue;
 
     // 공제 계산
-    const basicExemption = 600000000; // 기본 공제
-    const baseExemption = 200000000; // 기초 공제
-
-    // 전체 공제 및 관계 공제 계산
-    const { totalExemption, relationshipExemption } = calculateTotalExemptionDetailed(
-        totalAssetValue,
-        relationship,
-        spouseShare
-    );
+    const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
+        calculateExemptions(totalAssetValue, relationship, spouseShare);
 
     // 과세표준 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
@@ -391,6 +384,7 @@ function calculatePersonalMode(totalAssetValue) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
+
 // 단체 상속 로직
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
