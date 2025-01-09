@@ -354,6 +354,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 
 // 누진세율 적용 함수
 function calculateTax(taxableAmount) {
+    
     const taxBrackets = [
         { limit: 200000000, rate: 0.1 }, // 2억 이하
         { limit: 500000000, rate: 0.2 }, // 5억 이하
