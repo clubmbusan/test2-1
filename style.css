@@ -297,19 +297,20 @@ label[for="inheritanceType"] {
 /* 기본 드롭다운 스타일 */
 select {
     appearance: none; /* 기본 브라우저 스타일 제거 */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="black"><path d="M6 8l4 4 4-4z" /></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center; /* 화살표 위치 조정 */
-    background-size: 14px; /* 화살표 크기 조정 */
+    -webkit-appearance: none; /* Webkit 브라우저 */
+    -moz-appearance: none; /* Firefox */
+    background-color: #fff; /* 배경색 */
+    border: 1px solid #ccc; /* 기본 테두리 */
+    border-radius: 5px; /* 둥근 모서리 */
+    padding: 10px 15px; /* 여백 */
+    font-size: 16px; /* 글자 크기 */
+    width: 100%; /* 넓이 */
+    box-sizing: border-box; /* 박스 크기 계산 */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23000000"><path d="M6 8l4 4 4-4z" /></svg>'); /* 화살표 SVG */
+    background-repeat: no-repeat; /* 화살표 반복 제거 */
+    background-position: right 10px center; /* 화살표 위치 */
+    background-size: 14px; /* 화살표 크기 */
+    transition: border-color 0.2s ease-in-out; /* 부드러운 전환 효과 */
 }
 
 /* 상속 유형 드롭다운 스타일 */
@@ -323,5 +324,22 @@ select {
 /* 호버 및 포커스 스타일 */
 select:hover, select:focus {
     border-color: #4CAF50; /* 초록색 테두리 */
-    outline: none;
+    outline: none; /* 포커스 테두리 제거 */
+    background-color: #f9f9f9; /* 약간의 배경 강조 */
 }
+
+/* 비활성화된 상태의 드롭다운 */
+select:disabled {
+    background-color: #f5f5f5;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* 모바일 환경을 위한 스타일 조정 */
+@media (max-width: 768px) {
+    select {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+
