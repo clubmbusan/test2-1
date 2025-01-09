@@ -197,3 +197,8 @@ button:hover {
     background-color: #bbdefb; /* 포커스 상태 배경 */
     box-shadow: 0 0 8px rgba(100, 181, 246, 0.6); /* 외곽선 효과 */
 }
+
+/* 관계 드롭다운과 계산하기 버튼 간격 조정 */
+form select[name="relation"] + #calculateButton {
+    margin-top: 10px; /* 기존보다 약간 넓게 조정 */
+}
