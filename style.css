@@ -259,7 +259,7 @@ form select, form input {
 /* "다시 하기"와 "재산 추가" 버튼 간격 조정 */
 button.removeAssetButton, #addAssetButton {
     margin-top: 10px; /* 버튼 상단 간격 추가 */
-    margin-bottom: 20px; /* 버튼 간격을 더 늘림 */
+    margin-bottom: 10px; /* 버튼 간격을 더 늘림 */
 }
 
 /* 관계 드롭다운과 계산하기 버튼 간격 조정 */
@@ -270,6 +270,12 @@ form select[name="relation"], #calculateButton {
 /* 전체 폼 버튼 간격 */
 button {
     margin-top: 10px; /* 버튼 상단 간격을 추가 */
-    margin-bottom: 20px; /* 버튼 간격을 균등하게 설정 */
+    margin-bottom: 10px; /* 버튼 간격을 균등하게 설정 */
 }
 
+/* src/styles/calculator.css */
+
+/* 재산 드롭다운과 금액 입력 필드 간격 조정 */
+form select[name="assetType"] + input {
+    margin-top: 10px; /* 드롭다운 아래 여백 추가 */
+}
