@@ -288,25 +288,7 @@ document.addEventListener('click', (event) => {
     // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', createAssetEntry);
 
-    // 상속세 계산 함수 (누진세율 적용)
-    function calculateTax(taxableAmount) {
-        const taxBrackets = [
-            { limit: 1000000000, rate: 0.1, deduction: 0 },
-            { limit: 5000000000, rate: 0.2, deduction: 10000000 },
-            { limit: 10000000000, rate: 0.3, deduction: 60000000 },
-            { limit: 30000000000, rate: 0.4, deduction: 160000000 },
-            { limit: Infinity, rate: 0.5, deduction: 460000000 },
-        ];
-
-        for (const bracket of taxBrackets) {
-            if (taxableAmount <= bracket.limit) {
-                return Math.max((taxableAmount * bracket.rate) - bracket.deduction, 0);
-            }
-        }
-        return 0;
-    }
-
-    // 공제 계산
+     // 공제 계산
     function calculateExemption(relationship, assetValue) {
         let exemption = 600000000;
 
@@ -334,6 +316,25 @@ document.addEventListener('click', (event) => {
         return Math.min(exemption, assetValue);
     }
 
+    // 상속세 계산 함수 (누진세율 적용)
+    function calculateTax(taxableAmount) {
+        const taxBrackets = [
+            { limit: 1000000000, rate: 0.1, deduction: 0 },
+            { limit: 5000000000, rate: 0.2, deduction: 10000000 },
+            { limit: 10000000000, rate: 0.3, deduction: 60000000 },
+            { limit: 30000000000, rate: 0.4, deduction: 160000000 },
+            { limit: Infinity, rate: 0.5, deduction: 460000000 },
+        ];
+
+        for (const bracket of taxBrackets) {
+            if (taxableAmount <= bracket.limit) {
+                return Math.max((taxableAmount * bracket.rate) - bracket.deduction, 0);
+            }
+        }
+        return 0;
+    }
+
+   
     // 계산 버튼 이벤트
     calculateButton.addEventListener('click', () => {
         const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
