@@ -322,7 +322,8 @@ button {
 }
 
 /* 관계 드롭다운과 계산하기 버튼 간격 조정 */
-form #relationshipPersonal + #calculateButton {
+form select[name="relation"] + #calculateButton {
     margin-top: 15px; /* 간격 조정 */
 }
+
 
