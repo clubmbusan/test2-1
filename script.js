@@ -329,18 +329,17 @@ function calculateTaxableAmount(totalInheritance, relationship, spouseShare = 0)
     return Math.max(totalInheritance - totalExemption, 0); // 음수일 경우 0으로 처리
 }
 
-    // 상속세 계산 함수 (누진세율 적용)
-   function calculateTax(taxableAmount) {
+   // 상속세 계산 함수 (누진세율 적용, 업그레이드 버전)
+function calculateTax(taxableAmount) {
     const taxBrackets = [
-        { limit: 1000000000, rate: 0.1 }, // 1억 이하: 10%
-        { limit: 5000000000, rate: 0.2 }, // 5억 이하: 20%
-        { limit: 10000000000, rate: 0.3 }, // 10억 이하: 30%
-        { limit: 30000000000, rate: 0.4 }, // 30억 이하: 40%
-        { limit: Infinity, rate: 0.5 }, // 30억 초과: 50%
+        { limit: 200000000, rate: 0.1 }, // 2억 이하: 10%
+        { limit: 500000000, rate: 0.2 }, // 5억 이하: 20%
+        { limit: 1000000000, rate: 0.3 }, // 10억 이하: 30%
+        { limit: Infinity, rate: 0.4 } // 10억 초과: 40%
     ];
 
     let tax = 0; // 총 상속세 초기화
-    let previousLimit = 0; // 이전 구간 상한선
+    let previousLimit = 0; // 이전 구간 상한선 초기화
 
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
