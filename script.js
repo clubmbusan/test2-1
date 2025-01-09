@@ -177,6 +177,7 @@ document.addEventListener('click', (event) => {
         }
     });
 
+   
     // 가업 단체 상속: 상속인 추가 버튼 이벤트
     addBusinessGroupHeirButton.addEventListener('click', () => {
         const newHeirEntry = document.createElement('div');
@@ -196,7 +197,31 @@ document.addEventListener('click', (event) => {
         businessGroupHeirContainer.appendChild(newHeirEntry);
     });
 
-    // 재산 항목 생성
+        // 전체 상속: 상속인 추가 버튼 이벤트
+       addHeirButton.addEventListener('click', () => {
+         const newHeirEntry = document.createElement('div');
+         newHeirEntry.className = 'heir-entry';
+         newHeirEntry.innerHTML = `
+           <input type="text" placeholder="이름">
+           <select>
+               <option value="spouse">배우자</option>
+               <option value="adultChild">자녀(성년)</option>
+               <option value="minorChild">자녀(미성년)</option>
+               <option value="parent">부모</option>
+               <option value="sibling">형제자매</option>
+               <option value="other">기타</option>
+           </select>
+           <input type="number" placeholder="상속 비율 (%)">
+       `;
+       const heirContainer = document.getElementById('heirContainer');
+       if (heirContainer) {
+           heirContainer.appendChild(newHeirEntry);
+       } else {
+           console.error('"heirContainer"를 찾을 수 없습니다.');
+       }
+    });
+
+       // 재산 항목 생성
     function createAssetEntry() {
         const newAsset = document.createElement('div');
         newAsset.className = 'asset-entry';
