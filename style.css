@@ -326,3 +326,46 @@ form select[name="relation"] + #calculateButton {
     margin-top: 15px; /* 간격 조정 */
 }
 
+<style>
+    /* 입력 필드 및 드롭다운 스타일 */
+    input[type="text"],
+    input[type="number"],
+    select {
+        border: 1px solid #ccc; /* 테두리 색상 */
+        border-radius: 8px; /* 모서리를 둥글게 */
+        padding: 8px 12px; /* 내부 여백 */
+        font-size: 1rem; /* 텍스트 크기 */
+        width: 100%; /* 전체 너비 */
+        box-sizing: border-box; /* 테두리와 패딩 포함 */
+    }
+
+    /* 입력 필드 및 드롭다운 포커스 효과 */
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+        outline: none; /* 기본 아웃라인 제거 */
+        border-color: #007bff; /* 포커스 시 테두리 색상 */
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.5); /* 부드러운 강조 효과 */
+    }
+
+    /* 입력 필드와 드롭다운의 컨테이너 스타일 */
+    .heir-entry {
+        display: flex; /* 가로로 배치 */
+        gap: 10px; /* 필드 간격 */
+        align-items: center; /* 수직 정렬 */
+        margin-bottom: 15px; /* 각 항목 간 간격 */
+    }
+
+    /* 각 필드에 적당한 너비 설정 */
+    .heir-entry input[type="text"] {
+        flex: 2; /* 이름 필드 너비 */
+    }
+
+    .heir-entry select {
+        flex: 2; /* 배우자 드롭다운 너비 */
+    }
+
+    .heir-entry input[type="number"] {
+        flex: 1; /* 상속 비율 필드 너비 */
+    }
+</style>
