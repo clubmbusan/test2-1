@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
   
+   // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
         const assetEntry = assetTypeSelect.closest('.asset-entry');
         if (!assetEntry) {
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
     }
-
+    
         // "다시 하기" 버튼 클릭 이벤트 처리
 document.addEventListener('click', (event) => {
     if (event.target.classList.contains('removeAssetButton')) {
@@ -289,12 +290,12 @@ document.addEventListener('click', (event) => {
     addAssetButton.addEventListener('click', createAssetEntry);
 
      // 상속세 계산 로직에 기초공제를 추가
-   function calculateTotalExemption(totalInheritance, relationship, spouseShare = 0) {
+  function calculateTotalExemption(totalInheritance, relationship, spouseShare = 0) {
     const basicExemption = 600000000; // 기본공제 (6억 원)
     const baseExemption = 200000000; // 기초공제 (2억 원)
 
-    // 관계공제 계산
     let relationshipExemption = 0;
+
     switch (relationship) {
         case 'spouse':
             relationshipExemption = Math.min(spouseShare, totalInheritance * 0.5, 3500000000); // 배우자 공제
@@ -313,58 +314,74 @@ document.addEventListener('click', (event) => {
             relationshipExemption = 10000000; // 기타 공제
             break;
         default:
-            console.error('잘못된 관계 선택:', relationship); // 디버깅 로그
-            return 0; // 잘못된 값이 들어오면 공제 금액 0 반환
+            console.error('잘못된 관계 선택:', relationship);
+            return 0;
     }
 
-    // 디버깅 로그 추가
-    console.log('총 공제 계산:', {
-        basicExemption,
-        baseExemption,
-        relationshipExemption,
-        totalExemption: basicExemption + baseExemption + relationshipExemption
-    });
-
-    // 총 공제 금액 반환
     return basicExemption + baseExemption + relationshipExemption;
 }
 
-// 과세표준 계산 로직
+// 과세표준 계산 함수
 function calculateTaxableAmount(totalInheritance, relationship, spouseShare = 0) {
-    // 총 공제 금액 계산
     const totalExemption = calculateTotalExemption(totalInheritance, relationship, spouseShare);
-
-    // 과세표준 = 총 상속 재산 - 총 공제 금액
     return Math.max(totalInheritance - totalExemption, 0); // 음수일 경우 0으로 처리
 }
 
-// 상속세 계산 함수 (누진세율 적용)
+// 누진세율 적용 함수
 function calculateTax(taxableAmount) {
     const taxBrackets = [
-        { limit: 200000000, rate: 0.1 }, // 2억 이하: 10%
-        { limit: 500000000, rate: 0.2 }, // 5억 이하: 20%
-        { limit: 1000000000, rate: 0.3 }, // 10억 이하: 30%
-        { limit: Infinity, rate: 0.4 } // 10억 초과: 40%
+        { limit: 200000000, rate: 0.1 }, // 2억 이하
+        { limit: 500000000, rate: 0.2 }, // 5억 이하
+        { limit: 1000000000, rate: 0.3 }, // 10억 이하
+        { limit: Infinity, rate: 0.4 }, // 10억 초과
     ];
 
-    let tax = 0; // 총 상속세 초기화
-    let previousLimit = 0; // 이전 구간 상한선 초기화
+    let tax = 0;
+    let previousLimit = 0;
 
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
-            // 현재 구간의 한도까지 세금 계산
             tax += (bracket.limit - previousLimit) * bracket.rate;
-            previousLimit = bracket.limit; // 다음 구간으로 이동
+            previousLimit = bracket.limit;
         } else {
-            // 과세 금액이 현재 구간에 속하면 계산 후 종료
             tax += (taxableAmount - previousLimit) * bracket.rate;
             break;
         }
     }
 
-    return Math.max(tax, 0); // 음수 방지
+    return Math.max(tax, 0);
 }
 
+// 상속세 계산 함수 (공용)
+function calculateInheritanceTax(totalInheritance, relationship, spouseShare = 0) {
+    const taxableAmount = calculateTaxableAmount(totalInheritance, relationship, spouseShare);
+    const tax = calculateTax(taxableAmount);
+
+    return {
+        totalInheritance,
+        taxableAmount,
+        tax,
+    };
+}
+
+// 이벤트 리스너 (계산 버튼 클릭)
+document.getElementById('calculateButton').addEventListener('click', () => {
+    const totalInheritance = parseInt(document.getElementById('inheritanceAmount').value.replace(/,/g, ''), 10);
+    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+    const spouseShare = totalInheritance;
+
+    // 상속세 계산
+    const resultData = calculateInheritanceTax(totalInheritance, relationship, spouseShare);
+
+    // 결과 출력
+    document.getElementById('result').innerHTML = `
+        <h3>계산 결과 (개인 상속)</h3>
+        <p>총 재산 금액: ${resultData.totalInheritance.toLocaleString()} 원</p>
+        <p>과세 금액: ${resultData.taxableAmount.toLocaleString()} 원</p>
+        <p>상속세: ${resultData.tax.toLocaleString()} 원</p>
+    `;
+});
+    
 // 최종 계산 통합 함수
 function calculateInheritanceTax(totalInheritance, relationship, spouseShare = 0) {
     const taxableAmount = calculateTaxableAmount(totalInheritance, relationship, spouseShare); // 과세표준 계산
