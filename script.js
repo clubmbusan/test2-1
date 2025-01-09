@@ -58,46 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
       // "다시 하기" 버튼 클릭 이벤트 처리
 document.addEventListener('click', (event) => {
-    if (event.target.classList.contains('removeAssetButton')) {
-        // 개별 재산 항목 초기화
-        const assetEntry = event.target.closest('.asset-entry');
-        if (assetEntry) {
-            // 입력 필드 초기화
-            const inputs = assetEntry.querySelectorAll('input');
-            inputs.forEach(input => {
-                if (input.type === 'text' || input.type === 'number') {
-                    input.value = ''; // 필드 초기화
-                }
-            });
-
-            // 드롭다운 초기화
-            const selects = assetEntry.querySelectorAll('select');
-            selects.forEach(select => {
-                select.selectedIndex = 0; // 드롭다운 초기화
-            });
-        }
-    } else if (event.target.id === 'resetButton') {
-        // 전체 입력 필드 및 결과 초기화
-        document.querySelectorAll('input[type="text"], input[type="number"]').forEach((input) => {
-            input.value = ''; // 모든 텍스트 및 숫자 입력 필드 초기화
-        });
-
-        // 드롭다운 초기화
-        document.querySelectorAll('select').forEach((select) => {
-            select.selectedIndex = 0; // 모든 드롭다운 초기화
-        });
-
-        // 결과 창 초기화
-        const result = document.getElementById('result');
-        if (result) {
-            result.innerHTML = ''; // 결과 내용 초기화
-        }
-
-        // 총 재산 필드 초기화
-        const totalAssetField = document.getElementById('totalAssetValue');
-        if (totalAssetField) {
-            totalAssetField.value = ''; // 총 재산 금액 초기화
-        }
+    if (event.target.id === 'resetButton') {
+        location.reload(); // 페이지 새로고침
     }
 });
 
