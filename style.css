@@ -273,8 +273,6 @@ button {
     margin-bottom: 10px; /* 버튼 간격을 균등하게 설정 */
 }
 
-/* src/styles/calculator.css */
-
 /* 재산 유형 드롭다운 아래 입력 필드 간격 유지 */
 form select[name="assetType"] + input,
 form select[name="assetType"] + .dynamic-input {
