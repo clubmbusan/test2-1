@@ -279,3 +279,4 @@ button {
 form select[name="assetType"] + input {
     margin-top: 10px; /* 드롭다운 아래 여백 추가 */
 }
+
