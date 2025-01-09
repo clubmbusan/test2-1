@@ -384,8 +384,7 @@ function calculatePersonalMode(totalAssetValue) {
     const spouseShare = totalAssetValue;
 
     // 공제 계산
-    const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
-        calculateExemptions(totalAssetValue, relationship, spouseShare);
+    const { totalExemption, relationshipExemption } = calculateExemptions(totalAssetValue, relationship, spouseShare);
 
     // 과세표준 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
@@ -399,8 +398,8 @@ function calculatePersonalMode(totalAssetValue) {
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
         <p><strong>공제 내역:</strong></p>
         <ul>
-            <li>기본 공제: ${basicExemption.toLocaleString()} 원</li>
-            <li>기초 공제: ${baseExemption.toLocaleString()} 원</li>
+            <li>기본 공제: 600,000,000 원</li>
+            <li>기초 공제: 200,000,000 원</li>
             <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
         </ul>
         <p><strong>총 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
