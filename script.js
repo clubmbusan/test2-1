@@ -300,10 +300,10 @@ document.addEventListener('click', (event) => {
                 exemption += 30000000;
                 break;
             case 'adultChild':
-                exemption += 50000000;
+                exemption += 100000000;
                 break;
             case 'parent':
-                exemption += 50000000;
+                exemption += 100000000;
                 break;
             case 'sibling':
                 exemption += 10000000;
