@@ -392,7 +392,7 @@ function calculateInheritanceTax(totalInheritance, relationship, spouseShare = 0
     // 개인 상속 계산
    function calculatePersonalMode(totalAssetValue) {
         const relationship = document.getElementById('relationshipPersonal').value;
-        const exemption = calculateExemption(relationship, totalAssetValue);
+        const exemption = calculateTotalExemption(relationship, totalAssetValue);
         const taxableAmount = Math.max(totalAssetValue - exemption, 0);
         const tax = calculateTax(taxableAmount);
 
@@ -419,7 +419,7 @@ function calculateInheritanceTax(totalInheritance, relationship, spouseShare = 0
             }
 
             const heirAssetValue = (totalAssetValue * share) / 100;
-            const exemption = calculateExemption(relationship, heirAssetValue);
+            const exemption = calculateTotalExemption(relationship, heirAssetValue);
             const taxableAmount = Math.max(heirAssetValue - exemption, 0);
             const tax = calculateTax(taxableAmount);
 
@@ -479,7 +479,7 @@ function calculateInheritanceTax(totalInheritance, relationship, spouseShare = 0
             }
 
             const heirAssetValue = (totalAssetValue * share) / 100;
-            const exemption = calculateExemption(relationship, heirAssetValue);
+            const exemption = calculateTotalExemption(relationship, heirAssetValue);
             const taxableAmount = Math.max(heirAssetValue - exemption, 0);
             const tax = calculateTax(taxableAmount);
 
