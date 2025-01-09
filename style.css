@@ -170,13 +170,13 @@ h2 {
     border-radius: 5px; /* 둥근 모서리 */
     box-sizing: border-box; /* 박스 크기 계산 */
     background-color: #e3f2fd; /* 밝은 파란 배경 */
-    color: #333; /* 텍스트 색상 */
+    color: white; /* 텍스트 흰색 */
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzAwMDAwMCIvPjwvc3ZnPg=='); /* 화살표 이미지 */
     background-repeat: no-repeat;
     background-position: right 10px center; /* 화살표 위치 */
     background-size: 14px; /* 화살표 크기 */
     transition: all 0.3s ease; /* 부드러운 전환 효과 */
-    animation: gentlePulse 2s infinite; /* 애니메이션 적용 */
+    animation: gentlePulse 2s infinite; /* 부드러운 애니메이션 */
 }
 
 /* 포커스 시 효과 */
@@ -184,19 +184,21 @@ h2 {
     outline: none; /* 기본 포커스 제거 */
     border: 2px solid #64B5F6; /* 밝은 파란 테두리 */
     background-color: #bbdefb; /* 더 밝은 파란 배경 */
+    color: white; /* 텍스트 흰색 유지 */
     box-shadow: 0 0 8px rgba(100, 181, 246, 0.6); /* 외곽선 효과 */
 }
 
-/* 애니메이션 효과 */
+/* 깜빡이는 애니메이션 효과 */
 @keyframes gentlePulse {
     0%, 100% {
         background-color: #e3f2fd; /* 기본 배경색 */
+        color: white; /* 기본 텍스트 색상 */
     }
     50% {
-        background-color: #bbdefb; /* 중간 단계 배경색 */
+        background-color: #bbdefb; /* 더 밝은 파란 배경 */
+        color: white; /* 텍스트 흰색 유지 */
     }
 }
-
 
 /* 상단 "상속 유형" 글자 스타일 */
 label[for="inheritanceType"] {
