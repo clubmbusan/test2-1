@@ -56,25 +56,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // "다시 하기" 버튼 클릭 이벤트 처리
-document.addEventListener('click', (event) => {
+    document.addEventListener('click', (event) => {
+    console.log(`클릭된 요소: ${event.target.className}`);
     if (event.target.classList.contains('removeAssetButton')) {
+        console.log('"다시 하기" 버튼 클릭됨');
         const assetEntry = event.target.closest('.asset-entry');
         if (assetEntry) {
+            console.log('초기화할 asset-entry 요소 찾음');
             // 입력 필드 초기화
             const inputs = assetEntry.querySelectorAll('input');
             inputs.forEach(input => {
                 if (input.type === 'text' || input.type === 'number') {
-                    input.value = ''; // 텍스트와 숫자 필드 초기화
+                    input.value = '';
                 }
             });
 
             // 드롭다운 초기화
             const selects = assetEntry.querySelectorAll('select');
             selects.forEach(select => {
-                select.selectedIndex = 0; // 첫 번째 옵션으로 초기화
+                select.selectedIndex = 0;
             });
+
+            console.log('필드 초기화 완료');
         } else {
-            console.error('초기화할 .asset-entry 요소를 찾을 수 없습니다.');
+            console.error('초기화할 asset-entry 요소를 찾을 수 없음');
         }
     }
 });
