@@ -152,33 +152,6 @@
     <div id="extraTaxButtons">
         <button type="button" id="acquisitionTaxButton" onclick="window.location.href='https://your-blog-link.com';">취득세 계산기</button> 
     </div>  
- </div>
-
-    <script>
-        // 모달 관련 JavaScript
-        const modal = document.getElementById('inheritanceModal');
-        const openModalButton = document.getElementById('openModalButton');
-        const closeModalButton = document.getElementById('closeModalButton');
-        const modalOptions = document.querySelectorAll('.modal-option');
-
-        // 모달 열기
-        openModalButton.addEventListener('click', () => {
-            modal.classList.add('show');
-        });
-
-        // 모달 닫기
-        closeModalButton.addEventListener('click', () => {
-            modal.classList.remove('show');
-        });
-
-        // 옵션 선택
-        modalOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                const selectedValue = e.target.getAttribute('data-value');
-                openModalButton.textContent = `상속 유형: ${selectedValue}`;
-                modal.classList.remove('show'); // 모달 닫기
-            });
-        });
     </script>
     <script src="script.js"></script>
 </body>
