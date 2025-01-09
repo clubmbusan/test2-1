@@ -289,7 +289,7 @@ document.addEventListener('click', (event) => {
     addAssetButton.addEventListener('click', createAssetEntry);
 
      // 상속세 계산 로직에 기초공제를 추가
-    function calculateTotalExemption(totalInheritance, relationship, spouseShare = 0) {
+   function calculateTotalExemption(totalInheritance, relationship, spouseShare = 0) {
     const basicExemption = 600000000; // 기본공제 (6억 원)
     const baseExemption = 200000000; // 기초공제 (2억 원)
 
@@ -297,25 +297,37 @@ document.addEventListener('click', (event) => {
     let relationshipExemption = 0;
     switch (relationship) {
         case 'spouse':
-            relationshipExemption = Math.min(spouseShare, totalInheritance * 0.5, 3500000000); // 배우자 공제 (최대 35억)
+            relationshipExemption = Math.min(spouseShare, totalInheritance * 0.5, 3500000000); // 배우자 공제
             break;
         case 'adultChild':
-            relationshipExemption = 500000000; // 성년 자녀 공제 (1인당 5억 원)
+            relationshipExemption = 500000000; // 성년 자녀 공제
             break;
         case 'minorChild':
-            relationshipExemption = 30000000; // 미성년 자녀 공제 (1인당 3천만 원)
+            relationshipExemption = 30000000; // 미성년 자녀 공제
             break;
         case 'parent':
-            relationshipExemption = 100000000; // 부모 공제 (1인당 1억 원)
+            relationshipExemption = 100000000; // 부모 공제
             break;
         case 'sibling':
         case 'other':
-            relationshipExemption = 10000000; // 형제자매 및 기타 공제 (1천만 원)
+            relationshipExemption = 10000000; // 기타 공제
             break;
         default:
-            console.error('잘못된 관계 선택:', relationship);
+            console.error('잘못된 관계 선택:', relationship); // 디버깅 로그
             return 0; // 잘못된 값이 들어오면 공제 금액 0 반환
     }
+
+    // 디버깅 로그 추가
+    console.log('총 공제 계산:', {
+        basicExemption,
+        baseExemption,
+        relationshipExemption,
+        totalExemption: basicExemption + baseExemption + relationshipExemption
+    });
+
+    // 총 공제 금액 반환
+    return basicExemption + baseExemption + relationshipExemption;
+}
 
     // 총 공제 금액 계산
     return basicExemption + baseExemption + relationshipExemption;
