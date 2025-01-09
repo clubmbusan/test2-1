@@ -268,15 +268,14 @@ button {
     margin-bottom: 10px; /* 버튼 간격을 균등하게 설정 */
 }
 
-/* 재산 유형 드롭다운 아래 입력 필드 간격 유지 */
-form select[name="assetType"] + input,
-form select[name="assetType"] + .dynamic-input {
-    margin-top: 15px; /* 드롭다운 아래 간격 설정 */
+/* 드롭다운과 첫 번째 입력 필드 간 간격 */
+#assetType + .assetFields input {
+    margin-top: 15px !important; /* 간격 강제 적용 */
 }
 
-/* 추가적인 재산 유형 드롭다운 아래 필드 간격 */
-.dynamic-input + input {
-    margin-top: 10px; /* 필드들 간 간격 설정 */
+/* 입력 필드 간 간격 */
+.assetFields input {
+    margin-top: 10px !important; /* 간격 강제 적용 */
 }
 
 /* 상속인 정보 섹션 스타일 */
