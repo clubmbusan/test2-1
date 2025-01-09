@@ -289,15 +289,16 @@ document.addEventListener('click', (event) => {
     addAssetButton.addEventListener('click', createAssetEntry);
 
      // 상속세 계산 로직에 기초공제를 추가
-     function calculateTotalExemption(totalInheritance, relationship, spouseShare = 0) {
-     const basicExemption = 600000000; // 기본공제 (6억 원)
-     const baseExemption = 200000000; // 기초공제 (2억 원)
- 
+    function calculateTotalExemption(totalInheritance, relationship, spouseShare = 0) {
+    const basicExemption = 600000000; // 기본공제 (6억 원)
+    const baseExemption = 200000000; // 기초공제 (2억 원)
+
     // 관계공제 계산
     let relationshipExemption = 0;
     switch (relationship) {
         case 'spouse':
-            relationshipExemption = Math.min(spouseShare, totalInheritance * 0.5, 3500000000); // 배우자 공제 (최대 35억)
+            // 배우자 공제: 배우자 상속분, 총 재산의 50%, 35억 원 중 최솟값
+            relationshipExemption = Math.min(spouseShare, totalInheritance * 0.5, 3500000000);
             break;
         case 'adultChild':
             relationshipExemption = 500000000; // 성년 자녀 공제 (1인당 5억 원)
