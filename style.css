@@ -176,6 +176,7 @@ h2 {
     background-position: right 10px center; /* 화살표 위치 */
     background-size: 14px; /* 화살표 크기 */
     transition: all 0.3s ease; /* 부드러운 전환 효과 */
+    animation: gentlePulse 2s infinite; /* 애니메이션 적용 */
 }
 
 /* 포커스 시 효과 */
@@ -195,6 +196,7 @@ h2 {
         background-color: #bbdefb; /* 중간 단계 배경색 */
     }
 }
+
 
 /* 상단 "상속 유형" 글자 스타일 */
 label[for="inheritanceType"] {
