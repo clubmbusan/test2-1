@@ -321,9 +321,12 @@ button {
     margin-top: 20px; /* 간격 설정 */
 }
 
-/* 관계 드롭다운과 계산하기 버튼 간격 조정 */
-form select[name="relation"] + #calculateButton {
-    margin-top: 15px; /* 간격 조정 */
+#personalSection #relationshipPersonal {
+    margin-bottom: 20px; /* 관계 드롭다운 하단 간격 */
+}
+
+#personalSection #calculateButton {
+    margin-top: 20px; /* 계산하기 버튼 상단 간격 */
 }
 
 /* 상속인 입력 필드 스타일 통일 */
