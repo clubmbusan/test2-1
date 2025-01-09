@@ -317,23 +317,32 @@ document.addEventListener('click', (event) => {
     }
 
     // 상속세 계산 함수 (누진세율 적용)
-    function calculateTax(taxableAmount) {
-        const taxBrackets = [
-            { limit: 1000000000, rate: 0.1, deduction: 0 },
-            { limit: 5000000000, rate: 0.2, deduction: 10000000 },
-            { limit: 10000000000, rate: 0.3, deduction: 60000000 },
-            { limit: 30000000000, rate: 0.4, deduction: 160000000 },
-            { limit: Infinity, rate: 0.5, deduction: 460000000 },
-        ];
+   function calculateTax(taxableAmount) {
+    const taxBrackets = [
+        { limit: 1000000000, rate: 0.1 }, // 1억 이하: 10%
+        { limit: 5000000000, rate: 0.2 }, // 5억 이하: 20%
+        { limit: 10000000000, rate: 0.3 }, // 10억 이하: 30%
+        { limit: 30000000000, rate: 0.4 }, // 30억 이하: 40%
+        { limit: Infinity, rate: 0.5 }, // 30억 초과: 50%
+    ];
 
-        for (const bracket of taxBrackets) {
-            if (taxableAmount <= bracket.limit) {
-                return Math.max((taxableAmount * bracket.rate) - bracket.deduction, 0);
-            }
+    let tax = 0; // 총 상속세 초기화
+    let previousLimit = 0; // 이전 구간 상한선
+
+    for (const bracket of taxBrackets) {
+        if (taxableAmount > bracket.limit) {
+            // 현재 구간의 한도까지 세금 계산
+            tax += (bracket.limit - previousLimit) * bracket.rate;
+            previousLimit = bracket.limit; // 다음 구간으로 이동
+        } else {
+            // 과세 금액이 현재 구간에 속하면 계산 후 종료
+            tax += (taxableAmount - previousLimit) * bracket.rate;
+            break;
         }
-        return 0;
     }
 
+    return Math.max(tax, 0); // 음수 방지
+}
    
     // 계산 버튼 이벤트
     calculateButton.addEventListener('click', () => {
