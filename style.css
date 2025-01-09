@@ -275,9 +275,15 @@ button {
 
 /* src/styles/calculator.css */
 
-/* 재산 드롭다운과 금액 입력 필드 간격 조정 */
-form select[name="assetType"] + input {
-    margin-top: 10px; /* 드롭다운 아래 여백 추가 */
+/* 재산 유형 드롭다운 아래 입력 필드 간격 유지 */
+form select[name="assetType"] + input,
+form select[name="assetType"] + .dynamic-input {
+    margin-top: 15px; /* 드롭다운 아래 간격 설정 */
+}
+
+/* 추가적인 재산 유형 드롭다운 아래 필드 간격 */
+.dynamic-input + input {
+    margin-top: 10px; /* 필드들 간 간격 설정 */
 }
 
 /* 상속인 정보 섹션 스타일 */
