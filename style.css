@@ -280,3 +280,22 @@ form select[name="assetType"] + input {
     margin-top: 10px; /* 드롭다운 아래 여백 추가 */
 }
 
+/* 상속인 정보 섹션 스타일 */
+.heir-entry {
+    display: flex; /* 플렉스 레이아웃 적용 */
+    flex-wrap: wrap; /* 화면 크기에 따라 줄바꿈 허용 */
+    justify-content: space-between; /* 요소 간격을 균등 분배 */
+    margin-bottom: 20px; /* 각 상속인 섹션 간격 */
+}
+
+.heir-entry input,
+.heir-entry select {
+    flex: 1; /* 각 요소가 동일한 비율로 크기 차지 */
+    margin-right: 10px; /* 요소 간의 간격 */
+    min-width: 100px; /* 최소 너비 설정 */
+}
+
+.heir-entry input:last-child,
+.heir-entry select:last-child {
+    margin-right: 0; /* 마지막 요소는 오른쪽 여백 제거 */
+}
