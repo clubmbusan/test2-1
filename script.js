@@ -291,8 +291,7 @@ document.addEventListener('click', (event) => {
     addAssetButton.addEventListener('click', createAssetEntry);
 
       // 공제 계산 로직 ---- 상속세 계산 로직에 기초공제를 추가
-      // 공제 계산 로직
-function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
+    function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
     const basicExemption = 600000000; // 기본 공제 (6억 원)
     const baseExemption = 200000000; // 기초 공제 (2억 원)
 
@@ -361,10 +360,18 @@ function calculatePersonalMode(totalAssetValue) {
     const spouseShare = totalAssetValue;
 
     // 공제 계산
-    const exemptions = calculateExemptions(totalAssetValue, relationship, spouseShare);
+    const basicExemption = 600000000; // 기본 공제
+    const baseExemption = 200000000; // 기초 공제
+
+    // 전체 공제 및 관계 공제 계산
+    const { totalExemption, relationshipExemption } = calculateTotalExemptionDetailed(
+        totalAssetValue,
+        relationship,
+        spouseShare
+    );
 
     // 과세표준 계산
-    const taxableAmount = calculateTaxableAmount(totalAssetValue, exemptions);
+    const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
     // 상속세 계산
     const tax = calculateTax(taxableAmount);
@@ -373,18 +380,17 @@ function calculatePersonalMode(totalAssetValue) {
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (개인 상속)</h3>
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
-        <p>공제 내역:</p>
+        <p><strong>공제 내역:</strong></p>
         <ul>
-            <li>기본 공제: ${exemptions.basicExemption.toLocaleString()} 원</li>
-            <li>기초 공제: ${exemptions.baseExemption.toLocaleString()} 원</li>
-            <li>관계 공제: ${exemptions.relationshipExemption.toLocaleString()} 원</li>
+            <li>기본 공제: ${basicExemption.toLocaleString()} 원</li>
+            <li>기초 공제: ${baseExemption.toLocaleString()} 원</li>
+            <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
         </ul>
-        <p>총 공제 금액: ${exemptions.totalExemption.toLocaleString()} 원</p>
+        <p><strong>총 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
         <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
-
 // 단체 상속 로직
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
@@ -393,17 +399,26 @@ function calculateGroupMode(totalAssetValue) {
         const sharePercentage = parseFloat(heir.querySelector('input[type="number"]').value || '0');
 
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
-        const exemptions = calculateExemptions(shareAmount, relationship, shareAmount);
-        const taxableAmount = calculateTaxableAmount(shareAmount, exemptions);
+        const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
+            calculateTotalExemptionDetailed(shareAmount, relationship, shareAmount);
+        const taxableAmount = Math.max(shareAmount - totalExemption, 0);
         const tax = calculateTax(taxableAmount);
 
-        return { name, shareAmount, exemptions, taxableAmount, tax };
+        return {
+            name,
+            shareAmount,
+            exemptions: { basicExemption, baseExemption, relationshipExemption, totalExemption },
+            taxableAmount,
+            tax,
+        };
     });
 
     // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (단체 상속)</h3>
-        ${heirs.map(heir => `
+        ${heirs
+            .map(
+                (heir) => `
             <p>
                 <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
                 공제 내역:<br>
@@ -414,10 +429,11 @@ function calculateGroupMode(totalAssetValue) {
                 과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
                 상속세: ${heir.tax.toLocaleString()} 원
             </p>
-        `).join('')}
+        `
+            )
+            .join('')}
     `;
 }
-
 
 // 계산 버튼 이벤트
 document.getElementById('calculateButton').addEventListener('click', () => {
