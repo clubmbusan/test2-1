@@ -320,3 +320,8 @@ button {
 #result + #acquisitionTaxButton {
     margin-top: 20px; /* 간격 설정 */
 }
+
+/* 관계 드롭다운과 계산하기 버튼 간격 조정 */
+form select[name="relation"] + #calculateButton {
+    margin-top: 10px; /* 기존보다 약간 넓게 조정 */
+}
