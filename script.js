@@ -13,6 +13,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    // **새로 추가된 모달 관련 코드 시작**
+    const modal = document.getElementById('inheritanceModal');
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'modalOverlay';
+    document.body.appendChild(modalOverlay);
+
+    const openModalButton = document.getElementById('openModalButton');
+    const closeModalButton = document.getElementById('closeModalButton');
+    const modalOptions = document.querySelectorAll('.modal-option');
+
+    if (!modal || !openModalButton || !closeModalButton || modalOptions.length === 0) {
+        console.error('모달 관련 요소를 찾을 수 없습니다.');
+        return;
+    }
+
+    // 모달 열기
+    openModalButton.addEventListener('click', () => {
+        modal.classList.add('show');
+        modalOverlay.classList.add('show');
+    });
+
+    // 모달 닫기
+    closeModalButton.addEventListener('click', () => {
+        modal.classList.remove('show');
+        modalOverlay.classList.remove('show');
+    });
+
+    // 오버레이 클릭 시 모달 닫기
+    modalOverlay.addEventListener('click', () => {
+        modal.classList.remove('show');
+        modalOverlay.classList.remove('show');
+    });
+
+    // 모달 옵션 선택
+    modalOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            const selectedValue = e.target.getAttribute('data-value');
+            openModalButton.textContent = `상속 유형: ${selectedValue}`;
+            modal.classList.remove('show');
+            modalOverlay.classList.remove('show');
+        });
+    });
+    // **새로 추가된 모달 관련 코드 끝**
+
     function handleAssetTypeChange(assetTypeSelect) {
         const assetEntry = assetTypeSelect.closest('.asset-entry');
         if (!assetEntry) {
