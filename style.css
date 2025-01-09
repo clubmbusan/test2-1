@@ -24,7 +24,7 @@ body {
     }
 
     button {
-        font-size: 14px;
+        font-size: 14px; /* 버튼 글자 크기 줄이기 */
     }
 
     .heir-entry {
@@ -36,287 +36,134 @@ body {
     }
 }
 
-
-/* 폼 요소 공통 스타일 */
-form input, form select, #inheritanceType {
-    width: 100%; /* 너비 동일하게 설정 */
-    padding: 12px; /* 여백 통일 */
-    margin-bottom: 15px; /* 하단 간격 통일 */
-    border: 1px solid #ddd; /* 기본 테두리 */
-    border-radius: 5px; /* 둥근 모서리 */
-    box-sizing: border-box; /* 박스 크기 계산 */
-    font-size: 16px; /* 글자 크기 통일 */
-    background-color: white; /* 배경색 */
-    color: #333; /* 텍스트 색상 */
-    line-height: normal; /* 줄 높이 */
-    cursor: pointer; /* 드롭다운 및 입력 필드 클릭 가능 표시 */
-}
-
-/* 선택 필드 아이콘 중앙 정렬 */
-form select, #inheritanceType {
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg==');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px 12px;
-}
-
-/* 포커스 시 효과 */
-form input:focus, form select:focus, #inheritanceType:focus {
-    outline: none; /* 기본 포커스 제거 */
-    border: 2px solid #007bff; /* 포커스 테두리 색상 */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 외곽선 효과 */
-}
-
-/* 버튼 스타일 */
-button {
-    background-color: #4CAF50; /* 녹색 버튼 배경 */
-    color: white; /* 텍스트 색상 */
-    border: 1px solid #ddd; /* 테두리 크기 추가 */
-    padding: 10px; /* 버튼 두께 (위아래 10px) */
-    font-size: 16px; /* 글자 크기 */
-    cursor: pointer; /* 클릭 가능한 포인터 표시 */
-    border-radius: 5px; /* 모서리를 둥글게 */
-    width: 100%; /* 버튼 너비 */
-    box-sizing: border-box; /* 테두리와 패딩 포함한 크기 계산 */
-    margin-bottom: 10px; /* 버튼 간 간격 */
-    transition: background-color 0.3s ease; /* 배경색 전환 효과 */
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* "다시 하기" 버튼 색상 */
-button.removeAssetButton {
-    background-color: #4CAF50; /* 녹색 */
-    color: white;
-}
-
-/* 취득세 계산기 버튼 */
-#acquisitionTaxButton {
-    background-color: #007bff; /* 푸른색 */
-    color: white; /* 텍스트 색상 */
-    border: 1px solid #007bff; /* 테두리 푸른색 */
-    padding: 10px; /* 동일한 패딩 */
-    font-size: 16px; /* 글자 크기 */
-    cursor: pointer; /* 클릭 가능한 포인터 */
-    border-radius: 5px; /* 모서리를 둥글게 */
-    width: 100%; /* 버튼 너비 */
-    box-sizing: border-box; /* 테두리와 패딩 포함한 크기 계산 */
-    margin-top: 15px; /* 위 간격 */
-    transition: background-color 0.3s ease; /* 배경색 전환 효과 */
-}
-
-#acquisitionTaxButton:hover {
-    background-color: #0056b3; /* 어두운 푸른색 */
-}
-
-/* 금액 입력 필드 스타일 */
-.assetValue {
-    width: 100%; /* 다른 입력 필드와 동일한 너비 */
-    padding: 10px; /* 공통 여백 */
-    margin-bottom: 15px; /* 아래 간격 통일 */
-    border: 1px solid #ddd; /* 테두리 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    box-sizing: border-box; /* 박스 크기 계산 */
-    font-size: 16px; /* 글자 크기 통일 */
-    background-color: white; /* 배경색 */
-    color: #333; /* 텍스트 색상 */
-    line-height: normal; /* 줄 높이 */
-}
-
-/* 추가 재산 유형 입력 필드 */
-#additionalFields > div {
-    display: none;
-}
-
-#additionalFields > div:target {
-    display: block;
-}
-
-/* 결과 출력 스타일 */
-#result {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f1f1f1;
+/* 공통 폼 요소 스타일 */
+form input, form select {
+    width: 100%;
+    padding: 10px; /* 두께 조정 */
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    line-height: 1.6;
-}
-
-/* 섹션 헤더 스타일 */
-h2 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-size: 18px;
-    font-weight: bold;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: white;
     color: #333;
 }
 
-/* 공제 금액 입력 비활성화 스타일 */
-#exemptionAmount[readonly] {
-    background-color: #e9ecef;
-    color: #6c757d;
-    cursor: not-allowed;
-}
-
-/* 상속 유형 드롭다운 기본 스타일 */
+/* 특정 드롭다운 (#inheritanceType) */
 #inheritanceType {
-    width: 100%; /* 다른 입력 필드와 동일한 너비 */
-    padding: 10px; /* 적절한 여백 */
-    margin-bottom: 15px; /* 하단 간격 */
-    font-size: 16px; /* 글자 크기 */
     border: 1px solid #2196F3; /* 파란 테두리 */
-    border-radius: 5px; /* 둥근 모서리 */
-    box-sizing: border-box; /* 박스 크기 계산 */
     background-color: #e3f2fd; /* 밝은 파란 배경 */
-    color: #333; /* 텍스트 색상 */
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzAwMDAwMCIvPjwvc3ZnPg=='); /* 화살표 이미지 */
+    animation: gentlePulse 2s infinite; /* 애니메이션 추가 */
     background-repeat: no-repeat;
-    background-position: right 10px center; /* 화살표 위치 */
-    background-size: 14px; /* 화살표 크기 */
-    transition: all 0.3s ease; /* 부드러운 전환 효과 */
-    animation: gentlePulse 2s infinite; /* 애니메이션 적용 */
+    background-position: right 10px center;
+    background-size: 14px;
+    transition: all 0.3s ease;
 }
 
-/* 포커스 시 효과 */
+/* 포커스 효과 */
 #inheritanceType:focus {
-    outline: none; /* 기본 포커스 제거 */
-    border: 2px solid #64B5F6; /* 밝은 파란 테두리 */
-    background-color: #bbdefb; /* 더 밝은 파란 배경 */
-    box-shadow: 0 0 8px rgba(100, 181, 246, 0.6); /* 외곽선 효과 */
+    outline: none;
+    border: 2px solid #64B5F6;
+    background-color: #bbdefb;
+    box-shadow: 0 0 8px rgba(100, 181, 246, 0.6);
 }
 
 /* 애니메이션 효과 */
 @keyframes gentlePulse {
     0%, 100% {
-        background-color: #e3f2fd; /* 기본 배경색 */
+        background-color: #e3f2fd;
     }
     50% {
-        background-color: #bbdefb; /* 중간 단계 배경색 */
+        background-color: #bbdefb;
     }
 }
 
-
-/* 상단 "상속 유형" 글자 스타일 */
-label[for="inheritanceType"] {
-    font-size: 20px; /* 글자 크기를 크게 설정 */
-    font-weight: bold; /* 글자를 굵게 */
-    color: #333; /* 기본 텍스트 색상 */
-    margin-bottom: 10px; /* 아래 간격 */
-    display: block; /* 블록으로 표시해 다른 요소와 간격 유지 */
-}
-
-/* 주식 입력 필드 스타일 */
-.stockQuantityField,
-.stockPriceField,
-.stockTotalField {
-    width: 100%; /* 입력 필드 너비 통일 */
-    padding: 10px; /* 필드 내부 여백 */
-    margin-bottom: 15px; /* 필드 간격 */
-    border: 1px solid #ddd; /* 테두리 스타일 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    font-size: 16px; /* 글자 크기 통일 */
-    box-sizing: border-box; /* 박스 크기 계산 */
-    background-color: white; /* 배경색 */
-    color: #333; /* 텍스트 색상 */
-}
-
-/* 필드 간 여백 정리 */
-.assetFields input {
-    margin-bottom: 10px;
-}
-
-select {
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    background-color: #fff !important;
-    border: 1px solid #ccc !important;
-    border-radius: 5px !important;
-    padding: 10px 15px !important;
-    font-size: 16px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000000"><path d="M7 10l5 5 5-5z"/></svg>') !important;
-    background-repeat: no-repeat !important;
-    background-position: right 10px center !important;
-    background-size: 16px !important;
-    transition: border-color 0.2s ease-in-out;
-}
-
-select:hover, select:focus {
-    border-color: #4CAF50 !important;
-    background-color: #f9f9f9 !important;
-    outline: none !important;
-}
-
-/* src/styles/calculator.css */
-
-/* "다시 하기"와 "재산 추가" 버튼 간격 조정 */
-button.removeAssetButton, #addAssetButton {
-    margin-top: 10px; /* 버튼 상단 간격 추가 */
-    margin-bottom: 10px; /* 버튼 간격을 더 늘림 */
-}
-
-/* 관계 드롭다운과 계산하기 버튼 간격 조정 */
-form select[name="relation"], #calculateButton {
-    margin-bottom: 20px; /* 드롭다운과 버튼 간격 조정 */
-}
-
-/* 전체 폼 버튼 간격 */
+/* 버튼 공통 스타일 */
 button {
-    margin-top: 10px; /* 버튼 상단 간격을 추가 */
-    margin-bottom: 10px; /* 버튼 간격을 균등하게 설정 */
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #ddd;
+    padding: 8px 12px; /* 버튼 두께 줄임 */
+    font-size: 14px; /* 버튼 글자 크기 줄임 */
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05); /* hover 시 약간 커짐 */
+}
+
+/* 버튼 간 간격 통일 */
+form button {
+    margin-top: 15px; /* 버튼 상단 간격 추가 */
+    margin-bottom: 15px; /* 버튼 하단 간격 통일 */
+}
+
+/* 특정 버튼 스타일 */
+#acquisitionTaxButton {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    padding: 8px 12px; /* 두께 줄임 */
+    font-size: 14px; /* 글자 크기 조정 */
+}
+
+#acquisitionTaxButton:hover {
+    background-color: #0056b3;
 }
 
 /* 드롭다운과 첫 번째 입력 필드 간 간격 */
 #assetType + .assetFields input {
-    margin-top: 15px !important; /* 간격 강제 적용 */
+    margin-top: 15px;
 }
 
 /* 입력 필드 간 간격 */
 .assetFields input {
-    margin-top: 10px !important; /* 간격 강제 적용 */
+    margin-top: 10px;
 }
 
-/* 상속인 정보 섹션 스타일 */
-.heir-entry {
-    display: flex; /* 플렉스 레이아웃 적용 */
-    flex-wrap: wrap; /* 화면 크기에 따라 줄바꿈 허용 */
-    justify-content: space-between; /* 요소 간격을 균등 분배 */
-    margin-bottom: 20px; /* 각 상속인 섹션 간격 */
-}
-
-.heir-entry input,
-.heir-entry select {
-    flex: 1; /* 각 요소가 동일한 비율로 크기 차지 */
-    margin-right: 10px; /* 요소 간의 간격 */
-    min-width: 100px; /* 최소 너비 설정 */
-}
-
-.heir-entry input:last-child,
-.heir-entry select:last-child {
-    margin-right: 0; /* 마지막 요소는 오른쪽 여백 제거 */
-}
-
-/* 결과 출력 스타일 (회색 박스) */
+/* 결과 출력 스타일 */
 #result {
-    margin: 20px auto; /* 상하 간격 20px, 중앙 정렬 */
-    text-align: center; /* 내용 중앙 정렬 */
-    padding: 15px; /* 내부 여백 설정 */
-    background-color: #f1f1f1; /* 회색 배경 */
-    border: 1px solid #ddd; /* 테두리 추가 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    max-width: 600px; /* 최대 너비 설정 (필요에 따라 조정) */
+    margin: 20px auto;
+    text-align: center;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 600px;
 }
 
 /* 계산하기 버튼과 결과 박스 간격 */
 #calculateButton + #result {
-    margin-top: 15px; /* 간격 설정 */
+    margin-top: 15px;
 }
 
 /* 결과 박스와 취득세 계산기 버튼 간격 */
 #result + #acquisitionTaxButton {
-    margin-top: 20px; /* 간격 설정 */
+    margin-top: 20px;
+}
+
+/* 상속인 정보 섹션 스타일 */
+.heir-entry {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.heir-entry input,
+.heir-entry select {
+    flex: 1;
+    margin-right: 10px;
+    min-width: 100px;
+}
+
+.heir-entry input:last-child,
+.heir-entry select:last-child {
+    margin-right: 0;
 }
