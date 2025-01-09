@@ -351,8 +351,13 @@ button {
 /* heir-entry 레이아웃 정렬 */
 .heir-entry {
     display: flex; /* 가로 정렬 */
-    gap: 10px; /* 필드 간격 일정하게 */
+    gap: 5px; /* 필드 간격 일정하게 */
     align-items: center; /* 세로 가운데 정렬 */
+}
+
+#addHeirButton {
+    margin-top: 5px; /* 상속인 추가 버튼 상단 간격 */
+    margin-bottom: 10px; /* 필요하면 하단 간격도 조정 가능 */
 }
 
 /* 입력 필드 포커스 효과 */
