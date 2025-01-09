@@ -169,8 +169,8 @@ h2 {
     border: 1px solid #2196F3; /* 파란 테두리 */
     border-radius: 5px; /* 둥근 모서리 */
     box-sizing: border-box; /* 박스 크기 계산 */
-    background-color: #007bff; /* 배경색: 더 어두운 파란색 */
-    color: white; /* 텍스트 색상 흰색 */
+    background-color: #e3f2fd; /* 기본 배경: 연한 하늘색 */
+    color: black; /* 기본 텍스트 색상 검정색 */
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg=='); /* 화살표 이미지 */
     background-repeat: no-repeat;
     background-position: right 10px center; /* 화살표 위치 */
@@ -178,38 +178,25 @@ h2 {
     transition: all 0.3s ease; /* 부드러운 전환 효과 */
 }
 
-/* 드롭다운 옵션 스타일 */
+/* 드롭다운 기본 옵션 스타일 */
 #inheritanceType option {
     background-color: white; /* 드롭다운 옵션 배경 흰색 */
     color: black; /* 옵션 텍스트 검정색 */
+}
+
+/* 선택된 옵션 텍스트 보이기 */
+#inheritanceType option:checked {
+    background-color: #e3f2fd; /* 선택된 옵션 하늘색 */
+    color: black; /* 선택된 옵션 텍스트 검정색 */
 }
 
 /* 포커스 시 효과 */
 #inheritanceType:focus {
     outline: none; /* 기본 포커스 제거 */
     border: 2px solid #64B5F6; /* 밝은 파란 테두리 */
-    background-color: #0056b3; /* 더 어두운 파란 배경 */
-    color: white; /* 텍스트 흰색 유지 */
+    background-color: #bbdefb; /* 더 밝은 하늘색 배경 */
+    color: black; /* 텍스트 검정색 */
     box-shadow: 0 0 8px rgba(100, 181, 246, 0.6); /* 외곽선 효과 */
-}
-
-/* 애니메이션 효과 */
-@keyframes gentlePulse {
-    0%, 100% {
-        background-color: #007bff; /* 기본 배경색 */
-    }
-    50% {
-        background-color: #0056b3; /* 중간 단계 배경색 */
-    }
-}
-
-/* 상단 "상속 유형" 글자 스타일 */
-label[for="inheritanceType"] {
-    font-size: 20px; /* 글자 크기를 크게 설정 */
-    font-weight: bold; /* 글자를 굵게 */
-    color: #333; /* 기본 텍스트 색상 */
-    margin-bottom: 10px; /* 아래 간격 */
-    display: block; /* 블록으로 표시해 다른 요소와 간격 유지 */
 }
 
 /* 주식 입력 필드 스타일 */
