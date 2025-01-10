@@ -162,14 +162,6 @@ document.addEventListener('input', () => {
     }
 });
 
-// 상속 유형 버튼 클릭 시 애니메이션 제거
-const inheritanceTypeButton = document.getElementById('inheritanceType');
-if (inheritanceTypeButton) {
-    inheritanceTypeButton.addEventListener('click', () => {
-        inheritanceTypeButton.style.animation = 'none'; // 애니메이션 중지
-    });
-}
-
 // 섹션 초기화 함수
 function resetSections() {
     personalSection.style.display = 'none';
