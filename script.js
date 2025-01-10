@@ -114,7 +114,38 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
 });
-      
+
+    // **[수정 위치 2] 그룹 상속 로직 수정**
+const calculateGroupMode = (totalAssetValue) => {
+    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
+        const name = heir.querySelector('input[type="text"]').value || '상속인';
+        const relationship = heir.querySelector('select').value || "기타";
+        const shareField = heir.querySelector('.sharePercentage');
+
+        if (!shareField) {
+            console.error("상속 비율 필드를 찾을 수 없습니다.");
+            throw new Error("상속 비율 필드 누락");
+        }
+
+        // % 제거 후 숫자만 추출
+        const sharePercentage = parseFloat(
+            shareField.value.replace('%', '').trim() || '0'
+        );
+
+        if (!shareField.value || sharePercentage === 0) {
+            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+            throw new Error("상속 비율 누락");
+        }
+
+        const shareAmount = (totalAssetValue * sharePercentage) / 100;
+        const exemption = calculateTotalExemption(relationship, shareAmount);
+        const taxableAmount = Math.max(shareAmount - exemption, 0);
+        const tax = calculateTax(taxableAmount);
+
+        return { name, sharePercentage, assetValue: shareAmount, exemption, taxableAmount, tax };
+    });
+};
+       
    // 초기 % 표시 기능 등록
 document.querySelectorAll('.sharePercentage').forEach((field) => {
     field.addEventListener('input', () => {
