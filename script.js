@@ -114,32 +114,7 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
 });
-
-       // calculateGroupMode 함수 내 상속 비율 계산 방식 수정
-    const calculateGroupMode = (totalAssetValue) => {
-        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-            const name = heir.querySelector('input[type="text"]').value || '상속인';
-            const relationship = heir.querySelector('select').value || "기타";
-            const shareField = heir.querySelector('.sharePercentage');
-
-            // % 제거 후 숫자만 추출
-            const sharePercentage = parseFloat(
-                shareField.value.replace('%', '').trim() || '0'
-            );
-
-            if (!shareField.value || sharePercentage === 0) {
-                alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
-                throw new Error("상속 비율 누락");
-            }
-
-            const shareAmount = (totalAssetValue * sharePercentage) / 100;
-            const exemption = calculateTotalExemption(relationship, shareAmount);
-            const taxableAmount = Math.max(shareAmount - exemption, 0);
-            const tax = calculateTax(taxableAmount);
-
-            return { name, sharePercentage, assetValue: shareAmount, exemption, taxableAmount, tax };
-        }); 
-    
+      
    // 초기 % 표시 기능 등록
 document.querySelectorAll('.sharePercentage').forEach((field) => {
     field.addEventListener('input', () => {
@@ -707,4 +682,4 @@ document.addEventListener('input', function () {
     }
 });
        
-}); // document.addEventListener 닫는 괄호
+}); // document.addEventListener 닫는 괄호 
