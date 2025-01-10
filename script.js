@@ -209,6 +209,32 @@ inheritanceType.addEventListener('change', () => {
     }
 });
 
+    // 상속 비율 필드에 % 표시 추가
+    document.addEventListener('input', function (event) {
+        const field = event.target;
+
+        if (field.classList.contains('sharePercentageField')) {
+            // 숫자만 남기기
+            const rawValue = field.value.replace(/[^0-9]/g, '');
+            if (rawValue) {
+                field.value = `${rawValue}%`; // % 추가
+            } else {
+                field.value = ''; // 빈 값으로 초기화
+            }
+        }
+    });
+
+    // %가 입력된 필드에서 포커스를 잃으면 숫자만 저장 (필요시 추가)
+    document.addEventListener('blur', function (event) {
+        const field = event.target;
+
+        if (field.classList.contains('sharePercentageField')) {
+            // 숫자만 추출
+            const rawValue = field.value.replace(/[^0-9]/g, '');
+            field.value = rawValue ? `${rawValue}%` : ''; // % 유지
+        }
+    }, true);
+    
 // 전체 상속: 상속인 추가 버튼 이벤트
 addHeirButton.addEventListener('click', () => {
     const newHeirEntry = document.createElement('div');
