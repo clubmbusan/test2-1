@@ -226,6 +226,28 @@ inheritanceType.addEventListener('change', () => {
             field.value = rawValue ? `${rawValue}%` : ''; // % 유지
         }
     }, true);
+
+    // 계산 시 숫자만 추출
+function getNumericValue(field) {
+    const rawValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+    return parseFloat(rawValue) || 0; // 숫자로 변환 (기본값 0)
+}
+
+// 상속 비율 계산 시 숫자만 사용
+function calculateInheritance() {
+    const percentageFields = document.querySelectorAll('.sharePercentageField');
+    const percentages = Array.from(percentageFields).map((field) => getNumericValue(field));
+
+    // 전체 합계 확인 (100%가 넘어가면 경고 표시 가능)
+    const totalPercentage = percentages.reduce((sum, value) => sum + value, 0);
+    if (totalPercentage > 100) {
+        alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
+        return;
+    }
+
+    console.log('상속 비율:', percentages);
+    console.log('전체 비율 합계:', totalPercentage);
+}
     
 // 전체 상속: 상속인 추가 버튼 이벤트
 addHeirButton.addEventListener('click', () => {
