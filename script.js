@@ -126,14 +126,14 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
             }
         });
     });
-
-    // 초기 입력 필드에 % 표시 적용
+   
+// 초기 입력 필드에 % 표시 적용
 document.querySelectorAll('.sharePercentage').forEach((field) => {
-    const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-    if (numericValue) {
+    if (field.value) { // 필드 값이 존재할 경우에만 처리
+        const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
         field.value = `${numericValue}%`; // 초기 % 표시
     }
-});   
+});
     
 // 숫자에 콤마를 추가하는 함수
 function formatNumberWithCommas(value) {
