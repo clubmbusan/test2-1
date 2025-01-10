@@ -458,9 +458,16 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 // 단체 상속 로직 수정
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('input[type="text"]').value || '상속인';
+        const name = heir.querySelector('input[type="text"]')?.value || '상속인';
         const relationship = heir.querySelector('select')?.value || 'other';
         const shareField = heir.querySelector('input[type="number"]');
+
+        if (!shareField) {
+            console.error("상속 비율 입력 필드를 찾을 수 없습니다.");
+            alert(`${name}의 상속 비율 입력 필드가 누락되었습니다. 확인 후 다시 시도해주세요.`);
+            throw new Error("상속 비율 입력 필드 누락");
+        }
+
         const sharePercentage = parseFloat(shareField.value || '0');
 
         if (sharePercentage === 0) {
@@ -469,6 +476,7 @@ function calculateGroupMode(totalAssetValue) {
         }
 
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
+
         const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
             calculateTotalExemptionDetailed(shareAmount, relationship, shareAmount);
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
@@ -476,6 +484,7 @@ function calculateGroupMode(totalAssetValue) {
 
         return {
             name,
+            sharePercentage,
             shareAmount,
             exemptions: { basicExemption, baseExemption, relationshipExemption, totalExemption },
             taxableAmount,
@@ -511,7 +520,7 @@ function calculateGroupMode(totalAssetValue) {
             .join('')}
     `;
 }
-    
+
   // 가업 개인 상속 계산 함수
 function calculateBusinessPersonalMode(totalAssetValue) {
     const heirType = document.getElementById('businessHeirTypePersonal').value;
