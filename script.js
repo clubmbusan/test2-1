@@ -209,25 +209,6 @@ inheritanceType.addEventListener('change', () => {
     }
 });
 
-// 가업 단체 상속: 상속인 추가 버튼 이벤트
-addBusinessGroupHeirButton.addEventListener('click', () => {
-    const newHeirEntry = document.createElement('div');
-    newHeirEntry.className = 'heir-entry';
-    newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름">
-        <select>
-            <option value="spouse">배우자</option>
-            <option value="adultChild">성년 자녀</option>
-            <option value="minorChild">미성년 자녀</option>
-            <option value="parent">부모</option>
-            <option value="sibling">형제자매</option>
-            <option value="other">기타</option>
-        </select>
-        <input type="number" placeholder="상속 비율 (%)">
-    `;
-    businessGroupHeirContainer.appendChild(newHeirEntry);
-});
-
 // 전체 상속: 상속인 추가 버튼 이벤트
 addHeirButton.addEventListener('click', () => {
     const newHeirEntry = document.createElement('div');
@@ -242,14 +223,62 @@ addHeirButton.addEventListener('click', () => {
             <option value="sibling">형제자매</option>
             <option value="other">기타</option>
         </select>
-        <input type="number" placeholder="상속 비율 (%)">
+        <input type="number" class="sharePercentage" placeholder="상속 비율 (%)">
     `;
     const heirContainer = document.getElementById('heirContainer');
     if (heirContainer) {
         heirContainer.appendChild(newHeirEntry);
+        addPercentageFormatting(newHeirEntry); // 새로 추가된 필드에 % 표시 기능 추가
     } else {
         console.error('"heirContainer"를 찾을 수 없습니다.');
     }
+});
+
+// 가업 단체 상속: 상속인 추가 버튼 이벤트
+addBusinessGroupHeirButton.addEventListener('click', () => {
+    const newHeirEntry = document.createElement('div');
+    newHeirEntry.className = 'heir-entry';
+    newHeirEntry.innerHTML = `
+        <input type="text" placeholder="이름">
+        <select>
+            <option value="spouse">배우자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+        <input type="number" class="sharePercentage" placeholder="상속 비율 (%)">
+    `;
+    businessGroupHeirContainer.appendChild(newHeirEntry);
+    addPercentageFormatting(newHeirEntry); // 새로 추가된 필드에 % 표시 기능 추가
+});
+
+// 상속 비율 % 표시 함수
+function addPercentageFormatting(container) {
+    const percentageFields = container.querySelectorAll('.sharePercentage');
+    percentageFields.forEach((field) => {
+        field.addEventListener('input', () => {
+            const numericValue = parseFloat(field.value.replace(/[^0-9.]/g, '') || '0');
+            if (!isNaN(numericValue) && numericValue >= 0) {
+                field.value = `${numericValue}%`; // % 표시
+            } else {
+                field.value = ''; // 잘못된 값 초기화
+            }
+        });
+    });
+}
+
+// 초기 % 표시 기능 등록
+document.querySelectorAll('.sharePercentage').forEach((field) => {
+    field.addEventListener('input', () => {
+        const numericValue = parseFloat(field.value.replace(/[^0-9.]/g, '') || '0');
+        if (!isNaN(numericValue) && numericValue >= 0) {
+            field.value = `${numericValue}%`; // % 표시
+        } else {
+            field.value = ''; // 잘못된 값 초기화
+        }
+    });
 });
 
 // 재산 항목 생성
