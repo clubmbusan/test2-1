@@ -462,20 +462,25 @@ function calculateGroupMode(totalAssetValue) {
         const relationshipField = heir.querySelector('select');
         const shareField = heir.querySelector('input[type="number"]');
 
+        // 필드 존재 여부 확인
         if (!nameField || !relationshipField || !shareField) {
-            console.error('상속인의 입력 필드가 누락되었습니다.');
-            return null;
+            console.error('상속인의 입력 필드가 누락되었습니다.', heir);
+            alert('상속인의 입력 필드가 누락되었습니다.');
+            return null; // 잘못된 상속인 정보는 제외
         }
 
-        const name = nameField.value || '상속인';
+        // 입력 값 가져오기
+        const name = nameField.value.trim() || '상속인';
         const relationship = relationshipField.value || 'other';
-        const sharePercentage = parseFloat(shareField.value || '0');
+        const sharePercentage = parseFloat(shareField.value);
 
-        if (!shareField.value || sharePercentage === 0) {
-            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+        // 숫자 검증 및 비율 확인
+        if (isNaN(sharePercentage) || sharePercentage <= 0) {
+            alert(`${name}의 상속 비율이 올바르게 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
             throw new Error("상속 비율 누락");
         }
 
+        // 상속인 재산 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
         // 공제 계산
@@ -485,7 +490,7 @@ function calculateGroupMode(totalAssetValue) {
         // 과세 표준 계산
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
 
-        // 상속세 계산
+        // 세금 계산
         const tax = calculateTax(taxableAmount);
 
         return {
@@ -495,10 +500,10 @@ function calculateGroupMode(totalAssetValue) {
             taxableAmount,
             tax,
         };
-    }).filter(Boolean); // null 값 필터링
+    }).filter(Boolean); // null 값 제거
 
-    // 상속 비율 합계 확인
-    const totalPercentage = heirs.reduce((sum, heir) => sum + heir.shareAmount, 0);
+    // 상속 비율 합계 검증
+    const totalPercentage = heirs.reduce((sum, heir) => sum + parseFloat(heir.sharePercentage || 0), 0);
     if (totalPercentage > 100) {
         alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
         return;
@@ -508,20 +513,14 @@ function calculateGroupMode(totalAssetValue) {
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (단체 상속)</h3>
         ${heirs
-            .map(
-                (heir) => `
+            .map((heir) => `
             <p>
                 <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
-                공제 내역:<br>
-                - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
-                - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
-                - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
-                총 공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
+                공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
                 과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
                 상속세: ${heir.tax.toLocaleString()} 원
             </p>
-        `
-            )
+        `)
             .join('')}
     `;
 }
