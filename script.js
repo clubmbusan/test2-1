@@ -200,33 +200,7 @@ inheritanceType.addEventListener('change', () => {
             break;
     }
 });
-
-    // 상속 비율 필드에 % 표시 추가
-    document.addEventListener('input', function (event) {
-        const field = event.target;
-
-        if (field.classList.contains('sharePercentageField')) {
-            // 숫자만 남기기
-            const rawValue = field.value.replace(/[^0-9]/g, '');
-            if (rawValue) {
-                field.value = `${rawValue}%`; // % 추가
-            } else {
-                field.value = ''; // 빈 값으로 초기화
-            }
-        }
-    });
-
-    // %가 입력된 필드에서 포커스를 잃으면 숫자만 저장 (필요시 추가)
-    document.addEventListener('blur', function (event) {
-        const field = event.target;
-
-        if (field.classList.contains('sharePercentageField')) {
-            // 숫자만 추출
-            const rawValue = field.value.replace(/[^0-9]/g, '');
-            field.value = rawValue ? `${rawValue}%` : ''; // % 유지
-        }
-    }, true);
-
+   
     // 계산 시 숫자만 추출
 function getNumericValue(field) {
     const rawValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
@@ -247,6 +221,21 @@ function calculateInheritance() {
 
     console.log('상속 비율:', percentages);
     console.log('전체 비율 합계:', totalPercentage);
+}
+
+ // 상속 비율 % 표시 함수
+function addPercentageFormatting(container) {
+    const percentageFields = container.querySelectorAll('.sharePercentage');
+    percentageFields.forEach((field) => {
+        field.addEventListener('input', () => {
+            const numericValue = parseFloat(field.value.replace(/[^0-9.]/g, '') || '0');
+            if (!isNaN(numericValue) && numericValue >= 0) {
+                field.value = `${numericValue}%`; // % 표시
+            } else {
+                field.value = ''; // 잘못된 값 초기화
+            }
+        });
+    });
 }
     
 // 전체 상속: 상속인 추가 버튼 이벤트
@@ -292,33 +281,6 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
     `;
     businessGroupHeirContainer.appendChild(newHeirEntry);
     addPercentageFormatting(newHeirEntry); // 새로 추가된 필드에 % 표시 기능 추가
-});
-
-// 상속 비율 % 표시 함수
-function addPercentageFormatting(container) {
-    const percentageFields = container.querySelectorAll('.sharePercentage');
-    percentageFields.forEach((field) => {
-        field.addEventListener('input', () => {
-            const numericValue = parseFloat(field.value.replace(/[^0-9.]/g, '') || '0');
-            if (!isNaN(numericValue) && numericValue >= 0) {
-                field.value = `${numericValue}%`; // % 표시
-            } else {
-                field.value = ''; // 잘못된 값 초기화
-            }
-        });
-    });
-}
-
-// 초기 % 표시 기능 등록
-document.querySelectorAll('.sharePercentage').forEach((field) => {
-    field.addEventListener('input', () => {
-        const numericValue = parseFloat(field.value.replace(/[^0-9.]/g, '') || '0');
-        if (!isNaN(numericValue) && numericValue >= 0) {
-            field.value = `${numericValue}%`; // % 표시
-        } else {
-            field.value = ''; // 잘못된 값 초기화
-        }
-    });
 });
 
 // 재산 항목 생성
