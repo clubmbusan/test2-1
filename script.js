@@ -56,223 +56,199 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-     
-        // "다시하기" 버튼 클릭 이벤트
-        document.getElementById('startButton').addEventListener('click', () => {
-       location.reload(); // 페이지 새로 고침
-     });
+     // "다시하기" 버튼 클릭 이벤트
+document.getElementById('startButton').addEventListener('click', () => {
+    location.reload(); // 페이지 새로 고침
+});
 
-     // 모든 assetType에 이벤트 리스너 추가
-    document.querySelectorAll('.assetType').forEach(select => {
-        select.addEventListener('change', () => handleAssetTypeChange(select));
-    });
+// 모든 assetType에 이벤트 리스너 추가
+document.querySelectorAll('.assetType').forEach(select => {
+    select.addEventListener('change', () => handleAssetTypeChange(select));
+});
 
-    // 콤마 적용 대상 필드의 입력 이벤트 처리
-    document.addEventListener('input', function (event) {
-        const target = event.target;
+// 주식 총 금액 계산
+document.addEventListener('input', () => {
+    const stockQuantity = document.getElementById('stockQuantity');
+    const stockPrice = document.getElementById('stockPrice');
+    const stockTotal = document.getElementById('stockTotal');
 
-        // 콤마 적용 대상 필드 ID
-        const applicableFields = [
-            'cashAmount',
-            'realEstateValue',
-            'stockPrice',
-            'mixedCashAmount',
-            'mixedRealEstateValue',
-            'mixedStockPrice'
-        ];
-
-        // 콤마 적용 여부 확인
-        if (applicableFields.includes(target.id)) {
-            const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
-            target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : ''; // 콤마 추가
-        }
-    });
-
-    // 주식 총 금액 계산
-    document.addEventListener('input', () => {
-        const stockQuantity = document.getElementById('stockQuantity');
-        const stockPrice = document.getElementById('stockPrice');
-        const stockTotal = document.getElementById('stockTotal');
-
-        if (stockQuantity && stockPrice && stockTotal) {
-            const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
-            const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-            stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
-        }
-
-        const mixedStockQuantity = document.getElementById('mixedStockQuantity');
-        const mixedStockPrice = document.getElementById('mixedStockPrice');
-        const mixedTotalAmount = document.getElementById('mixedTotalAmount');
-
-        if (mixedStockQuantity && mixedStockPrice && mixedTotalAmount) {
-            const quantity = parseInt(mixedStockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
-            const price = parseInt(mixedStockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-            const total = quantity * price;
-            const cash = parseInt(document.getElementById('mixedCashAmount').value.replace(/[^0-9]/g, '') || '0', 10);
-            const realEstate = parseInt(document.getElementById('mixedRealEstateValue').value.replace(/[^0-9]/g, '') || '0', 10);
-
-            mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 금액 계산 및 콤마 추가
-        }
-    });
-   
-    // 상속 유형 버튼 클릭 시 애니메이션 제거
-    const inheritanceTypeButton = document.getElementById('inheritanceType');
-    if (inheritanceTypeButton) {
-        inheritanceTypeButton.addEventListener('click', () => {
-            inheritanceTypeButton.style.animation = 'none'; // 애니메이션 중지
-        });
+    if (stockQuantity && stockPrice && stockTotal) {
+        const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+        const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
     }
 
-    // 섹션 초기화 함수
-    function resetSections() {
-        personalSection.style.display = 'none';
-        groupSection.style.display = 'none';
-        businessPersonalSection.style.display = 'none';
-        businessGroupSection.style.display = 'none';
+    const mixedStockQuantity = document.getElementById('mixedStockQuantity');
+    const mixedStockPrice = document.getElementById('mixedStockPrice');
+    const mixedTotalAmount = document.getElementById('mixedTotalAmount');
+
+    if (mixedStockQuantity && mixedStockPrice && mixedTotalAmount) {
+        const quantity = parseInt(mixedStockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+        const price = parseInt(mixedStockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+        const total = quantity * price;
+        const cash = parseInt(document.getElementById('mixedCashAmount').value.replace(/[^0-9]/g, '') || '0', 10);
+        const realEstate = parseInt(document.getElementById('mixedRealEstateValue').value.replace(/[^0-9]/g, '') || '0', 10);
+
+        mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 금액 계산 및 콤마 추가
     }
+});
 
-    // 초기 로딩 시 개인 상속을 기본값으로 설정
-    function initializeDefaultView() {
-        resetSections();
-        personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
-    }
-
-    initializeDefaultView(); // 초기화 호출
-
-    // 상속 유형 변경 시
-    inheritanceType.addEventListener('change', () => {
-        resetSections(); // 모든 섹션 숨김
-
-        switch (inheritanceType.value) {
-            case 'personal':
-                personalSection.style.display = 'block'; // 개인 상속 섹션 표시
-                break;
-            case 'group':
-                groupSection.style.display = 'block'; // 전체 상속 섹션 표시
-                break;
-            case 'businessPersonal':
-                businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
-                break;
-            case 'businessGroup':
-                businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
-                break;
-            default:
-                console.error('잘못된 상속 유형 선택');
-                break;
-        }
+// 상속 유형 버튼 클릭 시 애니메이션 제거
+const inheritanceTypeButton = document.getElementById('inheritanceType');
+if (inheritanceTypeButton) {
+    inheritanceTypeButton.addEventListener('click', () => {
+        inheritanceTypeButton.style.animation = 'none'; // 애니메이션 중지
     });
+}
 
-   
-    // 가업 단체 상속: 상속인 추가 버튼 이벤트
-    addBusinessGroupHeirButton.addEventListener('click', () => {
-        const newHeirEntry = document.createElement('div');
-        newHeirEntry.className = 'heir-entry';
-        newHeirEntry.innerHTML = `
-            <input type="text" placeholder="이름">
-            <select>
-                <option value="spouse">배우자</option>
-                <option value="adultChild">성년 자녀</option>
-                <option value="minorChild">미성년 자녀</option>
-                <option value="parent">부모</option>
-                <option value="sibling">형제자매</option>
-                <option value="other">기타</option>
-            </select>
-            <input type="number" placeholder="상속 비율 (%)">
-        `;
-        businessGroupHeirContainer.appendChild(newHeirEntry);
-    });
+// 섹션 초기화 함수
+function resetSections() {
+    personalSection.style.display = 'none';
+    groupSection.style.display = 'none';
+    businessPersonalSection.style.display = 'none';
+    businessGroupSection.style.display = 'none';
+}
 
-        // 전체 상속: 상속인 추가 버튼 이벤트
-       addHeirButton.addEventListener('click', () => {
-         const newHeirEntry = document.createElement('div');
-         newHeirEntry.className = 'heir-entry';
-         newHeirEntry.innerHTML = `
-           <input type="text" placeholder="이름">
-           <select>
-               <option value="spouse">배우자</option>
-               <option value="adultChild">자녀(성년)</option>
-               <option value="minorChild">자녀(미성년)</option>
-               <option value="parent">부모</option>
-               <option value="sibling">형제자매</option>
-               <option value="other">기타</option>
-           </select>
-           <input type="number" placeholder="상속 비율 (%)">
-       `;
-       const heirContainer = document.getElementById('heirContainer');
-       if (heirContainer) {
-           heirContainer.appendChild(newHeirEntry);
-       } else {
-           console.error('"heirContainer"를 찾을 수 없습니다.');
-       }
-    });
+// 초기 로딩 시 개인 상속을 기본값으로 설정
+function initializeDefaultView() {
+    resetSections();
+    personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
+}
 
-       // 재산 항목 생성
-    function createAssetEntry() {
-        const newAsset = document.createElement('div');
-        newAsset.className = 'asset-entry';
-        newAsset.innerHTML = `
-            <label>재산 유형:</label>
-            <select class="assetType">
-                <option value="cash">현금</option>
-                <option value="realEstate">부동산</option>
-                <option value="stock">주식</option>
-                <option value="others">기타</option>
-            </select>
-            <div class="assetFields">
-                <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
-                <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
-                <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
-                <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
-                <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
-                <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
-            </div>
-        `;
-        assetContainer.appendChild(newAsset);
+initializeDefaultView(); // 초기화 호출
 
-        const assetTypeSelect = newAsset.querySelector('.assetType');
-        assetTypeSelect.addEventListener('change', () => handleAssetTypeChange(assetTypeSelect));
+// 상속 유형 변경 시
+inheritanceType.addEventListener('change', () => {
+    resetSections(); // 모든 섹션 숨김
+
+    switch (inheritanceType.value) {
+        case 'personal':
+            personalSection.style.display = 'block'; // 개인 상속 섹션 표시
+            break;
+        case 'group':
+            groupSection.style.display = 'block'; // 전체 상속 섹션 표시
+            break;
+        case 'businessPersonal':
+            businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
+            break;
+        case 'businessGroup':
+            businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
+            break;
+        default:
+            console.error('잘못된 상속 유형 선택');
+            break;
     }
+});
 
-    // 재산 유형에 따라 필드를 동적으로 표시
-    function handleAssetTypeChange(assetTypeSelect) {
-        const assetFields = assetTypeSelect.closest('.asset-entry').querySelector('.assetFields');
-        const cashField = assetFields.querySelector('.cashField');
-        const realEstateField = assetFields.querySelector('.realEstateField');
-        const stockQuantityField = assetFields.querySelector('.stockQuantityField');
-        const stockPriceField = assetFields.querySelector('.stockPriceField');
-        const stockTotalField = assetFields.querySelector('.stockTotalField');
-        const othersField = assetFields.querySelector('.othersField');
+// 가업 단체 상속: 상속인 추가 버튼 이벤트
+addBusinessGroupHeirButton.addEventListener('click', () => {
+    const newHeirEntry = document.createElement('div');
+    newHeirEntry.className = 'heir-entry';
+    newHeirEntry.innerHTML = `
+        <input type="text" placeholder="이름">
+        <select>
+            <option value="spouse">배우자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+        <input type="number" placeholder="상속 비율 (%)">
+    `;
+    businessGroupHeirContainer.appendChild(newHeirEntry);
+});
 
-        // 모든 필드 숨기기
-        cashField.style.display = 'none';
-        realEstateField.style.display = 'none';
-        stockQuantityField.style.display = 'none';
-        stockPriceField.style.display = 'none';
-        stockTotalField.style.display = 'none';
-        othersField.style.display = 'none';
-
-        // 선택된 유형에 따라 표시
-        switch (assetTypeSelect.value) {
-            case 'cash':
-                cashField.style.display = 'block';
-                break;
-            case 'realEstate':
-                realEstateField.style.display = 'block';
-                break;
-                
-            case 'stock':
-                stockQuantityField.style.display = 'block';
-                stockPriceField.style.display = 'block';
-                stockTotalField.style.display = 'block';
-                break;
-            case 'others':
-                othersField.style.display = 'block';
-                break;
-        }
+// 전체 상속: 상속인 추가 버튼 이벤트
+addHeirButton.addEventListener('click', () => {
+    const newHeirEntry = document.createElement('div');
+    newHeirEntry.className = 'heir-entry';
+    newHeirEntry.innerHTML = `
+        <input type="text" placeholder="이름">
+        <select>
+            <option value="spouse">배우자</option>
+            <option value="adultChild">자녀(성년)</option>
+            <option value="minorChild">자녀(미성년)</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+        <input type="number" placeholder="상속 비율 (%)">
+    `;
+    const heirContainer = document.getElementById('heirContainer');
+    if (heirContainer) {
+        heirContainer.appendChild(newHeirEntry);
+    } else {
+        console.error('"heirContainer"를 찾을 수 없습니다.');
     }
+});
 
-    // 재산 추가 버튼 이벤트
-    addAssetButton.addEventListener('click', createAssetEntry);   
+// 재산 항목 생성
+function createAssetEntry() {
+    const newAsset = document.createElement('div');
+    newAsset.className = 'asset-entry';
+    newAsset.innerHTML = `
+        <label>재산 유형:</label>
+        <select class="assetType">
+            <option value="cash">현금</option>
+            <option value="realEstate">부동산</option>
+            <option value="stock">주식</option>
+            <option value="others">기타</option>
+        </select>
+        <div class="assetFields">
+            <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
+            <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
+            <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
+            <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
+            <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
+            <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
+        </div>
+    `;
+    assetContainer.appendChild(newAsset);
+
+    const assetTypeSelect = newAsset.querySelector('.assetType');
+    assetTypeSelect.addEventListener('change', () => handleAssetTypeChange(assetTypeSelect));
+}
+
+// 재산 유형에 따라 필드를 동적으로 표시
+function handleAssetTypeChange(assetTypeSelect) {
+    const assetFields = assetTypeSelect.closest('.asset-entry').querySelector('.assetFields');
+    const cashField = assetFields.querySelector('.cashField');
+    const realEstateField = assetFields.querySelector('.realEstateField');
+    const stockQuantityField = assetFields.querySelector('.stockQuantityField');
+    const stockPriceField = assetFields.querySelector('.stockPriceField');
+    const stockTotalField = assetFields.querySelector('.stockTotalField');
+    const othersField = assetFields.querySelector('.othersField');
+
+    // 모든 필드 숨기기
+    cashField.style.display = 'none';
+    realEstateField.style.display = 'none';
+    stockQuantityField.style.display = 'none';
+    stockPriceField.style.display = 'none';
+    stockTotalField.style.display = 'none';
+    othersField.style.display = 'none';
+
+    // 선택된 유형에 따라 표시
+    switch (assetTypeSelect.value) {
+        case 'cash':
+            cashField.style.display = 'block';
+            break;
+        case 'realEstate':
+            realEstateField.style.display = 'block';
+            break;
+        case 'stock':
+            stockQuantityField.style.display = 'block';
+            stockPriceField.style.display = 'block';
+            stockTotalField.style.display = 'block';
+            break;
+        case 'others':
+            othersField.style.display = 'block';
+            break;
+    }
+}
+
+// 재산 추가 버튼 이벤트
+addAssetButton.addEventListener('click', createAssetEntry);    
 
     // 공제 계산 로직 ---- 상속세 계산 로직에 기초공제를 추가
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
@@ -339,6 +315,20 @@ function calculateTax(taxableAmount) {
     return Math.max(tax, 0);
 }
 
+// 주식 총액을 assetValue에 포함
+document.addEventListener('input', () => {
+    const stockQuantity = document.getElementById('stockQuantity');
+    const stockPrice = document.getElementById('stockPrice');
+    const stockTotal = document.getElementById('stockTotal');
+
+    if (stockQuantity && stockPrice && stockTotal) {
+        const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+        const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산
+        stockTotal.classList.add('assetValue'); // assetValue 클래스를 추가하여 총액 계산에 포함
+    }
+});    
+    
 // 개인 상속 로직
 function calculatePersonalMode(totalAssetValue) {
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
@@ -412,26 +402,6 @@ function calculateGroupMode(totalAssetValue) {
             .join('')}
     `;
 }
-
-// 계산 버튼 이벤트
-document.getElementById('calculateButton').addEventListener('click', () => {
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-        return sum + value;
-    }, 0);
-
-    switch (inheritanceType.value) {
-        case 'personal':
-            calculatePersonalMode(totalAssetValue);
-            break;
-        case 'group':
-            calculateGroupMode(totalAssetValue);
-            break;
-        default:
-            console.error('잘못된 계산 요청');
-            break;
-    }
-});
    
   // 가업 개인 상속 계산 함수
 function calculateBusinessPersonalMode(totalAssetValue) {
@@ -492,7 +462,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
         `).join('')}
     `;
 }
-
+    
 // 계산 버튼 이벤트
 document.getElementById('calculateButton').addEventListener('click', () => {
     const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
@@ -501,17 +471,17 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     }, 0);
 
     switch (inheritanceType.value) {
-        case 'personal':
-            calculatePersonalMode(totalAssetValue); // 개인 상속 계산
+        case 'personal': // 개인 상속
+            calculatePersonalMode(totalAssetValue);
             break;
-        case 'group':
-            calculateGroupMode(totalAssetValue); // 전체 상속 계산
+        case 'group': // 단체 상속
+            calculateGroupMode(totalAssetValue);
             break;
-        case 'businessPersonal':
-            calculateBusinessPersonalMode(totalAssetValue); // 가업 개인 상속 계산
+        case 'businessPersonal': // 가업 개인 상속
+            calculateBusinessPersonalMode(totalAssetValue);
             break;
-        case 'businessGroup':
-            calculateBusinessGroupMode(totalAssetValue); // 가업 단체 상속 계산
+        case 'businessGroup': // 가업 단체 상속
+            calculateBusinessGroupMode(totalAssetValue);
             break;
         default:
             console.error('잘못된 계산 요청');
@@ -520,9 +490,24 @@ document.getElementById('calculateButton').addEventListener('click', () => {
 });
 
 // 숫자 포맷 함수
-function formatNumberWithCommas(value) {
-    return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
-}
+document.addEventListener('input', (event) => {
+    const target = event.target;
+    const applicableFields = [
+        'cashAmount',
+        'realEstateValue',
+        'stockQuantity',
+        'stockPrice',
+        'stockTotal',
+        'mixedCashAmount',
+        'mixedRealEstateValue',
+        'mixedStockPrice'
+    ];
+
+    if (applicableFields.includes(target.id)) {
+        const rawValue = target.value.replace(/[^0-9]/g, '');
+        target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : '';
+    }
+});
 
 // 숫자 입력 필드에 콤마 추가
 document.addEventListener('input', function (event) {
