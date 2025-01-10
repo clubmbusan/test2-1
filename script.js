@@ -90,7 +90,46 @@ document.querySelectorAll('.removeAssetButton').forEach((button) => {
         }
     });
 }); 
-    
+
+    // 초기화: 모든 .assetValue 필드에 콤마 이벤트 등록
+document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
+
+// 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
+const initialStockPriceField = document.querySelector('.stockPriceField');
+if (initialStockPriceField) {
+    addCommaFormatting(initialStockPriceField); // 초기 필드 이벤트 등록
+}
+
+// 재산 추가 버튼 클릭 이벤트
+document.getElementById('addAssetButton').addEventListener('click', () => {
+    createAssetEntry();
+
+    // 새롭게 추가된 .assetValue 필드에 콤마 이벤트 등록
+    const newAssetValues = document.querySelectorAll('.asset-entry:last-child .assetValue');
+    newAssetValues.forEach(addCommaFormatting);
+
+    // 새롭게 추가된 .assetType 필드에 이벤트 등록
+    const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
+    if (newAssetTypeSelect) {
+        newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
+    }
+});
+
+// 숫자에 콤마를 추가하는 함수
+function formatNumberWithCommas(value) {
+    return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
+}
+
+// 입력 필드에 콤마 추가 이벤트 등록
+function addCommaFormatting(inputField) {
+    inputField.addEventListener('input', () => {
+        const numericValue = inputField.value.replace(/,/g, ''); // 콤마 제거
+        if (!isNaN(numericValue)) {
+            inputField.value = formatNumberWithCommas(numericValue); // 콤마 추가
+        }
+    });
+}
+
 // 모든 assetType에 이벤트 리스너 추가
 document.querySelectorAll('.assetType').forEach(select => {
     select.addEventListener('change', () => handleAssetTypeChange(select));
