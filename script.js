@@ -463,22 +463,15 @@ function calculateGroupMode(totalAssetValue) {
         const shareField = heir.querySelector('input[type="number"]');
         const sharePercentage = parseFloat(shareField.value || '0');
 
-        if (!shareField.value || sharePercentage === 0) {
-            alert(${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.);
+        if (sharePercentage === 0) {
+            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
             throw new Error("상속 비율 누락");
         }
 
-        // 상속인별 재산 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
-
-        // 공제 계산
         const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
-            calculateExemptions(shareAmount, relationship, shareAmount);
-
-        // 과세표준 계산
+            calculateTotalExemptionDetailed(shareAmount, relationship, shareAmount);
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
-
-        // 상속세 계산
         const tax = calculateTax(taxableAmount);
 
         return {
@@ -490,12 +483,19 @@ function calculateGroupMode(totalAssetValue) {
         };
     });
 
+    // **상속 비율 합계 확인 로직 추가**
+    const totalPercentage = heirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
+    if (totalPercentage > 100) {
+        alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
+        return;
+    }
+
     // 결과 출력
-    document.getElementById('result').innerHTML = 
+    document.getElementById('result').innerHTML = `
         <h3>계산 결과 (단체 상속)</h3>
         ${heirs
             .map(
-                (heir) => 
+                (heir) => `
             <p>
                 <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
                 공제 내역:<br>
@@ -506,11 +506,12 @@ function calculateGroupMode(totalAssetValue) {
                 과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
                 상속세: ${heir.tax.toLocaleString()} 원
             </p>
-        
-            ).join('')}
-    ;
+        `
+            )
+            .join('')}
+    `;
 }
-
+    
   // 가업 개인 상속 계산 함수
 function calculateBusinessPersonalMode(totalAssetValue) {
     const heirType = document.getElementById('businessHeirTypePersonal').value;
