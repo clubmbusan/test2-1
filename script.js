@@ -240,8 +240,7 @@ addHeirButton.addEventListener('click', () => {
         <input type="text" class="sharePercentage" placeholder="상속 비율 (%)">
     `;
     heirContainer.appendChild(newHeirEntry);
-    addPercentageFormatting(newHeirEntry); // 새로 추가된 필드에 % 표시 기능 추가
-});
+   });
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
 addBusinessGroupHeirButton.addEventListener('click', () => {
@@ -260,8 +259,7 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
         <input type="text" class="sharePercentage" placeholder="상속 비율 (%)">
     `;
     businessGroupHeirContainer.appendChild(newHeirEntry);
-    addPercentageFormatting(newHeirEntry); // 새로 추가된 필드에 % 표시 기능 추가
-});
+   });
 
 // 재산 항목 생성
 function createAssetEntry() {
