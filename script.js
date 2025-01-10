@@ -456,12 +456,14 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 }
 
 // 단체 상속 로직 수정
+// 단체 상속 로직 수정
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('input[type="text"]')?.value || '상속인';
         const relationship = heir.querySelector('select')?.value || 'other';
         const shareField = heir.querySelector('input[type="number"]');
 
+        // 상속 비율 필드 유효성 확인
         if (!shareField) {
             console.error("상속 비율 입력 필드를 찾을 수 없습니다.");
             alert(`${name}의 상속 비율 입력 필드가 누락되었습니다. 확인 후 다시 시도해주세요.`);
@@ -470,6 +472,7 @@ function calculateGroupMode(totalAssetValue) {
 
         const sharePercentage = parseFloat(shareField.value || '0');
 
+        // 상속 비율이 0인 경우 처리
         if (sharePercentage === 0) {
             alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
             throw new Error("상속 비율 누락");
@@ -484,7 +487,7 @@ function calculateGroupMode(totalAssetValue) {
 
         return {
             name,
-            sharePercentage,
+            sharePercentage, // 비율 추가
             shareAmount,
             exemptions: { basicExemption, baseExemption, relationshipExemption, totalExemption },
             taxableAmount,
@@ -492,7 +495,7 @@ function calculateGroupMode(totalAssetValue) {
         };
     });
 
-    // **상속 비율 합계 확인 로직 추가**
+    // 상속 비율 합계 확인
     const totalPercentage = heirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
     if (totalPercentage > 100) {
         alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
