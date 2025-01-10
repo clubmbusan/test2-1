@@ -458,9 +458,17 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 // 단체 상속 로직 수정
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('input[type="text"]').value || '상속인';
-        const relationship = heir.querySelector('select')?.value || 'other';
+        const nameField = heir.querySelector('input[type="text"]');
+        const relationshipField = heir.querySelector('select');
         const shareField = heir.querySelector('input[type="number"]');
+
+        if (!nameField || !relationshipField || !shareField) {
+            console.error('상속인의 입력 필드가 누락되었습니다.');
+            return null;
+        }
+
+        const name = nameField.value || '상속인';
+        const relationship = relationshipField.value || 'other';
         const sharePercentage = parseFloat(shareField.value || '0');
 
         if (!shareField.value || sharePercentage === 0) {
@@ -468,14 +476,13 @@ function calculateGroupMode(totalAssetValue) {
             throw new Error("상속 비율 누락");
         }
 
-        // 상속인별 재산 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
         // 공제 계산
-        const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
-            calculateExemptions(shareAmount, relationship, shareAmount);
+        const exemptions = calculateExemptions(shareAmount, relationship);
+        const { totalExemption } = exemptions;
 
-        // 과세표준 계산
+        // 과세 표준 계산
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
 
         // 상속세 계산
@@ -484,11 +491,18 @@ function calculateGroupMode(totalAssetValue) {
         return {
             name,
             shareAmount,
-            exemptions: { basicExemption, baseExemption, relationshipExemption, totalExemption },
+            exemptions,
             taxableAmount,
             tax,
         };
-    });
+    }).filter(Boolean); // null 값 필터링
+
+    // 상속 비율 합계 확인
+    const totalPercentage = heirs.reduce((sum, heir) => sum + heir.shareAmount, 0);
+    if (totalPercentage > 100) {
+        alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
+        return;
+    }
 
     // 결과 출력
     document.getElementById('result').innerHTML = `
