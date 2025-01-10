@@ -115,8 +115,7 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
     }
 });
 
-   / **[수정 위치 2] 그룹 상속 로직 수정**
-    // calculateGroupMode 함수 내 상속 비율 계산 방식 수정
+       // calculateGroupMode 함수 내 상속 비율 계산 방식 수정
     const calculateGroupMode = (totalAssetValue) => {
         const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
             const name = heir.querySelector('input[type="text"]').value || '상속인';
