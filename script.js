@@ -607,6 +607,11 @@ document.addEventListener('input', function (event) {
         target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : ''; // 숫자에 콤마 추가
     }
 });
+
+ // 주식 수량 입력 디버깅
+document.getElementById('stockQuantity').addEventListener('input', (event) => {
+    console.log('주식 수량 입력 값:', event.target.value);
+});
     
 // 주식 총 금액 계산
 document.addEventListener('input', function () {
