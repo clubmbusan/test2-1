@@ -553,7 +553,6 @@ document.addEventListener('input', function (event) {
     const applicableFields = [
         'cashAmount',          // 현금
         'realEstateValue',     // 부동산 평가액
-        'stockQuantity',       // 주식 수량
         'stockPrice',          // 주당 가격
         'stockTotal',          // 주식 총액
         'mixedCashAmount',     // 혼합 자산 현금
