@@ -428,7 +428,13 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-// 단체 상속 로직
+// 총 공제를 상세히 계산하는 함수
+function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare = 0) {
+    const exemptions = calculateExemptions(shareAmount, relationship, spouseShare);
+    return exemptions;
+}
+
+// 단체 상속 로직 수정
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('input[type="text"]').value || '상속인';
@@ -471,7 +477,7 @@ function calculateGroupMode(totalAssetValue) {
             .join('')}
     `;
 }
-   
+
   // 가업 개인 상속 계산 함수
 function calculateBusinessPersonalMode(totalAssetValue) {
     const heirType = document.getElementById('businessHeirTypePersonal').value;
