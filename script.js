@@ -115,18 +115,40 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
     }
 });
 
-     // 초기 % 표시 기능 등록
-    document.querySelectorAll('.sharePercentage').forEach((field) => {
-        field.addEventListener('input', () => {
-            const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-            if (numericValue) {
-                field.value = `${numericValue}%`; // % 추가
-            } else {
-                field.value = ''; // 빈 값으로 초기화
+   / **[수정 위치 2] 그룹 상속 로직 수정**
+    // calculateGroupMode 함수 내 상속 비율 계산 방식 수정
+    const calculateGroupMode = (totalAssetValue) => {
+        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
+            const name = heir.querySelector('input[type="text"]').value || '상속인';
+            const relationship = heir.querySelector('select').value || "기타";
+            const shareField = heir.querySelector('.sharePercentage');
+
+            // % 제거 후 숫자만 추출
+            const sharePercentage = parseFloat(
+                shareField.value.replace('%', '').trim() || '0'
+            );
+
+            if (!shareField.value || sharePercentage === 0) {
+                alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+                throw new Error("상속 비율 누락");
             }
-        });
+
+            const shareAmount = (totalAssetValue * sharePercentage) / 100;
+            const exemption = calculateTotalExemption(relationship, shareAmount);
+            const taxableAmount = Math.max(shareAmount - exemption, 0);
+            const tax = calculateTax(taxableAmount);
+
+            return { name, sharePercentage, assetValue: shareAmount, exemption, taxableAmount, tax };
+        }); 
+    
+   // 초기 % 표시 기능 등록
+document.querySelectorAll('.sharePercentage').forEach((field) => {
+    field.addEventListener('input', () => {
+        const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+        field.value = numericValue ? `${numericValue}%` : ''; // % 추가 또는 초기화
     });
-   
+});
+
 // 초기 입력 필드에 % 표시 적용
 document.querySelectorAll('.sharePercentage').forEach((field) => {
     if (field.value) { // 필드 값이 존재할 경우에만 처리
