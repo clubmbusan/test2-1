@@ -458,25 +458,38 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 // 단체 상속 로직 수정
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
+        // 필드 선택
         const nameField = heir.querySelector('input[type="text"]');
         const relationshipField = heir.querySelector('select');
         const shareField = heir.querySelector('input[type="number"]');
 
-        // 필드 존재 여부 확인
-        if (!nameField || !relationshipField || !shareField) {
-            console.error('상속인의 입력 필드가 누락되었습니다.', heir);
-            alert('상속인의 입력 필드가 누락되었습니다.');
-            return null; // 잘못된 상속인 정보는 제외
+        // 필드 유효성 확인
+        if (!nameField) {
+            alert('상속인의 이름 필드가 누락되었습니다.');
+            console.error('이름 필드 누락:', heir);
+            return null;
         }
 
-        // 입력 값 가져오기
-        const name = nameField.value.trim() || '상속인';
-        const relationship = relationshipField.value || 'other';
-        const sharePercentage = parseFloat(shareField.value);
+        if (!relationshipField) {
+            alert('상속인의 관계 필드가 누락되었습니다.');
+            console.error('관계 필드 누락:', heir);
+            return null;
+        }
 
-        // 숫자 검증 및 비율 확인
+        if (!shareField || shareField.value.trim() === '') {
+            alert('상속인의 상속 비율이 입력되지 않았습니다.');
+            console.error('상속 비율 필드 누락:', heir);
+            return null;
+        }
+
+        // 입력값 처리
+        const name = nameField.value.trim();
+        const relationship = relationshipField.value.trim();
+        const sharePercentage = parseFloat(shareField.value.trim());
+
+        // 상속 비율 유효성 검사
         if (isNaN(sharePercentage) || sharePercentage <= 0) {
-            alert(`${name}의 상속 비율이 올바르게 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+            alert(`${name}의 상속 비율이 올바르지 않습니다.`);
             throw new Error("상속 비율 누락");
         }
 
@@ -500,10 +513,10 @@ function calculateGroupMode(totalAssetValue) {
             taxableAmount,
             tax,
         };
-    }).filter(Boolean); // null 값 제거
+    }).filter(Boolean); // 유효하지 않은 상속인 데이터 제거
 
     // 상속 비율 합계 검증
-    const totalPercentage = heirs.reduce((sum, heir) => sum + parseFloat(heir.sharePercentage || 0), 0);
+    const totalPercentage = heirs.reduce((sum, heir) => sum + (heir.sharePercentage || 0), 0);
     if (totalPercentage > 100) {
         alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
         return;
@@ -511,7 +524,7 @@ function calculateGroupMode(totalAssetValue) {
 
     // 결과 출력
     document.getElementById('result').innerHTML = `
-        <h3>계산 결과 (단체 상속)</h3>
+        <h3>계산 결과 (전체 상속)</h3>
         ${heirs
             .map((heir) => `
             <p>
