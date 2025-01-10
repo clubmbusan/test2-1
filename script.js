@@ -593,8 +593,13 @@ document.addEventListener('input', function (event) {
         'mixedStockPrice',     // 혼합 자산 주식
         'fatherAmountInput',   // 아버지 금액
         'motherAmountInput',   // 어머니 금액
-        'totalAssetValue', // 추가된 필드
+        'totalAssetValue',     // 추가된 필드
     ];
+
+    // 주식 수량은 제외 (콤마를 넣지 않음)
+    if (target.id === 'stockQuantity') {
+        return; // 콤마 처리 생략
+    }
 
     // 해당 필드에 대해 콤마 적용
     if (applicableFields.includes(target.id)) {
