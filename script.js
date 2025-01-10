@@ -458,47 +458,35 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 // 단체 상속 로직 수정
 function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        // 필드 선택
+        // 각 필드 선택
         const nameField = heir.querySelector('input[type="text"]');
         const relationshipField = heir.querySelector('select');
         const shareField = heir.querySelector('input[type="number"]');
 
-        // 필드 유효성 확인
-        if (!nameField) {
-            alert('상속인의 이름 필드가 누락되었습니다.');
-            console.error('이름 필드 누락:', heir);
+        // 필드 유효성 검사
+        if (!nameField || !relationshipField || !shareField) {
+            alert('상속인의 입력 필드가 누락되었습니다.');
+            console.error('필드 누락:', { nameField, relationshipField, shareField });
             return null;
         }
 
-        if (!relationshipField) {
-            alert('상속인의 관계 필드가 누락되었습니다.');
-            console.error('관계 필드 누락:', heir);
-            return null;
-        }
-
-        if (!shareField || shareField.value.trim() === '') {
-            alert('상속인의 상속 비율이 입력되지 않았습니다.');
-            console.error('상속 비율 필드 누락:', heir);
-            return null;
-        }
-
-        // 입력값 처리
-        const name = nameField.value.trim();
+        const name = nameField.value.trim() || '상속인';
         const relationship = relationshipField.value.trim();
-        const sharePercentage = parseFloat(shareField.value.trim());
+        const sharePercentage = parseFloat(shareField.value.trim()); // 비율 값 읽기
 
-        // 상속 비율 유효성 검사
+        // 비율 값 검증
         if (isNaN(sharePercentage) || sharePercentage <= 0) {
-            alert(`${name}의 상속 비율이 올바르지 않습니다.`);
+            alert(`${name}의 상속 비율이 올바르게 입력되지 않았습니다. 비율을 다시 입력해주세요.`);
+            console.error('상속 비율 오류:', { name, sharePercentage });
             throw new Error("상속 비율 누락");
         }
 
-        // 상속인 재산 계산
+        // 상속인의 상속 금액 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
         // 공제 계산
-        const exemptions = calculateExemptions(shareAmount, relationship);
-        const { totalExemption } = exemptions;
+        const exemptions = calculateExemptions(shareAmount, relationship, shareAmount);
+        const { basicExemption, baseExemption, relationshipExemption, totalExemption } = exemptions;
 
         // 과세 표준 계산
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
@@ -508,15 +496,17 @@ function calculateGroupMode(totalAssetValue) {
 
         return {
             name,
+            relationship,
+            sharePercentage,
             shareAmount,
             exemptions,
             taxableAmount,
             tax,
         };
-    }).filter(Boolean); // 유효하지 않은 상속인 데이터 제거
+    }).filter(Boolean); // 유효하지 않은 상속인 정보 제거
 
-    // 상속 비율 합계 검증
-    const totalPercentage = heirs.reduce((sum, heir) => sum + (heir.sharePercentage || 0), 0);
+    // 상속 비율 합계 확인
+    const totalPercentage = heirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
     if (totalPercentage > 100) {
         alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
         return;
@@ -528,10 +518,14 @@ function calculateGroupMode(totalAssetValue) {
         ${heirs
             .map((heir) => `
             <p>
-                <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
-                공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
-                과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
-                상속세: ${heir.tax.toLocaleString()} 원
+                <strong>${heir.name}</strong> (${heir.relationship}): ${heir.shareAmount.toLocaleString()} 원<br>
+                <strong>공제 내역:</strong><br>
+                - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
+                - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
+                - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
+                <strong>총 공제 금액:</strong> ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
+                <strong>과세 금액:</strong> ${heir.taxableAmount.toLocaleString()} 원<br>
+                <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
             </p>
         `)
             .join('')}
