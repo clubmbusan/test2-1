@@ -55,7 +55,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
     }
-  
+    
+ // "다시 하기" 버튼 이벤트 리스너
+    document.querySelectorAll('.removeAssetButton').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            // 해당 자산 항목을 초기화
+            const assetEntry = button.closest('.asset-entry');
+            if (assetEntry) {
+                // 모든 입력 필드 초기화
+                assetEntry.querySelectorAll('input').forEach((input) => {
+                    input.value = ''; // 입력 필드 초기화
+                });
+
+                // 재산 유형을 기본값으로 변경
+                const assetTypeSelect = assetEntry.querySelector('.assetType');
+                if (assetTypeSelect) {
+                    assetTypeSelect.value = 'cash'; // 기본값으로 재설정
+                }
+
+                // 필드 표시 상태를 초기화
+                assetEntry.querySelector('.cashField').style.display = 'block';
+                assetEntry.querySelector('.realEstateField').style.display = 'none';
+                assetEntry.querySelector('.stockQuantityField').style.display = 'none';
+                assetEntry.querySelector('.stockPriceField').style.display = 'none';
+                assetEntry.querySelector('.stockTotalField').style.display = 'none';
+                assetEntry.querySelector('.othersField').style.display = 'none';
+            }
+
+            // 전체 계산 필드 초기화
+            document.querySelectorAll('.assetValue').forEach((input) => {
+                input.value = ''; // 계산 필드 초기화
+            });
+
+            // 결과 영역 초기화
+            const resultArea = document.getElementById('result');
+            if (resultArea) {
+                resultArea.innerHTML = ''; // 결과를 초기화
+            }
+        });
+    });
+    
 // 모든 assetType에 이벤트 리스너 추가
 document.querySelectorAll('.assetType').forEach(select => {
     select.addEventListener('change', () => handleAssetTypeChange(select));
