@@ -114,53 +114,6 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
 });
-
-    // **[수정 위치 2] 그룹 상속 로직 수정**
-const calculateGroupMode = (totalAssetValue) => {
-    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('input[type="text"]').value || '상속인';
-        const relationship = heir.querySelector('select').value || "기타";
-        const shareField = heir.querySelector('.sharePercentage');
-
-        if (!shareField) {
-            console.error("상속 비율 필드를 찾을 수 없습니다.");
-            throw new Error("상속 비율 필드 누락");
-        }
-
-        // % 제거 후 숫자만 추출
-        const sharePercentage = parseFloat(
-            shareField.value.replace('%', '').trim() || '0'
-        );
-
-        if (!shareField.value || sharePercentage === 0) {
-            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
-            throw new Error("상속 비율 누락");
-        }
-
-        const shareAmount = (totalAssetValue * sharePercentage) / 100;
-        const exemption = calculateTotalExemption(relationship, shareAmount);
-        const taxableAmount = Math.max(shareAmount - exemption, 0);
-        const tax = calculateTax(taxableAmount);
-
-        return { name, sharePercentage, assetValue: shareAmount, exemption, taxableAmount, tax };
-    });
-};
-       
-   // 초기 % 표시 기능 등록
-document.querySelectorAll('.sharePercentage').forEach((field) => {
-    field.addEventListener('input', () => {
-        const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-        field.value = numericValue ? `${numericValue}%` : ''; // % 추가 또는 초기화
-    });
-});
-
-// 초기 입력 필드에 % 표시 적용
-document.querySelectorAll('.sharePercentage').forEach((field) => {
-    if (field.value) { // 필드 값이 존재할 경우에만 처리
-        const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-        field.value = `${numericValue}%`; // 초기 % 표시
-    }
-});
     
 // 숫자에 콤마를 추가하는 함수
 function formatNumberWithCommas(value) {
@@ -250,16 +203,15 @@ inheritanceType.addEventListener('change', () => {
    
     // 계산 시 숫자만 추출
 function getNumericValue(field) {
-    const rawValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-    return parseFloat(rawValue) || 0; // 숫자로 변환 (기본값 0)
+    return parseFloat(field.value.replace(/[^0-9]/g, '')) || 0; // 숫자로 변환 (기본값 0)
 }
 
-// 상속 비율 계산 시 숫자만 사용
+// 상속 비율 계산
 function calculateInheritance() {
     const percentageFields = document.querySelectorAll('.sharePercentageField');
-    const percentages = Array.from(percentageFields).map((field) => getNumericValue(field));
+    const percentages = Array.from(percentageFields).map(getNumericValue);
 
-    // 전체 합계 확인 (100%가 넘어가면 경고 표시 가능)
+    // 전체 합계 확인
     const totalPercentage = percentages.reduce((sum, value) => sum + value, 0);
     if (totalPercentage > 100) {
         alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
@@ -270,19 +222,6 @@ function calculateInheritance() {
     console.log('전체 비율 합계:', totalPercentage);
 }
 
-function addPercentageFormatting(container) {
-    const percentageFields = container.querySelectorAll('.sharePercentage');
-    percentageFields.forEach((field) => {
-        field.addEventListener('input', () => {
-            const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-            if (numericValue) {
-                field.value = `${numericValue}%`; // % 추가
-            } else {
-                field.value = ''; // 빈 값으로 초기화
-            }
-        });
-    });
-}
     
 // 전체 상속: 상속인 추가 버튼 이벤트
 addHeirButton.addEventListener('click', () => {
