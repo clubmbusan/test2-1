@@ -507,8 +507,7 @@ function calculateGroupMode(totalAssetValue) {
                 상속세: ${heir.tax.toLocaleString()} 원
             </p>
         
-            )
-            .join('')}
+            ).join('')}
     ;
 }
 
