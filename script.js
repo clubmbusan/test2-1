@@ -462,10 +462,10 @@ function calculateGroupMode(totalAssetValue) {
         const relationshipField = heir.querySelector('select');
         const shareField = heir.querySelector('input[type="number"]');
 
-        // 필수 필드가 누락된 경우 예외 처리
+        // 필드가 null인지 확인
         if (!nameField || !relationshipField || !shareField) {
-            console.error('상속인 정보가 누락되었습니다:', { heir, index });
-            alert(`상속인 정보가 올바르지 않습니다. 모든 필드를 채워주세요.`);
+            console.error(`상속인 정보 누락: 상속인 ${index + 1}`, { heir, nameField, relationshipField, shareField });
+            alert(`상속인 ${index + 1}의 정보가 누락되었습니다. 모든 필드를 확인해주세요.`);
             throw new Error("상속인 정보 누락");
         }
 
@@ -473,7 +473,7 @@ function calculateGroupMode(totalAssetValue) {
         const relationship = relationshipField.value || "기타";
         const share = parseFloat(shareField.value) || 0;
 
-        if (share === 0) {
+        if (share <= 0) {
             alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
             throw new Error("상속 비율 누락");
         }
@@ -489,7 +489,7 @@ function calculateGroupMode(totalAssetValue) {
     // 상속 비율 합계 확인
     const totalPercentage = heirs.reduce((sum, heir) => sum + heir.share, 0);
     if (totalPercentage > 100) {
-        alert('상속 비율의 합이 100%를 초과할 수 없습니다!');
+        alert(`상속 비율의 합계가 100%를 초과했습니다: ${totalPercentage}%`);
         return;
     }
 
