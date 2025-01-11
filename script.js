@@ -427,49 +427,41 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 }
 
 // 전체 상속 로직 수정
-function calculateGroupMode(totalAssetValue) {
-    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('input[type="text"]')?.value || '상속인';
-        const relationship = heir.querySelector('select')?.value || '기타';
-        const shareField = heir.querySelector('input[type="number"]');
+const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
+    const name = heir.querySelector('input[type="text"]')?.value || '상속인';
+    const relationship = heir.querySelector('select')?.value || '기타';
+    const shareField = heir.querySelector('input[type="number"]');
 
-        // **입력 필드 확인**
-        if (!shareField) {
-            console.error("상속 비율 입력 필드를 찾을 수 없습니다.");
-            throw new Error("상속 비율 입력 필드 누락");
-        }
+    // 입력 필드 확인
+    if (!shareField) {
+        console.error("상속 비율 입력 필드를 찾을 수 없습니다. 확인하세요.");
+        throw new Error("상속 비율 입력 필드 누락");
+    }
 
-        const sharePercentage = parseFloat(shareField.value || '0');
+    const sharePercentage = parseFloat(shareField.value || '0');
 
-        // **상속 비율 유효성 검사**
-        if (sharePercentage === 0) {
-            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
-            throw new Error("상속 비율 누락");
-        }
+    // 상속 비율 유효성 검사
+    if (sharePercentage === 0) {
+        alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+        throw new Error("상속 비율 누락");
+    }
 
-        const shareAmount = (totalAssetValue * sharePercentage) / 100;
+    const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
-        // **100% 초과 경고 로직 추가**
-        const totalPercentage = Array.from(document.querySelectorAll('.heir-entry input[type="number"]'))
-            .reduce((sum, field) => sum + parseFloat(field.value || '0'), 0);
-        if (totalPercentage > 100) {
-            alert("상속 비율의 합이 100%를 초과할 수 없습니다!");
-            throw new Error("상속 비율 초과");
-        }
+    return {
+        name,
+        sharePercentage,
+        shareAmount,
+        relationship,
+    };
+});
 
-        const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
-            calculateTotalExemptionDetailed(shareAmount, relationship, shareAmount);
-        const taxableAmount = Math.max(shareAmount - totalExemption, 0);
-        const tax = calculateTax(taxableAmount);
-
-        return {
-            name,
-            shareAmount,
-            exemptions: { basicExemption, baseExemption, relationshipExemption, totalExemption },
-            taxableAmount,
-            tax,
-        };
-    });
+// 100% 초과 검증
+const totalPercentage = heirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
+if (totalPercentage > 100) {
+    alert("상속 비율의 합이 100%를 초과할 수 없습니다!");
+    return;
+}
 
     // 결과 출력
     document.getElementById('result').innerHTML = `
