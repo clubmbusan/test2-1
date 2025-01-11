@@ -547,7 +547,8 @@ function calculateBusinessPersonalMode(totalAssetValue, relationship, heirType, 
 
     // 2. 관계 공제 계산
     const relationshipExemption = calculateRelationshipExemption(totalAssetValue, relationship, age);
-
+    const relationshipExemption = exemptions.relationshipExemption; // 관계 공제만 사용
+   
     // 3. 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
 
