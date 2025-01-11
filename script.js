@@ -215,57 +215,35 @@ function validateSharePercentage() {
         return sum + value;
     }, 0);
 
-    if (totalPercentage > 100) {
-        alert("상속 비율의 합이 100%를 초과할 수 없습니다.");
+    if (totalPercentage !== 100) {
+        alert(`상속 비율의 합이 100%여야 합니다. 현재 합: ${totalPercentage}%`);
         return false;
     }
-
-    if (totalPercentage < 100) {
-        alert("상속 비율의 합이 100%가 되어야 합니다. 현재 합: " + totalPercentage + "%");
-        return false;
-    }
-
     return true;
 }
 
-// 상속 비율 필드에 이벤트 리스너 등록 (실시간 검증)
-document.querySelectorAll('.sharePercentageField').forEach((field) => {
-    field.addEventListener('input', () => {
-        const value = parseFloat(field.value) || 0;
-
-        // 비율 검증: 범위 제한 (0 ~ 100%)
-        if (value < 0 || value > 100) {
-            alert('상속 비율은 0%에서 100% 사이여야 합니다.');
-            field.value = ''; // 잘못된 값 초기화
-            return;
-        }
-    });
-});
-
-// "계산하기" 버튼 이벤트 리스너
+// 계산 버튼 이벤트 리스너 (계산 버튼 클릭 시 실행)
 calculateButton.addEventListener('click', () => {
+    if (!validateSharePercentage()) {
+        return; // 검증 실패 시 계산 중단
+    }
+
     const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
         return sum + value;
     }, 0);
 
-    // 상속 비율 검증
-    if (!validateSharePercentage()) {
-        return; // 검증 실패 시 계산 중단
-    }
-
-    // 검증이 통과되면 계산 로직 실행
     switch (inheritanceType.value) {
-        case 'personal':
+        case 'personal': // 개인 상속
             calculatePersonalMode(totalAssetValue);
             break;
-        case 'group':
+        case 'group': // 단체 상속
             calculateGroupMode(totalAssetValue);
             break;
-        case 'businessPersonal':
+        case 'businessPersonal': // 가업 개인 상속
             calculateBusinessPersonalMode(totalAssetValue);
             break;
-        case 'businessGroup':
+        case 'businessGroup': // 가업 단체 상속
             calculateBusinessGroupMode(totalAssetValue);
             break;
         default:
