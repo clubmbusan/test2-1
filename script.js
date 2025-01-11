@@ -534,11 +534,8 @@ function calculateGroupMode(totalAssetValue) {
 }
 
   // 가업 개인 상속 계산 함수 (수정된 버전)
-function calculateBusinessPersonalMode(totalAssetValue) {
-    // 관계 가져오기
-    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
-
-    // 가업 공제 계산
+function calculateBusinessPersonalMode(totalAssetValue, relationship, heirType) {
+    // 1. 가업 공제 계산
     let gaupExemption = 0;
     if (totalAssetValue <= 5000000000) {
         gaupExemption = Math.min(totalAssetValue, 2000000000); // 50억 이하: 최대 20억
@@ -548,21 +545,25 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         gaupExemption = Math.min(totalAssetValue, 10000000000); // 100억 초과: 최대 100억
     }
 
-    // 기존 관계 공제 함수 호출
+    // 2. 관계 공제 계산
     const spouseShare = totalAssetValue * 0.5; // 배우자 몫 기본값 설정
     const exemptions = calculateExemptions(totalAssetValue, relationship, spouseShare);
-    const relationshipExemption = exemptions.relationshipExemption; // 관계 공제만 추출
+    const relationshipExemption = exemptions.relationshipExemption; // 관계 공제 추출
 
-    // 총 공제 계산
+    console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
+    console.log(`Gaup Exemption: ${gaupExemption}`);
+    console.log(`Relationship Exemption: ${relationshipExemption}`);
+
+    // 3. 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
 
-    // 과세 금액 계산
+    // 4. 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // 누진세율 적용
+    // 5. 누진세율 적용
     const tax = calculateTax(taxableAmount);
 
-    // 결과 출력
+    // 6. 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
         <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
