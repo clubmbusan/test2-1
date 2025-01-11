@@ -55,46 +55,48 @@ initializeDefaultView();
     
    // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
-        const assetEntry = assetTypeSelect.closest('.asset-entry');
-        if (!assetEntry) {
-            console.error('assetTypeSelect의 상위 .asset-entry 요소를 찾을 수 없습니다.');
-            return; // 더 이상 진행하지 않음
-        }
-
-        const assetFields = assetEntry.querySelector('.assetFields');
-        const cashField = assetFields.querySelector('.cashField');
-        const realEstateField = assetFields.querySelector('.realEstateField');
-        const stockQuantityField = assetFields.querySelector('.stockQuantityField');
-        const stockPriceField = assetFields.querySelector('.stockPriceField');
-        const stockTotalField = assetFields.querySelector('.stockTotalField');
-        const othersField = assetFields.querySelector('.othersField');
-
-        // 모든 필드 숨기기
-        cashField.style.display = 'none';
-        realEstateField.style.display = 'none';
-        stockQuantityField.style.display = 'none';
-        stockPriceField.style.display = 'none';
-        stockTotalField.style.display = 'none';
-        othersField.style.display = 'none';
-
-        // 선택된 유형에 따라 표시
-        switch (assetTypeSelect.value) {
-            case 'cash':
-                cashField.style.display = 'block';
-                break;
-            case 'realEstate':
-                realEstateField.style.display = 'block';
-                break;
-            case 'stock':
-                stockQuantityField.style.display = 'block';
-                stockPriceField.style.display = 'block';
-                stockTotalField.style.display = 'block';
-                break;
-            case 'others':
-                othersField.style.display = 'block';
-                break;
-        }
+    const assetEntry = assetTypeSelect.closest('.asset-entry');
+    if (!assetEntry) {
+        console.error('assetTypeSelect의 상위 .asset-entry 요소를 찾을 수 없습니다.');
+        return; // 더 이상 진행하지 않음
     }
+
+    const assetFields = assetEntry.querySelector('.assetFields');
+    const fields = {
+        cashField: assetFields.querySelector('.cashField'),
+        realEstateField: assetFields.querySelector('.realEstateField'),
+        stockQuantityField: assetFields.querySelector('.stockQuantityField'),
+        stockPriceField: assetFields.querySelector('.stockPriceField'),
+        stockTotalField: assetFields.querySelector('.stockTotalField'),
+        othersField: assetFields.querySelector('.othersField'),
+    };
+
+    // 모든 필드 숨기기 (기존 코드는 삭제됨)
+    Object.values(fields).forEach(field => {
+        if (field) field.style.display = 'none';
+    });
+
+    // 선택된 유형에 따라 표시
+    switch (assetTypeSelect.value) {
+        case 'cash':
+            fields.cashField.style.display = 'block';
+            break;
+        case 'realEstate':
+            fields.realEstateField.style.display = 'block';
+            break;
+        case 'stock':
+            fields.stockQuantityField.style.display = 'block';
+            fields.stockPriceField.style.display = 'block';
+            fields.stockTotalField.style.display = 'block';
+            break;
+        case 'others':
+            fields.othersField.style.display = 'block';
+            break;
+        default:
+            console.error('알 수 없는 자산 유형입니다:', assetTypeSelect.value);
+            break;
+    }
+}
     
   // "다시 하기" 버튼 이벤트 리스너
 document.querySelectorAll('.removeAssetButton').forEach((button) => {
