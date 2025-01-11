@@ -208,7 +208,6 @@ function getNumericValue(field) {
 }
     
 // 상속 비율 입력값 검증 함수
- // 상속 비율 입력값 검증 함수
 function validateSharePercentage() {
     const percentageFields = Array.from(document.querySelectorAll('.sharePercentageField'));
     const totalPercentage = percentageFields.reduce((sum, field) => {
@@ -229,8 +228,8 @@ function validateSharePercentage() {
     return true;
 }
 
-// 상속 비율 필드에 이벤트 리스너 등록
-function addSharePercentageListener(field) {
+// 상속 비율 필드에 이벤트 리스너 등록 (실시간 검증)
+document.querySelectorAll('.sharePercentageField').forEach((field) => {
     field.addEventListener('input', () => {
         const value = parseFloat(field.value) || 0;
 
@@ -240,14 +239,41 @@ function addSharePercentageListener(field) {
             field.value = ''; // 잘못된 값 초기화
             return;
         }
-
-        // 전체 비율 검증
-        if (!validateSharePercentage()) {
-            field.value = ''; // 비율 합이 100%가 아닌 경우 초기화
-        }
     });
-}
+});
 
+// "계산하기" 버튼 이벤트 리스너
+calculateButton.addEventListener('click', () => {
+    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+        return sum + value;
+    }, 0);
+
+    // 상속 비율 검증
+    if (!validateSharePercentage()) {
+        return; // 검증 실패 시 계산 중단
+    }
+
+    // 검증이 통과되면 계산 로직 실행
+    switch (inheritanceType.value) {
+        case 'personal':
+            calculatePersonalMode(totalAssetValue);
+            break;
+        case 'group':
+            calculateGroupMode(totalAssetValue);
+            break;
+        case 'businessPersonal':
+            calculateBusinessPersonalMode(totalAssetValue);
+            break;
+        case 'businessGroup':
+            calculateBusinessGroupMode(totalAssetValue);
+            break;
+        default:
+            console.error('잘못된 계산 요청');
+            break;
+    }
+});
+    
 // 상속인 추가 버튼 이벤트
 addHeirButton.addEventListener('click', () => {
     const newHeirEntry = document.createElement('div');
