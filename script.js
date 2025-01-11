@@ -534,67 +534,61 @@ function calculateGroupMode(totalAssetValue) {
 }
 
   // 가업 개인 상속 계산 함수 (수정된 버전)
- function calculateBusinessPersonalMode(totalAssetValue, relationship = 'other', heirType = 'adult') {
-    if (!relationship || !heirType) {
-        console.error('잘못된 관계 또는 후계자 유형 선택: 값이 설정되지 않았습니다.');
-        return;
-    }
+   function calculateBusinessPersonalMode(totalAssetValue) {
+    // DOM에서 관계와 후계자 유형 가져오기
+    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+    const heirType = document.getElementById('businessHeirTypePersonal')?.value || 'other';
 
-    console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
-
-    // 1. 가업 공제 계산 (후계자 유형에 따라)
+    // 1. 가업 공제 계산
     let gaupExemption = 0;
-    if (heirType === 'adult') {
-        // 성년 후계자 로직
-        if (totalAssetValue <= 5000000000) {
-            gaupExemption = Math.min(totalAssetValue, 2000000000); // 최대 20억
-        } else if (totalAssetValue <= 10000000000) {
-            gaupExemption = Math.min(totalAssetValue, 5000000000); // 최대 50억
-        } else {
-            gaupExemption = Math.min(totalAssetValue, 10000000000); // 최대 100억
-        }
-    } else if (heirType === 'minor') {
+
+    if (heirType === 'minor') {
         // 미성년 후계자 로직
         gaupExemption = totalAssetValue * 0.6; // 60% 공제
     } else if (heirType === 'other') {
         // 기타 유형 로직
         gaupExemption = totalAssetValue * 0.3; // 30% 공제
     } else {
-        console.error('잘못된 후계자 유형 선택:', heirType);
-        return;
+        // 성년 후계자 또는 기본 가업 공제 계산
+        if (totalAssetValue <= 5000000000) {
+            gaupExemption = Math.min(totalAssetValue, 2000000000); // 50억 이하: 최대 20억
+        } else if (totalAssetValue <= 10000000000) {
+            gaupExemption = Math.min(totalAssetValue, 5000000000); // 50억 ~ 100억: 최대 50억
+        } else {
+            gaupExemption = Math.min(totalAssetValue, 10000000000); // 100억 초과: 최대 100억
+        }
     }
+
     console.log(`Gaup Exemption: ${gaupExemption}`);
 
     // 2. 관계 공제 계산
-    const spouseShare = totalAssetValue * 0.5; // 배우자 몫 기본값
-    const exemptions = calculateExemptions(totalAssetValue, relationship, spouseShare);
-    const relationshipExemption = exemptions.relationshipExemption;
+    const exemptions = calculateExemptions(totalAssetValue, relationship);
+    const relationshipExemption = exemptions.relationshipExemption; // 관계 공제만 추출
 
+    console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
     console.log(`Relationship Exemption: ${relationshipExemption}`);
 
     // 3. 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
-    console.log(`Total Exemption: ${totalExemption}`);
 
     // 4. 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // 5. 누진세율 적용
+    // 5. 상속세 계산 (누진세율 적용)
     const tax = calculateTax(taxableAmount);
-    console.log(`Taxable Amount: ${taxableAmount}, Tax: ${tax}`);
 
     // 6. 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
-        <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
+        <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue)} 원</p>
         <p><strong>공제 내역:</strong></p>
         <ul>
-            <li>가업 공제: ${formatNumberWithCommas(gaupExemption.toString())} 원 (후계자 유형: ${heirType})</li>
-            <li>관계 공제: ${formatNumberWithCommas(relationshipExemption.toString())} 원 (${relationship})</li>
+            <li>가업 공제: ${formatNumberWithCommas(gaupExemption)} 원 (${heirType})</li>
+            <li>관계 공제: ${formatNumberWithCommas(relationshipExemption)} 원 (${relationship})</li>
         </ul>
-        <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption.toString())} 원</p>
-        <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
-        <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
+        <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption)} 원</p>
+        <p>과세 금액: ${formatNumberWithCommas(taxableAmount)} 원</p>
+        <p>상속세: ${formatNumberWithCommas(tax)} 원</p>
     `;
 }
 
