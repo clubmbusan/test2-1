@@ -544,6 +544,7 @@ function calculateGroupMode(totalAssetValue) {
       return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
   }
 
+    // 가업 개인 상속 함수
   function calculateBusinessPersonalMode(totalAssetValue) {
     // DOM에서 관계 및 후계자 유형 값 가져오기
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other'; // 관계 값
@@ -603,7 +604,7 @@ function calculateGroupMode(totalAssetValue) {
         <p>상속세: ${formatNumberWithCommas(tax)} 원</p>
     `;
 }
-
+  // 가업 개인 단체 함수
     function calculateBusinessGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
         const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
