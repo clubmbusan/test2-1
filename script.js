@@ -535,13 +535,17 @@ function calculateGroupMode(totalAssetValue) {
 
   // 가업 개인 상속 계산 함수 (수정된 버전)
 function calculateBusinessPersonalMode(totalAssetValue) {
-    // 1. DOM에서 관계 값 가져오기
+    // DOM에서 관계 값 가져오기
     const relationshipElement = document.getElementById('relationshipPersonal');
-    const relationship = relationshipElement?.value || 'other';
+    if (!relationshipElement) {
+        console.error('relationshipPersonal 요소를 찾을 수 없습니다.');
+        return;
+    }
+    const relationship = relationshipElement.value;
 
-    console.log(`Selected Relationship: ${relationship}`); // 값 확인용 로그
+    console.log(`Selected Relationship: ${relationship}`); // 관계 값 확인
 
-    // 2. 가업 공제 계산
+    // 가업 공제 계산
     let gaupExemption = 0;
     if (totalAssetValue <= 5000000000) {
         gaupExemption = Math.min(totalAssetValue, 2000000000); // 50억 이하: 최대 20억
@@ -551,28 +555,22 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         gaupExemption = Math.min(totalAssetValue, 10000000000); // 100억 초과: 최대 100억
     }
 
-    console.log(`Gaup Exemption: ${gaupExemption}`); // 가업 공제 확인용 로그
-
-    // 3. 관계 공제 계산
+    // 관계 공제 계산
     const exemptions = calculateExemptions(totalAssetValue, relationship);
-    const relationshipExemption = exemptions.relationshipExemption; // 관계 공제만 추출
+    const relationshipExemption = exemptions.relationshipExemption;
 
-    console.log(`Relationship Exemption: ${relationshipExemption}`); // 관계 공제 확인용 로그
+    console.log(`Relationship Exemption: ${relationshipExemption}`); // 공제 값 확인
 
-    // 4. 총 공제 금액 계산
+    // 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
 
-    console.log(`Total Exemption: ${totalExemption}`); // 총 공제 금액 확인용 로그
-
-    // 5. 과세 금액 계산
+    // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // 6. 상속세 계산 (누진세율 적용)
+    // 상속세 계산 (누진세율 적용)
     const tax = calculateTax(taxableAmount);
 
-    console.log(`Taxable Amount: ${taxableAmount}, Tax: ${tax}`); // 과세 금액 및 상속세 확인용 로그
-
-    // 7. 결과 출력
+    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
         <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
