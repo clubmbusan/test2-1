@@ -13,45 +13,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // 2. 섹션 초기화 함수
-    function resetSections() {
-        personalSection.style.display = 'none';
-        groupSection.style.display = 'none';
-        businessPersonalSection.style.display = 'none';
-        businessGroupSection.style.display = 'none';
+// 섹션 초기화 함수
+function resetSections() {
+    console.log('resetSections 호출됨');
+    personalSection.style.display = 'none';
+    groupSection.style.display = 'none';
+    businessPersonalSection.style.display = 'none';
+    businessGroupSection.style.display = 'none';
+}
+
+// 초기 로딩 시 개인 상속을 기본값으로 설정
+function initializeDefaultView() {
+    console.log('initializeDefaultView 호출됨');
+    resetSections();
+    personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
+}
+
+// 상속 유형 변경 이벤트 리스너
+inheritanceType.addEventListener('change', () => {
+    console.log('상속 유형 변경:', inheritanceType.value);
+    resetSections();
+
+    switch (inheritanceType.value) {
+        case 'personal':
+            personalSection.style.display = 'block'; // 개인 상속 섹션 표시
+            break;
+        case 'group':
+            groupSection.style.display = 'block'; // 전체 상속 섹션 표시
+            break;
+        case 'businessPersonal':
+            businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
+            break;
+        case 'businessGroup':
+            businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
+            break;
+        default:
+            console.error('잘못된 상속 유형 선택');
+            break;
     }
+});
 
-    // 3. 초기 로딩 시 개인 상속을 기본값으로 설정
-    function initializeDefaultView() {
-        resetSections();
-        personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
-    }
-
-    initializeDefaultView(); // 초기화 호출
-
-    // 4. 상속 유형 변경 시 섹션 표시
-    inheritanceType.addEventListener('change', () => {
-        resetSections(); // 모든 섹션 숨김
-
-        switch (inheritanceType.value) {
-            case 'personal':
-                personalSection.style.display = 'block'; // 개인 상속 섹션 표시
-                break;
-            case 'group':
-                groupSection.style.display = 'block'; // 전체 상속 섹션 표시
-                break;
-            case 'businessPersonal':
-                businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
-                break;
-            case 'businessGroup':
-                businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
-                break;
-            default:
-                console.error('잘못된 상속 유형 선택');
-                break;
-        }
-    });
-
+// 초기화 호출
+initializeDefaultView();
+    
    // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
         const assetEntry = assetTypeSelect.closest('.asset-entry');
