@@ -32,7 +32,8 @@ function initializeDefaultView() {
 // 상속 유형 변경 이벤트 리스너
 inheritanceType.addEventListener('change', () => {
     resetSections(); // 모든 섹션 숨김
-    console.log(`상속 유형 변경: ${inheritanceType.value}`);
+    console.log('resetSections 호출됨');
+    console.log('상속 유형 변경:', inheritanceType.value);
 
     switch (inheritanceType.value) {
         case 'personal':
@@ -55,14 +56,6 @@ inheritanceType.addEventListener('change', () => {
             console.error('잘못된 상속 유형 선택');
             break;
     }
-
-    // 각 섹션의 상태 출력
-    console.log({
-        personalSection: personalSection.style.display,
-        groupSection: groupSection.style.display,
-        businessPersonalSection: businessPersonalSection.style.display,
-        businessGroupSection: businessGroupSection.style.display,
-    });
 });
 
 // 초기화 호출
