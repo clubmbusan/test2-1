@@ -12,7 +12,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBusinessGroupHeirButton = document.getElementById('addBusinessGroupHeirButton');
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
-  
+
+    // 2. 섹션 초기화 함수
+    function resetSections() {
+        personalSection.style.display = 'none';
+        groupSection.style.display = 'none';
+        businessPersonalSection.style.display = 'none';
+        businessGroupSection.style.display = 'none';
+    }
+
+    // 3. 초기 로딩 시 개인 상속을 기본값으로 설정
+    function initializeDefaultView() {
+        resetSections();
+        personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
+    }
+
+    initializeDefaultView(); // 초기화 호출
+
+    // 4. 상속 유형 변경 시 섹션 표시
+    inheritanceType.addEventListener('change', () => {
+        resetSections(); // 모든 섹션 숨김
+
+        switch (inheritanceType.value) {
+            case 'personal':
+                personalSection.style.display = 'block'; // 개인 상속 섹션 표시
+                break;
+            case 'group':
+                groupSection.style.display = 'block'; // 전체 상속 섹션 표시
+                break;
+            case 'businessPersonal':
+                businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
+                break;
+            case 'businessGroup':
+                businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
+                break;
+            default:
+                console.error('잘못된 상속 유형 선택');
+                break;
+        }
+    });
+
    // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
         const assetEntry = assetTypeSelect.closest('.asset-entry');
@@ -161,8 +200,6 @@ document.addEventListener('input', () => {
         mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 금액 계산 및 콤마 추가
     }
 });
-
-
     
     // 계산 시 숫자만 추출
 function getNumericValue(field) {
@@ -562,39 +599,32 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
 
-   // 상속 유형에 따른 계산 로직 함수
-function calculateInheritance(inheritanceType, totalAssetValue) {
-    switch (inheritanceType) {
-        case 'personal': // 개인 상속
-            calculatePersonalMode(totalAssetValue);
-            break;
-        case 'group': // 단체 상속
-            calculateGroupMode(totalAssetValue);
-            break;
-        case 'businessPersonal': // 가업 개인 상속
-            calculateBusinessPersonalMode(totalAssetValue);
-            break;
-        case 'businessGroup': // 가업 단체 상속
-            calculateBusinessGroupMode(totalAssetValue);
-            break;
-        default:
-            console.error('잘못된 계산 요청');
-            break;
-    }
-}
+// 6. 계산 버튼 이벤트 (하단 배치)
+    calculateButton.addEventListener('click', () => {
+        const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+            const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+            return sum + value;
+        }, 0);
 
-// 계산 버튼 이벤트
-document.getElementById('calculateButton').addEventListener('click', () => {
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-        return sum + value;
-    }, 0);
-
-    // 분리된 로직 함수 호출
-    calculateInheritance(inheritanceType.value, totalAssetValue);
+        switch (inheritanceType.value) {
+            case 'personal': // 개인 상속
+                calculatePersonalMode(totalAssetValue);
+                break;
+            case 'group': // 단체 상속
+                calculateGroupMode(totalAssetValue);
+                break;
+            case 'businessPersonal': // 가업 개인 상속
+                calculateBusinessPersonalMode(totalAssetValue);
+                break;
+            case 'businessGroup': // 가업 단체 상속
+                calculateBusinessGroupMode(totalAssetValue);
+                break;
+            default:
+                console.error('잘못된 계산 요청');
+                break;
+        }
+    });
 });
- 
-
 
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
