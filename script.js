@@ -546,25 +546,7 @@ function calculateBusinessPersonalMode(totalAssetValue, relationship, heirType, 
     }
 
     // 2. 관계 공제 계산
-    const maxRelationshipExemption = 5000000000; // 관계 공제 최대 5억 원
-    let relationshipExemption = 0;
-
-    switch (relationship) {
-        case 'spouse': // 배우자
-            relationshipExemption = maxRelationshipExemption;
-            break;
-        case 'minorChild': // 미성년 자녀
-            if (age !== null) {
-                const additionalExemption = age * 10000000; // 1년에 1천만 원
-                relationshipExemption = Math.min(maxRelationshipExemption, additionalExemption);
-            }
-            break;
-        case 'adultChild': // 성년 자녀
-            relationshipExemption = maxRelationshipExemption;
-            break;
-        default:
-            relationshipExemption = 0; // 기타 관계는 공제 없음
-    }
+    const relationshipExemption = calculateRelationshipExemption(totalAssetValue, relationship, age);
 
     // 3. 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
