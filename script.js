@@ -545,18 +545,16 @@ function calculateGroupMode(totalAssetValue) {
   }
 
     // 가업 개인 상속 함수
-  function calculateBusinessPersonalMode(totalAssetValue) {
-    // DOM에서 관계 및 후계자 유형 값 가져오기
-    const relationship = document.getElementById('relationshipPersonal')?.value || 'other'; // 관계 값
-    const heirType = document.getElementById('businessHeirTypePersonal')?.value || 'other'; // 후계자 유형 값
+ function calculateBusinessPersonalMode(totalAssetValue) {
+    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+    const heirType = document.getElementById('businessHeirTypePersonal')?.value || 'other';
 
-    // 디버깅 로그
     console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
 
-    // 1. 가업 공제 계산
+    // 가업 공제 계산
     let gaupExemption = 0;
-    if (heirType === 'adult' || heirType === 'adultChild') {
-        // 성년 후계자 로직
+
+    if (heirType === 'adultChild') {
         if (totalAssetValue <= 5000000000) {
             gaupExemption = Math.min(totalAssetValue, 2000000000);
         } else if (totalAssetValue <= 10000000000) {
@@ -564,11 +562,9 @@ function calculateGroupMode(totalAssetValue) {
         } else {
             gaupExemption = Math.min(totalAssetValue, 10000000000);
         }
-    } else if (heirType === 'minor' || heirType === 'minorChild') {
-        // 미성년 후계자 로직
+    } else if (heirType === 'minorChild') {
         gaupExemption = totalAssetValue * 0.6;
     } else if (heirType === 'other') {
-        // 기타 유형 로직
         gaupExemption = totalAssetValue * 0.3;
     } else {
         console.error('잘못된 후계자 유형 선택:', heirType);
@@ -577,20 +573,21 @@ function calculateGroupMode(totalAssetValue) {
 
     console.log(`Gaup Exemption: ${gaupExemption}`);
 
-    // 2. 관계 공제 계산
-    const exemptions = calculateExemptions(totalAssetValue, relationship); // 함수 호출
-    const relationshipExemption = exemptions.relationshipExemption || 0; // 관계 공제만 추출
+    // 관계 공제 계산
+    const exemptions = calculateExemptions(totalAssetValue, relationship);
+    const relationshipExemption = exemptions.relationshipExemption || 0;
+
     console.log(`Relationship Exemption: ${relationshipExemption}`);
 
-    // 3. 총 공제 금액 계산
+    // 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
     console.log(`Total Exemption: ${totalExemption}`);
 
-    // 4. 과세 금액 계산
+    // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
     const tax = calculateTax(taxableAmount);
 
-    // 5. 결과 출력
+    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
         <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue)} 원</p>
@@ -604,6 +601,7 @@ function calculateGroupMode(totalAssetValue) {
         <p>상속세: ${formatNumberWithCommas(tax)} 원</p>
     `;
 }
+    
   // 가업 개인 단체 함수
     function calculateBusinessGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
