@@ -208,48 +208,51 @@ function getNumericValue(field) {
 }
     
 // 상속 비율 입력값 검증 함수
-function validateSharePercentage() {
-    const percentageFields = Array.from(document.querySelectorAll('.sharePercentageField'));
-    const totalPercentage = percentageFields.reduce((sum, field) => {
-        const value = parseFloat(field.value) || 0;
-        return sum + value;
-    }, 0);
+    function validateSharePercentage() {
+        const percentageFields = Array.from(document.querySelectorAll('.sharePercentageField'));
+        const totalPercentage = percentageFields.reduce((sum, field) => {
+            const value = parseFloat(field.value) || 0;
+            return sum + value;
+        }, 0);
 
-    if (totalPercentage !== 100) {
-        alert(`상속 비율의 합이 100%여야 합니다. 현재 합: ${totalPercentage}%`);
-        return false;
-    }
-    return true;
-}
-
-// 계산 버튼 이벤트 리스너 (계산 버튼 클릭 시 실행)
-calculateButton.addEventListener('click', () => {
-    if (!validateSharePercentage()) {
-        return; // 검증 실패 시 계산 중단
+        if (totalPercentage !== 100) {
+            alert(`상속 비율의 합이 100%여야 합니다. 현재 합: ${totalPercentage}%`);
+            return false;
+        }
+        return true;
     }
 
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-        return sum + value;
-    }, 0);
+    // 계산 버튼 이벤트 리스너
+    calculateButton.addEventListener('click', () => {
+        // 상속 비율 검증
+        if (!validateSharePercentage()) {
+            return; // 검증 실패 시 계산 중단
+        }
 
-    switch (inheritanceType.value) {
-        case 'personal': // 개인 상속
-            calculatePersonalMode(totalAssetValue);
-            break;
-        case 'group': // 단체 상속
-            calculateGroupMode(totalAssetValue);
-            break;
-        case 'businessPersonal': // 가업 개인 상속
-            calculateBusinessPersonalMode(totalAssetValue);
-            break;
-        case 'businessGroup': // 가업 단체 상속
-            calculateBusinessGroupMode(totalAssetValue);
-            break;
-        default:
-            console.error('잘못된 계산 요청');
-            break;
-    }
+        // 계산 로직
+        const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+            const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+            return sum + value;
+        }, 0);
+
+        switch (inheritanceType.value) {
+            case 'personal': // 개인 상속
+                calculatePersonalMode(totalAssetValue);
+                break;
+            case 'group': // 단체 상속
+                calculateGroupMode(totalAssetValue);
+                break;
+            case 'businessPersonal': // 가업 개인 상속
+                calculateBusinessPersonalMode(totalAssetValue);
+                break;
+            case 'businessGroup': // 가업 단체 상속
+                calculateBusinessGroupMode(totalAssetValue);
+                break;
+            default:
+                console.error('잘못된 계산 요청');
+                break;
+        }
+    });
 });
     
 // 상속인 추가 버튼 이벤트
