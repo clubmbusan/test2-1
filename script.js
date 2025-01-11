@@ -534,7 +534,7 @@ function calculateGroupMode(totalAssetValue) {
 }
 
   // 가업 개인 상속 계산 함수 (수정된 버전)
-  function calculateBusinessPersonalMode(totalAssetValue, relationship = 'other', heirType = 'adult') {
+ function calculateBusinessPersonalMode(totalAssetValue, relationship = 'other', heirType = 'adult') {
     if (!relationship || !heirType) {
         console.error('잘못된 관계 또는 후계자 유형 선택: 값이 설정되지 않았습니다.');
         return;
@@ -542,14 +542,26 @@ function calculateGroupMode(totalAssetValue) {
 
     console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
 
-    // 1. 가업 공제 계산
+    // 1. 가업 공제 계산 (후계자 유형에 따라)
     let gaupExemption = 0;
-    if (totalAssetValue <= 5000000000) {
-        gaupExemption = Math.min(totalAssetValue, 2000000000);
-    } else if (totalAssetValue <= 10000000000) {
-        gaupExemption = Math.min(totalAssetValue, 5000000000);
+    if (heirType === 'adult') {
+        // 성년 후계자 로직
+        if (totalAssetValue <= 5000000000) {
+            gaupExemption = Math.min(totalAssetValue, 2000000000); // 최대 20억
+        } else if (totalAssetValue <= 10000000000) {
+            gaupExemption = Math.min(totalAssetValue, 5000000000); // 최대 50억
+        } else {
+            gaupExemption = Math.min(totalAssetValue, 10000000000); // 최대 100억
+        }
+    } else if (heirType === 'minor') {
+        // 미성년 후계자 로직
+        gaupExemption = totalAssetValue * 0.6; // 60% 공제
+    } else if (heirType === 'other') {
+        // 기타 유형 로직
+        gaupExemption = totalAssetValue * 0.3; // 30% 공제
     } else {
-        gaupExemption = Math.min(totalAssetValue, 10000000000);
+        console.error('잘못된 후계자 유형 선택:', heirType);
+        return;
     }
     console.log(`Gaup Exemption: ${gaupExemption}`);
 
@@ -577,7 +589,7 @@ function calculateGroupMode(totalAssetValue) {
         <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
         <p><strong>공제 내역:</strong></p>
         <ul>
-            <li>가업 공제: ${formatNumberWithCommas(gaupExemption.toString())} 원</li>
+            <li>가업 공제: ${formatNumberWithCommas(gaupExemption.toString())} 원 (후계자 유형: ${heirType})</li>
             <li>관계 공제: ${formatNumberWithCommas(relationshipExemption.toString())} 원 (${relationship})</li>
         </ul>
         <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption.toString())} 원</p>
