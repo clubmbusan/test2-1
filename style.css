@@ -366,3 +366,20 @@ button {
 #addHeirButton:hover {
     background-color: #45a049; /* 호버 시 더 어두운 녹색 */
 }
+
+/* 기본적으로 모든 섹션을 숨김 처리 */
+#personalSection,
+#groupSection,
+#businessPersonalSection,
+#businessGroupSection {
+    display: none; /* 기본적으로 숨김 처리 */
+}
+
+/* JavaScript에서 제어하는 스타일 우선 */
+#personalSection[style*="display: block"],
+#groupSection[style*="display: block"],
+#businessPersonalSection[style*="display: block"],
+#businessGroupSection[style*="display: block"] {
+    display: block; /* JavaScript로 제어될 때 표시 */
+}
+
