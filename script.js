@@ -206,48 +206,79 @@ function getNumericValue(field) {
     return parseFloat(field.value.replace(/[^0-9]/g, '')) || 0; // 숫자로 변환 (기본값 0)
 }
     
-// 전체 상속: 상속인 추가 버튼 이벤트
-// 전체 상속: 상속인 추가 버튼 이벤트
-addHeirButton.addEventListener('click', () => {
-    const newHeirEntry = document.createElement('div');
-    newHeirEntry.className = 'heir-entry';
-    newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름">
-        <select>
-            <option value="spouse">배우자</option>
-            <option value="adultChild">자녀(성년)</option>
-            <option value="minorChild">자녀(미성년)</option>
-            <option value="parent">부모</option>
-            <option value="sibling">형제자매</option>
-            <option value="other">기타</option>
-        </select>
-        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
-    `;
+// 상속 비율 입력값 검증 함수
+    function validateSharePercentage() {
+        const percentageFields = Array.from(document.querySelectorAll('.sharePercentageField'));
+        const totalPercentage = percentageFields.reduce((sum, field) => {
+            const value = parseFloat(field.value) || 0;
+            return sum + value;
+        }, 0);
 
-    // 상속 비율 입력 필드에 이벤트 연결
-    const percentageField = newHeirEntry.querySelector('.sharePercentageField');
-    percentageField.addEventListener('input', () => {
-        const numericValue = parseFloat(percentageField.value) || 0;
-        if (numericValue < 0 || numericValue > 100) {
-            alert('상속 비율은 0%에서 100% 사이여야 합니다.');
-            percentageField.value = '';
+        if (totalPercentage > 100) {
+            alert("상속 비율의 합이 100%를 초과할 수 없습니다.");
+            return false;
         }
+
+        return true;
+    }
+
+    // 상속인 추가 버튼 이벤트
+    addHeirButton.addEventListener('click', () => {
+        const newHeirEntry = document.createElement('div');
+        newHeirEntry.className = 'heir-entry';
+        newHeirEntry.innerHTML = `
+            <input type="text" placeholder="이름">
+            <select>
+                <option value="spouse">배우자</option>
+                <option value="adultChild">자녀(성년)</option>
+                <option value="minorChild">자녀(미성년)</option>
+                <option value="parent">부모</option>
+                <option value="sibling">형제자매</option>
+                <option value="other">기타</option>
+            </select>
+            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+        `;
+
+        // 새로 추가된 상속 비율 필드 이벤트 등록
+        const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
+        sharePercentageField.addEventListener('input', () => {
+            const value = parseFloat(sharePercentageField.value) || 0;
+
+            // 비율 검증: 범위 제한 (0~100)
+            if (value < 0 || value > 100) {
+                alert('상속 비율은 0%에서 100% 사이여야 합니다.');
+                sharePercentageField.value = ''; // 잘못된 입력 초기화
+                return;
+            }
+
+            // 전체 합 검증
+            if (!validateSharePercentage()) {
+                sharePercentageField.value = ''; // 잘못된 입력 초기화
+            }
+        });
+
+        heirContainer.appendChild(newHeirEntry);
     });
 
-    heirContainer.appendChild(newHeirEntry);
-});
+    // 기존 상속 비율 필드 이벤트 등록
+    document.querySelectorAll('.sharePercentageField').forEach((field) => {
+        field.addEventListener('input', () => {
+            const value = parseFloat(field.value) || 0;
 
-// 기존 상속 비율 필드에도 이벤트 연결
-document.querySelectorAll('.sharePercentageField').forEach((field) => {
-    field.addEventListener('input', () => {
-        const numericValue = parseFloat(field.value) || 0;
-        if (numericValue < 0 || numericValue > 100) {
-            alert('상속 비율은 0%에서 100% 사이여야 합니다.');
-            field.value = '';
-        }
+            // 비율 검증: 범위 제한 (0~100)
+            if (value < 0 || value > 100) {
+                alert('상속 비율은 0%에서 100% 사이여야 합니다.');
+                field.value = ''; // 잘못된 입력 초기화
+                return;
+            }
+
+            // 전체 합 검증
+            if (!validateSharePercentage()) {
+                field.value = ''; // 잘못된 입력 초기화
+            }
+        });
     });
 });
-
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
 addBusinessGroupHeirButton.addEventListener('click', () => {
