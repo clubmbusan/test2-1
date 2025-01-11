@@ -198,9 +198,10 @@ inheritanceType.addEventListener('change', () => {
         default:
             console.error('잘못된 상속 유형 선택');
             break;
-    }
+     }
+  });
 });
-   
+    
     // 계산 시 숫자만 추출
 function getNumericValue(field) {
     return parseFloat(field.value.replace(/[^0-9]/g, '')) || 0; // 숫자로 변환 (기본값 0)
