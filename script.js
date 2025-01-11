@@ -624,8 +624,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
                 break;
         }
     });
-});
-
+    
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
     const target = event.target;
