@@ -536,6 +536,7 @@ function calculateGroupMode(totalAssetValue) {
   // 가업 개인 상속 계산 함수 (수정된 버전)
 function calculateBusinessPersonalMode(totalAssetValue) {
     // 1. DOM에서 관계 값 가져오기
+    const relationshipElement = document.getElementById('relationshipPersonal');
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
 
     // 2. 가업 공제 계산
