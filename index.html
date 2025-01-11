@@ -19,22 +19,16 @@
         <h1>2025 상속세 계산기</h1>
 
         <!-- 상속 유형 선택 -->
-<div class="form-group">
-    <label for="inheritanceType">상속 유형:</label>
-    <select id="inheritanceType" class="form-control">
-        <option value="personal" selected>개인분</option>
-        <option value="group">전체분</option>
-        <option value="businessPersonal">가업 개인 상속</option>
-        <option value="businessGroup">가업 단체 상속</option>
-    </select>
-</div>
-
-<!-- 선택된 상속 유형 섹션 -->
-<div id="personalSection" style="display: block;">개인 상속 섹션</div>
-<div id="groupSection" style="display: none;">전체 상속 섹션</div>
-<div id="businessPersonalSection" style="display: none;">가업 개인 상속 섹션</div>
-<div id="businessGroupSection" style="display: none;">가업 단체 상속 섹션</div>
-
+         <div class="form-group">
+            <label for="inheritanceType">상속 유형:</label>
+            <select id="inheritanceType" class="form-control">
+                <option value="personal" selected>개인분</option>
+                <option value="group">전체분</option>
+                <option value="businessPersonal">가업 개인 상속</option>
+                <option value="businessGroup">가업 단체 상속</option>
+            </select>
+        </div>
+     
         <!-- 재산 유형 및 금액 -->
         <div id="assetContainer">
             <h2>상속 재산</h2>
