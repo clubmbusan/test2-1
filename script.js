@@ -543,7 +543,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     }
     const relationship = relationshipElement.value;
 
-    console.log(`Selected Relationship: ${relationship}`); // 관계 값 확인
+    console.log(`Selected Relationship: ${relationship}`); // 관계 값 확인 로그
 
     // 가업 공제 계산
     let gaupExemption = 0;
@@ -555,11 +555,13 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         gaupExemption = Math.min(totalAssetValue, 10000000000); // 100억 초과: 최대 100억
     }
 
+    console.log(`Gaup Exemption: ${gaupExemption}`); // 가업 공제 확인 로그
+
     // 관계 공제 계산
     const exemptions = calculateExemptions(totalAssetValue, relationship);
     const relationshipExemption = exemptions.relationshipExemption;
 
-    console.log(`Relationship Exemption: ${relationshipExemption}`); // 공제 값 확인
+    console.log(`Relationship Exemption: ${relationshipExemption}`); // 관계 공제 확인 로그
 
     // 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
