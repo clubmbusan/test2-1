@@ -534,34 +534,42 @@ function calculateGroupMode(totalAssetValue) {
 }
 
   // 가업 개인 상속 계산 함수 (수정된 버전)
-function calculateBusinessPersonalMode(totalAssetValue, relationship, heirType) {
+  function calculateBusinessPersonalMode(totalAssetValue, relationship, heirType) {
+    if (!relationship || !heirType) {
+        console.error('잘못된 관계 또는 후계자 유형 선택: 값이 설정되지 않았습니다.');
+        return;
+    }
+
+    console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
+
     // 1. 가업 공제 계산
     let gaupExemption = 0;
     if (totalAssetValue <= 5000000000) {
-        gaupExemption = Math.min(totalAssetValue, 2000000000); // 50억 이하: 최대 20억
+        gaupExemption = Math.min(totalAssetValue, 2000000000);
     } else if (totalAssetValue <= 10000000000) {
-        gaupExemption = Math.min(totalAssetValue, 5000000000); // 50억 ~ 100억: 최대 50억
+        gaupExemption = Math.min(totalAssetValue, 5000000000);
     } else {
-        gaupExemption = Math.min(totalAssetValue, 10000000000); // 100억 초과: 최대 100억
+        gaupExemption = Math.min(totalAssetValue, 10000000000);
     }
+    console.log(`Gaup Exemption: ${gaupExemption}`);
 
     // 2. 관계 공제 계산
-    const spouseShare = totalAssetValue * 0.5; // 배우자 몫 기본값 설정
+    const spouseShare = totalAssetValue * 0.5; // 배우자 몫 기본값
     const exemptions = calculateExemptions(totalAssetValue, relationship, spouseShare);
-    const relationshipExemption = exemptions.relationshipExemption; // 관계 공제 추출
+    const relationshipExemption = exemptions.relationshipExemption;
 
-    console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
-    console.log(`Gaup Exemption: ${gaupExemption}`);
     console.log(`Relationship Exemption: ${relationshipExemption}`);
 
     // 3. 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
+    console.log(`Total Exemption: ${totalExemption}`);
 
     // 4. 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
     // 5. 누진세율 적용
     const tax = calculateTax(taxableAmount);
+    console.log(`Taxable Amount: ${taxableAmount}, Tax: ${tax}`);
 
     // 6. 결과 출력
     document.getElementById('result').innerHTML = `
