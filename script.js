@@ -448,6 +448,7 @@ const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) =>
 
     const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
+    // 결과 리턴
     return {
         name,
         sharePercentage,
@@ -463,27 +464,26 @@ if (totalPercentage > 100) {
     return;
 }
 
-    // 결과 출력
-    document.getElementById('result').innerHTML = `
-        <h3>계산 결과 (단체 상속)</h3>
-        ${heirs
-            .map(
-                (heir) => `
-            <p>
-                <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
-                공제 내역:<br>
-                - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
-                - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
-                - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
-                총 공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
-                과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
-                상속세: ${heir.tax.toLocaleString()} 원
-            </p>
-        `
-            )
-            .join('')}
-    `;
-}
+// 결과 출력
+document.getElementById('result').innerHTML = `
+    <h3>계산 결과 (단체 상속)</h3>
+    ${heirs
+        .map(
+            (heir) => `
+        <p>
+            <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
+            공제 내역:<br>
+            - 기본 공제: (값 미정)<br>
+            - 기초 공제: (값 미정)<br>
+            - 관계 공제: (값 미정)<br>
+            총 공제 금액: (값 미정)<br>
+            과세 금액: (값 미정)<br>
+            상속세: (값 미정)
+        </p>
+    `
+        )
+        .join('')}
+`;
 
   // 가업 개인 상속 계산 함수
 function calculateBusinessPersonalMode(totalAssetValue) {
