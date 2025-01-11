@@ -215,72 +215,70 @@ function getNumericValue(field) {
             return sum + value;
         }, 0);
 
-        if (totalPercentage !== 100) {
-            alert(`상속 비율의 합이 100%여야 합니다. 현재 합: ${totalPercentage}%`);
+        if (totalPercentage > 100) {
+            alert("상속 비율의 합이 100%를 초과할 수 없습니다.");
             return false;
         }
+
         return true;
     }
 
-    // 계산 버튼 이벤트 리스너
-    calculateButton.addEventListener('click', () => {
-        // 상속 비율 검증
-        if (!validateSharePercentage()) {
-            return; // 검증 실패 시 계산 중단
-        }
+    // 상속인 추가 버튼 이벤트
+    addHeirButton.addEventListener('click', () => {
+        const newHeirEntry = document.createElement('div');
+        newHeirEntry.className = 'heir-entry';
+        newHeirEntry.innerHTML = `
+            <input type="text" placeholder="이름">
+            <select>
+                <option value="spouse">배우자</option>
+                <option value="adultChild">자녀(성년)</option>
+                <option value="minorChild">자녀(미성년)</option>
+                <option value="parent">부모</option>
+                <option value="sibling">형제자매</option>
+                <option value="other">기타</option>
+            </select>
+            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+        `;
 
-        // 계산 로직
-        const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-            const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-            return sum + value;
-        }, 0);
+        // 새로 추가된 상속 비율 필드 이벤트 등록
+        const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
+        sharePercentageField.addEventListener('input', () => {
+            const value = parseFloat(sharePercentageField.value) || 0;
 
-        switch (inheritanceType.value) {
-            case 'personal': // 개인 상속
-                calculatePersonalMode(totalAssetValue);
-                break;
-            case 'group': // 단체 상속
-                calculateGroupMode(totalAssetValue);
-                break;
-            case 'businessPersonal': // 가업 개인 상속
-                calculateBusinessPersonalMode(totalAssetValue);
-                break;
-            case 'businessGroup': // 가업 단체 상속
-                calculateBusinessGroupMode(totalAssetValue);
-                break;
-            default:
-                console.error('잘못된 계산 요청');
-                break;
-        }
+            // 비율 검증: 범위 제한 (0~100)
+            if (value < 0 || value > 100) {
+                alert('상속 비율은 0%에서 100% 사이여야 합니다.');
+                sharePercentageField.value = ''; // 잘못된 입력 초기화
+                return;
+            }
+
+            // 전체 합 검증
+            if (!validateSharePercentage()) {
+                sharePercentageField.value = ''; // 잘못된 입력 초기화
+            }
+        });
+
+        heirContainer.appendChild(newHeirEntry);
     });
-});
-    
-// 상속인 추가 버튼 이벤트
-addHeirButton.addEventListener('click', () => {
-    const newHeirEntry = document.createElement('div');
-    newHeirEntry.className = 'heir-entry';
-    newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름">
-        <select>
-            <option value="spouse">배우자</option>
-            <option value="adultChild">자녀(성년)</option>
-            <option value="minorChild">자녀(미성년)</option>
-            <option value="parent">부모</option>
-            <option value="sibling">형제자매</option>
-            <option value="other">기타</option>
-        </select>
-        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
-    `;
 
-    // 새로 추가된 상속 비율 필드에 이벤트 리스너 등록
-    const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
-    addSharePercentageListener(sharePercentageField);
+    // 기존 상속 비율 필드 이벤트 등록
+    document.querySelectorAll('.sharePercentageField').forEach((field) => {
+        field.addEventListener('input', () => {
+            const value = parseFloat(field.value) || 0;
 
-    heirContainer.appendChild(newHeirEntry);
-});
+            // 비율 검증: 범위 제한 (0~100)
+            if (value < 0 || value > 100) {
+                alert('상속 비율은 0%에서 100% 사이여야 합니다.');
+                field.value = ''; // 잘못된 입력 초기화
+                return;
+            }
 
-// 기존 상속 비율 필드 이벤트 등록
-document.querySelectorAll('.sharePercentageField').forEach(addSharePercentageListener);
+            // 전체 합 검증
+            if (!validateSharePercentage()) {
+                field.value = ''; // 잘못된 입력 초기화
+            }
+        });
+    });
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
 addBusinessGroupHeirButton.addEventListener('click', () => {
