@@ -162,45 +162,7 @@ document.addEventListener('input', () => {
     }
 });
 
-// 섹션 초기화 함수
-function resetSections() {
-    personalSection.style.display = 'none';
-    groupSection.style.display = 'none';
-    businessPersonalSection.style.display = 'none';
-    businessGroupSection.style.display = 'none';
-}
 
-// 초기 로딩 시 개인 상속을 기본값으로 설정
-function initializeDefaultView() {
-    resetSections();
-    personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
-}
-
-initializeDefaultView(); // 초기화 호출
-
-// 상속 유형 변경 시
-inheritanceType.addEventListener('change', () => {
-    resetSections(); // 모든 섹션 숨김
-
-    switch (inheritanceType.value) {
-        case 'personal':
-            personalSection.style.display = 'block'; // 개인 상속 섹션 표시
-            break;
-        case 'group':
-            groupSection.style.display = 'block'; // 전체 상속 섹션 표시
-            break;
-        case 'businessPersonal':
-            businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
-            break;
-        case 'businessGroup':
-            businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
-            break;
-        default:
-            console.error('잘못된 상속 유형 선택');
-            break;
-     }
-  });
-});
     
     // 계산 시 숫자만 추출
 function getNumericValue(field) {
