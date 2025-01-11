@@ -279,7 +279,6 @@ function getNumericValue(field) {
             }
         });
     });
-});
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
 addBusinessGroupHeirButton.addEventListener('click', () => {
