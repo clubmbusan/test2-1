@@ -426,47 +426,40 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
     return exemptions;
 }
 
-// 전체 상속 로직 수정
-// 단체 상속 계산 함수 (통합된 비율 검증 포함)
+// 단체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
-    // 상속인 목록 생성
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('input[type="text"]')?.value || '상속인';
-        const relationship = heir.querySelector('select')?.value || '기타';
+        const name = heir.querySelector('input[type="text"]').value || '상속인';
+        const relationship = heir.querySelector('select').value || '기타';
         const shareField = heir.querySelector('input[type="number"]');
 
-        // 입력 필드 확인
-        if (!shareField) {
-            console.error("상속 비율 입력 필드를 찾을 수 없습니다.");
-            throw new Error("상속 비율 입력 필드 누락");
+        if (!shareField || shareField.value.trim() === '' || isNaN(shareField.value)) {
+            alert(`${name}의 상속 비율이 올바르지 않습니다. 비율을 입력 후 다시 시도해주세요.`);
+            throw new Error("상속 비율 누락 또는 잘못된 값");
         }
 
-        const sharePercentage = parseFloat(shareField.value || '0');
-
-        // 비율이 0인 경우 경고
-        if (sharePercentage === 0) {
-            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
-            throw new Error("상속 비율 누락");
+        const sharePercentage = parseFloat(shareField.value);
+        if (sharePercentage <= 0 || sharePercentage > 100) {
+            alert(`${name}의 상속 비율은 0% 초과, 100% 이하의 숫자여야 합니다.`);
+            throw new Error("잘못된 상속 비율 값");
         }
 
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
         return {
             name,
+            relationship,
             sharePercentage,
             shareAmount,
-            relationship,
         };
     });
 
-    // 상속 비율 합계 검증
     const totalPercentage = heirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
     if (totalPercentage > 100) {
         alert("상속 비율의 합이 100%를 초과할 수 없습니다!");
         return;
     }
 
-    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (단체 상속)</h3>
         ${heirs
