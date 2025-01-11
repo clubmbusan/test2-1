@@ -537,7 +537,9 @@ function calculateGroupMode(totalAssetValue) {
 function calculateBusinessPersonalMode(totalAssetValue) {
     // 1. DOM에서 관계 값 가져오기
     const relationshipElement = document.getElementById('relationshipPersonal');
-    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+    const relationship = relationshipElement?.value || 'other';
+
+    console.log(`Selected Relationship: ${relationship}`); // 값 확인용 로그
 
     // 2. 가업 공제 계산
     let gaupExemption = 0;
@@ -549,21 +551,26 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         gaupExemption = Math.min(totalAssetValue, 10000000000); // 100억 초과: 최대 100억
     }
 
+    console.log(`Gaup Exemption: ${gaupExemption}`); // 가업 공제 확인용 로그
+
     // 3. 관계 공제 계산
     const exemptions = calculateExemptions(totalAssetValue, relationship);
     const relationshipExemption = exemptions.relationshipExemption; // 관계 공제만 추출
 
-    // 로그 추가로 값 확인
-    console.log(`Relationship: ${relationship}, Exemption: ${relationshipExemption}`);
+    console.log(`Relationship Exemption: ${relationshipExemption}`); // 관계 공제 확인용 로그
 
     // 4. 총 공제 금액 계산
     const totalExemption = gaupExemption + relationshipExemption;
+
+    console.log(`Total Exemption: ${totalExemption}`); // 총 공제 금액 확인용 로그
 
     // 5. 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
     // 6. 상속세 계산 (누진세율 적용)
     const tax = calculateTax(taxableAmount);
+
+    console.log(`Taxable Amount: ${taxableAmount}, Tax: ${tax}`); // 과세 금액 및 상속세 확인용 로그
 
     // 7. 결과 출력
     document.getElementById('result').innerHTML = `
@@ -579,7 +586,6 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
     `;
 }
-
 
 // 가업 단체 상속 계산 함수
 function calculateBusinessGroupMode(totalAssetValue) {
