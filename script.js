@@ -562,15 +562,9 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
 
-    
-// 계산 버튼 이벤트
-document.getElementById('calculateButton').addEventListener('click', () => {
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-        return sum + value;
-    }, 0);
-
-    switch (inheritanceType.value) {
+   // 상속 유형에 따른 계산 로직 함수
+function calculateInheritance(inheritanceType, totalAssetValue) {
+    switch (inheritanceType) {
         case 'personal': // 개인 상속
             calculatePersonalMode(totalAssetValue);
             break;
@@ -587,7 +581,20 @@ document.getElementById('calculateButton').addEventListener('click', () => {
             console.error('잘못된 계산 요청');
             break;
     }
+}
+
+// 계산 버튼 이벤트
+document.getElementById('calculateButton').addEventListener('click', () => {
+    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+        return sum + value;
+    }, 0);
+
+    // 분리된 로직 함수 호출
+    calculateInheritance(inheritanceType.value, totalAssetValue);
 });
+ 
+
 
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
