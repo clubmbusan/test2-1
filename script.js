@@ -534,27 +534,69 @@ function calculateGroupMode(totalAssetValue) {
 }
 
   // 가업 개인 상속 계산 함수
-function calculateBusinessPersonalMode(totalAssetValue) {
-    const heirType = document.getElementById('businessHeirTypePersonal').value;
-    let exemption = 6000000000; // 기본 공제 (60억 원)
-
-    if (heirType === 'minor') {
-        exemption += 30000000; // 미성년 후계자 공제
-    } else if (heirType === 'other') {
-        exemption = 0; // 기타 후계자는 공제 없음
+function calculateBusinessPersonalMode(totalAssetValue, relationship, heirType, age = null) {
+    // 1. 가업 공제 계산
+    let gaupExemption = 0;
+    if (totalAssetValue <= 5000000000) {
+        gaupExemption = Math.min(totalAssetValue, 2000000000); // 50억 이하: 최대 20억
+    } else if (totalAssetValue <= 10000000000) {
+        gaupExemption = Math.min(totalAssetValue, 5000000000); // 50억 ~ 100억: 최대 50억
+    } else {
+        gaupExemption = Math.min(totalAssetValue, 10000000000); // 100억 초과: 최대 100억
     }
 
-    const taxableAmount = Math.max(totalAssetValue - exemption, 0);
+    // 2. 관계 공제 계산
+    const maxRelationshipExemption = 5000000000; // 관계 공제 최대 5억 원
+    let relationshipExemption = 0;
+
+    switch (relationship) {
+        case 'spouse': // 배우자
+            relationshipExemption = maxRelationshipExemption;
+            break;
+        case 'minorChild': // 미성년 자녀
+            if (age !== null) {
+                const additionalExemption = age * 10000000; // 1년에 1천만 원
+                relationshipExemption = Math.min(maxRelationshipExemption, additionalExemption);
+            }
+            break;
+        case 'adultChild': // 성년 자녀
+            relationshipExemption = maxRelationshipExemption;
+            break;
+        default:
+            relationshipExemption = 0; // 기타 관계는 공제 없음
+    }
+
+    // 3. 추가 공제 (후계자 유형)
+    if (heirType === 'minor') {
+        relationshipExemption += 30000000; // 미성년 후계자 추가 공제
+    } else if (heirType === 'other') {
+        gaupExemption = 0; // 기타 후계자는 가업 공제 없음
+    }
+
+    // 4. 총 공제 금액 계산
+    const totalExemption = gaupExemption + relationshipExemption;
+
+    // 5. 과세 금액 계산
+    const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+
+    // 6. 상속세 계산 (누진세율 적용)
     const tax = calculateTax(taxableAmount);
 
+    // 7. 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
         <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
-        <p>공제 금액: ${formatNumberWithCommas(exemption.toString())} 원</p>
+        <p><strong>공제 내역:</strong></p>
+        <ul>
+            <li>가업 공제: ${formatNumberWithCommas(gaupExemption.toString())} 원</li>
+            <li>관계 공제: ${formatNumberWithCommas(relationshipExemption.toString())} 원 (${relationship})</li>
+        </ul>
+        <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption.toString())} 원</p>
         <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
         <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
     `;
 }
+
 
 // 가업 단체 상속 계산 함수
 function calculateBusinessGroupMode(totalAssetValue) {
