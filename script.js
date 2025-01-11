@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 섹션 초기화 함수
 function resetSections() {
-    console.log('resetSections 호출됨');
     personalSection.style.display = 'none';
     groupSection.style.display = 'none';
     businessPersonalSection.style.display = 'none';
@@ -24,7 +23,6 @@ function resetSections() {
 
 // 초기 로딩 시 개인 상속을 기본값으로 설정
 function initializeDefaultView() {
-    console.log('initializeDefaultView 호출됨');
     resetSections();
     personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
 }
