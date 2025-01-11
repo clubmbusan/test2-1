@@ -31,26 +31,38 @@ function initializeDefaultView() {
 
 // 상속 유형 변경 이벤트 리스너
 inheritanceType.addEventListener('change', () => {
-    console.log('상속 유형 변경:', inheritanceType.value);
-    resetSections();
+    resetSections(); // 모든 섹션 숨김
+    console.log(`상속 유형 변경: ${inheritanceType.value}`);
 
     switch (inheritanceType.value) {
         case 'personal':
-            personalSection.style.display = 'block'; // 개인 상속 섹션 표시
+            personalSection.style.display = 'block';
+            console.log('개인 상속 섹션 표시');
             break;
         case 'group':
-            groupSection.style.display = 'block'; // 전체 상속 섹션 표시
+            groupSection.style.display = 'block';
+            console.log('전체 상속 섹션 표시');
             break;
         case 'businessPersonal':
-            businessPersonalSection.style.display = 'block'; // 가업 개인 상속 섹션 표시
+            businessPersonalSection.style.display = 'block';
+            console.log('가업 개인 상속 섹션 표시');
             break;
         case 'businessGroup':
-            businessGroupSection.style.display = 'block'; // 가업 단체 상속 섹션 표시
+            businessGroupSection.style.display = 'block';
+            console.log('가업 단체 상속 섹션 표시');
             break;
         default:
             console.error('잘못된 상속 유형 선택');
             break;
     }
+
+    // 각 섹션의 상태 출력
+    console.log({
+        personalSection: personalSection.style.display,
+        groupSection: groupSection.style.display,
+        businessPersonalSection: businessPersonalSection.style.display,
+        businessGroupSection: businessGroupSection.style.display,
+    });
 });
 
 // 초기화 호출
