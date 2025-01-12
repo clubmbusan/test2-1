@@ -549,10 +549,7 @@ function calculateGroupMode(totalAssetValue) {
     // 관계와 후계자 유형을 명확히 분리
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
-
-    // 디버깅용 콘솔 로그
-    console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
-
+  
     // 가업 공제 계산
     let gaupExemption = 0;
 
@@ -671,6 +668,20 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
+// 유효성 검사 함수
+function validateHeirRelationship(heirType, relationship) {
+    const validPairs = {
+        adultChild: ['adultChild'], // 성년 자녀 후계자 -> 성년 자녀 관계만 허용
+        minorChild: ['minorChild'], // 미성년 자녀 후계자 -> 미성년 자녀 관계만 허용
+        other: ['parent', 'sibling', 'other'], // 기타 후계자 -> 부모, 형제자매, 기타만 허용
+    };
+
+    if (!validPairs[heirType]?.includes(relationship)) {
+        return false; // 잘못된 조합
+    }
+
+    return true;
+}
     
 // 6. 계산 버튼 이벤트 (하단 배치)
     calculateButton.addEventListener('click', () => {
