@@ -336,7 +336,7 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
         </select>
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
-    businessGroupHeirContainer.appendChild(newHeirEntryGroup);
+    businessGroupSection.appendChild(newHeirEntryGroup);
 });
 
 // 재산 유형에 따라 필드를 동적으로 표시
