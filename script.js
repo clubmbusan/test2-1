@@ -313,18 +313,23 @@ function getNumericValue(field) {
     });
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
-document.getElementById('addBusinessGroupHeirButton').addEventListener('click', () => {
+addBusinessGroupHeirButton.addEventListener('click', () => {
     // 새 상속인 입력 필드 생성
     const newHeirEntry = document.createElement('div');
-    newHeirEntry.className = 'heir-entry-group'; // 가업 단체 전용 클래스
+    newHeirEntry.className = 'heir-entry-group';
     newHeirEntry.innerHTML = `
+        <!-- 후계자 유형 -->
         <select class="heirType">
             <option value="" disabled selected>후계자 유형</option>
             <option value="adultChild">성년 자녀</option>
             <option value="minorChild">미성년 자녀</option>
             <option value="other">기타</option>
         </select>
+
+        <!-- 이름 -->
         <input type="text" placeholder="이름" class="heirName">
+
+        <!-- 관계 -->
         <select class="relationship">
             <option value="" disabled selected>관계 선택</option>
             <option value="spouse">배우자</option>
@@ -334,12 +339,21 @@ document.getElementById('addBusinessGroupHeirButton').addEventListener('click', 
             <option value="sibling">형제자매</option>
             <option value="other">기타</option>
         </select>
+
+        <!-- 상속 비율 -->
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
 
-    // 필드를 가업 단체 상속 섹션에 추가
+    // 가업 단체 상속 섹션에 필드 추가
+    const businessGroupSection = document.getElementById('businessGroupSection');
     const addButton = document.getElementById('addBusinessGroupHeirButton');
-    document.getElementById('businessGroupHeirContainer').insertBefore(newHeirEntry, addButton); // 버튼 위에 추가
+
+    if (businessGroupSection && addButton) {
+        // 버튼 위에 새 상속인 필드를 삽입
+        businessGroupSection.insertBefore(newHeirEntry, addButton);
+    } else {
+        console.error('businessGroupSection 또는 addBusinessGroupHeirButton을 찾을 수 없습니다.');
+    }
 });
     
 // 재산 유형에 따라 필드를 동적으로 표시
