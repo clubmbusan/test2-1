@@ -673,7 +673,7 @@ function validateHeirRelationship(heirType, relationship) {
     const validPairs = {
         adultChild: ['adultChild'], // 성년 자녀 후계자 -> 성년 자녀 관계만 허용
         minorChild: ['minorChild'], // 미성년 자녀 후계자 -> 미성년 자녀 관계만 허용
-        other: ['parent', 'sibling', 'other'], // 기타 후계자 -> 부모, 형제자매, 기타만 허용
+        other: ['spouse', 'parent', 'sibling', 'other'], // 기타 후계자 -> 부모, 형제자매, 기타만 허용
     };
 
     if (!validPairs[heirType]?.includes(relationship)) {
