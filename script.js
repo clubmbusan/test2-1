@@ -314,11 +314,19 @@ function getNumericValue(field) {
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
 addBusinessGroupHeirButton.addEventListener('click', () => {
-    const newHeirEntry = document.createElement('div');
-    newHeirEntry.className = 'heir-entry';
-    newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름">
-        <select>
+    const newHeirEntryGroup = document.createElement('div');
+    newHeirEntryGroup.className = 'heir-entry-group';
+    newHeirEntryGroup.style.display = 'flex';
+    newHeirEntryGroup.style.gap = '10px';
+    newHeirEntryGroup.style.marginBottom = '10px';
+    newHeirEntryGroup.innerHTML = `
+        <select class="heirType">
+            <option value="adultChild">성년 자녀 후계자</option>
+            <option value="minorChild">미성년 자녀 후계자</option>
+            <option value="other">기타 후계자</option>
+        </select>
+        <input type="text" placeholder="이름" class="heirName">
+        <select class="relationship">
             <option value="spouse">배우자</option>
             <option value="adultChild">성년 자녀</option>
             <option value="minorChild">미성년 자녀</option>
@@ -326,11 +334,10 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
             <option value="sibling">형제자매</option>
             <option value="other">기타</option>
         </select>
-        <input type="text" class="sharePercentage" placeholder="상속 비율 (%)">
+        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
-    businessGroupHeirContainer.appendChild(newHeirEntry);
-   });
-
+    businessGroupHeirContainer.appendChild(newHeirEntryGroup);
+});
 
 // 재산 유형에 따라 필드를 동적으로 표시
 function handleAssetTypeChange(assetTypeSelect) {
