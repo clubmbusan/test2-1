@@ -573,19 +573,18 @@ function calculateGroupMode(totalAssetValue) {
 
     console.log(`Gaup Exemption: ${gaupExemption}`);
 
-    // 관계 공제 계산
-    const exemptions = calculateExemptions(totalAssetValue, relationship);
-    const relationshipExemption = exemptions.relationshipExemption || 0;
+      // 관계 공제 계산
+    const exemptions = calculateExemptions(totalAssetValue, relationship, gaupExemption);
 
-    console.log(`Relationship Exemption: ${relationshipExemption}`);
+     // 총 공제 금액 계산
+    const totalExemption = gaupExemption + exemptions.relationshipExemption;
 
-    // 총 공제 금액 계산
-    const totalExemption = gaupExemption + relationshipExemption;
-    console.log(`Total Exemption: ${totalExemption}`);
-
-    // 과세 금액 계산
+     // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+
+     // 상속세 계산
     const tax = calculateTax(taxableAmount);
+
 
     // 결과 출력
     document.getElementById('result').innerHTML = `
