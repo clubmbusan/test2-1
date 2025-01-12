@@ -393,6 +393,7 @@ button {
     .sharePercentageField {
         text-align: right;      /* 숫자와 % 오른쪽 정렬 */
         padding-right: 10px;    /* 내부 여백 */
+        width: 120px;           /* 상속 비율 필드 너비 */
     }
 
     /* 버튼 통일 */
@@ -427,7 +428,26 @@ button {
         width: 100px; /* 이름 필드 너비 */
     }
 
+    /* 추가 수정: 필드 높이와 텍스트 크기 통일 */
+    .heirType,
+    .relationship,
+    .heirName,
     .sharePercentageField {
-        width: 120px; /* 상속 비율 필드 너비 */
+        font-size: 16px;        /* 글씨 크기 */
+        height: 50px;           /* 높이 통일 */
+        border-radius: 5px;     /* 둥근 모서리 */
+    }
+
+    /* 드롭다운 및 필드 기본 안내 텍스트 스타일 */
+    select.heirType::placeholder,
+    select.relationship::placeholder {
+        color: #999; /* 기본 안내 텍스트 색상 */
+    }
+
+    /* 텍스트 박스 내 텍스트 정렬 */
+    .heirName,
+    .sharePercentageField {
+        text-align: left;       /* 텍스트 왼쪽 정렬 */
+        padding-left: 10px;     /* 내부 여백 추가 */
     }
 </style>
