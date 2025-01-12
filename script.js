@@ -540,8 +540,8 @@ function calculateGroupMode(totalAssetValue) {
             tax,
         };
     }).filter(Boolean); // 누락된 항목 제거
-  
-      // 결과 출력
+
+    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
         ${heirs.map(heir => `
