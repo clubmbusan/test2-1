@@ -369,31 +369,24 @@ button {
 
 <style>
     /* 가업 단체 섹션 내에서만 스타일 적용 */
-    #businessGroupSection .heir-entry-group select,
-    #businessGroupSection .heir-entry-group input {
-        padding: 8px;
-        font-size: 14px;
-    }
-
-    /* 후계자 유형과 관계 필드 크기 증가 */
-    #businessGroupSection .heir-entry-group .heirType,
-    #businessGroupSection .heir-entry-group .relationship {
-        flex: 2; /* 더 큰 비율로 크기 설정 */
-        font-size: 16px; /* 글씨 크기 증가 */
-    }
-
-    /* 이름과 비율 필드 크기 감소 */
-    #businessGroupSection .heir-entry-group .heirName,
-    #businessGroupSection .heir-entry-group .sharePercentageField {
-        flex: 1; /* 더 작은 비율로 크기 설정 */
-        font-size: 12px; /* 글씨 크기 감소 */
-    }
-
-    /* 전체 정렬 및 간격 */
     #businessGroupSection .heir-entry-group {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
+        display: flex;         /* 가로 정렬 */
+        gap: 10px;             /* 각 필드 간격 */
+        margin-bottom: 10px;   /* 항목 간 여백 */
+    }
+
+    /* 후계자 유형과 관계 드롭다운 크기 증가 */
+    #businessGroupSection .heirType,
+    #businessGroupSection .relationship {
+        flex: 2;               /* 드롭다운 필드 크기를 넓게 */
+        font-size: 16px;       /* 글씨 크기 증가 */
+        padding: 5px;          /* 내부 패딩 */
+    }
+
+    /* 이름과 상속 비율 필드 크기 감소 */
+    #businessGroupSection .heirName,
+    #businessGroupSection .sharePercentageField {
+        flex: 1;               /* 필드 크기 축소 */
+        font-size: 12px;       /* 글씨 크기 축소 */
     }
 </style>
-
