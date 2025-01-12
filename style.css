@@ -383,6 +383,12 @@ button {
         box-sizing: border-box; /* 패딩 포함 박스 크기 계산 */
     }
 
+    /* 이름과 상속 비율 필드 너비를 드롭다운과 동일하게 설정 */
+    .heirName,
+    .sharePercentageField {
+        width: 140px; /* 드롭다운과 동일한 너비 */
+    }
+
     /* 드롭다운 초기 상태 텍스트 색상 */
     select.heirType option:first-child,
     select.relationship option:first-child {
@@ -393,7 +399,6 @@ button {
     .sharePercentageField {
         text-align: right;      /* 숫자와 % 오른쪽 정렬 */
         padding-right: 10px;    /* 내부 여백 */
-        width: 120px;           /* 상속 비율 필드 너비 */
     }
 
     /* 버튼 통일 */
@@ -416,38 +421,5 @@ button {
         justify-content: space-between; /* 균등 간격 */
         gap: 10px;                      /* 필드 간 간격 */
         margin-bottom: 15px;            /* 아래쪽 간격 */
-    }
-
-    /* 드롭다운과 입력 필드 너비 설정 */
-    .heirType,
-    .relationship {
-        width: 140px; /* 드롭다운 너비 */
-    }
-
-    .heirName {
-        width: 100px; /* 이름 필드 너비 */
-    }
-
-    /* 추가 수정: 필드 높이와 텍스트 크기 통일 */
-    .heirType,
-    .relationship,
-    .heirName,
-    .sharePercentageField {
-        font-size: 16px;        /* 글씨 크기 */
-        height: 50px;           /* 높이 통일 */
-        border-radius: 5px;     /* 둥근 모서리 */
-    }
-
-    /* 드롭다운 및 필드 기본 안내 텍스트 스타일 */
-    select.heirType::placeholder,
-    select.relationship::placeholder {
-        color: #999; /* 기본 안내 텍스트 색상 */
-    }
-
-    /* 텍스트 박스 내 텍스트 정렬 */
-    .heirName,
-    .sharePercentageField {
-        text-align: left;       /* 텍스트 왼쪽 정렬 */
-        padding-left: 10px;     /* 내부 여백 추가 */
     }
 </style>
