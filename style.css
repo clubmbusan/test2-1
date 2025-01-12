@@ -380,13 +380,13 @@ button {
     #businessGroupSection .relationship {
         width: 200px;             /* 드롭다운 너비 설정 */
         font-size: 16px;          /* 글씨 크기 증가 */
-        height: 40px;             /* 드롭다운 높이 설정 */
+        height: 35px;             /* 드롭다운 높이 설정 */
         padding: 5px;             /* 내부 패딩 */
     }
 
     /* 이름 필드 크기 축소 */
     #businessGroupSection .heirName {
-        width: 120px;             /* 이름 필드 너비 */
+        width: 100px;             /* 이름 필드 너비 */
         font-size: 14px;          /* 글씨 크기 */
         height: 35px;             /* 입력 필드 높이 */
         padding: 5px;             /* 내부 패딩 */
