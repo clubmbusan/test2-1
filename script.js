@@ -682,32 +682,43 @@ function validateHeirRelationship(heirType, relationship) {
 
     return true;
 }
-    
-// 6. 계산 버튼 이벤트 (하단 배치)
-    calculateButton.addEventListener('click', () => {
-        const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-            const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-            return sum + value;
-        }, 0);
 
-        switch (inheritanceType.value) {
-            case 'personal': // 개인 상속
-                calculatePersonalMode(totalAssetValue);
-                break;
-            case 'group': // 단체 상속
-                calculateGroupMode(totalAssetValue);
-                break;
-            case 'businessPersonal': // 가업 개인 상속
-                calculateBusinessPersonalMode(totalAssetValue);
-                break;
-            case 'businessGroup': // 가업 단체 상속
-                calculateBusinessGroupMode(totalAssetValue);
-                break;
-            default:
-                console.error('잘못된 계산 요청');
-                break;
-        }
-    });
+// 계산 버튼 이벤트
+calculateButton.addEventListener('click', () => {
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+
+    // 유효성 검사 실행
+    if (!validateHeirRelationship(heirType, relationship)) {
+        alert('선택한 후계자 유형과 관계가 맞지 않습니다. 올바른 조합을 선택해주세요.');
+        return; // 계산 중단
+    }
+
+    // 총 재산 금액 계산
+    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+        return sum + value;
+    }, 0);
+
+    // 상속 유형에 따라 계산 실행
+    switch (inheritanceType.value) {
+        case 'personal': // 개인 상속
+            calculatePersonalMode(totalAssetValue);
+            break;
+        case 'group': // 단체 상속
+            calculateGroupMode(totalAssetValue);
+            break;
+        case 'businessPersonal': // 가업 개인 상속
+            calculateBusinessPersonalMode(totalAssetValue);
+            break;
+        case 'businessGroup': // 가업 단체 상속
+            calculateBusinessGroupMode(totalAssetValue);
+            break;
+        default:
+            console.error('잘못된 계산 요청');
+            break;
+    }
+});
     
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
