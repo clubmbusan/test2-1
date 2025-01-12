@@ -317,13 +317,10 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
     // 새 상속인 입력 필드 생성
     const newHeirEntry = document.createElement('div');
     newHeirEntry.className = 'heir-entry-group';
-    newHeirEntry.style.display = 'flex';
-    newHeirEntry.style.gap = '10px';
-    newHeirEntry.style.marginBottom = '10px';
-
     newHeirEntry.innerHTML = `
         <!-- 후계자 유형 -->
         <select class="heirType">
+            <option value="" disabled selected>후계자 유형</option>
             <option value="adultChild">성년 자녀</option>
             <option value="minorChild">미성년 자녀</option>
             <option value="other">기타</option>
@@ -334,6 +331,7 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
 
         <!-- 관계 -->
         <select class="relationship">
+            <option value="" disabled selected>관계 선택</option>
             <option value="spouse">배우자</option>
             <option value="adultChild">성년 자녀</option>
             <option value="minorChild">미성년 자녀</option>
@@ -346,8 +344,9 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
 
-    // 새 필드를 컨테이너의 맨 위에 추가
-    businessGroupSection.insertBefore(newHeirEntry, businessGroupSection.firstChild);
+    // 가업 단체 상속 섹션에 필드 추가
+    const addButton = document.getElementById('addBusinessGroupHeirButton');
+    businessGroupSection.insertBefore(newHeirEntryGroup, addButton); // 버튼 위에 추가
 });
 
 // 재산 유형에 따라 필드를 동적으로 표시
