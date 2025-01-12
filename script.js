@@ -314,18 +314,25 @@ function getNumericValue(field) {
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
 addBusinessGroupHeirButton.addEventListener('click', () => {
-    const newHeirEntryGroup = document.createElement('div');
-    newHeirEntryGroup.className = 'heir-entry-group';
-    newHeirEntryGroup.style.display = 'flex';
-    newHeirEntryGroup.style.gap = '10px';
-    newHeirEntryGroup.style.marginBottom = '10px';
-    newHeirEntryGroup.innerHTML = `
+    // 새 상속인 입력 필드 생성
+    const newHeirEntry = document.createElement('div');
+    newHeirEntry.className = 'heir-entry-group';
+    newHeirEntry.style.display = 'flex';
+    newHeirEntry.style.gap = '10px';
+    newHeirEntry.style.marginBottom = '10px';
+
+    newHeirEntry.innerHTML = `
+        <!-- 후계자 유형 -->
         <select class="heirType">
-            <option value="adultChild">성년 자녀 후계자</option>
-            <option value="minorChild">미성년 자녀 후계자</option>
-            <option value="other">기타 후계자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="other">기타</option>
         </select>
+
+        <!-- 이름 -->
         <input type="text" placeholder="이름" class="heirName">
+
+        <!-- 관계 -->
         <select class="relationship">
             <option value="spouse">배우자</option>
             <option value="adultChild">성년 자녀</option>
@@ -334,9 +341,13 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
             <option value="sibling">형제자매</option>
             <option value="other">기타</option>
         </select>
+
+        <!-- 상속 비율 -->
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
-    businessGroupSection.appendChild(newHeirEntryGroup);
+
+    // 새 필드를 컨테이너의 맨 위에 추가
+    businessGroupHeirContainer.insertBefore(newHeirEntry, businessGroupHeirContainer.firstChild);
 });
 
 // 재산 유형에 따라 필드를 동적으로 표시
