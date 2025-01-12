@@ -576,6 +576,9 @@ function calculateGroupMode(totalAssetValue) {
       // 관계 공제 계산
     const exemptions = calculateExemptions(totalAssetValue, relationship, gaupExemption);
 
+     // `relationshipExemption` 가져오기
+    const { relationshipExemption } = exemptions;
+  
      // 총 공제 금액 계산
     const totalExemption = gaupExemption + exemptions.relationshipExemption;
 
