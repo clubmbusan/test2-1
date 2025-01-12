@@ -347,7 +347,7 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
     `;
 
     // 새 필드를 컨테이너의 맨 위에 추가
-    businessGroupHeirContainer.insertBefore(newHeirEntry, businessGroupHeirContainer.firstChild);
+    businessGroupSection.insertBefore(newHeirEntry, businessGroupSection.firstChild);
 });
 
 // 재산 유형에 따라 필드를 동적으로 표시
