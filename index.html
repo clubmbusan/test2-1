@@ -116,33 +116,35 @@
 
         <!-- 가업 단체 상속 -->
         <div id="businessGroupSection" class="section">
-            <h2>가업 단체 상속</h2>
-            <div id="businessGroupHeirContainer">
-                <div class="heir-entry-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <!-- 후계자 유형 -->
-                    <select class="heirType">
-                        <option value="adultChild">성년 자녀 후계자</option>
-                        <option value="minorChild">미성년 자녀 후계자</option>
-                        <option value="other">기타 후계자</option>
-                    </select>
-                   
-                    <!-- 이름 -->
-                    <input type="text" placeholder="이름" class="heirName">
-                    
-                    <!-- 관계 -->
-                    <select class="relationship">
-                        <option value="spouse">배우자</option>
-                        <option value="adultChild">성년 자녀</option>
-                        <option value="minorChild">미성년 자녀</option>
-                        <option value="parent">부모</option>
-                        <option value="sibling">형제자매</option>
-                        <option value="other">기타</option>
-                    </select>
-                    
-                    <!-- 상속 비율 -->
-                    <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
-                </div>
-            </div>
+    <h2>가업 단체 상속</h2>
+    <div class="heir-entry-group" style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <!-- 후계자 유형 -->
+        <select id="heirType" class="heirType">
+            <option value="" disabled selected>후계자 유형 선택</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="other">기타</option>
+        </select>
+
+        <!-- 이름 -->
+        <input type="text" placeholder="이름" class="heirName">
+
+        <!-- 관계 -->
+        <select id="relationship" class="relationship">
+            <option value="" disabled selected>관계 선택</option>
+            <option value="spouse">배우자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+
+        <!-- 상속 비율 -->
+        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+    </div>
+</div>
+
             <!-- 가업 단체 상속의 전용 버튼 (섹션 내부) -->
             <button type="button" id="addBusinessGroupHeirButton">상속인 추가</button>
         </div>
