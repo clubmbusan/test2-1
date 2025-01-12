@@ -642,9 +642,7 @@ function validateHeirRelationship(heirType, relationship) {
     `;
 }
 
- * 가업 단체 상속 계산 함수
- * @param {number} totalAssetValue - 전체 상속 재산 금액
- */
+ // 가업 단체 상속 계산 함수
 function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('총 재산 금액:', totalAssetValue);
