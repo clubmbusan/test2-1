@@ -542,7 +542,7 @@ function calculateGroupMode(totalAssetValue) {
     }).filter(Boolean); // 누락된 항목 제거
   
     // 결과 출력 부분
-       document.getElementById('result').innerHTML = `
+      document.getElementById('result').innerHTML = `
     <h3>계산 결과 (전체 상속)</h3>
     ${heirs
         .map((heir) => {
@@ -558,7 +558,8 @@ function calculateGroupMode(totalAssetValue) {
                 상속세: ${heir.tax.toLocaleString()} 원
             </p>
             `;
-        }).join('')}
+        })
+        .join('')}
 `;
 
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
@@ -644,8 +645,6 @@ function validateHeirRelationship(heirType, relationship) {
     `;
 }
 
-// 가업 단체 상속 함수
-/**
  * 가업 단체 상속 계산 함수
  * @param {number} totalAssetValue - 전체 상속 재산 금액
  */
