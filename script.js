@@ -346,7 +346,7 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
 
     // 가업 단체 상속 섹션에 필드 추가
     const addButton = document.getElementById('addBusinessGroupHeirButton');
-    businessGroupSection.insertBefore(newHeirEntryGroup, addButton); // 버튼 위에 추가
+    businessGroupSection.insertBefore(newHeirEntry, addButton); // 버튼 위에 추가
 });
 
 // 재산 유형에 따라 필드를 동적으로 표시
