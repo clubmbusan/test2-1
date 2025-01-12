@@ -545,10 +545,12 @@ function calculateGroupMode(totalAssetValue) {
   }
 
     // 가업 개인 상속 함수
- function calculateBusinessPersonalMode(totalAssetValue) {
-    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
-    const heirType = document.getElementById('businessHeirTypePersonal')?.value || 'other';
+    function calculateBusinessPersonalMode(totalAssetValue) {
+    // 관계와 후계자 유형을 명확히 분리
+    const relationship = document.querySelector('#relationshipPersonal')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
 
+    // 디버깅용 콘솔 로그
     console.log(`Relationship: ${relationship}, Heir Type: ${heirType}`);
 
     // 가업 공제 계산
@@ -567,42 +569,41 @@ function calculateGroupMode(totalAssetValue) {
     } else if (heirType === 'other') {
         gaupExemption = totalAssetValue * 0.3;
     } else {
+        // 잘못된 후계자 유형이 들어왔을 경우 기본값 설정
         console.error('잘못된 후계자 유형 선택:', heirType);
-        return;
+        heirType = 'other'; // 기본값 설정
     }
 
-    console.log(`Gaup Exemption: ${gaupExemption}`);
-
-      // 관계 공제 계산
+    // 관계 공제 계산
     const exemptions = calculateExemptions(totalAssetValue, relationship, gaupExemption);
 
-     // `relationshipExemption` 가져오기
+    // `relationshipExemption` 가져오기
     const { relationshipExemption } = exemptions;
-  
-     // 총 공제 금액 계산
-    const totalExemption = gaupExemption + exemptions.relationshipExemption;
 
-     // 과세 금액 계산
+    // 총 공제 금액 계산
+    const totalExemption = gaupExemption + relationshipExemption;
+
+    // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-     // 상속세 계산
+    // 상속세 계산
     const tax = calculateTax(taxableAmount);
-
 
     // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
-        <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue)} 원</p>
+        <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
         <p><strong>공제 내역:</strong></p>
         <ul>
-            <li>가업 공제: ${formatNumberWithCommas(gaupExemption)} 원</li>
-            <li>관계 공제: ${formatNumberWithCommas(relationshipExemption)} 원 (${relationship})</li>
+            <li>가업 공제: ${gaupExemption.toLocaleString()} 원</li>
+            <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
         </ul>
-        <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption)} 원</p>
-        <p>과세 금액: ${formatNumberWithCommas(taxableAmount)} 원</p>
-        <p>상속세: ${formatNumberWithCommas(tax)} 원</p>
+        <p><strong>총 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
+        <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
+        <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
+
     
   // 가업 개인 단체 함수
     function calculateBusinessGroupMode(totalAssetValue) {
