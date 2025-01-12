@@ -616,8 +616,6 @@ function validateHeirRelationship(heirType, relationship) {
     `;
 }
 
-    
-  // 가업 단체 함수
 // 가업 단체 상속 함수
 function calculateBusinessGroupMode(totalAssetValue) {
     // 상속인 데이터를 초기화
