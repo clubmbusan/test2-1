@@ -382,7 +382,7 @@ button {
     }
     .heirType,
     .relationship {
-        width: 150px;
+        width: 200px;
     }
     .heirName {
         width: 120px;
@@ -390,7 +390,7 @@ button {
         border-radius: 8px;
     }
     .sharePercentageField {
-        width: 150px;
+        width: 100px;
         text-align: right;
         padding-right: 10px;
         font-size: 16px;
