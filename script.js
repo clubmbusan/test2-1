@@ -547,7 +547,7 @@ function calculateGroupMode(totalAssetValue) {
     // 가업 개인 상속 함수
     function calculateBusinessPersonalMode(totalAssetValue) {
     // 관계와 후계자 유형을 명확히 분리
-    const relationship = document.querySelector('#relationshipPersonal')?.value || 'other';
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
 
     // 디버깅용 콘솔 로그
