@@ -542,12 +542,11 @@ function calculateGroupMode(totalAssetValue) {
     }).filter(Boolean); // 누락된 항목 제거
   
     // 결과 출력 부분
- // 결과 출력 부분
-document.getElementById('result').innerHTML = `
+ document.getElementById('result').innerHTML = `
     <h3>계산 결과 (전체 상속)</h3>
     ${heirs
-        .map((heir) => {
-            return `
+        .map(
+            (heir) => `
             <p>
                 <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
                 공제 내역:<br>
@@ -558,8 +557,8 @@ document.getElementById('result').innerHTML = `
                 과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
                 상속세: ${heir.tax.toLocaleString()} 원
             </p>
-            `;
-        })
+            `
+        )
         .join('')}
 `;
 
