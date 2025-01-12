@@ -385,7 +385,7 @@ button {
     /* 모든 필드의 기본 높이와 모서리 둥글게 통일 */
     #businessGroupSection select,
     #businessGroupSection input {
-        height: 40px;           /* 필드 높이 통일 */
+        height: 45px;           /* 버튼과 동일한 높이로 통일 */
         border-radius: 5px;     /* 모서리를 둥글게 설정 */
         padding: 5px;           /* 내부 여백 */
         border: 1px solid #ccc; /* 테두리 스타일 */
@@ -395,16 +395,18 @@ button {
     /* 후계자 유형과 관계 드롭다운 크기 */
     #businessGroupSection .heirType,
     #businessGroupSection .relationship {
-        width: 150px;           /* 드롭다운 필드 너비 */
+        width: 140px;           /* 드롭다운 필드 너비를 약간 줄임 */
     }
 
     /* 이름 필드 */
     #businessGroupSection .heirName {
-        width: 75px;            /* 이름 필드 너비 (드롭다운의 절반) */
+        width: 100px;           /* 이름 필드 너비 */
     }
 
     /* 상속 비율 필드 */
     #businessGroupSection .sharePercentageField {
-        width: 75px;            /* 상속 비율 필드 너비 (드롭다운의 절반) */
+        width: 120px;           /* 상속 비율 필드 너비를 늘림 */
+        text-align: right;      /* 숫자와 %가 오른쪽 정렬 */
+        padding-right: 10px;    /* %와 숫자 간 간격 추가 */
     }
 </style>
