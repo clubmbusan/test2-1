@@ -504,21 +504,24 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
     return exemptions;
 }
 
-// 단체 상속 계산 함수
+// 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
-    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('input[type="text"]').value || '상속인';
-        const relationship = heir.querySelector('select')?.value || 'other';
-        const sharePercentage = parseFloat(heir.querySelector('input[type="number"]').value || '0');
+    const heirContainer = document.querySelector('#groupSection #heirContainer'); // 그룹 상속 컨테이너 제한
+    const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+        const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
+        const relationship = heir.querySelector('.relationship')?.value || 'other';
+        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
+        // 상속 비율 유효성 검증
         if (sharePercentage <= 0 || isNaN(sharePercentage)) {
             console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
-            return null; // 잘못된 항목 제외
+            return null;
         }
 
+        // 재산 분배 및 공제 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
         const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
-            calculateExemptions(shareAmount, relationship, shareAmount);
+            calculateExemptions(shareAmount, relationship);
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
         const tax = calculateTax(taxableAmount);
 
@@ -529,13 +532,12 @@ function calculateGroupMode(totalAssetValue) {
             taxableAmount,
             tax,
         };
-     }).filter(Boolean); // 잘못된 항목 제거
-    
+    }).filter(Boolean); // 누락된 항목 제거
+
     // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
-        ${heirs.map(
-            (heir) => `
+        ${heirs.map(heir => `
             <p>
                 <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
                 공제 내역:<br>
