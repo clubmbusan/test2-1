@@ -368,37 +368,43 @@ button {
 }
 
 <style>
-    /* 가업 단체 섹션 내에서만 스타일 적용 */
+    /* 가업 단체 섹션의 부모 컨테이너 */
+    #businessGroupSection {
+        max-width: 600px;        /* 부모 섹션 너비 제한 */
+        margin: 0 auto;         /* 화면 중앙 정렬 */
+    }
+
     #businessGroupSection .heir-entry-group {
-        display: flex;            /* 가로 정렬 */
-        gap: 10px;                /* 필드 간 간격 */
-        margin-bottom: 10px;      /* 항목 간 간격 */
+        display: flex;          /* 가로 정렬 */
+        justify-content: space-between; /* 균등 정렬 */
+        align-items: center;    /* 필드 수직 정렬 */
+        gap: 10px;              /* 필드 간 간격 */
+        margin-bottom: 10px;    /* 항목 간 간격 */
     }
 
     /* 모든 필드의 기본 높이와 모서리 둥글게 통일 */
     #businessGroupSection select,
     #businessGroupSection input {
-        height: 40px;             /* 필드 높이 통일 */
-        border-radius: 5px;       /* 모서리를 둥글게 설정 */
-        padding: 5px;             /* 내부 여백 */
-        border: 1px solid #ccc;   /* 테두리 스타일 */
-        font-size: 14px;          /* 글씨 크기 */
+        height: 40px;           /* 필드 높이 통일 */
+        border-radius: 5px;     /* 모서리를 둥글게 설정 */
+        padding: 5px;           /* 내부 여백 */
+        border: 1px solid #ccc; /* 테두리 스타일 */
+        font-size: 14px;        /* 글씨 크기 */
     }
 
     /* 후계자 유형과 관계 드롭다운 크기 */
     #businessGroupSection .heirType,
     #businessGroupSection .relationship {
-        width: 180px;             /* 드롭다운 너비 설정 */
-        flex-shrink: 0;           /* 크기 축소 방지 */
+        width: 150px;           /* 드롭다운 필드 너비 */
     }
 
     /* 이름 필드 */
     #businessGroupSection .heirName {
-        width: 110px;             /* 이름 필드 너비 */
+        width: 75px;            /* 이름 필드 너비 (드롭다운의 절반) */
     }
 
     /* 상속 비율 필드 */
     #businessGroupSection .sharePercentageField {
-        width: 110px;             /* 상속 비율 필드 너비 */
+        width: 75px;            /* 상속 비율 필드 너비 (드롭다운의 절반) */
     }
 </style>
