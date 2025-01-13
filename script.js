@@ -513,33 +513,38 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 
 // 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
-    const heirContainer = document.querySelector('#groupSection #heirContainer'); // 그룹 상속 컨테이너
+    const heirContainer = document.querySelector('#groupSection #heirContainer'); // 상속인 목록 컨테이너
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('.heirName')?.value.trim(); // 상속인의 이름 수집
-        const relationship = heir.querySelector('.relationship')?.value || 'other'; // 관계 필드 값
-        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0'); // 상속 비율
+        const name = heir.querySelector('.heirName')?.value.trim(); // 이름 가져오기
+        const relationship = heir.querySelector('.relationship')?.value || 'other'; // 관계 가져오기
+        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0'); // 상속 비율 가져오기
 
-        // 유효성 검증
-        if (!name || sharePercentage <= 0 || isNaN(sharePercentage)) {
-            console.error(`${name || '상속인 이름 없음'}의 데이터가 유효하지 않습니다.`);
-            return null;
+        // 상속 비율 유효성 검증
+        if (sharePercentage <= 0 || isNaN(sharePercentage)) {
+            return null; // 비율이 0 이하 또는 비정상인 데이터는 무시
         }
 
-        // 재산 분배 및 공제 계산
-        const shareAmount = (totalAssetValue * sharePercentage) / 100; // 상속 재산 금액 계산
+        // 상속 재산 금액 계산
+        const shareAmount = (totalAssetValue * sharePercentage) / 100;
+
+        // 공제 계산
         const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
-            calculateExemptions(shareAmount, relationship); // 공제 계산
-        const taxableAmount = Math.max(shareAmount - totalExemption, 0); // 과세 금액 계산
-        const tax = calculateTax(taxableAmount); // 상속세 계산
+            calculateExemptions(shareAmount, relationship);
+
+        // 과세 금액 계산
+        const taxableAmount = Math.max(shareAmount - totalExemption, 0);
+
+        // 상속세 계산
+        const tax = calculateTax(taxableAmount);
 
         return {
-            name, // 상속인의 이름 저장
+            name: name || '상속인', // 이름이 없으면 기본값으로 "상속인" 설정
             shareAmount,
             exemptions: { basicExemption, baseExemption, relationshipExemption, totalExemption },
             taxableAmount,
             tax,
         };
-    }).filter(Boolean); // 유효한 데이터만 포함
+    }).filter(Boolean); // 유효하지 않은 항목 제거
 
     // 결과 출력
     document.getElementById('result').innerHTML = `
@@ -549,13 +554,13 @@ function calculateGroupMode(totalAssetValue) {
                 (heir) => `
                 <p>
                     <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
-                    <strong>공제 내역:</strong><br>
+                    공제 내역:<br>
                     - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
                     - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
                     - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
-                    <strong>총 공제 금액:</strong> ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
-                    <strong>과세 금액:</strong> ${heir.taxableAmount.toLocaleString()} 원<br>
-                    <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
+                    총 공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
+                    과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
+                    상속세: ${heir.tax.toLocaleString()} 원
                 </p>
                 `
             )
