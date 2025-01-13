@@ -554,14 +554,9 @@ function calculateGroupMode(totalAssetValue) {
         const { relationshipExemption, specialExemption } = calculateRelationshipExemption(relationship, shareAmount);
 
         // 최종 공제 금액 계산
-        let finalExemption;
-        if (relationship === 'spouse') {
-            finalExemption = relationshipExemption + specialExemption; // 배우자는 특별 공제 포함
-        } else {
-            const baseExemption = 200000000; // 기초 공제 (2억)
-            const basicExemption = 600000000; // 기본 공제 (6억)
-            finalExemption = Math.max(relationshipExemption + baseExemption, basicExemption);
-        }
+        const finalExemption = relationship === 'spouse'
+            ? relationshipExemption + specialExemption // 배우자는 특별 공제 포함
+            : calculateFinalExemption(relationshipExemption, false); // 다른 상속인은 일반 로직
 
         // 과세 금액 계산
         const taxableAmount = Math.max(shareAmount - finalExemption, 0);
