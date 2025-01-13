@@ -535,6 +535,7 @@ function calculatePersonalMode(totalAssetValue) {
 }
 
 // 전체 상속 계산 함수
+// 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
@@ -554,9 +555,14 @@ function calculateGroupMode(totalAssetValue) {
         const { relationshipExemption, specialExemption } = calculateRelationshipExemption(relationship, shareAmount);
 
         // 최종 공제 금액 계산
-        const finalExemption = relationship === 'spouse'
-            ? relationshipExemption + specialExemption // 배우자는 특별 공제 포함
-            : calculateFinalExemption(relationshipExemption, false); // 다른 상속인은 일반 로직
+        let finalExemption;
+        if (relationship === 'spouse') {
+            finalExemption = relationshipExemption + specialExemption; // 배우자는 특별 공제 포함
+        } else {
+            const baseExemption = 200000000; // 기초 공제 (2억 원)
+            const totalExemption = baseExemption + relationshipExemption;
+            finalExemption = Math.max(totalExemption, 600000000); // 기본 공제(6억 원) 포함
+        }
 
         // 과세 금액 계산
         const taxableAmount = Math.max(shareAmount - finalExemption, 0);
@@ -564,7 +570,6 @@ function calculateGroupMode(totalAssetValue) {
         // 상속세 계산
         const tax = calculateTax(taxableAmount);
 
-        // 반환된 결과를 구조화하여 배열에 저장
         return { 
             name, 
             shareAmount, 
@@ -585,9 +590,7 @@ function calculateGroupMode(totalAssetValue) {
     // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
-        ${heirs
-            .map(
-                (result) => `
+        ${heirs.map(result => `
             <p>
                 <strong>${result.name} (${result.relationship})</strong>: ${result.shareAmount.toLocaleString()} 원<br>
                 관계 공제: ${result.relationshipExemption.toLocaleString()} 원<br>
@@ -596,9 +599,7 @@ function calculateGroupMode(totalAssetValue) {
                 과세 금액: ${result.taxableAmount.toLocaleString()} 원<br>
                 상속세: ${result.tax.toLocaleString()} 원
             </p>
-        `
-            )
-            .join('')}
+        `).join('')}
     `;
 }
     
