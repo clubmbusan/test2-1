@@ -403,12 +403,12 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
-// 관계별 공제 계산 (기초 일괄 배우자 공제 포함)    
+// 관계별 공제 계산 (기초 일괄 배우자 공제 포함)   
 function calculateRelationshipExemption(relationship, shareAmount) {
     let relationshipExemption = 0;
 
     switch (relationship) {
-        case 'spouse': // 배우자 공제 계산
+        case 'spouse': // 배우자 공제
             if (shareAmount <= 500000000) {
                 relationshipExemption = shareAmount; // 5억 이하 전액 공제
             } else if (shareAmount > 500000000 && shareAmount <= 10000000000) {
@@ -420,32 +420,32 @@ function calculateRelationshipExemption(relationship, shareAmount) {
             relationshipExemption = Math.min(relationshipExemption, 3500000000); // 최대 공제 한도 35억 원
             break;
 
-        case 'adultChild': // 성년 자녀 공제
+        case 'adultChild': // 성년 자녀
             relationshipExemption = 500000000; // 5억 원 고정
             break;
 
-        case 'minorChild': // 미성년 자녀 공제
+        case 'minorChild': // 미성년 자녀
             relationshipExemption = 30000000; // 3천만 원 고정
             break;
 
-        case 'parent': // 부모 공제
+        case 'parent': // 부모
             relationshipExemption = 100000000; // 1억 원 고정
             break;
 
-        case 'sibling': // 형제자매 공제
-        case 'other': // 기타 공제
+        case 'sibling': // 형제자매
+        case 'other': // 기타
             relationshipExemption = 10000000; // 1천만 원 고정
             break;
 
         default:
             console.error('잘못된 관계 선택:', relationship);
-            return 0; // 잘못된 경우에는 0 반환
+            return 0; // 잘못된 경우 0 반환
     }
 
-    return relationshipExemption; // 계산된 관계 공제 반환
+    return relationshipExemption; // 관계 공제 반환
 }
 
-// 최종 공제 계산 함수 (기초 공제, 기본 공제 포함)
+// 최종 공제 계산 함수 (기초 공제 및 기본 공제 포함)
 function calculateFinalExemption(relationshipExemption) {
     const basicExemption = 600000000; // 기본 공제 (6억 원)
     const baseExemption = 200000000; // 기초 공제 (2억 원)
@@ -539,7 +539,7 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 }
 
 // 전체 상속 계산 함수
-   function calculateGroupMode(totalAssetValue) {
+ function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
