@@ -531,7 +531,6 @@ function calculateGroupMode(totalAssetValue) {
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
-        // 상속 비율 유효성 검증
         if (sharePercentage <= 0 || isNaN(sharePercentage)) {
             console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
             return null;
@@ -541,7 +540,7 @@ function calculateGroupMode(totalAssetValue) {
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
         // 관계 공제 계산
-        const relationshipExemption = calculateRelationshipExemption(relationship, shareAmount);
+        const relationshipExemption = calculateExemptions(relationship, shareAmount);
 
         return {
             name,
@@ -550,12 +549,23 @@ function calculateGroupMode(totalAssetValue) {
         };
     }).filter(Boolean); // 유효하지 않은 상속인 제거
 
-    // 기본 공제와 기초 공제를 한 번만 계산
-    const totalExemption = calculateTotalExemptions(totalAssetValue);
+    // 기초 공제는 2억, 기본적으로 2억이 적용됨
+    const baseExemption = 200000000; // 기초 공제 (2억 원)
+    const relationshipExemptions = heirs.map(heir => heir.relationshipExemption);
+    
+    // 총 공제액 계산 (기초 공제 + 관계 공제)
+    const totalRelationshipExemption = relationshipExemptions.reduce((total, exemption) => total + exemption, 0);
+    const totalExemption = baseExemption + totalRelationshipExemption;
+    
+    // 일괄공제: 기초공제 + 관계공제가 6억 미만이면 6억 공제, 6억을 초과하면 초과한 부분은 공제되지 않음
+    let totalExemptionAfterCap = totalExemption;
+    if (totalExemption < 600000000) {
+        totalExemptionAfterCap = 600000000; // 6억 미만이면 일괄공제 6억 적용
+    }
 
     const results = heirs.map((heir) => {
         // 각 상속인의 과세 금액 계산
-        const taxableAmount = Math.max(heir.shareAmount - totalExemption - heir.relationshipExemption, 0);
+        const taxableAmount = Math.max(heir.shareAmount - totalExemptionAfterCap - heir.relationshipExemption, 0);
 
         // 상속세 계산
         const tax = calculateTax(taxableAmount);
@@ -572,9 +582,9 @@ function calculateGroupMode(totalAssetValue) {
     // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
-        <p><strong>기본 공제:</strong> 600,000,000 원</p>
-        <p><strong>기초 공제:</strong> 200,000,000 원</p>
-        <p><strong>총 공제 금액:</strong> ${(600000000 + 200000000).toLocaleString()} 원 (기본 공제와 기초 공제 한 번만 적용)</p>
+        <p><strong>기초 공제:</strong> 200,000,000 원</p> <!-- 기초 공제 출력 -->
+        <p><strong>관계 공제 합:</strong> ${totalRelationshipExemption.toLocaleString()} 원</p> <!-- 관계 공제 합 출력 -->
+        <p><strong>총 공제 금액:</strong> ${totalExemptionAfterCap.toLocaleString()} 원 (기초 공제와 관계 공제 한 번만 적용)</p> <!-- 총 공제 금액 출력 -->
         ${results.map(result => `
             <p>
                 <strong>${result.name}</strong>: ${result.shareAmount.toLocaleString()} 원<br>
