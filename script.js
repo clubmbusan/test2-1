@@ -271,27 +271,34 @@ function getNumericValue(field) {
         </select>
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
-      
-        // 새로 추가된 상속 비율 필드 이벤트 등록
-        const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
-        sharePercentageField.addEventListener('input', () => {
-            const value = parseFloat(sharePercentageField.value) || 0;
 
-            // 비율 검증: 범위 제한 (0~100)
-            if (value < 0 || value > 100) {
-                alert('상속 비율은 0%에서 100% 사이여야 합니다.');
-                sharePercentageField.value = ''; // 잘못된 입력 초기화
-                return;
-            }
+    console.log('새로운 상속인 필드 추가 준비:', newHeirEntry);
 
-            // 전체 합 검증
-            if (!validateSharePercentage()) {
-                sharePercentageField.value = ''; // 잘못된 입력 초기화
-            }
-        });
+    // 새로 추가된 상속 비율 필드 이벤트 등록
+    const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
+    sharePercentageField.addEventListener('input', () => {
+        const value = parseFloat(sharePercentageField.value) || 0;
 
-        heirContainer.appendChild(newHeirEntry);
+        console.log('상속 비율 입력 값:', value);
+
+        // 비율 검증: 범위 제한 (0~100)
+        if (value < 0 || value > 100) {
+            alert('상속 비율은 0%에서 100% 사이여야 합니다.');
+            sharePercentageField.value = ''; // 잘못된 입력 초기화
+            console.log('잘못된 입력 값으로 초기화됨');
+            return;
+        }
+
+        // 전체 합 검증
+        if (typeof validateSharePercentage === 'function' && !validateSharePercentage()) {
+            sharePercentageField.value = ''; // 잘못된 입력 초기화
+            console.log('전체 비율 검증 실패');
+        }
     });
+
+    console.log('상속인 필드 추가 완료:', newHeirEntry);
+    heirContainer.appendChild(newHeirEntry); // DOM 추가
+});
 
     // 기존 상속 비율 필드 이벤트 등록
     document.querySelectorAll('.sharePercentageField').forEach((field) => {
