@@ -256,22 +256,22 @@ function getNumericValue(field) {
     }
 
 // 상속인 추가 버튼 이벤트
-    addHeirButton.addEventListener('click', () => {
-        const newHeirEntry = document.createElement('div');
-        newHeirEntry.className = 'heir-entry';
-        newHeirEntry.innerHTML = `
-            <input type="text" placeholder="이름">
-            <select>
-                <option value="spouse">배우자</option>
-                <option value="adultChild">자녀(성년)</option>
-                <option value="minorChild">자녀(미성년)</option>
-                <option value="parent">부모</option>
-                <option value="sibling">형제자매</option>
-                <option value="other">기타</option>
-            </select>
-            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
-        `;
-
+  addHeirButton.addEventListener('click', () => {
+    const newHeirEntry = document.createElement('div');
+    newHeirEntry.className = 'heir-entry';
+    newHeirEntry.innerHTML = `
+        <input type="text" placeholder="이름" class="heirName">
+        <select class="relationship">
+            <option value="spouse">배우자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+    `;
+      
         // 새로 추가된 상속 비율 필드 이벤트 등록
         const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
         sharePercentageField.addEventListener('input', () => {
@@ -542,20 +542,26 @@ function calculateGroupMode(totalAssetValue) {
     }).filter(Boolean); // 누락된 항목 제거
 
     // 결과 출력
+    function displayResults(heirs) {
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
-        ${heirs.map(heir => `
-            <p>
-                <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
-                공제 내역:<br>
-                - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
-                - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
-                - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
-                총 공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
-                과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
-                상속세: ${heir.tax.toLocaleString()} 원
-            </p>
-        `).join('')}
+        ${heirs
+            .map(
+                (heir) => `
+                <p>
+                    <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
+                    관계: ${heir.relationship}<br>
+                    공제 내역:<br>
+                    - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
+                    - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
+                    - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
+                    총 공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
+                    과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
+                    상속세: ${heir.tax.toLocaleString()} 원
+                </p>
+                `
+            )
+            .join('')}
     `;
 }
     
