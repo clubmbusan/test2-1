@@ -403,30 +403,31 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
-   // 공제 계산 로직 ---- 기본 및 기초 공제를 전체 상속 재산에서 한 번만 적용
-function calculateExemptions(relationship, shareAmount) {
+  // 관계별 공제 계산 (기초 일괄 배우자) 함수
+function calculateRelationshipExemption(relationship, shareAmount) {
     let relationshipExemption = 0;
 
     // 관계별 공제 계산
     switch (relationship) {
         case 'spouse':
-            relationshipExemption = Math.min(shareAmount * 0.5, 3500000000); // 배우자 공제
+            relationshipExemption = Math.min(shareAmount * 0.5, 3500000000); // 배우자 공제 (50%)
             break;
         case 'adultChild':
-            relationshipExemption = 50000000; // 성년 자녀 공제
+            relationshipExemption = 500000000; // 성년 자녀 공제 (5억 원)
             break;
         case 'minorChild':
-            relationshipExemption = 0; // 미성년자 공제는 생년월일로 별도 계산
+            relationshipExemption = 30000000; // 미성년 자녀 공제 (3천만 원)
             break;
         case 'parent':
-            relationshipExemption = 100000000; // 부모 공제
+            relationshipExemption = 100000000; // 부모 공제 (1억 원)
             break;
         case 'sibling':
         case 'other':
-            relationshipExemption = 10000000; // 기타 공제
+            relationshipExemption = 10000000; // 형제자매 또는 기타 공제 (1천만 원)
             break;
         default:
             console.error('잘못된 관계 선택:', relationship);
+            return 0; // 잘못된 경우에는 0 반환
     }
 
     return relationshipExemption; // 관계 공제만 반환
@@ -438,7 +439,7 @@ function calculateTotalExemptions(totalInheritance) {
     const baseExemption = 200000000; // 기초 공제 (2억 원)
 
     const totalExemption = basicExemption + baseExemption;
-    return totalExemption;
+    return totalExemption; // 기본 공제와 기초 공제 합산 후 반환
 }
 
 // 과세표준 계산 함수
@@ -530,6 +531,7 @@ function calculateGroupMode(totalAssetValue) {
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
+        // 상속 비율 유효성 검증
         if (sharePercentage <= 0 || isNaN(sharePercentage)) {
             console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
             return null;
@@ -539,7 +541,7 @@ function calculateGroupMode(totalAssetValue) {
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
         // 관계 공제 계산
-        const relationshipExemption = calculateExemptions(relationship, shareAmount);
+        const relationshipExemption = calculateRelationshipExemption(relationship, shareAmount);
 
         return {
             name,
