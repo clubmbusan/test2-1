@@ -411,24 +411,24 @@ function calculateRelationshipExemption(relationship, shareAmount) {
         case 'spouse': // 배우자 공제
             if (shareAmount <= 500000000) {
                 relationshipExemption = shareAmount; // 5억 이하 전액 공제
-            } else if (shareAmount > 500000000 && shareAmount <= 10000000000) {
-                relationshipExemption = 500000000; // 5억 공제
-            } else {
+            } else if (shareAmount > 10000000000) {
                 const aboveTenBillion = shareAmount - 10000000000; // 10억 초과분
                 relationshipExemption = 500000000 + aboveTenBillion * 0.5; // 초과분의 50% 공제
+            } else {
+                relationshipExemption = 500000000; // 10억 이하 공제
             }
             relationshipExemption = Math.min(relationshipExemption, 3500000000); // 최대 공제 한도 35억 원
             break;
 
-        case 'adultChild': // 성년 자녀
+        case 'adultChild': // 성년 자녀 공제
             relationshipExemption = 500000000; // 5억 원 고정
             break;
 
-        case 'minorChild': // 미성년 자녀
+        case 'minorChild': // 미성년 자녀 공제
             relationshipExemption = 30000000; // 3천만 원 고정
             break;
 
-        case 'parent': // 부모
+        case 'parent': // 부모 공제
             relationshipExemption = 100000000; // 1억 원 고정
             break;
 
