@@ -403,7 +403,7 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
-       // 관계별 공제 계산 (기초 일괄 배우자 공제 포함)
+// 관계별 공제 계산 (기초 일괄 배우자 공제 포함)    
 function calculateRelationshipExemption(relationship, shareAmount) {
     let relationshipExemption = 0;
 
@@ -445,16 +445,15 @@ function calculateRelationshipExemption(relationship, shareAmount) {
     return relationshipExemption; // 계산된 관계 공제 반환
 }
 
-// 기초 공제 및 기본 공제 계산 함수
-function calculateTotalExemptions(relationshipExemptions) {
+// 최종 공제 계산 함수 (기초 공제, 기본 공제 포함)
+function calculateFinalExemption(relationshipExemption) {
     const basicExemption = 600000000; // 기본 공제 (6억 원)
     const baseExemption = 200000000; // 기초 공제 (2억 원)
 
     // 기초 공제와 관계 공제의 합 계산
-    const totalRelationshipExemption = relationshipExemptions.reduce((sum, exemption) => sum + exemption, 0);
-    const totalExemption = baseExemption + totalRelationshipExemption;
+    const totalExemption = baseExemption + relationshipExemption;
 
-    // 총 공제가 6억 원 미만일 경우 최소 6억 원 보장 (일괄 공제)
+    // 총 공제가 6억 원 미만일 경우 최소 6억 원 보장
     return Math.max(totalExemption, basicExemption);
 }
 
@@ -540,7 +539,7 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 }
 
 // 전체 상속 계산 함수
-    function calculateGroupMode(totalAssetValue) {
+   function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
@@ -558,7 +557,25 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
         // 관계 공제 계산
         const relationshipExemption = calculateRelationshipExemption(relationship, shareAmount);
 
-        return { name, shareAmount, relationshipExemption, relationship };
+        // 최종 공제 금액 계산
+        const finalExemption = calculateFinalExemption(relationshipExemption);
+
+        // 과세 금액 계산
+        const taxableAmount = Math.max(shareAmount - finalExemption, 0);
+
+        // 상속세 계산
+        const tax = calculateTax(taxableAmount);
+
+        // 반환된 결과를 구조화하여 배열에 저장
+        return { 
+            name, 
+            shareAmount, 
+            relationship, 
+            relationshipExemption, 
+            finalExemption, 
+            taxableAmount, 
+            tax 
+        };
     }).filter(Boolean); // 유효한 상속인만 유지
 
     if (!heirs.length) {
@@ -566,40 +583,16 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
         return;
     }
 
-    // 관계 공제를 배열로 수집
-    const relationshipExemptions = heirs.map((heir) => heir.relationshipExemption);
-
-    // 총 공제 금액 계산 (기초 공제, 기본 공제, 관계 공제 포함)
-    const finalExemption = calculateTotalExemptions(relationshipExemptions);
-
-    // 상속인별 결과 계산
-    const results = heirs.map((heir) => {
-        // 각 상속인의 과세 금액 계산
-        const taxableAmount = Math.max(heir.shareAmount - finalExemption, 0);
-
-        // 상속세 계산
-        const tax = calculateTax(taxableAmount);
-
-        return {
-            name: heir.name,
-            shareAmount: heir.shareAmount,
-            relationship: heir.relationship,
-            relationshipExemption: heir.relationshipExemption,
-            taxableAmount,
-            tax,
-        };
-    });
-
     // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
-        <p><strong>기초 공제 및 기본 공제:</strong> 6억 원 보장</p>
-        ${results
+        ${heirs
             .map(
                 (result) => `
             <p>
                 <strong>${result.name} (${result.relationship})</strong>: ${result.shareAmount.toLocaleString()} 원<br>
                 관계 공제: ${result.relationshipExemption.toLocaleString()} 원<br>
+                최종 공제 금액: ${result.finalExemption.toLocaleString()} 원<br>
                 과세 금액: ${result.taxableAmount.toLocaleString()} 원<br>
                 상속세: ${result.tax.toLocaleString()} 원
             </p>
