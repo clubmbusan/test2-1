@@ -544,7 +544,7 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
 }
 
 // 전체 상속 계산 함수
- function calculateGroupMode(totalAssetValue) {
+function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
@@ -563,7 +563,8 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
         const relationshipExemption = calculateRelationshipExemption(relationship, shareAmount);
 
         // 최종 공제 금액 계산
-        const finalExemption = calculateFinalExemption(relationshipExemption);
+        const isSpouse = relationship === 'spouse'; // 배우자인 경우
+        const finalExemption = calculateFinalExemption(relationshipExemption, isSpouse);
 
         // 과세 금액 계산
         const taxableAmount = Math.max(shareAmount - finalExemption, 0);
