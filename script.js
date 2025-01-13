@@ -403,22 +403,20 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
-    // 공제 계산 로직 ---- 상속세 계산 로직에 기초공제를 추가
-function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
-    const basicExemption = 600000000; // 기본 공제 (6억 원)
-    const baseExemption = 200000000; // 기초 공제 (2억 원)
-
+   // 공제 계산 로직 ---- 기본 및 기초 공제를 전체 상속 재산에서 한 번만 적용
+function calculateExemptions(relationship, shareAmount) {
     let relationshipExemption = 0;
 
+    // 관계별 공제 계산
     switch (relationship) {
         case 'spouse':
-            relationshipExemption = Math.min(spouseShare, totalInheritance * 0.5, 3500000000); // 배우자 공제
+            relationshipExemption = Math.min(shareAmount * 0.5, 3500000000); // 배우자 공제
             break;
         case 'adultChild':
-            relationshipExemption = 500000000; // 성년 자녀 공제
+            relationshipExemption = 50000000; // 성년 자녀 공제
             break;
         case 'minorChild':
-            relationshipExemption = 30000000; // 미성년 자녀 공제
+            relationshipExemption = 0; // 미성년자 공제는 생년월일로 별도 계산
             break;
         case 'parent':
             relationshipExemption = 100000000; // 부모 공제
@@ -429,12 +427,18 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
             break;
         default:
             console.error('잘못된 관계 선택:', relationship);
-            return { basicExemption, baseExemption, relationshipExemption: 0, totalExemption: 0 };
     }
 
-    const totalExemption = basicExemption + baseExemption + relationshipExemption;
+    return relationshipExemption; // 관계 공제만 반환
+}
 
-    return { basicExemption, baseExemption, relationshipExemption, totalExemption };
+// 기본 공제 및 기초 공제를 전체 상속 재산에서 한 번만 계산
+function calculateTotalExemptions(totalInheritance) {
+    const basicExemption = 600000000; // 기본 공제 (6억 원)
+    const baseExemption = 200000000; // 기초 공제 (2억 원)
+
+    const totalExemption = basicExemption + baseExemption;
+    return totalExemption;
 }
 
 // 과세표준 계산 함수
