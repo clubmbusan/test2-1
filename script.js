@@ -411,7 +411,6 @@ function calculateRelationshipExemption(relationship, shareAmount) {
     switch (relationship) {
         case 'spouse': // 배우자 공제
             relationshipExemption = 500000000; // 최소 5억 공제
-
             if (shareAmount > 10000000000) {
                 const aboveTenBillion = shareAmount - 10000000000; // 10억 초과분
                 specialExemption = Math.min(aboveTenBillion * 0.5, 30000000000); // 초과분의 50% 공제, 최대 30억
@@ -533,12 +532,6 @@ function calculatePersonalMode(totalAssetValue) {
         <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
-}
-
-// 총 공제를 상세히 계산하는 함수
-function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare = 0) {
-    const exemptions = calculateExemptions(shareAmount, relationship, spouseShare);
-    return exemptions;
 }
 
 // 전체 상속 계산 함수
