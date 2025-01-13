@@ -446,9 +446,14 @@ function calculateRelationshipExemption(relationship, shareAmount) {
 }
 
 // 최종 공제 계산 함수 (기초 공제 및 기본 공제 포함)
-function calculateFinalExemption(relationshipExemption) {
+function calculateFinalExemption(relationshipExemption, isSpouse = false) {
     const basicExemption = 600000000; // 기본 공제 (6억 원)
     const baseExemption = 200000000; // 기초 공제 (2억 원)
+
+    if (isSpouse) {
+        // 배우자는 기본 공제와 기초 공제를 따로 적용하지 않음
+        return relationshipExemption;
+    }
 
     // 기초 공제와 관계 공제의 합 계산
     const totalExemption = baseExemption + relationshipExemption;
