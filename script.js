@@ -541,25 +541,25 @@ function calculateGroupMode(totalAssetValue) {
         };
     }).filter(Boolean); // 누락된 항목 제거
 
-    // 결과 출력
-   document.getElementById('result').innerHTML = `
-    <h3>계산 결과 (전체 상속)</h3>
-    ${heirs
-        .map((heir) => {
-            return `
-            <p>
-                <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
-                공제 내역:<br>
-                - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
-                - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
-                - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
-                총 공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
-                과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
-                상속세: ${heir.tax.toLocaleString()} 원
-            </p>
-            `;
-        })
-        .join('')}
+   // 결과 출력 부분
+document.getElementById('result').innerHTML = `
+   <h3>계산 결과 (전체 상속)</h3>
+   ${heirs
+       .map(
+           (heir) => `
+           <p>
+               <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
+               공제 내역:<br>
+               - 기본 공제: ${heir.exemptions.basicExemption.toLocaleString()} 원<br>
+               - 기초 공제: ${heir.exemptions.baseExemption.toLocaleString()} 원<br>
+               - 관계 공제: ${heir.exemptions.relationshipExemption.toLocaleString()} 원<br>
+               총 공제 금액: ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
+               과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
+               상속세: ${heir.tax.toLocaleString()} 원
+           </p>
+           `
+       )
+       .join('')}
 `;
 
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
