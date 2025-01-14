@@ -413,3 +413,10 @@ button {
         margin-bottom: 10px;
     }
 </style>
+
+#businessYearsGroup {
+    margin-top: 10px;
+    width: 600px; /* 필드 크기 */
+    padding: 5px; /* 내부 여백 */
+    font-size: 14px; /* 글자 크기 */
+}
