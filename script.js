@@ -404,16 +404,26 @@ function handleAssetTypeChange(assetTypeSelect) {
 addAssetButton.addEventListener('click', createAssetEntry);    
 
 // 관계별 공제 계산 (기초 일괄 배우자 특별 공제 포함)   
+// 관계별 공제 계산 (기초, 최소, 특별 공제 포함)
 function calculateRelationshipExemption(relationship, shareAmount) {
-    let relationshipExemption = 0;
-    let specialExemption = 0;
+    let relationshipExemption = 0; // 기본 공제
+    let specialExemption = 0; // 특별 공제 (배우자만 해당)
 
     switch (relationship) {
         case 'spouse': // 배우자 공제
-            relationshipExemption = 500000000; // 최소 5억 공제
-            if (shareAmount > 10000000000) {
-                const aboveTenBillion = shareAmount - 10000000000; // 10억 초과분
-                specialExemption = Math.min(aboveTenBillion * 0.5, 30000000000); // 초과분의 50% 공제, 최대 30억
+            // 최소 5억 원 관계 공제
+            relationshipExemption = 500000000;
+
+            // 10억까지 공제 (최소공제 제외)
+            if (shareAmount > 5000000000) {
+                const upToTenBillion = Math.min(shareAmount, 15000000000) - 5000000000; // 5억 초과 15억 이하
+                relationshipExemption += upToTenBillion;
+            }
+
+            // 15억 초과분에 대한 특별 공제 (50% 적용, 최대 20억까지 제한)
+            if (shareAmount > 15000000000) {
+                const aboveFifteenBillion = shareAmount - 15000000000; // 15억 초과분
+                specialExemption = Math.min(aboveFifteenBillion * 0.5, 20000000000); // 15억 초과분의 50% 공제, 최대 20억
             }
             break;
 
@@ -443,13 +453,13 @@ function calculateRelationshipExemption(relationship, shareAmount) {
 }
 
 // 최종 공제 계산 함수 (기초 공제 및 기본 공제 포함)
-function calculateFinalExemption(relationshipExemption, isSpouse = false) {
+function calculateFinalExemption(relationshipExemption, specialExemption = 0, isSpouse = false) {
     const basicExemption = 600000000; // 기본 공제 (6억 원)
     const baseExemption = 200000000; // 기초 공제 (2억 원)
 
     if (isSpouse) {
         // 배우자는 기본 공제와 기초 공제를 따로 적용하지 않음
-        return relationshipExemption;
+        return relationshipExemption + specialExemption;
     }
 
     // 기초 공제와 관계 공제의 합 계산
@@ -458,6 +468,15 @@ function calculateFinalExemption(relationshipExemption, isSpouse = false) {
     // 총 공제가 6억 원 미만일 경우 최소 6억 원 보장
     return Math.max(totalExemption, basicExemption);
 }
+
+// 예제 실행
+const exampleSpouse = calculateRelationshipExemption('spouse', 75000000000); // 배우자가 75억 상속받은 경우
+const finalExemption = calculateFinalExemption(
+    exampleSpouse.relationshipExemption,
+    exampleSpouse.specialExemption,
+    true
+);
+console.log(`최종 배우자 공제 금액: ${finalExemption.toLocaleString()}원`);
 
 // 과세표준 계산 함수
 function calculateTaxableAmount(totalInheritance, exemptions) {
