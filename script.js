@@ -553,7 +553,6 @@ function calculatePersonalMode(totalAssetValue) {
 }
 
 // 전체 상속 계산 함수
-// 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
@@ -572,15 +571,20 @@ function calculateGroupMode(totalAssetValue) {
         // 관계 공제 계산
         const { relationshipExemption, specialExemption } = calculateRelationshipExemption(relationship, shareAmount);
 
-        // 최종 공제 금액 계산
-        let finalExemption;
+        // 추가 공제 계산
+        let additionalExemption = 0;
         if (relationship === 'spouse') {
-            finalExemption = relationshipExemption + specialExemption; // 배우자는 특별 공제 포함
+            // 배우자는 최소공제(5억) + 추가공제(10억까지)
+            if (shareAmount > 5000000000) {
+                additionalExemption += Math.min(shareAmount - 5000000000, 10000000000);
+            }
         } else {
-            const baseExemption = 200000000; // 기초 공제 (2억 원)
-            const totalExemption = baseExemption + relationshipExemption;
-            finalExemption = Math.max(totalExemption, 600000000); // 기본 공제(6억 원) 포함
+            // 기타 상속인은 기초공제(2억) 포함
+            additionalExemption += 200000000; // 최대 2억
         }
+
+        // 최종 공제 금액 계산
+        const finalExemption = relationshipExemption + additionalExemption + specialExemption;
 
         // 과세 금액 계산
         const taxableAmount = Math.max(shareAmount - finalExemption, 0);
@@ -593,6 +597,7 @@ function calculateGroupMode(totalAssetValue) {
             shareAmount, 
             relationship, 
             relationshipExemption, 
+            additionalExemption, 
             specialExemption, 
             finalExemption, 
             taxableAmount, 
@@ -612,6 +617,7 @@ function calculateGroupMode(totalAssetValue) {
             <p>
                 <strong>${result.name} (${result.relationship})</strong>: ${result.shareAmount.toLocaleString()} 원<br>
                 관계 공제: ${result.relationshipExemption.toLocaleString()} 원<br>
+                추가 공제: ${result.additionalExemption.toLocaleString()} 원<br>
                 특별 공제: ${result.specialExemption.toLocaleString()} 원<br>
                 최종 공제 금액: ${result.finalExemption.toLocaleString()} 원<br>
                 과세 금액: ${result.taxableAmount.toLocaleString()} 원<br>
