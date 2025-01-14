@@ -629,16 +629,30 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
     
-  // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
-  function formatNumberWithCommas(value) {
-      if (value === null || value === undefined) {
-          return '0'; // 기본값 반환
-      }
-      if (typeof value === 'number') {
-          value = value.toString(); // 숫자를 문자열로 변환
-      }
-      return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
-  }
+  /**
+ * 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
+ * @param {string|number|null|undefined} value - 콤마를 추가할 값
+ * @returns {string} - 콤마가 추가된 문자열
+ */
+function formatNumberWithCommas(value) {
+    if (value === null || value === undefined) {
+        return '0'; // null 또는 undefined는 "0" 반환
+    }
+
+    // 숫자면 문자열로 변환
+    if (typeof value === 'number') {
+        value = value.toString();
+    }
+
+    // 문자열이 아닌 경우 에러 방지
+    if (typeof value !== 'string') {
+        console.error(`잘못된 값 전달: ${value}`);
+        return '0';
+    }
+
+    // 문자열에서 숫자 외 문자를 제거하고 콤마 추가
+    return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
+}
 
     // 유효성 검사 함수 (가업개인/단체 공통)
 function validateHeirRelationship(heirType, relationship) {
