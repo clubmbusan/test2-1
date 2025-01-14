@@ -727,6 +727,9 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
 // 가업 단체 상속 함수
 function calculateBusinessGroupMode(totalAssetValue) {
+    console.log('--- 가업 단체 상속 계산 시작 ---');
+    console.log('총 재산 금액:', totalAssetValue);
+
     const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
         const name = heir.querySelector('.heirName')?.value || `상속인 ${index + 1}`;
         const heirType = heir.querySelector('.heirType')?.value || 'other';
@@ -739,12 +742,29 @@ function calculateBusinessGroupMode(totalAssetValue) {
             return null;
         }
 
-        const gaupExemption = calculateGaupExemption(heirAssetValue, heirType);
-        const relationshipExemption = calculateRelationshipExemption(relationship, heirAssetValue, true);
+        // 가업 공제 계산
+        const gaupExemption = Math.min(
+            calculateGaupExemption(heirAssetValue, heirType),
+            heirAssetValue // 상속 재산 금액보다 공제가 클 수 없음
+        );
 
-        const totalExemption = gaupExemption + relationshipExemption;
+        // 관계 공제 계산
+        const { relationshipExemption } = calculateRelationshipExemption(relationship, heirAssetValue, true);
+
+        // 총 공제 계산
+        const totalExemption = Math.min(heirAssetValue, gaupExemption + relationshipExemption);
+
         const taxableAmount = Math.max(heirAssetValue - totalExemption, 0);
         const tax = calculateTax(taxableAmount);
+
+        console.log(`${name}의 계산 결과:`, {
+            heirAssetValue,
+            gaupExemption,
+            relationshipExemption,
+            totalExemption,
+            taxableAmount,
+            tax,
+        });
 
         return { name, heirAssetValue, gaupExemption, relationshipExemption, totalExemption, taxableAmount, tax };
     }).filter(Boolean);
