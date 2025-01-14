@@ -415,13 +415,12 @@ button {
 </style>
 
 #businessYearsGroup {
-    margin-top: 10px; /* 위쪽 간격 추가 */
-    margin-bottom: 10px; /* 아래쪽 간격 추가 */
-    width: 100%; /* 너비를 다른 필드와 동일하게 설정 */
-    padding: 10px; /* 내부 여백 추가 */
-    font-size: 16px; /* 글자 크기 */
-    border: 1px solid #ccc; /* 테두리 추가 */
-    border-radius: 5px; /* 테두리 둥글게 */
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    width: 500px !important;
+    padding: 10px !important;
+    font-size: 16px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
 }
-
 
