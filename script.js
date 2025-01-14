@@ -662,49 +662,23 @@ function validateHeirRelationship(heirType, relationship) {
     return true;
 }
 
-    // 가업 개인 상속 함수
-    function calculateBusinessPersonalMode(totalAssetValue) {
-    // 관계와 후계자 유형을 명확히 분리
-    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+   function calculateBusinessPersonalMode(totalAssetValue) {
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
-  
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+
     // 가업 공제 계산
-    let gaupExemption = 0;
+    const gaupExemption = getGaupExemption(totalAssetValue, heirType);
 
-    if (heirType === 'adultChild') {
-        if (totalAssetValue <= 5000000000) {
-            gaupExemption = Math.min(totalAssetValue, 2000000000);
-        } else if (totalAssetValue <= 10000000000) {
-            gaupExemption = Math.min(totalAssetValue, 5000000000);
-        } else {
-            gaupExemption = Math.min(totalAssetValue, 10000000000);
-        }
-    } else if (heirType === 'minorChild') {
-        gaupExemption = totalAssetValue * 0.6;
-    } else if (heirType === 'other') {
-        gaupExemption = totalAssetValue * 0.3;
-    } else {
-        // 잘못된 후계자 유형이 들어왔을 경우 기본값 설정
-        console.error('잘못된 후계자 유형 선택:', heirType);
-        heirType = 'other'; // 기본값 설정
-    }
+    // 관계 공제 계산 (공용 함수 호출)
+    const relationshipExemption = calculateGaupRelationshipExemption(totalAssetValue, relationship);
 
-    // 관계 공제 계산
-    const exemptions = calculateExemptions(totalAssetValue, relationship, gaupExemption);
-
-    // `relationshipExemption` 가져오기
-    const { relationshipExemption } = exemptions;
-
-    // 총 공제 금액 계산
+    // 총 공제 계산
     const totalExemption = gaupExemption + relationshipExemption;
 
     // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
-
-    // 상속세 계산
     const tax = calculateTax(taxableAmount);
 
-    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
@@ -719,7 +693,36 @@ function validateHeirRelationship(heirType, relationship) {
     `;
 }
 
- // 가업 단체 상속 계산 함수
+// 가업 관계 공제 함수 (가업 개인/단체 공용)
+function calculateGaupRelationshipExemption(heirAssetValue, relationship) {
+    let relationshipExemption = 0;
+
+    switch (relationship) {
+        case 'spouse': // 배우자
+            relationshipExemption = 500000000; // 최소 공제 5억
+            break;
+        case 'adultChild': // 성년 자녀
+            relationshipExemption = 500000000; // 5억
+            break;
+        case 'minorChild': // 미성년 자녀
+            relationshipExemption = 30000000; // 3천만 원
+            break;
+        case 'parent': // 부모
+            relationshipExemption = 100000000; // 1억
+            break;
+        case 'sibling': // 형제자매
+        case 'other': // 기타
+            relationshipExemption = 10000000; // 1천만 원
+            break;
+        default:
+            console.error('잘못된 관계 선택:', relationship);
+            return 0;
+    }
+
+    return relationshipExemption;
+}
+    
+// 가업 단체 상속 계산 함수
 function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('총 재산 금액:', totalAssetValue);
@@ -747,8 +750,9 @@ function calculateBusinessGroupMode(totalAssetValue) {
         const gaupExemption = calculateGaupExemption(heirAssetValue, heirType);
         console.log(`${name}의 가업 공제:`, gaupExemption);
 
-        // 관계 공제 계산
-        const { relationshipExemption } = calculateExemptions(heirAssetValue, relationship);
+        // 가업 관계 공제 계산
+        const relationshipExemption = calculateBusinessRelationshipExemption(relationship, heirAssetValue);
+        console.log(`${name}의 관계 공제:`, relationshipExemption);
 
         // 총 공제 계산
         const totalExemption = gaupExemption + relationshipExemption;
@@ -801,33 +805,6 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
 
-/**
- * 가업 공제 계산 함수
- * @param {number} heirAssetValue - 상속인의 상속 재산 금액
- * @param {string} heirType - 후계자 유형 (예: 'adultChild', 'minorChild', 'other')
- * @returns {number} - 계산된 가업 공제 금액
- */
-function calculateGaupExemption(heirAssetValue, heirType) {
-    let exemption = 0;
-
-    switch (heirType) {
-        case 'adultChild': // 성년 자녀
-            exemption = Math.min(heirAssetValue * 0.2, 1000000000); // 상속 재산의 20% 또는 최대 10억
-            break;
-        case 'minorChild': // 미성년 자녀
-            exemption = Math.min(heirAssetValue * 0.3, 1500000000); // 상속 재산의 30% 또는 최대 15억
-            break;
-        case 'other': // 기타
-            exemption = Math.min(heirAssetValue * 0.1, 500000000); // 상속 재산의 10% 또는 최대 5억
-            break;
-        default:
-            console.error('유효하지 않은 후계자 유형:', heirType);
-            break;
-    }
-
-    console.log(`가업 공제 계산 - 후계자 유형: ${heirType}, 공제 금액: ${exemption}`);
-    return exemption;
-}
 
 // 계산 버튼 이벤트
 calculateButton.addEventListener('click', () => {
