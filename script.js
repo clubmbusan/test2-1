@@ -525,13 +525,23 @@ document.addEventListener('input', () => {
 // 개인 상속 로직
 function calculatePersonalMode(totalAssetValue) {
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
-    const spouseShare = totalAssetValue;
 
-    // 공제 계산
-    const { totalExemption, relationshipExemption } = calculateExemptions(totalAssetValue, relationship, spouseShare);
+    // 공용 함수로 관계 공제와 특별 공제를 계산
+    const { relationshipExemption, specialExemption } = calculateRelationshipExemption(relationship, totalAssetValue);
 
-    // 과세표준 계산
-    const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+    // 최종 공제 금액 계산
+    let finalExemption;
+    if (relationship === 'spouse') {
+        // 배우자는 특별 공제 포함
+        finalExemption = relationshipExemption + specialExemption;
+    } else {
+        // 다른 관계는 기초 공제(2억)와 관계 공제를 합산
+        const baseExemption = 200000000; // 기초 공제
+        finalExemption = Math.max(baseExemption + relationshipExemption, 600000000); // 최소 6억 보장
+    }
+
+    // 과세 금액 계산
+    const taxableAmount = Math.max(totalAssetValue - finalExemption, 0);
 
     // 상속세 계산
     const tax = calculateTax(taxableAmount);
@@ -542,11 +552,10 @@ function calculatePersonalMode(totalAssetValue) {
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
         <p><strong>공제 내역:</strong></p>
         <ul>
-            <li>기본 공제: 600,000,000 원</li>
-            <li>기초 공제: 200,000,000 원</li>
             <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
+            <li>특별 공제: ${specialExemption.toLocaleString()} 원</li>
         </ul>
-        <p><strong>총 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
+        <p><strong>최종 공제 금액:</strong> ${finalExemption.toLocaleString()} 원</p>
         <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
