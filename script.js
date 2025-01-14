@@ -562,7 +562,6 @@ function calculatePersonalMode(totalAssetValue) {
 }
 
 // 전체 상속 계산 함수
-// 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
@@ -657,7 +656,7 @@ function validateHeirRelationship(heirType, relationship) {
 
     return true;
 }
-
+   // 가업 개인 상속 함수
    function calculateBusinessPersonalMode(totalAssetValue) {
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
