@@ -403,8 +403,7 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
-// 관계별 공제 계산 (기초 일괄 배우자 특별 공제 포함)   
-// 관계별 공제 계산 (기초, 최소, 특별 공제 포함)
+// 관계별 공제 계산 (기초, 최소,  일괄, 배우자 특별 공제 포함)
 function calculateRelationshipExemption(relationship, shareAmount) {
     let relationshipExemption = 0; // 기본 공제
     let specialExemption = 0; // 특별 공제 (배우자만 해당)
