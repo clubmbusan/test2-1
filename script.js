@@ -403,8 +403,6 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
-// src/calculateInheritance.js
-
  /**
  * 관계 공제 함수 (공용)
  * @param {string} relationship - 상속인의 관계
@@ -645,9 +643,6 @@ function calculateGroupMode(totalAssetValue) {
             .join('')}
     `;
 }
-
-
-
     
   /**
  * 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
