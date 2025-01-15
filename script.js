@@ -767,19 +767,25 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
 
-    가업 단체 상속 함수 (관계 공제 고정 적용)
-   function calculateBusinessGroupMode(totalAssetValue) {
+  /**
+ * 가업 단체 상속 계산 함수
+ * @param {number} totalAssetValue - 총 상속 재산 금액
+ */
+function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('총 재산 금액:', totalAssetValue);
 
-    const years = parseInt(document.querySelector('#businessYears')?.value || '0', 10); // 경영 연수 입력
+    // 경영 연수 입력
+    const years = parseInt(document.querySelector('#businessYears')?.value || '0', 10);
 
+    // 각 상속인 정보 처리
     const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
         const name = heir.querySelector('.heirName')?.value || `상속인 ${index + 1}`;
         const heirType = heir.querySelector('.heirType')?.value || 'other';
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
         const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
 
+        // 데이터 검증
         if (!name || sharePercentage <= 0) {
             console.error(`${name}의 데이터가 올바르지 않습니다.`);
             return null;
@@ -798,6 +804,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         const taxableAmount = Math.max(heirAssetValue - totalExemption, 0);
         const tax = calculateTax(taxableAmount);
 
+        // 계산 결과 로그
         console.log(`${name}의 계산 결과:`, {
             heirAssetValue,
             gaupExemption,
@@ -807,13 +814,16 @@ function calculateBusinessPersonalMode(totalAssetValue) {
             tax,
         });
 
+        // 상속인별 결과 반환
         return { name, heirAssetValue, gaupExemption, relationshipExemption, totalExemption, taxableAmount, tax };
-    }).filter(Boolean);
+    }).filter(Boolean); // 유효한 데이터만 포함
 
+    // 전체 결과 계산
     const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.heirAssetValue, 0);
     const totalExemption = heirs.reduce((sum, heir) => sum + heir.totalExemption, 0);
     const totalTax = heirs.reduce((sum, heir) => sum + heir.tax, 0);
 
+    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 단체 상속)</h3>
         <p>총 상속 재산: ${formatNumberWithCommas(totalInheritedAssets)} 원</p>
@@ -832,7 +842,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         `).join('')}
     `;
 }
-
+  
 // 계산 버튼 이벤트
 calculateButton.addEventListener('click', () => {
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
