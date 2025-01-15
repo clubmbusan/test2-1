@@ -405,17 +405,6 @@ addAssetButton.addEventListener('click', createAssetEntry);
 
 // src/calculateInheritance.js
 
-/**
- * 관계 공제 함수 (공용)
- * @param {string} relationship - 상속인의 관계
- * @param {number} shareAmount - 상속 재산 금액
- * @returns {{ relationshipExemption: number, additionalExemption: number, specialExemption: number, finalExemption: number }} 관계 공제, 추가 공제, 특별 공제, 최종 공제 반환
- */
-function calculateRelationshipExemption(relationship, shareAmount) {
-    let relationshipExemption = 0; // 관계 공제
-    let specialExemption = 0;     // 특별 공제 (배우자만 해당)
-    const maxSpecialExemption = 3500000000; // 배우자 특별 공제 한도 (35억 원)
-
  /**
  * 관계 공제 함수 (공용)
  * @param {string} relationship - 상속인의 관계
