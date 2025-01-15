@@ -594,7 +594,8 @@ function calculatePersonalMode(totalAssetValue) {
 }
 
     // 전체 상속 계산 함수
-    function calculateGroupMode(totalAssetValue) {
+    // 전체 상속 계산 함수
+function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
