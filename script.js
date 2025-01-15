@@ -722,7 +722,7 @@ function calculateGaupExemption(heirAssetValue, heirType, years) {
             return 0;
     }
 
-    // 3. 최종 공제 금액 계산
+    // 3. 최종 공제 금액
     const gaupExemption = Math.min(maxExemptionByYears, maxExemptionByType, heirAssetValue);
 
     console.log(`${heirType} 유형의 가업 공제 금액 (경영 연수 ${years}년):`, gaupExemption);
