@@ -406,17 +406,17 @@ addAssetButton.addEventListener('click', createAssetEntry);
 // src/calculateInheritance.js
 
 /**
- * 관계 공제 및 특별 공제 계산 함수(전체공용)
+ * 관계 공제 함수 (공용)
  * @param {string} relationship - 상속인의 관계
  * @param {number} shareAmount - 상속 재산 금액
- * @returns {{ relationshipExemption: number, specialExemption: number }} 공제 금액 반환
+ * @returns {{ relationshipExemption: number, specialExemption: number }} 관계 공제 금액과 특별 공제 반환
  */
 function calculateRelationshipExemption(relationship, shareAmount) {
     let relationshipExemption = 0;
     let specialExemption = 0;
 
     switch (relationship) {
-        case 'spouse': // 배우자
+        case 'spouse': // 배우자 공제
             relationshipExemption = 500000000; // 최소 5억
             if (shareAmount > 5000000000) {
                 relationshipExemption += Math.min(shareAmount - 5000000000, 10000000000); // 10억까지 추가
@@ -426,22 +426,26 @@ function calculateRelationshipExemption(relationship, shareAmount) {
             }
             break;
 
-        case 'adultChild': // 성년 자녀
-            relationshipExemption = 500000000; // 5억 고정
+        case 'adultChild': // 성년 자녀 공제
+            relationshipExemption = 500000000; // 5억 원 고정
             break;
 
-        // 기타 관계 공제 처리
-        case 'minorChild': // 미성년 자녀
+        case 'minorChild': // 미성년 자녀 공제
             relationshipExemption = 30000000; // 3천만 원 고정
             break;
 
-        case 'parent': // 부모
-        case 'sibling': // 형제자매
-            relationshipExemption = 10000000; // 1천만 원
+        case 'parent': // 부모 공제
+            relationshipExemption = 100000000; // 1억 원 고정
             break;
 
-        default: // 기타
-            relationshipExemption = 0;
+        case 'sibling': // 형제자매
+        case 'other': // 기타
+            relationshipExemption = 10000000; // 1천만 원 고정
+            break;
+
+        default:
+            console.error('잘못된 관계 선택:', relationship);
+            return { relationshipExemption: 0, specialExemption: 0 };
     }
 
     return { relationshipExemption, specialExemption };
