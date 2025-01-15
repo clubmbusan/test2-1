@@ -414,7 +414,7 @@ addAssetButton.addEventListener('click', createAssetEntry);
  *   finalExemption: number
  * }} 각 공제 항목과 최종 공제 금액
  */
- function calculateRelationshipExemption(relationship, shareAmount) {
+  function calculateRelationshipExemption(relationship, shareAmount) {
     let relationshipExemption = 0; // 관계 공제
     let additionalExemption = 0;  // 추가 공제
     let specialExemption = 0;     // 특별 공제 (배우자만 해당)
@@ -426,15 +426,15 @@ addAssetButton.addEventListener('click', createAssetEntry);
             relationshipExemption = 500000000; // 고정 5억 공제
 
             // 추가 공제 계산: 5억 초과분 최대 10억
-            if (shareAmount > relationshipExemption) {
-                const excessOver5B = shareAmount - relationshipExemption;
-                additionalExemption = Math.min(excessOver5B, maxAdditionalExemption);
+            if (shareAmount > 500000000) {
+                const excessOver5B = shareAmount - 500000000; // 초과분 계산
+                additionalExemption = Math.min(excessOver5B, maxAdditionalExemption); // 최대 10억 제한
             }
 
             // 특별 공제 계산: 15억 초과분의 50%, 최대 35억
             if (shareAmount > 15000000000) {
-                const excessOver15B = shareAmount - 15000000000;
-                specialExemption = Math.min(excessOver15B * 0.5, maxSpecialExemption);
+                const excessOver15B = shareAmount - 15000000000; // 15억 초과분 계산
+                specialExemption = Math.min(excessOver15B * 0.5, maxSpecialExemption); // 최대 35억 제한
             }
             break;
 
@@ -450,7 +450,7 @@ addAssetButton.addEventListener('click', createAssetEntry);
             break;
 
         case 'parent': // 부모
-            relationshipExemption = 100000000; // 1억 고정
+            relationshipExemption = 100000000; // 고정 1억 공제
             const parentTotalExemption = 200000000 + relationshipExemption; // 기초 공제 포함
             if (parentTotalExemption < 600000000) {
                 additionalExemption = 600000000 - parentTotalExemption; // 부족한 부분 추가 공제
@@ -459,7 +459,7 @@ addAssetButton.addEventListener('click', createAssetEntry);
 
         case 'sibling': // 형제자매
         case 'other': // 기타
-            relationshipExemption = 10000000; // 1천만 원 고정
+            relationshipExemption = 10000000; // 고정 1천만 원 공제
             const otherTotalExemption = 200000000 + relationshipExemption; // 기초 공제 포함
             if (otherTotalExemption < 600000000) {
                 additionalExemption = 600000000 - otherTotalExemption; // 부족한 부분 추가 공제
@@ -481,7 +481,7 @@ addAssetButton.addEventListener('click', createAssetEntry);
         finalExemption,
     };
 }
-    
+
 /**
  * 성년까지 남은 년수 계산
  * @returns {number} 나이 계산 결과
@@ -605,7 +605,7 @@ function calculatePersonalMode(totalAssetValue) {
  * 상속 결과 계산
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
-function calculateGroupMode(totalAssetValue) {
+ function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
@@ -617,10 +617,10 @@ function calculateGroupMode(totalAssetValue) {
             return null;
         }
 
-        // 상속분 계산
+        // 상속인의 상속분 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
-        // 공제 계산
+        // 관계 공제, 추가 공제, 특별 공제 및 최종 공제 계산
         const { relationshipExemption, additionalExemption, specialExemption, finalExemption } =
             calculateRelationshipExemption(relationship, shareAmount);
 
@@ -630,11 +630,11 @@ function calculateGroupMode(totalAssetValue) {
         // 상속세 계산 (예: 단순 세율 35%)
         const tax = taxableAmount * 0.35;
 
-        // 반환된 결과를 저장
+        // 반환된 결과를 구조화하여 배열에 저장
         return {
             name,
-            relationship,
             shareAmount,
+            relationship,
             relationshipExemption,
             additionalExemption,
             specialExemption,
@@ -664,7 +664,7 @@ function calculateGroupMode(totalAssetValue) {
             </p>
         `).join('')}
     `;
-}
+}  
     
   /**
  * 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
