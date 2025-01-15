@@ -491,7 +491,6 @@ function getAge() {
     // 이 예제에서는 임의로 15세로 설정
     return 15; // 임시 값
 }
-
 /**
  * 최종 공제 계산 함수 (기초 공제 및 기본 공제 포함)
  * @param {number} relationshipExemption - 관계 공제 금액
@@ -664,7 +663,7 @@ function calculatePersonalMode(totalAssetValue) {
             </p>
         `).join('')}
     `;
-}  
+}
     
   /**
  * 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
