@@ -594,14 +594,14 @@ function calculatePersonalMode(totalAssetValue) {
 }
 
     // 전체 상속 계산 함수
-    // 전체 상속 계산 함수
-function calculateGroupMode(totalAssetValue) {
+   function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
     const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
+        // 입력값 검증
         if (sharePercentage <= 0 || isNaN(sharePercentage)) {
             console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
             return null;
@@ -610,7 +610,7 @@ function calculateGroupMode(totalAssetValue) {
         // 상속인의 상속분 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
-        // 관계 공제, 추가 공제, 특별 공제 및 최종 공제 계산
+        // 각 상속인의 공제 계산 (독립적 처리)
         const { relationshipExemption, additionalExemption, specialExemption, finalExemption } =
             calculateRelationshipExemption(relationship, shareAmount);
 
@@ -620,7 +620,7 @@ function calculateGroupMode(totalAssetValue) {
         // 상속세 계산
         const tax = calculateTax(taxableAmount);
 
-        // 반환된 결과를 구조화하여 배열에 저장
+        // 각 상속인별 결과를 독립적으로 반환
         return {
             name,
             shareAmount,
@@ -639,7 +639,7 @@ function calculateGroupMode(totalAssetValue) {
         return;
     }
 
-    // 결과 출력
+    // 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
         ${heirs.map(result => `
@@ -655,6 +655,7 @@ function calculateGroupMode(totalAssetValue) {
         `).join('')}
     `;
 }
+
     
   /**
  * 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
