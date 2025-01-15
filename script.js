@@ -416,6 +416,20 @@ function calculateRelationshipExemption(relationship, shareAmount) {
     let specialExemption = 0;     // 특별 공제 (배우자만 해당)
     const maxSpecialExemption = 3500000000; // 배우자 특별 공제 한도 (35억 원)
 
+ /**
+ * 관계 공제 함수 (공용)
+ * @param {string} relationship - 상속인의 관계
+ * @param {number} shareAmount - 상속 재산 금액
+ * @returns {{ relationshipExemption: number, additionalExemption: number, specialExemption: number, finalExemption: number }} 관계 공제, 추가 공제, 특별 공제, 최종 공제 반환
+ */
+function calculateRelationshipExemption(relationship, shareAmount) {
+    let relationshipExemption = 0; // 관계 공제
+    let additionalExemption = 0;  // 추가 공제
+    let specialExemption = 0;     // 특별 공제 (배우자만 해당)
+    const baseExemption = 200000000; // 기초 공제 (2억 원)
+    const basicExemption = 600000000; // 기본 공제 (6억 원)
+    const maxSpecialExemption = 3500000000; // 배우자 특별 공제 한도 (35억 원)
+
     // 관계 공제 계산
     switch (relationship) {
         case 'spouse': // 배우자
@@ -454,17 +468,27 @@ function calculateRelationshipExemption(relationship, shareAmount) {
             return { relationshipExemption: 0, additionalExemption: 0, specialExemption: 0, finalExemption: 0 };
     }
 
+    // 추가 공제 (일괄 공제)
+    const totalExemptionWithoutAdditional = baseExemption + relationshipExemption;
+    if (relationship !== 'spouse' && totalExemptionWithoutAdditional < basicExemption) {
+        additionalExemption = basicExemption - totalExemptionWithoutAdditional; // 부족한 부분 추가 공제
+    }
+
     // 최종 공제 계산
     const isSpouse = relationship === 'spouse';
-    const finalExemption = calculateFinalExemption(relationshipExemption, specialExemption, isSpouse);
+    const finalExemption = calculateFinalExemption(
+        relationshipExemption,
+        specialExemption,
+        isSpouse
+    );
 
     return {
         relationshipExemption,
+        additionalExemption,
         specialExemption,
         finalExemption,
     };
 }
-
 
 // 최종 공제 계산 함수 (기초 공제 및 기본 공제 포함)
 function calculateFinalExemption(relationshipExemption, specialExemption = 0, isSpouse = false) {
@@ -580,24 +604,12 @@ function calculateGroupMode(totalAssetValue) {
             return null;
         }
 
-        // 상속인의 상속분 계산
-        const shareAmount = (totalAssetValue * sharePercentage) / 100;
+        // 상속인의 상속분 계산 (콤마 제거 처리)
+        const shareAmount = (parseNumber(totalAssetValue) * sharePercentage) / 100;
 
         // 관계 공제, 추가 공제, 특별 공제 및 최종 공제 계산
-        const { relationshipExemption, specialExemption, finalExemption } =
+        const { relationshipExemption, additionalExemption, specialExemption, finalExemption } =
             calculateRelationshipExemption(relationship, shareAmount);
-
-        // 추가 공제 계산
-        const baseExemption = 200000000; // 기초 공제 (2억 원)
-        const basicExemption = 600000000; // 기본 공제 (6억 원)
-        let additionalExemption = 0;
-
-        if (relationship !== 'spouse') {
-            const totalExemptionWithoutAdditional = baseExemption + relationshipExemption;
-            if (totalExemptionWithoutAdditional < basicExemption) {
-                additionalExemption = basicExemption - totalExemptionWithoutAdditional; // 부족한 부분 추가 공제
-            }
-        }
 
         // 과세 금액 계산
         const taxableAmount = Math.max(shareAmount - finalExemption, 0);
@@ -644,6 +656,7 @@ function calculateGroupMode(totalAssetValue) {
             .join('')}
     `;
 }
+
 
 
     
