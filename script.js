@@ -706,6 +706,10 @@ function validateHeirRelationship(heirType, relationship) {
 
     const maxExemptionByYears = getGaupExemptionLimitByYears(years);
 
+      // 가업 공제는 상속 재산의 100%를 공제하되, 한도를 초과하지 않음
+    return Math.min(heirAssetValue, maxExemptionByYears);
+} 
+
     // 후계자 유형별 최대 공제 금액 설정
     switch (heirType) {
         case 'adultChild': // 성년 자녀
