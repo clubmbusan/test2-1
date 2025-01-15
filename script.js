@@ -693,9 +693,7 @@ function validateHeirRelationship(heirType, relationship) {
  * @param {number} years - 피상속인의 가업 경영 연수
  * @returns {number} 가업 공제 금액
  */
-  function calculateGaupExemption(heirAssetValue, heirType, years) {
-    let gaupExemption = 0;
-
+function calculateGaupExemption(heirAssetValue, heirType, years) {
     // 경영 연수에 따른 공제 한도 계산
     function getGaupExemptionLimitByYears(years) {
         if (years >= 30) return 50000000000; // 30년 이상: 최대 500억 원
@@ -704,30 +702,28 @@ function validateHeirRelationship(heirType, relationship) {
         return 0; // 10년 미만: 공제 불가
     }
 
+    // 1. 경영 연수에 따른 한도 계산
     const maxExemptionByYears = getGaupExemptionLimitByYears(years);
 
-      // 가업 공제는 상속 재산의 100%를 공제하되, 한도를 초과하지 않음
-    return Math.min(heirAssetValue, maxExemptionByYears);
-} 
-
-    // 후계자 유형별 최대 공제 금액 설정
+    // 2. 후계자 유형별 최대 공제 금액 계산
+    let maxExemptionByType = 0;
     switch (heirType) {
         case 'adultChild': // 성년 자녀
-            gaupExemption = Math.min(heirAssetValue, 5000000000); // 최대 50억 원
+            maxExemptionByType = heirAssetValue; // 100% 공제 가능
             break;
         case 'minorChild': // 미성년 자녀
-            gaupExemption = Math.min(heirAssetValue, 3000000000); // 최대 30억 원
+            maxExemptionByType = heirAssetValue; // 100% 공제 가능
             break;
         case 'other': // 기타 후계자
-            gaupExemption = Math.min(heirAssetValue, 1000000000); // 최대 10억 원
+            maxExemptionByType = heirAssetValue * 0.5; // 50% 공제 가능
             break;
         default:
             console.error('잘못된 후계자 유형:', heirType);
             return 0;
     }
 
-    // 경영 연수에 따른 공제 한도 적용
-    gaupExemption = Math.min(gaupExemption, maxExemptionByYears);
+    // 3. 최종 공제 금액 계산
+    const gaupExemption = Math.min(maxExemptionByYears, maxExemptionByType, heirAssetValue);
 
     console.log(`${heirType} 유형의 가업 공제 금액 (경영 연수 ${years}년):`, gaupExemption);
     return gaupExemption;
