@@ -767,15 +767,15 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
 
-// 가업 단체 상속 함수
 function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('총 재산 금액:', totalAssetValue);
 
+    const years = parseInt(document.querySelector('#businessYears')?.value || '0', 10); // 경영 연수 입력
+
     const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
         const name = heir.querySelector('.heirName')?.value || `상속인 ${index + 1}`;
         const heirType = heir.querySelector('.heirType')?.value || 'other';
-        const relationship = heir.querySelector('.relationship')?.value || 'other';
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
         const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
 
@@ -785,17 +785,15 @@ function calculateBusinessGroupMode(totalAssetValue) {
         }
 
         // 가업 공제 계산
-        const gaupExemption = Math.min(
-            calculateGaupExemption(heirAssetValue, heirType),
-            heirAssetValue // 상속 재산 금액보다 공제가 클 수 없음
-        );
+        const gaupExemption = calculateGaupExemption(heirAssetValue, heirType, years);
 
-        // 관계 공제: 고정 5억 원
+        // 관계 공제: 일괄 5억 원 적용
         const relationshipExemption = 500000000;
 
         // 총 공제 계산
         const totalExemption = Math.min(heirAssetValue, gaupExemption + relationshipExemption);
 
+        // 과세 금액 계산
         const taxableAmount = Math.max(heirAssetValue - totalExemption, 0);
         const tax = calculateTax(taxableAmount);
 
@@ -825,7 +823,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
                 <strong>${heir.name}</strong>:<br>
                 - 상속 재산: ${formatNumberWithCommas(heir.heirAssetValue)} 원<br>
                 - 가업 공제: ${formatNumberWithCommas(heir.gaupExemption)} 원<br>
-                - 관계 공제: ${formatNumberWithCommas(heir.relationshipExemption)} 원 (일괄 공제)<br>
+                - 관계 공제: ${formatNumberWithCommas(heir.relationshipExemption)} 원<br>
                 - 총 공제 금액: ${formatNumberWithCommas(heir.totalExemption)} 원<br>
                 - 과세 금액: ${formatNumberWithCommas(heir.taxableAmount)} 원<br>
                 - 상속세: ${formatNumberWithCommas(heir.tax)} 원
