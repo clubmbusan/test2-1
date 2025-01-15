@@ -403,56 +403,45 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
+// src/calculateInheritance.js
+
 /**
- * 관계 공제 함수 (공용)
+ * 관계 공제 및 특별 공제 계산 함수(전체공용)
  * @param {string} relationship - 상속인의 관계
  * @param {number} shareAmount - 상속 재산 금액
- * @param {boolean} isBusinessInheritance - 가업 상속 여부
- * @returns {{ relationshipExemption: number, specialExemption: number }} 관계 공제 금액과 특별 공제 반환
+ * @returns {{ relationshipExemption: number, specialExemption: number }} 공제 금액 반환
  */
-function calculateRelationshipExemption(relationship, shareAmount, isBusinessInheritance = false) {
+function calculateRelationshipExemption(relationship, shareAmount) {
     let relationshipExemption = 0;
     let specialExemption = 0;
 
     switch (relationship) {
-        case 'spouse': // 배우자 공제
-            if (isBusinessInheritance) {
-                // 가업 상속: 배우자 공제는 고정 5억
-                relationshipExemption = 500000000;
-            } else {
-                // 일반 상속: 배우자 공제 계산
-                relationshipExemption = 500000000; // 최소 5억
-                if (shareAmount > 5000000000) {
-                    const upToTenBillion = Math.min(shareAmount, 15000000000) - 5000000000; // 5억 초과 15억 이하
-                    relationshipExemption += upToTenBillion;
-                }
-                if (shareAmount > 15000000000) {
-                    const aboveFifteenBillion = shareAmount - 15000000000; // 15억 초과분
-                    specialExemption = Math.min(aboveFifteenBillion * 0.5, 20000000000); // 최대 20억
-                }
+        case 'spouse': // 배우자
+            relationshipExemption = 500000000; // 최소 5억
+            if (shareAmount > 5000000000) {
+                relationshipExemption += Math.min(shareAmount - 5000000000, 10000000000); // 10억까지 추가
+            }
+            if (shareAmount > 15000000000) {
+                specialExemption = Math.min((shareAmount - 15000000000) * 0.5, 20000000000); // 최대 20억
             }
             break;
 
-        case 'adultChild': // 성년 자녀 공제
-            relationshipExemption = 500000000; // 5억 원 고정
+        case 'adultChild': // 성년 자녀
+            relationshipExemption = 500000000; // 5억 고정
             break;
 
-        case 'minorChild': // 미성년 자녀 공제
+        // 기타 관계 공제 처리
+        case 'minorChild': // 미성년 자녀
             relationshipExemption = 30000000; // 3천만 원 고정
             break;
 
-        case 'parent': // 부모 공제
-            relationshipExemption = 100000000; // 1억 원 고정
-            break;
-
+        case 'parent': // 부모
         case 'sibling': // 형제자매
-        case 'other': // 기타
-            relationshipExemption = 10000000; // 1천만 원 고정
+            relationshipExemption = 10000000; // 1천만 원
             break;
 
-        default:
-            console.error('잘못된 관계 선택:', relationship);
-            return { relationshipExemption: 0, specialExemption: 0 };
+        default: // 기타
+            relationshipExemption = 0;
     }
 
     return { relationshipExemption, specialExemption };
@@ -576,12 +565,10 @@ function calculateGroupMode(totalAssetValue) {
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
         // 관계 공제 계산
-        const { relationshipExemption, additionalExemption, specialExemption } = calculateRelationshipExemption(relationship, shareAmount);
+        const { relationshipExemption, specialExemption } = calculateRelationshipExemption(relationship, shareAmount);
 
         // 최종 공제 금액 계산
-        const finalExemption = relationship === 'spouse'
-            ? relationshipExemption + specialExemption // 배우자는 특별 공제 포함
-            : calculateFinalExemption(relationshipExemption, additionalExemption, false); // 다른 상속인은 일반 로직
+        const finalExemption = calculateFinalExemption(relationshipExemption, specialExemption, relationship === 'spouse');
 
         // 과세 금액 계산
         const taxableAmount = Math.max(shareAmount - finalExemption, 0);
@@ -595,7 +582,6 @@ function calculateGroupMode(totalAssetValue) {
             shareAmount,
             relationship,
             relationshipExemption,
-            additionalExemption,
             specialExemption,
             finalExemption,
             taxableAmount,
@@ -617,7 +603,6 @@ function calculateGroupMode(totalAssetValue) {
             <p>
                 <strong>${result.name} (${result.relationship})</strong>: ${result.shareAmount.toLocaleString()} 원<br>
                 관계 공제: ${result.relationshipExemption.toLocaleString()} 원<br>
-                추가 공제: ${result.additionalExemption?.toLocaleString() || 0} 원<br> <!-- 추가 공제 출력 -->
                 특별 공제: ${result.specialExemption.toLocaleString()} 원<br>
                 최종 공제 금액: ${result.finalExemption.toLocaleString()} 원<br>
                 과세 금액: ${result.taxableAmount.toLocaleString()} 원<br>
