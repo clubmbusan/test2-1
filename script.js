@@ -696,9 +696,9 @@ function validateHeirRelationship(heirType, relationship) {
 function calculateGaupExemption(heirAssetValue, heirType, years) {
     // 경영 연수에 따른 공제 한도 계산
     function getGaupExemptionLimitByYears(years) {
-        if (years >= 30) return 50000000000; // 30년 이상: 최대 500억 원
-        if (years >= 20) return 30000000000; // 20년 이상: 최대 300억 원
-        if (years >= 10) return 20000000000; // 10년 이상: 최대 200억 원
+        if (years >= 30) return 60000000000; // 30년 이상: 최대 600억 원
+        if (years >= 20) return 40000000000; // 20년 이상: 최대 400억 원
+        if (years >= 10) return 30000000000; // 10년 이상: 최대 300억 원
         return 0; // 10년 미만: 공제 불가
     }
 
@@ -767,7 +767,8 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
 
-function calculateBusinessGroupMode(totalAssetValue) {
+    가업 단체 상속 함수 (관계 공제 고정 적용)
+   function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('총 재산 금액:', totalAssetValue);
 
