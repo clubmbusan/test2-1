@@ -591,8 +591,8 @@ function calculateGroupMode(totalAssetValue) {
             return null;
         }
 
-        // 상속인의 상속분 계산 (콤마 제거 처리)
-        const shareAmount = (parseNumber(totalAssetValue) * sharePercentage) / 100;
+        // 상속인의 상속분 계산 (parseNumber 제거, 숫자로 변환)
+        const shareAmount = (Number(totalAssetValue) || 0) * (sharePercentage / 100);
 
         // 관계 공제, 추가 공제, 특별 공제 및 최종 공제 계산
         const { relationshipExemption, additionalExemption, specialExemption, finalExemption } =
