@@ -404,68 +404,56 @@ function handleAssetTypeChange(assetTypeSelect) {
 addAssetButton.addEventListener('click', createAssetEntry);    
 
 /**
- * 관계 공제 함수 (개인 상속 및 전체 공용)
+ * 관계 공제 계산 함수
  * @param {string} relationship - 상속인의 관계 (배우자, 성년 자녀 등)
  * @param {number} shareAmount - 상속 재산 금액
- * @param {boolean} isForBusiness - 가업 여부 (기본값: false)
  * @returns {{
  *   relationshipExemption: number,
  *   baseExemption: number,
  *   finalExemption: number
- * }} 각 공제 항목과 최종 공제 금액
+ * }} 관계 공제, 기초 공제, 최종 공제 금액
  */
-function calculateRelationshipExemption(relationship, shareAmount, isForBusiness = false) {
-  let relationshipExemption = 0; // 관계 공제
-  const baseExemption = 200000000; // 기초 공제 (2억 원)
-  const basicExemption = 500000000; // 기본 공제 (5억 원, 개정 전 세법 기준)
-  const minSpouseExemption = 500000000; // 배우자 최소 공제 (5억 원)
-  const maxSpouseExemption = 3000000000; // 배우자 추가 공제 최대 (30억 원)
+function calculateRelationshipExemption(relationship, shareAmount) {
+    let relationshipExemption = 0; // 관계 공제
+    const baseExemption = 200000000; // 기초 공제 (2억 원)
+    const basicExemption = 500000000; // 기본 공제 (5억 원)
+    const maxSpouseExemption = 3000000000; // 배우자 추가 공제 최대 (30억 원)
 
-  switch (relationship) {
-    case "spouse": // 배우자
-      relationshipExemption = minSpouseExemption; // 최소 5억 원
-      if (!isForBusiness) {
-        // 가업이 아닌 경우 배우자 추가 공제
-        const additionalExemption = Math.min(shareAmount - minSpouseExemption, maxSpouseExemption);
-        relationshipExemption += Math.max(additionalExemption, 0);
-      }
-      break;
+    switch (relationship) {
+        case 'spouse': // 배우자
+            relationshipExemption = 500000000; // 최소 5억 원
+            const additionalExemption = Math.min(shareAmount - relationshipExemption, maxSpouseExemption);
+            relationshipExemption += Math.max(additionalExemption, 0);
+            break;
+        case 'adultChild': // 성년 자녀
+            relationshipExemption = 50000000; // 고정 5천만 원
+            break;
+        case 'minorChild': // 미성년 자녀
+            relationshipExemption = 10000000; // 고정 1천만 원
+            const remainingYears = Math.max(0, 19 - getAge());
+            relationshipExemption += remainingYears * 10000000;
+            break;
+        case 'parent': // 부모
+            relationshipExemption = 100000000; // 고정 1억 원
+            break;
+        case 'sibling':
+        case 'other':
+            relationshipExemption = 10000000; // 고정 1천만 원
+            break;
+        default:
+            console.error('잘못된 관계 입력:', relationship);
+            return { relationshipExemption: 0, baseExemption: baseExemption, finalExemption: basicExemption };
+    }
 
-    case "adultChild": // 성년 자녀
-      relationshipExemption = 50000000; // 고정 5천만 원
-      break;
+    const finalExemption = Math.max(relationshipExemption + baseExemption, basicExemption); // 최소 5억 원 보장
 
-    case "minorChild": // 미성년 자녀
-      relationshipExemption = 10000000; // 고정 1천만 원
-      const remainingYears = Math.max(0, 19 - getAge()); // 성년까지 남은 나이 계산
-      const additionalExemption = remainingYears * 10000000; // 연간 1천만 원
-      relationshipExemption += additionalExemption;
-      break;
-
-    case "parent": // 부모
-      relationshipExemption = 100000000; // 고정 1억 원
-      break;
-
-    case "sibling": // 형제자매
-    case "other": // 기타
-      relationshipExemption = 10000000; // 고정 1천만 원
-      break;
-
-    default:
-      console.error("잘못된 관계 입력:", relationship);
-      return { relationshipExemption: 0, baseExemption: 0, finalExemption: 0 };
-  }
-
-  // 최종 공제 계산
-  const finalExemption = Math.max(relationshipExemption + baseExemption, basicExemption); // 최소 5억 원 보장
-
-  return {
-    relationshipExemption,
-    baseExemption,
-    finalExemption,
-  };
+    return {
+        relationshipExemption,
+        baseExemption,
+        finalExemption,
+    };
 }
-
+    
 /**
  * 성년까지 남은 년수 계산
  * @returns {number} 나이 계산 결과
@@ -505,7 +493,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 }
 
 /**
- * 누진세율 계산 함수 (5단계)
+ * 누진세율 계산 함수
  * @param {number} taxableAmount - 과세 금액
  * @returns {number} 상속세 금액
  */
@@ -523,18 +511,24 @@ function calculateTax(taxableAmount) {
 
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
-            // 현재 구간의 한도를 초과한 경우, 해당 구간에 대한 세금 계산
             tax += (bracket.limit - previousLimit) * bracket.rate;
-            previousLimit = bracket.limit; // 다음 구간의 시작점 업데이트
+            previousLimit = bracket.limit;
         } else {
-            // 남은 금액에 해당 세율을 적용
             tax += (taxableAmount - previousLimit) * bracket.rate;
             break;
         }
     }
 
-    return Math.max(tax, 0); // 세금이 음수가 되지 않도록 보장
+    return Math.max(tax, 0); // 음수 방지
 }
+
+// 버튼 클릭 이벤트 연결
+document.getElementById('calculateButton').addEventListener('click', () => {
+    const totalAssetValue = parseInt(document.getElementById('cashAmount').value, 10) || 0;
+    const relationship = document.getElementById('relationshipPersonal').value;
+
+    calculatePersonalMode(totalAssetValue, relationship);
+});
 
 // 주식 총액을 assetValue에 포함
 document.addEventListener('input', () => {
@@ -559,7 +553,7 @@ function calculatePersonalMode(totalAssetValue, relationship = 'other') {
     const baseExemption = 200000000; // 기초 공제 (2억 원)
 
     // 관계 공제 계산
-    const relationshipExemption = calculateRelationshipExemption(relationship, totalAssetValue);
+    const { relationshipExemption, finalExemption } = calculateRelationshipExemption(relationship, totalAssetValue);
 
     // 추가 공제: 배우자만 해당 (최대 30억 원)
     const additionalExemption = relationship === 'spouse'
@@ -576,7 +570,8 @@ function calculatePersonalMode(totalAssetValue, relationship = 'other') {
     const tax = calculateTax(taxableAmount);
 
     // 결과 출력
-    document.getElementById('result').innerHTML = `
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
         <h3>계산 결과 (개인 상속)</h3>
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
         <p><strong>공제 내역:</strong></p>
@@ -590,7 +585,6 @@ function calculatePersonalMode(totalAssetValue, relationship = 'other') {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
-
     
 /**
  * 상속 결과 계산 (전체 상속)
