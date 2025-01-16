@@ -453,7 +453,6 @@ function calculateRelationshipExemption(relationship, shareAmount) {
         finalExemption,
     };
 }
-
     
 /**
  * 성년까지 남은 년수 계산
