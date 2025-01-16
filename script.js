@@ -765,41 +765,66 @@ function calculateGaupExemption(heirAssetValue, heirType, years) {
 }
 
 // 가업 개인 상속 함수
-function calculateBusinessPersonalMode(totalAssetValue) {
-    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
-    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+function calculatePersonalMode(totalAssetValue, relationship) {
+    relationship = relationship ?? 'other'; // undefined 또는 null이면 'other' 사용
+    console.log('개인 상속 계산 시작 - 선택된 관계:', relationship);
 
-    // 가업 관계 공제 계산
-    function calculateGaupRelationshipExemption() {
-        // 가업 상속에서는 관계 공제 대신 모든 상속인에게 일괄 5억 원 공제
-        return 500000000; // 일괄 5억 원
+    const baseExemption = 200000000; // 기초 공제 (2억 원)
+    const { relationshipExemption, finalExemption } = calculateRelationshipExemption(relationship, totalAssetValue);
+
+    let additionalExemption = 0;
+    if (relationship === 'spouse') {
+        additionalExemption = Math.min(totalAssetValue - baseExemption - relationshipExemption, 3000000000);
+        additionalExemption = Math.max(additionalExemption, 0);
     }
 
-    // 가업 공제 계산 함수 (가업 재산에 따라 공제)
-    function calculateGaupExemption(heirAssetValue, heirType) {
-        // 예제 가업 공제 로직 (후계자 유형과 자산 금액에 따라 공제 계산)
-        const maxExemption = 1500000000; // 가업 공제 한도 (예: 15억 원)
-        return Math.min(heirAssetValue, maxExemption); // 가업 공제는 상속 재산과 한도 중 작은 값 적용
-    }
-
-    const gaupExemption = calculateGaupExemption(totalAssetValue, heirType); // 가업 공제 계산
-    const relationshipExemption = calculateGaupRelationshipExemption(); // 일괄 5억 원 공제
-
-    // 총 공제 및 과세 금액 계산
-    const totalExemption = gaupExemption + relationshipExemption;
+    const totalExemption = baseExemption + relationshipExemption + additionalExemption;
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
-    const tax = calculateTax(taxableAmount); // 상속세 계산 함수 호출
+    const tax = calculateTax(taxableAmount);
 
-    // 결과 출력
-    document.getElementById('result').innerHTML = `
-        <h3>계산 결과 (가업 개인 상속)</h3>
-        <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue)} 원</p>
-        <p>가업 공제: ${formatNumberWithCommas(gaupExemption)} 원</p>
-        <p>관계 공제: ${formatNumberWithCommas(relationshipExemption)} 원 (일괄 공제)</p>
-        <p>총 공제 금액: ${formatNumberWithCommas(totalExemption)} 원</p>
-        <p>과세 금액: ${formatNumberWithCommas(taxableAmount)} 원</p>
-        <p>상속세: ${formatNumberWithCommas(tax)} 원</p>
-    `;
+    console.log(`개인 상속 계산 완료 | 관계: ${relationship} | 최종 공제: ${totalExemption.toLocaleString()} 원 | 과세 금액: ${taxableAmount.toLocaleString()} 원 | 상속세: ${tax.toLocaleString()} 원`);
+}
+
+function calculateRelationshipExemption(relationship, shareAmount) {
+    relationship = relationship ?? 'other'; // undefined 또는 null이면 'other' 사용
+    console.log('관계 공제 계산 - 입력된 관계:', relationship);
+
+    let relationshipExemption = 0;
+    const baseExemption = 200000000; // 기초 공제
+    const maxSpouseExemption = 3000000000; // 배우자 추가 공제 최대 (30억 원)
+
+    switch (relationship) {
+        case 'spouse':
+            relationshipExemption = 500000000;
+            break;
+        case 'adultChild':
+            relationshipExemption = 50000000;
+            break;
+        case 'minorChild':
+            const remainingYears = Math.max(0, 19 - getAge());
+            relationshipExemption = 10000000 + remainingYears * 10000000;
+            break;
+        case 'parent':
+            relationshipExemption = 100000000;
+            break;
+        case 'sibling':
+        case 'other':
+            relationshipExemption = 10000000;
+            break;
+        default:
+            console.error('잘못된 관계 입력:', relationship);
+            return { relationshipExemption: 0, baseExemption, finalExemption: baseExemption };
+    }
+
+    console.log(`관계 공제 (${relationship}): ${relationshipExemption.toLocaleString()} 원`);
+
+    const finalExemption = Math.max(relationshipExemption + baseExemption, baseExemption);
+
+    return {
+        relationshipExemption,
+        baseExemption,
+        finalExemption
+    };
 }
 
   /**
