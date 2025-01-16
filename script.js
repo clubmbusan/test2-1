@@ -552,28 +552,22 @@ document.addEventListener('input', () => {
 });    
     
 /**
- * 개인 상속 로직
+ * 개인 상속 결과 계산 및 출력
  * @param {number} totalAssetValue - 총 상속 재산 금액
+ * @param {string} relationship - 상속인의 관계 (예: spouse, adultChild 등)
  */
-function calculatePersonalMode(totalAssetValue) {
-    // 관계 선택
-    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
-
-    // 공용 함수로 관계 공제를 계산
-    const { relationshipExemption, finalExemption } = calculateRelationshipExemption(relationship, totalAssetValue);
-
-    // 기초 공제
-    const baseExemption = 200000000; // 고정 기초 공제 (2억 원)
-
-    // 최종 공제 계산
-    const totalExemption = baseExemption + relationshipExemption; // 기초 공제와 관계 공제 합산
-    const minimumExemption = 500000000; // 최소 공제(일괄 공제) 5억 원
-    const finalExemptionAmount = Math.max(totalExemption, minimumExemption); // 최소 5억 원 보장
+function calculatePersonalInheritance(totalAssetValue, relationship) {
+    const baseExemption = 200000000; // 기초 공제 (2억 원)
+    const relationshipExemption = calculateRelationshipExemption(relationship, totalAssetValue); // 관계 공제
+    const additionalExemption = relationship === 'spouse' ? Math.min(totalAssetValue - baseExemption - relationshipExemption, 3000000000) : 0; // 배우자 추가 공제 (최대 30억 원)
+    
+    // 총 공제 금액 계산
+    const totalExemption = baseExemption + relationshipExemption + additionalExemption;
 
     // 과세 금액 계산
-    const taxableAmount = Math.max(totalAssetValue - finalExemptionAmount, 0);
+    const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // 상속세 계산 (누진세율 적용)
+    // 상속세 계산
     const tax = calculateTax(taxableAmount);
 
     // 결과 출력
@@ -584,14 +578,13 @@ function calculatePersonalMode(totalAssetValue) {
         <ul>
             <li>기초 공제: ${baseExemption.toLocaleString()} 원</li>
             <li>관계 공제 (${relationship}): ${relationshipExemption.toLocaleString()} 원</li>
-            <li>최소 공제 보장 (일괄 공제): ${minimumExemption.toLocaleString()} 원</li>
-            <li>최종 공제 금액: ${finalExemptionAmount.toLocaleString()} 원</li>
+            <li>추가 공제 (${relationship === 'spouse' ? '배우자' : '없음'}): ${additionalExemption.toLocaleString()} 원</li>
+            <li>최종 공제 금액: ${totalExemption.toLocaleString()} 원</li>
         </ul>
         <p><strong>과세 금액:</strong> ${taxableAmount.toLocaleString()} 원</p>
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
-
 
 /**
  * 상속 결과 계산 (전체 상속)
