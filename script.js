@@ -552,16 +552,22 @@ document.addEventListener('input', () => {
 });    
     
 /**
- * 개인 상속 결과 계산 및 출력
+ * 개인 상속 계산
  * @param {number} totalAssetValue - 총 상속 재산 금액
  * @param {string} relationship - 상속인의 관계 (예: spouse, adultChild 등)
  */
-function calculatePersonalInheritance(totalAssetValue, relationship) {
+function calculatePersonalMode(totalAssetValue, relationship) {
     const baseExemption = 200000000; // 기초 공제 (2억 원)
-    const relationshipExemption = calculateRelationshipExemption(relationship, totalAssetValue); // 관계 공제
-    const additionalExemption = relationship === 'spouse' ? Math.min(totalAssetValue - baseExemption - relationshipExemption, 3000000000) : 0; // 배우자 추가 공제 (최대 30억 원)
-    
-    // 총 공제 금액 계산
+
+    // 관계 공제 계산
+    const relationshipExemption = calculateRelationshipExemption(relationship, totalAssetValue);
+
+    // 추가 공제: 배우자만 해당 (최대 30억 원)
+    const additionalExemption = relationship === 'spouse'
+        ? Math.min(totalAssetValue - baseExemption - relationshipExemption, 3000000000)
+        : 0;
+
+    // 최종 공제 금액 계산
     const totalExemption = baseExemption + relationshipExemption + additionalExemption;
 
     // 과세 금액 계산
@@ -585,7 +591,7 @@ function calculatePersonalInheritance(totalAssetValue, relationship) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
-
+    
 /**
  * 상속 결과 계산 (전체 상속)
  * @param {number} totalAssetValue - 총 상속 재산 금액
