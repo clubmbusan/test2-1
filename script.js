@@ -414,45 +414,55 @@ addAssetButton.addEventListener('click', createAssetEntry);
  * }} 관계 공제, 기초 공제, 최종 공제 금액
  */
 function calculateRelationshipExemption(relationship, shareAmount) {
-    let relationshipExemption = 0; // 관계 공제
+    let relationshipExemption = 0; // 관계 공제 초기화
     const baseExemption = 200000000; // 기초 공제 (2억 원)
     const basicExemption = 500000000; // 기본 공제 (5억 원)
     const maxSpouseExemption = 3000000000; // 배우자 추가 공제 최대 (30억 원)
 
     switch (relationship) {
         case 'spouse': // 배우자
-            relationshipExemption = 500000000; // 최소 5억 원
-            const additionalExemption = Math.min(shareAmount - relationshipExemption, maxSpouseExemption);
-            relationshipExemption += Math.max(additionalExemption, 0);
+            relationshipExemption = 500000000; // 최소 5억 원 공제
+            const additionalExemption = Math.min(
+                shareAmount - baseExemption - relationshipExemption,
+                maxSpouseExemption
+            );
+            relationshipExemption += Math.max(additionalExemption, 0); // 배우자 추가 공제 적용
             break;
         case 'adultChild': // 성년 자녀
-            relationshipExemption = 50000000; // 고정 5천만 원
+            relationshipExemption = 50000000; // 5천만 원 공제
             break;
         case 'minorChild': // 미성년 자녀
-            relationshipExemption = 10000000; // 고정 1천만 원
-            const remainingYears = Math.max(0, 19 - getAge());
-            relationshipExemption += remainingYears * 10000000;
+            const remainingYears = Math.max(0, 19 - getAge()); // 미성년까지 남은 연수 계산
+            relationshipExemption = 10000000 + remainingYears * 10000000; // 기본 1천만 원 + 연수당 1천만 원
             break;
         case 'parent': // 부모
-            relationshipExemption = 100000000; // 고정 1억 원
+            relationshipExemption = 100000000; // 1억 원 공제
             break;
-        case 'sibling':
-        case 'other':
-            relationshipExemption = 10000000; // 고정 1천만 원
+        case 'sibling': // 형제자매
+        case 'other': // 기타
+            relationshipExemption = 10000000; // 1천만 원 공제
             break;
         default:
             console.error("잘못된 관계 입력:", relationship);
-            return { relationshipExemption: 0, baseExemption: baseExemption, finalExemption: basicExemption };
+            return {
+                relationshipExemption: 0,
+                baseExemption: baseExemption,
+                finalExemption: basicExemption
+            };
     }
 
-    const finalExemption = Math.max(relationshipExemption + baseExemption, basicExemption); // 최소 5억 원 보장
+    const finalExemption = Math.max(
+        relationshipExemption + baseExemption,
+        basicExemption
+    ); // 최소 5억 원 보장
 
     return {
         relationshipExemption,
         baseExemption,
-        finalExemption,
+        finalExemption
     };
 }
+
     
 /**
  * 성년까지 남은 년수 계산
@@ -561,7 +571,7 @@ function calculatePersonalMode(totalAssetValue, relationship = 'other') {
         : 0;
 
     // 최종 공제 금액 계산
-    const totalExemption = baseExemption + relationshipExemption + additionalExemption;
+    const totalExemption = relationshipExemption + baseExemption + additionalExemption;
 
     // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
