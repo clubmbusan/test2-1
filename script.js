@@ -533,9 +533,21 @@ function calculateTax(taxableAmount) {
 }
 
     //계산 버튼 이벤트
-calculateButton.addEventListener('click', () => {
-    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
-    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+document.getElementById('calculateButton').addEventListener('click', () => {
+    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+        return sum + value;
+    }, 0);
+
+    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+
+    console.clear();  // 콘솔 정리 (디버깅 로그 정리)
+    console.log('선택된 관계:', relationship);
+    console.log('총 재산 금액:', totalAssetValue.toLocaleString());
+
+    calculatePersonalMode(totalAssetValue, relationship);
+});
+
 
 // 주식 총액을 assetValue에 포함
 document.addEventListener('input', () => {
