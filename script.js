@@ -524,10 +524,10 @@ function calculateTax(taxableAmount) {
 
 // 버튼 클릭 이벤트 연결
 document.getElementById('calculateButton').addEventListener('click', () => {
-    const totalAssetValue = parseInt(document.getElementById('cashAmount').value, 10) || 0;
-    const relationship = document.getElementById('relationshipPersonal').value;
+    const totalAssetValue = parseInt(document.getElementById('cashAmount').value.replace(/,/g, ''), 10) || 0;
+    const relationship = document.getElementById('relationshipPersonal').value; // 관계 값 읽기
 
-    calculatePersonalMode(totalAssetValue, relationship);
+    calculatePersonalMode(totalAssetValue, relationship); // 관계 값 전달
 });
 
 // 주식 총액을 assetValue에 포함
