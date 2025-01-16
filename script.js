@@ -532,25 +532,10 @@ function calculateTax(taxableAmount) {
     return Math.max(tax, 0); // 음수 방지
 }
 
-// "계산하기" 버튼 클릭 이벤트 리스너
-document.getElementById('calculateButton').addEventListener('click', () => {
-    // 모든 자산 입력 필드에서 값을 읽어 합산
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-        return sum + value;
-    }, 0);
-
-    // 관계 값 읽기
-    const relationship = document.getElementById('relationshipPersonal').value;
-
-    // 🛠️ 디버깅 로그 추가 (콘솔에서 값 확인)
-    console.log('선택된 관계:', relationship);
-    console.log('총 재산 금액:', totalAssetValue.toLocaleString());
-
-    // 개인 상속 계산 실행
-    calculatePersonalMode(totalAssetValue, relationship);
-});
-
+// 계산 버튼 이벤트
+calculateButton.addEventListener('click', () => {
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
 
 // 주식 총액을 assetValue에 포함
 document.addEventListener('input', () => {
