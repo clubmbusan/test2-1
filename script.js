@@ -441,7 +441,7 @@ function calculateRelationshipExemption(relationship, shareAmount) {
             relationshipExemption = 10000000; // 고정 1천만 원
             break;
         default:
-            console.error('잘못된 관계 입력:', relationship);
+            console.error("잘못된 관계 입력:", relationship);
             return { relationshipExemption: 0, baseExemption: baseExemption, finalExemption: basicExemption };
     }
 
@@ -453,6 +453,7 @@ function calculateRelationshipExemption(relationship, shareAmount) {
         finalExemption,
     };
 }
+
     
 /**
  * 성년까지 남은 년수 계산
