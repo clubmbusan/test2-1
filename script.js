@@ -534,20 +534,30 @@ function calculateTax(taxableAmount) {
 
     //계산 버튼 이벤트
 document.getElementById('calculateButton').addEventListener('click', () => {
+    console.clear(); // 콘솔 로그 초기화 (가독성 향상)
+
+    // 현재 선택된 상속 유형 확인
+    const inheritanceType = document.getElementById('inheritanceType').value;
+
+    // 관계 값 읽기 (한 번만 실행)
+    let relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+
+    console.log('선택된 상속 유형:', inheritanceType);
+    console.log('선택된 관계:', relationship);
+
+    // 총 재산 금액 계산
     const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
         return sum + value;
     }, 0);
 
-    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
-
-    console.clear();  // 콘솔 정리 (디버깅 로그 정리)
-    console.log('선택된 관계:', relationship);
     console.log('총 재산 금액:', totalAssetValue.toLocaleString());
 
-    calculatePersonalMode(totalAssetValue, relationship);
+    // 개인 상속일 경우 `calculatePersonalMode` 한 번만 실행
+    if (inheritanceType === 'personal') {
+        calculatePersonalMode(totalAssetValue, relationship);
+    }
 });
-
 
 // 주식 총액을 assetValue에 포함
 document.addEventListener('input', () => {
@@ -569,8 +579,9 @@ document.addEventListener('input', () => {
  * @param {string} relationship - 상속인의 관계 (예: spouse, adultChild 등)
  */
 function calculatePersonalMode(totalAssetValue, relationship) {
-    const baseExemption = 200000000; // 기초 공제 (2억 원)
     console.log('개인 상속 계산 시작 - 선택된 관계:', relationship);
+
+    const baseExemption = 200000000; // 기초 공제 (2억 원)
 
     // 관계 공제 계산
     const { relationshipExemption } = calculateRelationshipExemption(relationship, totalAssetValue);
@@ -593,6 +604,15 @@ function calculatePersonalMode(totalAssetValue, relationship) {
     // 상속세 계산
     const tax = calculateTax(taxableAmount);
 
+    console.log(`개인 상속 계산 완료 | 관계: ${relationship}`);
+    console.log(`- 총 재산: ${totalAssetValue.toLocaleString()} 원`);
+    console.log(`- 기초 공제: ${baseExemption.toLocaleString()} 원`);
+    console.log(`- 관계 공제: ${relationshipExemption.toLocaleString()} 원`);
+    console.log(`- 추가 공제: ${additionalExemption.toLocaleString()} 원`);
+    console.log(`- 최종 공제: ${totalExemption.toLocaleString()} 원`);
+    console.log(`- 과세 금액: ${taxableAmount.toLocaleString()} 원`);
+    console.log(`- 상속세: ${tax.toLocaleString()} 원`);
+
     // 결과 출력
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = `
@@ -609,8 +629,9 @@ function calculatePersonalMode(totalAssetValue, relationship) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 
-    console.log(`개인 상속 계산 완료 | 관계: ${relationship} | 최종 공제: ${totalExemption.toLocaleString()} 원 | 과세 금액: ${taxableAmount.toLocaleString()} 원 | 상속세: ${tax.toLocaleString()} 원`);
+    console.log("계산 결과 창이 정상적으로 업데이트되었습니다.");
 }
+
     
 /**
  * 상속 결과 계산 (전체 상속)
