@@ -531,32 +531,19 @@ function calculateTax(taxableAmount) {
 
     return Math.max(tax, 0); // 음수 방지
 }
-
-    //계산 버튼 이벤트
-document.getElementById('calculateButton').addEventListener('click', () => {
-    console.clear(); // 콘솔 로그 초기화 (가독성 향상)
-
-    // 현재 선택된 상속 유형 확인
-    const inheritanceType = document.getElementById('inheritanceType').value;
-
-    // 관계 값 읽기 (한 번만 실행)
-    let relationship = document.getElementById('relationshipPersonal')?.value || 'other';
-
-    console.log('선택된 상속 유형:', inheritanceType);
-    console.log('선택된 관계:', relationship);
-
-    // 총 재산 금액 계산
+  // 계산 버튼 이벤트 코드
+   document.getElementById('calculateButton').addEventListener('click', () => {
     const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
         return sum + value;
     }, 0);
 
+    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+
+    console.log('선택된 관계:', relationship);
     console.log('총 재산 금액:', totalAssetValue.toLocaleString());
 
-    // 개인 상속일 경우 `calculatePersonalMode` 한 번만 실행
-    if (inheritanceType === 'personal') {
-        calculatePersonalMode(totalAssetValue, relationship);
-    }
+    calculatePersonalMode(totalAssetValue, relationship);
 });
 
 // 주식 총액을 assetValue에 포함
@@ -578,7 +565,8 @@ document.addEventListener('input', () => {
  * @param {number} totalAssetValue - 총 상속 재산 금액
  * @param {string} relationship - 상속인의 관계 (예: spouse, adultChild 등)
  */
-function calculatePersonalMode(totalAssetValue, relationship) {
+
+    function calculatePersonalMode(totalAssetValue, relationship) {
     console.log('개인 상속 계산 시작 - 선택된 관계:', relationship);
 
     const baseExemption = 200000000; // 기초 공제 (2억 원)
@@ -589,7 +577,6 @@ function calculatePersonalMode(totalAssetValue, relationship) {
     let additionalExemption = 0;
     
     if (relationship === 'spouse') {
-        // 배우자 추가 공제: (총 상속 금액 - 기초 공제 - 관계 공제) 최대 30억
         additionalExemption = Math.min(totalAssetValue - baseExemption - relationshipExemption, 3000000000);
         additionalExemption = Math.max(additionalExemption, 0);
     }
@@ -631,7 +618,6 @@ function calculatePersonalMode(totalAssetValue, relationship) {
 
     console.log("계산 결과 창이 정상적으로 업데이트되었습니다.");
 }
-
     
 /**
  * 상속 결과 계산 (전체 상속)
