@@ -457,9 +457,7 @@ function calculateRelationshipExemption(relationship, shareAmount) {
         finalExemption,
     };
 }
-
-
-    
+ 
 /**
  * 성년까지 남은 년수 계산
  * @returns {number} 나이 계산 결과
@@ -529,16 +527,25 @@ function calculateTax(taxableAmount) {
 }
   
 // 버튼 클릭 이벤트 연결
-document.getElementById('calculateButton').addEventListener('click', () => {
-    const totalAssetValue = parseInt(document.getElementById('cashAmount').value.replace(/,/g, ''), 10) || 0;
+document.addEventListener('DOMContentLoaded', () => {
+    const calculateButton = document.getElementById('calculateButton');
     
-    // 선택된 관계 값을 변수에 저장하여 고정
-    const selectedRelationship = document.getElementById('relationshipPersonal').value; 
+    // 기존 이벤트 리스너 제거 후 새로 추가 (중복 방지)
+    calculateButton.removeEventListener('click', handleCalculate);
+    calculateButton.addEventListener('click', handleCalculate);
+});
 
-    console.log('버튼 클릭 시 선택된 관계:', selectedRelationship); // 디버깅용
+/**
+ * 버튼 클릭 시 실행되는 함수
+ */
+function handleCalculate() {
+    const totalAssetValue = parseInt(document.getElementById('cashAmount').value.replace(/,/g, ''), 10) || 0;
+    const selectedRelationship = document.getElementById('relationshipPersonal').value;
+  
+    console.log('버튼 클릭 시 선택된 관계:', selectedRelationship);
 
     calculatePersonalMode(totalAssetValue, selectedRelationship);
-});
+}
 
 // 주식 총액을 assetValue에 포함
 document.addEventListener('input', () => {
