@@ -534,37 +534,8 @@ function calculateTax(taxableAmount) {
 
     //계산 버튼 이벤트
 calculateButton.addEventListener('click', () => {
-    // 현재 상속 유형 확인
-    const inheritanceType = document.getElementById('inheritanceType').value;
-
-    let relationship;
-    
-    if (inheritanceType === 'personal') {
-        relationship = document.getElementById('relationshipPersonal').value ?? 'other';
-    } else if (inheritanceType === 'businessPersonal') {
-        relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
-    } else {
-        relationship = 'other'; // 기본값
-    }
-
-    console.log('선택된 상속 유형:', inheritanceType);
-    console.log('선택된 관계:', relationship);
-
-    // 총 재산 금액 계산
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-        return sum + value;
-    }, 0);
-
-    console.log('총 재산 금액:', totalAssetValue.toLocaleString());
-
-    // 적절한 계산 함수 호출
-    if (inheritanceType === 'personal') {
-        calculatePersonalMode(totalAssetValue, relationship);
-    } else if (inheritanceType === 'businessPersonal') {
-        calculateBusinessPersonalMode(totalAssetValue, relationship);
-    }
-});
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
 
 // 주식 총액을 assetValue에 포함
 document.addEventListener('input', () => {
