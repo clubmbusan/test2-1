@@ -546,7 +546,7 @@ document.addEventListener('input', () => {
 });    
 
      // 개인 상속 계산 함수
-      function calculatePersonalMode(totalAssetValue) {
+    function calculatePersonalMode(totalAssetValue) {
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
     
     // ✅ 배우자 상속분 가져오기
@@ -570,12 +570,21 @@ document.addEventListener('input', () => {
         minorChildAge = parseInt(minorChildAgeInput.value) || 0;
     }
 
-    // ✅ 공제 계산 (배우자 추가 공제 포함)
-    let { basicExemption, relationshipExemption, extraExemption, totalExemption } = calculateExemptions(
+    // ✅ 공제 계산
+    let { basicExemption, relationshipExemption } = calculateExemptions(
         totalAssetValue, relationship, spouseShare, parentAge, minorChildAge
     );
 
-    // ✅ 최종 공제에서 최소 5억 보장 (배우자는 추가 공제 포함)
+    // ✅ 배우자의 경우 추가 공제 반영
+    let totalExemption = basicExemption + relationshipExemption;
+    if (relationship === 'spouse') {
+        let spouseAdditionalExemption = Math.min(spouseShare - 700000000, 2300000000); // 기초 2억 + 관계 5억 후 추가 공제
+        if (spouseAdditionalExemption > 0) {
+            totalExemption += spouseAdditionalExemption;
+        }
+    }
+
+    // ✅ 배우자가 아닐 경우 최종 공제 5억 미만이면 5억 보장
     if (relationship !== 'spouse' && totalExemption < 500000000) {
         totalExemption = 500000000;
     }
@@ -586,6 +595,18 @@ document.addEventListener('input', () => {
     // ✅ 상속세 계산
     const tax = calculateTax(taxableAmount);
 
+    // 🔹 콘솔 로그로 디버깅
+    console.log("🔍 Debug Info:");
+    console.log("총 재산 금액:", totalAssetValue);
+    console.log("배우자 상속분:", spouseShare);
+    console.log("부모 연령:", parentAge);
+    console.log("미성년 자녀 나이:", minorChildAge);
+    console.log("기초 공제:", basicExemption);
+    console.log("관계 공제:", relationshipExemption);
+    console.log("최종 공제 금액:", totalExemption);
+    console.log("과세 금액:", taxableAmount);
+    console.log("상속세:", tax);
+
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (개인 상속)</h3>
@@ -594,7 +615,6 @@ document.addEventListener('input', () => {
         <ul>
             <li>기초 공제: ${basicExemption.toLocaleString()} 원</li> 
             <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
-            <li>추가 공제: ${extraExemption.toLocaleString()} 원</li>
         </ul>
         <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
         <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
