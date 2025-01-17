@@ -439,7 +439,6 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
- // 공제 계산 로직 (부모 공제 연령별 차등 적용)
 // ✅ 공제 계산 로직 (배우자 추가 공제 포함)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
     const basicExemption = 200000000; // 기초 공제 (2억 원)
@@ -545,7 +544,7 @@ document.addEventListener('input', () => {
     }
 });    
 
-     /**
+   /**
  * 개인 상속 계산 함수
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
@@ -556,7 +555,7 @@ function calculatePersonalMode(totalAssetValue) {
     let spouseShare = 0;
     let spouseInput = document.getElementById('spouseShare');
     if (relationship === 'spouse' && spouseInput) {
-        spouseShare = parseFloat(spouseInput.value) || 0;
+        spouseShare = parseFloat(spouseInput.value.replace(/,/g, '')) || 0; // 콤마 제거 후 숫자로 변환
     }
 
     // ✅ 부모 연령 가져오기
@@ -585,7 +584,7 @@ function calculatePersonalMode(totalAssetValue) {
     let totalExemption = basicExemption + relationshipExemption;
 
     if (relationship === 'spouse') {
-        // 🔹 배우자 추가 공제 (배우자 상속분에서 7억 초과분 최대 23억 공제)
+        // 🔹 배우자 추가 공제 (기초 2억 + 관계 5억 초과분 최대 23억 공제)
         if (spouseShare > 700000000) {
             spouseAdditionalExemption = Math.min(spouseShare - 700000000, 2300000000);
             totalExemption += spouseAdditionalExemption;
@@ -615,11 +614,6 @@ function calculatePersonalMode(totalAssetValue) {
     console.log("최종 공제 금액:", totalExemption);
     console.log("과세 금액:", taxableAmount);
     console.log("상속세:", tax);
-
-    // ✅ 배우자 상속분이 0일 경우 경고 메시지 표시
-    if (relationship === 'spouse' && spouseShare === 0) {
-        alert("⚠ 배우자가 상속받은 금액을 입력해야 추가 공제가 적용됩니다.");
-    }
 
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
