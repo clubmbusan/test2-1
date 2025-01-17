@@ -396,44 +396,51 @@ function handleAssetTypeChange(assetTypeSelect) {
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);    
 
- // 공제 계산 로직 (배우자 공제 정상 적용)
-function calculateExemptions(totalInheritance, relationship, spouseShare = 0) {
+ // 공제 계산 로직 (부모 공제 연령별 차등 적용)
+function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0) {
     const basicExemption = 200000000; // 기초 공제 (2억 원)
     let relationshipExemption = 0;
     let extraExemption = 0;
 
-    // 🔹 배우자 공제 로직 수정 (기본 5억 + 추가공제 최대 30억)
-    if (relationship === 'spouse') {
-        relationshipExemption = 500000000; // 배우자 기본 공제 (5억)
-        
-        if (spouseShare > 500000000) {
-            extraExemption = Math.min(spouseShare - 500000000, 3000000000); // 최대 30억 추가 공제
-        }
-
-        relationshipExemption += extraExemption; // 추가 공제 적용
-    } 
-
-    // 🔹 기타 상속인의 경우 공제 계산
-    else if (relationship === 'adultChild') {
-        relationshipExemption = 50000000; // 성년 자녀 공제 (5천만 원)
-    } else if (relationship === 'parent') {
-        relationshipExemption = 100000000; // 부모 공제 (1억 원)
-    } else if (relationship === 'sibling' || relationship === 'other') {
-        relationshipExemption = 10000000; // 기타 상속인 (1천만 원)
+    switch (relationship) {
+        case 'spouse': 
+            // 배우자 기본 공제 (5억) + 추가 공제 (최대 30억)
+            relationshipExemption = 500000000;  
+            if (spouseShare > 500000000) {
+                extraExemption = Math.min(spouseShare - 500000000, 3000000000); 
+            }
+            relationshipExemption += extraExemption;
+            break;
+        case 'parent': 
+            // 부모 연령별 공제 (60세 미만: 5천만 원, 60세 이상: 1억 원)
+            relationshipExemption = parentAge >= 60 ? 100000000 : 50000000;
+            break;
+        case 'adultChild': 
+            relationshipExemption = 50000000; // 성년 자녀 공제 (5천만 원)
+            break;
+        case 'minorChild': 
+            relationshipExemption = 10000000; // 미성년 자녀 공제 (천만 원)
+            break;
+        case 'sibling':
+        case 'other':
+            relationshipExemption = 10000000; // 기타 상속인 (1천만 원)
+            break;
+        default:
+            console.error('잘못된 관계 선택:', relationship);
+            return { basicExemption, relationshipExemption: 0, totalExemption: 0 };
     }
 
-    // 🔹 배우자가 아닐 경우, 일괄공제 적용 (최소 5억 보장)
+    // 배우자가 아닌 경우 최소 5억 공제 보장 (일괄공제)
     if (relationship !== 'spouse' && relationshipExemption < 500000000) {
         relationshipExemption = 500000000;
     }
 
-    // 🔹 최종 공제 금액 계산
+    // 최종 공제 금액 계산
     const totalExemption = basicExemption + relationshipExemption;
 
     return { basicExemption, relationshipExemption, extraExemption, totalExemption };
 }
 
-  
 // 과세표준 계산 함수
 function calculateTaxableAmount(totalInheritance, exemptions) {
     return Math.max(totalInheritance - exemptions.totalExemption, 0); // 음수일 경우 0 처리
