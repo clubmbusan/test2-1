@@ -93,34 +93,46 @@ document.addEventListener("change", function (event) {
     }
 });
 
-    /**
- * ✅ 상속인 추가 버튼 기능 (새로운 입력 필드에도 적용)
+ /**
+ * ✅ 상속인 추가 버튼 기능 (새로운 입력 필드에도 적용, 중복 방지)
  */
-document.getElementById("addHeirButton").addEventListener("click", function () {
+document.addEventListener("DOMContentLoaded", function () {
+    const addHeirButton = document.getElementById("addHeirButton");
     const heirContainer = document.getElementById("heirContainer");
 
-    // 새로운 상속인 입력 필드 추가
-    const newHeirEntry = document.createElement("div");
-    newHeirEntry.classList.add("heir-entry");
-    newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름" class="heirName">
-        <select class="relationship">
-            <option value="spouse">배우자</option>
-            <option value="adultChild">성년 자녀</option>
-            <option value="minorChild">미성년 자녀</option>
-            <option value="parent">부모</option>
-            <option value="sibling">형제자매</option>
-            <option value="other">기타</option>
-        </select>
-        <select class="parentAgeField" style="display: none;">
-            <option value="59">60세 미만</option>
-            <option value="60">60세 이상</option>
-        </select>
-        <input type="number" class="minorChildAgeField" style="display: none;" min="0" max="18" placeholder="나이 입력">
-        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
-    `;
+    if (!addHeirButton || !heirContainer) {
+        console.error("상속인 추가 버튼 또는 컨테이너가 없습니다.");
+        return;
+    }
 
-    heirContainer.appendChild(newHeirEntry);
+    // 기존에 등록된 이벤트 리스너가 있으면 제거 후 다시 추가
+    addHeirButton.removeEventListener("click", addHeir);
+    addHeirButton.addEventListener("click", addHeir);
+
+    function addHeir() {
+        // 새로운 상속인 입력 필드 추가
+        const newHeirEntry = document.createElement("div");
+        newHeirEntry.classList.add("heir-entry");
+        newHeirEntry.innerHTML = `
+            <input type="text" placeholder="이름" class="heirName">
+            <select class="relationship">
+                <option value="spouse">배우자</option>
+                <option value="adultChild">성년 자녀</option>
+                <option value="minorChild">미성년 자녀</option>
+                <option value="parent">부모</option>
+                <option value="sibling">형제자매</option>
+                <option value="other">기타</option>
+            </select>
+            <select class="parentAgeField" style="display: none;">
+                <option value="59">60세 미만</option>
+                <option value="60">60세 이상</option>
+            </select>
+            <input type="number" class="minorChildAgeField" style="display: none;" min="0" max="18" placeholder="나이 입력">
+            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+        `;
+
+        heirContainer.appendChild(newHeirEntry);
+    }
 });
     
     // 자산 유형 변경 처리
