@@ -269,10 +269,6 @@ function getNumericValue(field) {
             <option value="sibling">형제자매</option>
             <option value="other">기타</option>
         </select>
-        <select class="parentAgeField" style="display: none;">
-            <option value="59">60세 미만</option>
-            <option value="60">60세 이상</option>
-        </select>
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
 
