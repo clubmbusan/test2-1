@@ -58,34 +58,36 @@ if (relationshipSelect && minorChildAgeContainer) {
     });
 }
 
-/**
+     /**
  * 전체상속: 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
  * 이벤트 위임 방식 적용 → 새로 추가된 필드에도 자동 적용됨
  */
 document.addEventListener("change", function (event) {
     if (!event.target.classList.contains("relationship")) return;
 
-    const heirEntries = document.querySelectorAll(".heir-entry"); // 모든 상속인 입력 필드
-    heirEntries.forEach((heirEntry) => {
-        const relationshipSelect = heirEntry.querySelector(".relationship"); // 관계 선택 드롭다운
-        const parentAgeField = heirEntry.querySelector(".parentAgeField"); // 부모 연령 필드
-        const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField"); // 미성년 자녀 나이 필드
+    const heirEntry = event.target.closest(".heir-entry"); // 현재 선택된 상속인 블록
+    if (!heirEntry) return;
 
-        if (!relationshipSelect) return;
+    const selectedValue = event.target.value; // 선택된 관계 값
+    console.log("선택된 관계:", selectedValue); // 디버깅용 출력
 
-        // 선택된 관계 값 가져오기
-        const selectedValue = relationshipSelect.value;
+    const parentAgeField = heirEntry.querySelector(".parentAgeField"); // 부모 연령 필드
+    const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField"); // 미성년 나이 입력 필드
 
-        // 부모 선택 시 연령 입력 필드 표시
-        if (parentAgeField) {
-            parentAgeField.style.display = selectedValue === "parent" ? "inline-block" : "none";
-        }
+    console.log("부모 연령 필드 찾음:", !!parentAgeField);
+    console.log("미성년 나이 필드 찾음:", !!minorChildAgeField);
 
-        // 미성년 자녀 선택 시 나이 입력 필드 표시
-        if (minorChildAgeField) {
-            minorChildAgeField.style.display = selectedValue === "minorChild" ? "block" : "none";
-        }
-    });
+    // 부모 선택 시 연령 필드 표시
+    if (parentAgeField) {
+        parentAgeField.style.display = selectedValue === "parent" ? "inline-block" : "none";
+        console.log("부모 연령 필드 상태:", parentAgeField.style.display);
+    }
+
+    // 미성년 자녀 선택 시 나이 입력 필드 표시
+    if (minorChildAgeField) {
+        minorChildAgeField.style.display = selectedValue === "minorChild" ? "block" : "none";
+        console.log("미성년 나이 필드 상태:", minorChildAgeField.style.display);
+    }
 });
 
     // 자산 유형 변경 처리
