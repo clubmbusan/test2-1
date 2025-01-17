@@ -59,49 +59,33 @@ if (relationshipSelect && minorChildAgeContainer) {
 }
 
 /**
- * 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
+ * 전체상속: 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
  * 이벤트 위임 방식 적용 → 새로 추가된 필드에도 자동 적용됨
  */
 document.addEventListener("change", function (event) {
     if (!event.target.classList.contains("relationship")) return;
 
-    const heirEntry = event.target.closest(".heir-entry");
-    if (!heirEntry) return;
+    const heirEntries = document.querySelectorAll(".heir-entry"); // 모든 상속인 입력 필드
+    heirEntries.forEach((heirEntry) => {
+        const relationshipSelect = heirEntry.querySelector(".relationship"); // 관계 선택 드롭다운
+        const parentAgeField = heirEntry.querySelector(".parentAgeField"); // 부모 연령 필드
+        const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField"); // 미성년 자녀 나이 필드
 
-    // 부모 연령 입력 필드
-    const parentAgeField = heirEntry.querySelector(".parentAgeField");
-    if (parentAgeField) {
-        parentAgeField.style.display = event.target.value === "parent" ? "inline-block" : "none";
-    }
+        if (!relationshipSelect) return;
 
-    // 미성년 자녀 나이 입력 필드
-    const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
-    if (minorChildAgeField) {
-        minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
-    }
-});
+        // 선택된 관계 값 가져오기
+        const selectedValue = relationshipSelect.value;
 
-/**
- * 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
- * 이벤트 위임 방식 적용 → 새로 추가된 필드에도 자동 적용됨
- */
-document.addEventListener("change", function (event) {
-    if (!event.target.classList.contains("relationship")) return;
+        // 부모 선택 시 연령 입력 필드 표시
+        if (parentAgeField) {
+            parentAgeField.style.display = selectedValue === "parent" ? "inline-block" : "none";
+        }
 
-    const heirEntry = event.target.closest(".heir-entry");
-    if (!heirEntry) return;
-
-    // 부모 연령 입력 필드
-    const parentAgeField = heirEntry.querySelector(".parentAgeField");
-    if (parentAgeField) {
-        parentAgeField.style.display = event.target.value === "parent" ? "inline-block" : "none";
-    }
-
-    // 미성년 자녀 나이 입력 필드
-    const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
-    if (minorChildAgeField) {
-        minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
-    }
+        // 미성년 자녀 선택 시 나이 입력 필드 표시
+        if (minorChildAgeField) {
+            minorChildAgeField.style.display = selectedValue === "minorChild" ? "block" : "none";
+        }
+    });
 });
 
     // 자산 유형 변경 처리
