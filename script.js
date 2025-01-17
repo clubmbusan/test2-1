@@ -50,49 +50,49 @@ inheritanceType.addEventListener('change', () => {
     }
 });
 
-    // ✅ 개인 상속의 부모 연령 선택 필드 표시
+    // ✅ 개인 상속의 부모 연령 선택 필드 (기존 코드 유지)
 const relationshipSelect = document.getElementById("relationshipPersonal");
 const parentAgeContainer = document.getElementById("parentAgeContainer");
 
-if (relationshipSelect) {
+if (relationshipSelect && parentAgeContainer) {
     relationshipSelect.addEventListener("change", function () {
-        if (this.value === "parent") {
-            parentAgeContainer.style.display = "inline-block"; // 부모 선택 시 연령 필드 표시
-        } else {
-            parentAgeContainer.style.display = "none"; // 다른 관계 선택 시 숨김
-        }
+        parentAgeContainer.style.display = this.value === "parent" ? "inline-block" : "none";
     });
 }
 
-    // 개인 상속: 미성년 자녀 나이 입력 필드 표시
-document.getElementById('relationshipPersonal').addEventListener('change', function () {
-    const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
-    minorChildAgeContainer.style.display = this.value === 'minorChild' ? 'block' : 'none';
-});
-    
-// ✅ 전체 상속의 부모 연령 선택 필드 표시 (각 상속인별 개별 적용)
-document.addEventListener("change", function (event) {
+// ✅ 개인 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
+const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
+
+if (relationshipSelect && minorChildAgeContainer) {
+    relationshipSelect.addEventListener('change', function () {
+        minorChildAgeContainer.style.display = this.value === 'minorChild' ? 'block' : 'none';
+    });
+}
+
+// ✅ 전체 상속의 부모 연령 선택 필드 (기존 코드 유지)
+document.getElementById("heirContainer").addEventListener("change", function (event) {
     if (event.target.classList.contains("relationship")) {
-        const parentAgeField = event.target.parentElement.querySelector(".parentAgeField");
-        if (event.target.value === "parent") {
-            parentAgeField.style.display = "inline-block"; // 부모 선택 시 해당 상속인의 필드만 표시
-        } else {
-            parentAgeField.style.display = "none"; // 다른 관계 선택 시 숨김
+        const heirEntry = event.target.closest('.heir-entry');
+        const parentAgeField = heirEntry?.querySelector(".parentAgeField");
+
+        if (parentAgeField) {
+            parentAgeField.style.display = event.target.value === "parent" ? "inline-block" : "none";
         }
     }
 });
-    
-    // 전체 상속: 미성년 자녀 나이 입력 필드 표시
-document.getElementById('heirContainer').addEventListener('change', function (event) {
-    if (event.target.classList.contains('relationship')) {
-        const heirEntry = event.target.closest('.heir-entry');
-        const minorChildAgeField = heirEntry.querySelector('.minorChildAgeField');
 
-        minorChildAgeField.style.display = event.target.value === 'minorChild' ? 'block' : 'none';
-     }
-  });
+// ✅ 전체 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
+document.getElementById("heirContainer").addEventListener("change", function (event) {
+    if (event.target.classList.contains("relationship")) {
+        const heirEntry = event.target.closest(".heir-entry");
+        const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
+
+        if (minorChildAgeField) {
+            minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
+        }
+    }
 });
-
+   
      // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
     const assetEntry = assetTypeSelect.closest('.asset-entry');
