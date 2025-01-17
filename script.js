@@ -110,10 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ✅ 초기화 호출
-    initializeDefaultView();
-});
- 
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
     const assetEntry = assetTypeSelect.closest('.asset-entry');
