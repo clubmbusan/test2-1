@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
      document.getElementById('addHeirButton').addEventListener('click', () => {
     const heirContainer = document.getElementById('heirContainer');
 
-    // ✅ 새 상속인 한 줄 추가 (한 번만 추가)
+    // ✅ 새 상속인 한 줄 추가 (한 번만 추가되도록 수정)
     const newHeirEntry = document.createElement('div');
     newHeirEntry.className = 'heir-entry';
     newHeirEntry.innerHTML = `
@@ -97,13 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
 
+    // ✅ 한 번만 추가하도록 변경
     heirContainer.appendChild(newHeirEntry);
 
     // ✅ 새로 추가된 요소에 대해 부모 연령/미성년 나이 선택 이벤트 적용
     attachDynamicEventListeners(newHeirEntry);
 });
 
-// ✅ 이벤트 위임 방식으로 부모 연령 및 미성년 나이 필드 표시
+// ✅ 이벤트 위임을 사용하여 부모 연령 및 미성년 나이 필드 표시
 document.getElementById("heirContainer").addEventListener("change", function (event) {
     if (event.target.classList.contains("relationship")) {
         const heirEntry = event.target.closest(".heir-entry");
