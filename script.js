@@ -59,7 +59,7 @@ if (relationshipSelect && minorChildAgeContainer) {
 }
 
 /**
- * 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
+ * 전체상속 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
  */
 function updateDynamicFields(event) {
     if (!event.target.classList.contains("relationship")) return;
@@ -80,7 +80,7 @@ function updateDynamicFields(event) {
 }
 
 /**
- * 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
+ * 전체상속 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
  * 이벤트 위임(Event Delegation) 방식 적용
  */
 document.getElementById("heirContainer").addEventListener("change", function (event) {
@@ -103,7 +103,6 @@ document.getElementById("heirContainer").addEventListener("change", function (ev
     }
 });
 
-   
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
     const assetEntry = assetTypeSelect.closest('.asset-entry');
