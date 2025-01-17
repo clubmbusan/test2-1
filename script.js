@@ -58,38 +58,71 @@ if (relationshipSelect && minorChildAgeContainer) {
     });
 }
 
-     /**
- * 전체상속: 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
- * 이벤트 위임 방식 적용 → 새로 추가된 필드에도 자동 적용됨
+    /**
+ * 전체 상속인 입력 필드에서 부모/미성년자 선택 시 추가 입력 필드 표시
  */
 document.addEventListener("change", function (event) {
     if (!event.target.classList.contains("relationship")) return;
 
-    const heirEntry = event.target.closest(".heir-entry"); // 현재 선택된 상속인 블록
+    const heirEntry = event.target.closest(".heir-entry"); // 현재 변경된 상속인 블록 찾기
     if (!heirEntry) return;
 
     const selectedValue = event.target.value; // 선택된 관계 값
-    console.log("선택된 관계:", selectedValue); // 디버깅용 출력
+    console.log("선택된 관계:", selectedValue); // 디버깅용
 
-    const parentAgeField = heirEntry.querySelector(".parentAgeField"); // 부모 연령 필드
-    const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField"); // 미성년 나이 입력 필드
-
-    console.log("부모 연령 필드 찾음:", !!parentAgeField);
-    console.log("미성년 나이 필드 찾음:", !!minorChildAgeField);
+    // 부모 연령 필드 & 미성년 나이 입력 필드 찾기
+    let parentAgeField = heirEntry.querySelector(".parentAgeField");
+    let minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
 
     // 부모 선택 시 연령 필드 표시
     if (parentAgeField) {
-        parentAgeField.style.display = selectedValue === "parent" ? "inline-block" : "none";
-        console.log("부모 연령 필드 상태:", parentAgeField.style.display);
+        if (selectedValue === "parent") {
+            parentAgeField.style.display = "inline-block";
+        } else {
+            parentAgeField.style.display = "none";
+        }
     }
 
     // 미성년 자녀 선택 시 나이 입력 필드 표시
     if (minorChildAgeField) {
-        minorChildAgeField.style.display = selectedValue === "minorChild" ? "block" : "none";
-        console.log("미성년 나이 필드 상태:", minorChildAgeField.style.display);
+        if (selectedValue === "minorChild") {
+            minorChildAgeField.style.display = "block";
+        } else {
+            minorChildAgeField.style.display = "none";
+        }
     }
 });
 
+    /**
+ * ✅ 상속인 추가 버튼 기능 (새로운 입력 필드에도 적용)
+ */
+document.getElementById("addHeirButton").addEventListener("click", function () {
+    const heirContainer = document.getElementById("heirContainer");
+
+    // 새로운 상속인 입력 필드 추가
+    const newHeirEntry = document.createElement("div");
+    newHeirEntry.classList.add("heir-entry");
+    newHeirEntry.innerHTML = `
+        <input type="text" placeholder="이름" class="heirName">
+        <select class="relationship">
+            <option value="spouse">배우자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+        <select class="parentAgeField" style="display: none;">
+            <option value="59">60세 미만</option>
+            <option value="60">60세 이상</option>
+        </select>
+        <input type="number" class="minorChildAgeField" style="display: none;" min="0" max="18" placeholder="나이 입력">
+        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+    `;
+
+    heirContainer.appendChild(newHeirEntry);
+});
+    
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
     const assetEntry = assetTypeSelect.closest('.asset-entry');
