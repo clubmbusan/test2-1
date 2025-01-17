@@ -70,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ✅ "상속인 추가" 버튼 클릭 시 부모 연령 및 미성년 나이 필드 포함
       document.getElementById('addHeirButton').addEventListener('click', () => {
     const heirContainer = document.getElementById('heirContainer');
+    
+    // ✅ 새 상속인 한 줄만 추가
     const newHeirEntry = document.createElement('div');
     newHeirEntry.className = 'heir-entry';
     newHeirEntry.innerHTML = `
@@ -83,46 +85,38 @@ document.addEventListener('DOMContentLoaded', () => {
             <option value="other">기타</option>
         </select>
 
-        <!-- ✅ 부모 연령 선택 필드 -->
+        <!-- ✅ 부모 연령 선택 필드 (초기 숨김) -->
         <select class="parentAgeField" style="display: none;">
             <option value="59">60세 미만</option>
             <option value="60">60세 이상</option>
         </select>
 
-        <!-- ✅ 미성년 나이 입력 필드 -->
+        <!-- ✅ 미성년 나이 입력 필드 (초기 숨김) -->
         <input type="number" class="minorChildAgeField" placeholder="나이 (년)" style="display: none; width: 80px;">
 
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
 
-    heirContainer.appendChild(newHeirEntry);
+    // ✅ 기존에 있는 `heir-entry` 수 확인 후 한 줄만 추가
+    if (heirContainer.querySelectorAll('.heir-entry').length === 0) {
+        heirContainer.appendChild(newHeirEntry);
+    } else {
+        console.warn("이미 추가된 상속인 입력 필드가 있습니다.");
+    }
 
-          // ✅ 새로 추가된 상속인에도 부모 연령/미성년 나이 필드 이벤트 리스너 추가
+    // ✅ 새로 추가된 상속인의 부모 연령 및 미성년 나이 필드 이벤트 리스너 추가
     attachDynamicEventListeners(newHeirEntry);
 });
 
-    // ✅ 새롭게 추가된 상속인에도 부모 연령/미성년 나이 필드 이벤트 리스너 추가
-     function attachDynamicEventListeners(heirEntry) {
+// ✅ 부모 및 미성년 필드의 이벤트 리스너 추가 함수
+function attachDynamicEventListeners(heirEntry) {
     const relationshipSelect = heirEntry.querySelector('.relationship');
     const parentAgeField = heirEntry.querySelector('.parentAgeField');
     const minorChildAgeField = heirEntry.querySelector('.minorChildAgeField');
 
     relationshipSelect.addEventListener('change', function () {
-        // ✅ 부모 선택 시, 부모 연령 필드 표시 (미성년 필드 숨김)
-        if (this.value === 'parent') {
-            parentAgeField.style.display = 'inline-block';
-            minorChildAgeField.style.display = 'none';
-        } 
-        // ✅ 미성년 자녀 선택 시, 나이 입력 필드 표시 (부모 필드 숨김)
-        else if (this.value === 'minorChild') {
-            minorChildAgeField.style.display = 'inline-block';
-            parentAgeField.style.display = 'none';
-        } 
-        // ✅ 다른 관계 선택 시, 모든 추가 필드 숨김
-        else {
-            parentAgeField.style.display = 'none';
-            minorChildAgeField.style.display = 'none';
-        }
+        parentAgeField.style.display = this.value === 'parent' ? 'inline-block' : 'none';
+        minorChildAgeField.style.display = this.value === 'minorChild' ? 'inline-block' : 'none';
     });
 }
 
