@@ -544,19 +544,12 @@ document.addEventListener('input', () => {
     }
 });    
 
-   /**
+  /**
  * 개인 상속 계산 함수
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
 function calculatePersonalMode(totalAssetValue) {
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
-
-    // ✅ 배우자 상속분 가져오기
-    let spouseShare = 0;
-    let spouseInput = document.getElementById('spouseShare');
-    if (relationship === 'spouse' && spouseInput) {
-        spouseShare = parseFloat(spouseInput.value.replace(/,/g, '')) || 0; // 콤마 제거 후 숫자로 변환
-    }
 
     // ✅ 부모 연령 가져오기
     let parentAge = 0;
@@ -574,19 +567,17 @@ function calculatePersonalMode(totalAssetValue) {
 
     // ✅ 공제 계산 (기초 공제 + 관계 공제)
     let { basicExemption, relationshipExemption } = calculateExemptions(
-        totalAssetValue, relationship, spouseShare, parentAge, minorChildAge
+        totalAssetValue, relationship, totalAssetValue, parentAge, minorChildAge
     );
-
-    // ✅ 배우자 추가 공제 변수 초기화
-    let spouseAdditionalExemption = 0;
 
     // ✅ 최종 공제 계산
     let totalExemption = basicExemption + relationshipExemption;
+    let spouseAdditionalExemption = 0;
 
     if (relationship === 'spouse') {
-        // 🔹 배우자 추가 공제 (기초 2억 + 관계 5억 초과분 최대 23억 공제)
-        if (spouseShare > 700000000) {
-            spouseAdditionalExemption = Math.min(spouseShare - 700000000, 2300000000);
+        // 🔹 배우자 추가 공제 (기초 2억 + 관계 5억 초과분 최대 23억)
+        spouseAdditionalExemption = Math.min(totalAssetValue - 700000000, 2300000000);
+        if (spouseAdditionalExemption > 0) {
             totalExemption += spouseAdditionalExemption;
         }
     }
@@ -605,7 +596,6 @@ function calculatePersonalMode(totalAssetValue) {
     // 🔍 디버깅용 콘솔 로그
     console.log("🔍 Debug Info:");
     console.log("총 재산 금액:", totalAssetValue);
-    console.log("배우자 상속분:", spouseShare);
     console.log("부모 연령:", parentAge);
     console.log("미성년 자녀 나이:", minorChildAge);
     console.log("기초 공제:", basicExemption);
