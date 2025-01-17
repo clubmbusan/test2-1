@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM 요소 참조
+    // ✅ DOM 요소 참조 (원래 개수 12개 유지)
     const inheritanceType = document.getElementById('inheritanceType');
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
@@ -13,89 +13,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-// 섹션 초기화 함수
-function resetSections() {
-    personalSection.style.display = 'none';
-    groupSection.style.display = 'none';
-    businessPersonalSection.style.display = 'none';
-    businessGroupSection.style.display = 'none';
-}
-
-// 초기 로딩 시 개인 상속을 기본값으로 설정
-function initializeDefaultView() {
-    resetSections();
-    personalSection.style.display = 'block'; // 개인 상속 섹션 기본값 표시
-}
-
-// 상속 유형 변경 이벤트 리스너
-inheritanceType.addEventListener('change', () => {
-    resetSections(); // 모든 섹션 숨김
-
-    switch (inheritanceType.value) {
-        case 'personal':
-            personalSection.style.display = 'block';
-            break;
-        case 'group':
-            groupSection.style.display = 'block';
-            break;
-        case 'businessPersonal':
-            businessPersonalSection.style.display = 'block';
-            break;
-        case 'businessGroup':
-            businessGroupSection.style.display = 'block';
-            break;
-        default:
-            console.error('잘못된 상속 유형 선택');
-            break;
+    // ✅ 섹션 초기화 함수
+    function resetSections() {
+        personalSection.style.display = 'none';
+        groupSection.style.display = 'none';
+        businessPersonalSection.style.display = 'none';
+        businessGroupSection.style.display = 'none';
     }
-});
 
-    // ✅ 개인 상속의 부모 연령 선택 필드 (기존 코드 유지)
-const relationshipSelect = document.getElementById("relationshipPersonal");
-const parentAgeContainer = document.getElementById("parentAgeContainer");
+    // ✅ 초기 로딩 시 개인 상속을 기본값으로 설정
+    function initializeDefaultView() {
+        resetSections();
+        personalSection.style.display = 'block';
+    }
 
-if (relationshipSelect && parentAgeContainer) {
-    relationshipSelect.addEventListener("change", function () {
-        parentAgeContainer.style.display = this.value === "parent" ? "inline-block" : "none";
-    });
-}
-
-// ✅ 개인 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
-const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
-
-if (relationshipSelect && minorChildAgeContainer) {
-    relationshipSelect.addEventListener('change', function () {
-        minorChildAgeContainer.style.display = this.value === 'minorChild' ? 'block' : 'none';
-    });
-}
-
-// ✅ 전체 상속의 부모 연령 선택 필드 (기존 코드 유지)
-document.getElementById("heirContainer").addEventListener("change", function (event) {
-    if (event.target.classList.contains("relationship")) {
-        const heirEntry = event.target.closest('.heir-entry');
-        const parentAgeField = heirEntry?.querySelector(".parentAgeField");
-
-        if (parentAgeField) {
-            parentAgeField.style.display = event.target.value === "parent" ? "inline-block" : "none";
+    // ✅ 상속 유형 변경 이벤트 리스너
+    inheritanceType.addEventListener('change', () => {
+        resetSections();
+        switch (inheritanceType.value) {
+            case 'personal': personalSection.style.display = 'block'; break;
+            case 'group': groupSection.style.display = 'block'; break;
+            case 'businessPersonal': businessPersonalSection.style.display = 'block'; break;
+            case 'businessGroup': businessGroupSection.style.display = 'block'; break;
+            default: console.error('잘못된 상속 유형 선택'); break;
         }
+    });
+
+    // ✅ 부모 연령 및 미성년 나이 필드 표시 (개인 상속)
+    const relationshipSelect = document.getElementById("relationshipPersonal");
+    const parentAgeContainer = document.getElementById("parentAgeContainer");
+    const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
+
+    if (relationshipSelect) {
+        relationshipSelect.addEventListener("change", function () {
+            parentAgeContainer.style.display = this.value === "parent" ? "inline-block" : "none";
+            minorChildAgeContainer.style.display = this.value === "minorChild" ? "block" : "none";
+        });
     }
-});
 
-// ✅ 전체 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
-document.getElementById("heirContainer").addEventListener("change", function (event) {
-    if (event.target.classList.contains("relationship")) {
-        const heirEntry = event.target.closest(".heir-entry");
-        const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
+    // ✅ 부모 연령 및 미성년 나이 필드 표시 (전체 상속)
+    document.getElementById("heirContainer").addEventListener("change", function (event) {
+        if (event.target.classList.contains("relationship")) {
+            const heirEntry = event.target.closest('.heir-entry');
+            const parentAgeField = heirEntry?.querySelector(".parentAgeField");
+            const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
 
-        if (minorChildAgeField) {
-            minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
+            if (parentAgeField) {
+                parentAgeField.style.display = event.target.value === "parent" ? "inline-block" : "none";
+            }
+            if (minorChildAgeField) {
+                minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
+            }
         }
-    }
-});
-   
-   // ✅ "상속인 추가" 버튼 클릭 시 부모 연령 및 미성년 나이 필드 포함
-    document.getElementById('addHeirButton').addEventListener('click', () => {
-        const heirContainer = document.getElementById('heirContainer');
+    });
+
+    // ✅ "상속인 추가" 버튼 클릭 시 부모 연령 및 미성년 나이 필드 포함
+    addHeirButton.addEventListener('click', () => {
         const newHeirEntry = document.createElement('div');
         newHeirEntry.className = 'heir-entry';
         newHeirEntry.innerHTML = `
@@ -121,9 +94,7 @@ document.getElementById("heirContainer").addEventListener("change", function (ev
             <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
         `;
         
-        heirContainer.appendChild(newHeirEntry);
-
-        // ✅ 새로 추가된 상속인의 부모 연령 및 미성년 나이 필드 동적 이벤트 추가
+        document.getElementById('heirContainer').appendChild(newHeirEntry);
         attachDynamicEventListeners(newHeirEntry);
     });
 
@@ -139,15 +110,10 @@ document.getElementById("heirContainer").addEventListener("change", function (ev
         });
     }
 
-    // ✅ 모든 assetType에 이벤트 리스너 추가
-    document.querySelectorAll('.assetType').forEach(select => {
-        select.addEventListener('change', () => handleAssetTypeChange(select));
-    });
-
     // ✅ 초기화 호출
     initializeDefaultView();
 });
-
+ 
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
     const assetEntry = assetTypeSelect.closest('.asset-entry');
