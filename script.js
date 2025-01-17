@@ -64,6 +64,12 @@ if (relationshipSelect) {
     });
 }
 
+    // 개인 상속: 미성년 자녀 나이 입력 필드 표시
+document.getElementById('relationshipPersonal').addEventListener('change', function () {
+    const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
+    minorChildAgeContainer.style.display = this.value === 'minorChild' ? 'block' : 'none';
+});
+    
 // ✅ 전체 상속의 부모 연령 선택 필드 표시 (각 상속인별 개별 적용)
 document.addEventListener("change", function (event) {
     if (event.target.classList.contains("relationship")) {
@@ -74,6 +80,17 @@ document.addEventListener("change", function (event) {
             parentAgeField.style.display = "none"; // 다른 관계 선택 시 숨김
         }
     }
+});
+    
+    // 전체 상속: 미성년 자녀 나이 입력 필드 표시
+document.getElementById('heirContainer').addEventListener('change', function (event) {
+    if (event.target.classList.contains('relationship')) {
+        const heirEntry = event.target.closest('.heir-entry');
+        const minorChildAgeField = heirEntry.querySelector('.minorChildAgeField');
+
+        minorChildAgeField.style.display = event.target.value === 'minorChild' ? 'block' : 'none';
+     }
+  });
 });
 
      // 자산 유형 변경 처리
