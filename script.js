@@ -82,24 +82,23 @@ document.addEventListener("change", function (event) {
 });
 
 /**
- * 전체상속 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
- * 이벤트 위임(Event Delegation) 방식 적용
+ * 부모 선택 시 연령 입력 필드 표시, 미성년자 선택 시 나이 입력 필드 표시
+ * 이벤트 위임 방식 적용 → 새로 추가된 필드에도 자동 적용됨
  */
-document.getElementById("heirContainer").addEventListener("change", function (event) {
+document.addEventListener("change", function (event) {
     if (!event.target.classList.contains("relationship")) return;
 
     const heirEntry = event.target.closest(".heir-entry");
     if (!heirEntry) return;
 
+    // 부모 연령 입력 필드
     const parentAgeField = heirEntry.querySelector(".parentAgeField");
-    const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
-
-    // 부모 선택 시 부모 연령 입력 필드 표시
     if (parentAgeField) {
         parentAgeField.style.display = event.target.value === "parent" ? "inline-block" : "none";
     }
 
-    // 미성년 자녀 선택 시 나이 입력 필드 표시
+    // 미성년 자녀 나이 입력 필드
+    const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
     if (minorChildAgeField) {
         minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
     }
