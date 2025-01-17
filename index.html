@@ -79,7 +79,12 @@
             <option value="60">60세 이상</option>
             </select>
           </div>
-        </div>
+           <!-- 미성년 자녀 선택 시 나이 입력 필드 -->
+          <div id="minorChildAgeContainer" style="display: none;">
+            <label for="minorChildAge">미성년 자녀 나이:</label>
+            <input type="number" id="minorChildAge" min="0" max="18" placeholder="나이 입력">
+           </div>
+         </div>
          <!-- 전체 상속 계산 -->
          <div id="groupSection" class="section">
          <h2>전체 상속 계산</h2>
@@ -94,10 +99,14 @@
                     <option value="sibling">형제자매</option>
                     <option value="other">기타</option>
                 </select>
+               <!-- 부모 연령 선택 필드 -->
                 <select class="parentAgeField" style="display: none;">
                     <option value="59">60세 미만</option>
                     <option value="60">60세 이상</option>
                 </select>       
+               <!-- 미성년 자녀 나이 입력 필드 -->
+                <input type="number" class="minorChildAgeField" style="display: none;" min="0" max="18" placeholder="나이 입력">
+            
                 <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
              </div>
          </div>
