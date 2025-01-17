@@ -96,7 +96,7 @@ document.addEventListener("change", function (event) {
  /**
  * ✅ 상속인 추가 버튼 기능 (새로운 입력 필드에도 적용, 중복 방지)
  */
-document.addEventListener("DOMContentLoaded", function () {
+   document.addEventListener("DOMContentLoaded", function () {
     const addHeirButton = document.getElementById("addHeirButton");
     const heirContainer = document.getElementById("heirContainer");
 
@@ -105,12 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // 기존에 등록된 이벤트 리스너가 있으면 제거 후 다시 추가
-    addHeirButton.removeEventListener("click", addHeir);
-    addHeirButton.addEventListener("click", addHeir);
-
     function addHeir() {
-        // 새로운 상속인 입력 필드 추가
         const newHeirEntry = document.createElement("div");
         newHeirEntry.classList.add("heir-entry");
         newHeirEntry.innerHTML = `
@@ -132,7 +127,36 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
 
         heirContainer.appendChild(newHeirEntry);
+
+        // 🔥 추가된 입력 필드에도 이벤트 리스너 등록
+        const relationshipSelect = newHeirEntry.querySelector(".relationship");
+        relationshipSelect.addEventListener("change", function () {
+            handleRelationshipChange(newHeirEntry, relationshipSelect.value);
+        });
     }
+
+    addHeirButton.addEventListener("click", addHeir);
+
+    // 📌 기존 및 새로 추가된 요소의 관계 선택 변경 시 추가 필드 표시
+    function handleRelationshipChange(heirEntry, selectedValue) {
+        const parentAgeField = heirEntry.querySelector(".parentAgeField");
+        const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
+
+        // 부모 선택 시 연령 필드 표시
+        parentAgeField.style.display = selectedValue === "parent" ? "inline-block" : "none";
+
+        // 미성년 자녀 선택 시 나이 입력 필드 표시
+        minorChildAgeField.style.display = selectedValue === "minorChild" ? "block" : "none";
+    }
+
+    document.addEventListener("change", function (event) {
+        if (!event.target.classList.contains("relationship")) return;
+
+        const heirEntry = event.target.closest(".heir-entry");
+        if (!heirEntry) return;
+
+        handleRelationshipChange(heirEntry, event.target.value);
+    });
 });
     
     // 자산 유형 변경 처리
