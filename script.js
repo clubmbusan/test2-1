@@ -545,28 +545,28 @@ document.addEventListener('input', () => {
     }
 });    
 
-    /**
+     /**
  * 개인 상속 계산 함수
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
 function calculatePersonalMode(totalAssetValue) {
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
 
-    // ✅ 배우자 상속분 가져오기 (배우자가 상속받은 금액 입력)
+    // ✅ 배우자 상속분 가져오기
     let spouseShare = 0;
     let spouseInput = document.getElementById('spouseShare');
     if (relationship === 'spouse' && spouseInput) {
         spouseShare = parseFloat(spouseInput.value) || 0;
     }
 
-    // ✅ 부모 연령 가져오기 (60세 이상 여부 확인)
+    // ✅ 부모 연령 가져오기
     let parentAge = 0;
     let parentAgeSelect = document.getElementById('parentAge');
     if (relationship === 'parent' && parentAgeSelect) {
         parentAge = parseInt(parentAgeSelect.value) || 0;
     }
 
-    // ✅ 미성년 자녀 나이 가져오기 (성인이 될 때까지 추가 공제 계산)
+    // ✅ 미성년 자녀 나이 가져오기
     let minorChildAge = 0;
     let minorChildAgeInput = document.getElementById('minorChildAge');
     if (relationship === 'minorChild' && minorChildAgeInput) {
@@ -578,20 +578,17 @@ function calculatePersonalMode(totalAssetValue) {
         totalAssetValue, relationship, spouseShare, parentAge, minorChildAge
     );
 
-    // ✅ 배우자 추가 공제 변수 초기화 (오류 방지)
+    // ✅ 배우자 추가 공제 변수 초기화
     let spouseAdditionalExemption = 0;
 
-    // ✅ 최종 공제 계산 (배우자 추가 공제 포함)
+    // ✅ 최종 공제 계산
     let totalExemption = basicExemption + relationshipExemption;
 
     if (relationship === 'spouse') {
-        // 🔹 배우자 추가 공제: 배우자가 상속받은 금액에서 기본 공제(기초 2억 + 관계 5억) 초과분 반영 (최대 23억)
-        spouseAdditionalExemption = Math.min(spouseShare - 700000000, 2300000000);
-        
-        if (spouseAdditionalExemption > 0) {
+        // 🔹 배우자 추가 공제 (배우자 상속분에서 7억 초과분 최대 23억 공제)
+        if (spouseShare > 700000000) {
+            spouseAdditionalExemption = Math.min(spouseShare - 700000000, 2300000000);
             totalExemption += spouseAdditionalExemption;
-        } else {
-            spouseAdditionalExemption = 0; // 음수 방지
         }
     }
 
@@ -600,10 +597,10 @@ function calculatePersonalMode(totalAssetValue) {
         totalExemption = 500000000;
     }
 
-    // ✅ 과세 금액 계산 (최종 공제 금액을 적용한 후 과세표준 산정)
+    // ✅ 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // ✅ 상속세 계산 (누진세율 적용)
+    // ✅ 상속세 계산
     const tax = calculateTax(taxableAmount);
 
     // 🔍 디버깅용 콘솔 로그
@@ -619,7 +616,12 @@ function calculatePersonalMode(totalAssetValue) {
     console.log("과세 금액:", taxableAmount);
     console.log("상속세:", tax);
 
-    // ✅ 결과 출력 (HTML 업데이트)
+    // ✅ 배우자 상속분이 0일 경우 경고 메시지 표시
+    if (relationship === 'spouse' && spouseShare === 0) {
+        alert("⚠ 배우자가 상속받은 금액을 입력해야 추가 공제가 적용됩니다.");
+    }
+
+    // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (개인 상속)</h3>
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
