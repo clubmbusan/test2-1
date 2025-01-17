@@ -68,47 +68,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ✅ "상속인 추가" 버튼 클릭 시 부모 연령 및 미성년 나이 필드 포함
-    addHeirButton.addEventListener('click', () => {
-        const newHeirEntry = document.createElement('div');
-        newHeirEntry.className = 'heir-entry';
-        newHeirEntry.innerHTML = `
-            <input type="text" placeholder="이름" class="heirName">
-            <select class="relationship">
-                <option value="spouse">배우자</option>
-                <option value="adultChild">성년 자녀</option>
-                <option value="minorChild">미성년 자녀</option>
-                <option value="parent">부모</option>
-                <option value="sibling">형제자매</option>
-                <option value="other">기타</option>
-            </select>
-            
-            <!-- ✅ 부모 연령 선택 필드 (기본 숨김) -->
-            <select class="parentAgeField" style="display: none;">
-                <option value="59">60세 미만</option>
-                <option value="60">60세 이상</option>
-            </select>
-            
-            <!-- ✅ 미성년 나이 입력 필드 (기본 숨김) -->
-            <input type="number" class="minorChildAgeField" placeholder="나이 (년)" style="display: none;">
-            
-            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
-        `;
+document.getElementById('addHeirButton').addEventListener('click', () => {
+    const heirContainer = document.getElementById('heirContainer');
+    const newHeirEntry = document.createElement('div');
+    newHeirEntry.className = 'heir-entry';
+    newHeirEntry.innerHTML = `
+        <input type="text" placeholder="이름" class="heirName">
+        <select class="relationship">
+            <option value="spouse">배우자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
         
-        document.getElementById('heirContainer').appendChild(newHeirEntry);
-        attachDynamicEventListeners(newHeirEntry);
-    });
+        <!-- ✅ 부모 연령 선택 필드 (기본 숨김) -->
+        <select class="parentAgeField" style="display: none;">
+            <option value="59">60세 미만</option>
+            <option value="60">60세 이상</option>
+        </select>
+        
+        <!-- ✅ 미성년 나이 입력 필드 (기본 숨김) -->
+        <input type="number" class="minorChildAgeField" placeholder="나이 (년)" style="display: none;">
+        
+        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+    `;
+    
+    heirContainer.appendChild(newHeirEntry);
+    attachDynamicEventListeners(newHeirEntry); // ✅ 새 상속인에게 이벤트 리스너 추가
+});
 
     // ✅ 새롭게 추가된 상속인에도 부모 연령/미성년 나이 필드 이벤트 리스너 추가
-    function attachDynamicEventListeners(heirEntry) {
-        const relationshipSelect = heirEntry.querySelector('.relationship');
-        const parentAgeField = heirEntry.querySelector('.parentAgeField');
-        const minorChildAgeField = heirEntry.querySelector('.minorChildAgeField');
+function attachDynamicEventListeners(heirEntry) {
+    const relationshipSelect = heirEntry.querySelector('.relationship');
+    const parentAgeField = heirEntry.querySelector('.parentAgeField');
+    const minorChildAgeField = heirEntry.querySelector('.minorChildAgeField');
 
-        relationshipSelect.addEventListener('change', function () {
-            parentAgeField.style.display = this.value === 'parent' ? 'inline-block' : 'none';
-            minorChildAgeField.style.display = this.value === 'minorChild' ? 'inline-block' : 'none';
-        });
-    }
+    relationshipSelect.addEventListener('change', function () {
+        parentAgeField.style.display = this.value === 'parent' ? 'inline-block' : 'none';
+        minorChildAgeField.style.display = this.value === 'minorChild' ? 'inline-block' : 'none';
+    });
+}
+
+// ✅ 기존 상속인 필드에도 이벤트 리스너 추가 (초기 실행)
+document.querySelectorAll('.heir-entry').forEach(attachDynamicEventListeners);
 
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
