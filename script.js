@@ -256,21 +256,42 @@ function getNumericValue(field) {
     }
 
     // 상속인 추가 버튼 이벤트
-    addHeirButton.addEventListener('click', () => {
-        const newHeirEntry = document.createElement('div');
-        newHeirEntry.className = 'heir-entry';
-        newHeirEntry.innerHTML = `
-            <input type="text" placeholder="이름">
-            <select>
-                <option value="spouse">배우자</option>
-                <option value="adultChild">자녀(성년)</option>
-                <option value="minorChild">자녀(미성년)</option>
-                <option value="parent">부모</option>
-                <option value="sibling">형제자매</option>
-                <option value="other">기타</option>
-            </select>
-            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
-        `;
+addHeirButton.addEventListener('click', () => {
+    const newHeirEntry = document.createElement('div');
+    newHeirEntry.className = 'heir-entry';
+
+    newHeirEntry.innerHTML = `
+        <input type="text" placeholder="이름">
+        <select class="relationship">
+            <option value="spouse">배우자</option>
+            <option value="adultChild">자녀(성년)</option>
+            <option value="minorChild">자녀(미성년)</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+        <select class="parentAgeField" style="display: none;">
+            <option value="59">60세 미만</option>
+            <option value="60">60세 이상</option>
+        </select>
+        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+    `;
+
+    // 부모 선택 시 연령 필드 표시
+    const relationshipSelect = newHeirEntry.querySelector(".relationship");
+    const parentAgeSelect = newHeirEntry.querySelector(".parentAgeField");
+
+    relationshipSelect.addEventListener("change", function () {
+        if (this.value === "parent") {
+            parentAgeSelect.style.display = "inline-block"; // 부모 선택 시 연령 필드 표시
+        } else {
+            parentAgeSelect.style.display = "none"; // 다른 관계 선택 시 숨김
+        }
+    });
+
+    // 추가된 상속인 입력창을 컨테이너에 추가
+    document.getElementById('heirContainer').appendChild(newHeirEntry);
+});
 
         // 새로 추가된 상속 비율 필드 이벤트 등록
         const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
