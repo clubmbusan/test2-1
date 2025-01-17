@@ -97,6 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     heirContainer.appendChild(newHeirEntry);
 
+          // ✅ 새로 추가된 상속인에도 부모 연령/미성년 나이 필드 이벤트 리스너 추가
+    attachDynamicEventListeners(newHeirEntry);
+});
+
     // ✅ 새롭게 추가된 상속인에도 부모 연령/미성년 나이 필드 이벤트 리스너 추가
      function attachDynamicEventListeners(heirEntry) {
     const relationshipSelect = heirEntry.querySelector('.relationship');
