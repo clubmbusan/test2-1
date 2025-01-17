@@ -255,35 +255,34 @@ function getNumericValue(field) {
         return true;
     }
 
-    // 부모 선택 시 60세 이상/미만 드롭다운 표시하는 함수
-function handleParentSelection(selectElement, parentAgeField) {
-    if (selectElement.value === "parent") {
-        parentAgeField.style.display = "inline-block"; // 부모 선택 시 표시
-    } else {
-        parentAgeField.style.display = "none"; // 다른 관계 선택 시 숨김
-    }
-}
-
-// 개인 상속의 초기 화면 관계 선택 드롭다운 이벤트 추가
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+    // ✅ 개인 상속 관계 선택 드롭다운 찾기
     const personalRelationshipSelect = document.getElementById("relationshipPersonal");
-    const personalParentAgeField = document.getElementById("parentAgeContainer");
+    const personalParentAgeContainer = document.getElementById("personalParentAgeContainer");
 
     if (personalRelationshipSelect) {
         personalRelationshipSelect.addEventListener("change", function () {
-            handleParentSelection(personalRelationshipSelect, personalParentAgeField);
+            if (this.value === "parent") {
+                personalParentAgeContainer.style.display = "block";  // 부모 선택 시 연령 필드 표시
+            } else {
+                personalParentAgeContainer.style.display = "none";   // 다른 관계 선택 시 숨김
+            }
         });
     }
 
-    // 전체 상속의 초기 화면 관계 선택 드롭다운 이벤트 추가
+    // ✅ 전체 상속 관계 선택 드롭다운 찾기
     document.querySelectorAll(".relationship").forEach((selectElement) => {
-        const parentAgeField = selectElement.parentElement.querySelector(".parentAgeField");
         selectElement.addEventListener("change", function () {
-            handleParentSelection(selectElement, parentAgeField);
+            const parentAgeField = this.parentElement.querySelector(".parentAgeField");
+            if (this.value === "parent") {
+                parentAgeField.style.display = "inline-block"; // 부모 선택 시 표시
+            } else {
+                parentAgeField.style.display = "none"; // 다른 관계 선택 시 숨김
+            }
         });
     });
 
-    // 상속인 추가 버튼 이벤트 (새로운 상속인 추가 시)
+    // ✅ 상속인 추가 버튼 이벤트 (새로운 상속인 추가 시)
     document.getElementById("addHeirButton").addEventListener("click", () => {
         const newHeirEntry = document.createElement("div");
         newHeirEntry.className = "heir-entry";
@@ -292,8 +291,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <input type="text" placeholder="이름">
             <select class="relationship">
                 <option value="spouse">배우자</option>
-                <option value="adultChild">자녀(성년)</option>
-                <option value="minorChild">자녀(미성년)</option>
+                <option value="adultChild">성년 자녀</option>
+                <option value="minorChild">미성년 자녀</option>
                 <option value="parent">부모</option>
                 <option value="sibling">형제자매</option>
                 <option value="other">기타</option>
@@ -310,7 +309,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 부모 선택 시 연령 필드 표시
         relationshipSelect.addEventListener("change", function () {
-            handleParentSelection(relationshipSelect, parentAgeSelect);
+            if (this.value === "parent") {
+                parentAgeSelect.style.display = "inline-block";
+            } else {
+                parentAgeSelect.style.display = "none";
+            }
         });
 
         document.getElementById("heirContainer").appendChild(newHeirEntry);
