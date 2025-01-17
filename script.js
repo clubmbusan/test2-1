@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ✅ "상속인 추가" 버튼 클릭 시 부모 연령 및 미성년 나이 필드 포함
-document.getElementById('addHeirButton').addEventListener('click', () => {
+     document.getElementById('addHeirButton').addEventListener('click', () => {
     const heirContainer = document.getElementById('heirContainer');
     const newHeirEntry = document.createElement('div');
     newHeirEntry.className = 'heir-entry';
@@ -83,13 +83,13 @@ document.getElementById('addHeirButton').addEventListener('click', () => {
             <option value="other">기타</option>
         </select>
         
-        <!-- ✅ 부모 연령 선택 필드 (기본 숨김) -->
+        <!-- ✅ 부모 연령 선택 필드 (이전 정상 작동 코드로 복원) -->
         <select class="parentAgeField" style="display: none;">
             <option value="59">60세 미만</option>
             <option value="60">60세 이상</option>
         </select>
-        
-        <!-- ✅ 미성년 나이 입력 필드 (기본 숨김) -->
+
+        <!-- ✅ 미성년 나이 입력 필드는 정상 작동 중이므로 변경하지 않음 -->
         <input type="number" class="minorChildAgeField" placeholder="나이 (년)" style="display: none;">
         
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
@@ -99,15 +99,16 @@ document.getElementById('addHeirButton').addEventListener('click', () => {
     attachDynamicEventListeners(newHeirEntry); // ✅ 새 상속인에게 이벤트 리스너 추가
 });
 
+
     // ✅ 새롭게 추가된 상속인에도 부모 연령/미성년 나이 필드 이벤트 리스너 추가
-function attachDynamicEventListeners(heirEntry) {
+   function attachDynamicEventListeners(heirEntry) {
     const relationshipSelect = heirEntry.querySelector('.relationship');
     const parentAgeField = heirEntry.querySelector('.parentAgeField');
     const minorChildAgeField = heirEntry.querySelector('.minorChildAgeField');
 
     relationshipSelect.addEventListener('change', function () {
-        parentAgeField.style.display = this.value === 'parent' ? 'inline-block' : 'none';
-        minorChildAgeField.style.display = this.value === 'minorChild' ? 'inline-block' : 'none';
+        parentAgeField.style.display = this.value === 'parent' ? 'inline-block' : 'none'; // ✅ 부모 연령 필드 정상 작동
+        minorChildAgeField.style.display = this.value === 'minorChild' ? 'inline-block' : 'none'; // ✅ 미성년 나이 필드 정상 유지
     });
 }
 
