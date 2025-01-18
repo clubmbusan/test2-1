@@ -427,3 +427,66 @@ button {
     display: block !important; /* `display: none;`이 적용되지 않도록 */
     visibility: visible !important; /* 숨겨진 상태에서도 크기 유지 */
 }
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 400px;
+    border-radius: 5px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-content .btn-save {
+    background-color: #007bff;
+}
+
+.modal-content .btn-close {
+    background-color: #6c757d;
+}
+
+.btn-calculate {
+    background-color: #17a2b8;
+}
+
+.btn-calculate:hover {
+    background-color: #138496;
+}
