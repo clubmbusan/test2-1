@@ -46,15 +46,13 @@ const minorChildAgeContainer = document.getElementById("minorChildAgeContainer")
 
 if (relationshipSelect && parentAgeContainer && minorChildAgeContainer) {
     relationshipSelect.addEventListener("change", function () {
+        parentAgeContainer.style.display = "none";
+        minorChildAgeContainer.style.display = "none";
+
         if (this.value === "parent") {
-            parentAgeContainer.style.display = "inline-block"; // 같은 줄에서 표시
-            minorChildAgeContainer.style.display = "none"; // 미성년 필드는 숨김
+            parentAgeContainer.style.display = "flex"; // 같은 줄에서 표시
         } else if (this.value === "minorChild") {
-            parentAgeContainer.style.display = "none"; // 부모 필드는 숨김
-            minorChildAgeContainer.style.display = "inline-block"; // 같은 줄에서 표시
-        } else {
-            parentAgeContainer.style.display = "none";
-            minorChildAgeContainer.style.display = "none";
+            minorChildAgeContainer.style.display = "flex"; // 같은 줄에서 표시
         }
     });
 }
