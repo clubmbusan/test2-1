@@ -636,6 +636,10 @@ function calculatePersonalMode(totalAssetValue) {
   // ✅ 전체 상속 계산 함수 (단체 상속)
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer'); // 그룹 상속 컨테이너
+    let totalTaxableAmount = totalAssetValue; // 과세 대상 총액
+    let totalExemptions = 0; // 전체 공제 합계
+
+    // ✅ 상속인 정보 저장 배열
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
@@ -673,6 +677,9 @@ function calculateGroupMode(totalAssetValue) {
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
         const taxableAmountForSpouse = (relationship === 'spouse') ? Math.max(taxableAmount - spouseAdditionalExemption, 0) : taxableAmount;
 
+        // ✅ 전체 공제 누적
+        totalExemptions += totalExemption;
+
         // ✅ 상속세 계산
         const tax = calculateTax(taxableAmountForSpouse);
 
@@ -687,6 +694,9 @@ function calculateGroupMode(totalAssetValue) {
         };
     }).filter(Boolean); // 잘못된 항목 제거
 
+    // ✅ 최종 과세 대상 금액
+    totalTaxableAmount -= totalExemptions;
+
     // ✅ 최종 상속세 계산 후 지분에 따라 분배
     const totalTax = heirs.reduce((sum, heir) => sum + heir.tax, 0);
     heirs.forEach((heir) => {
@@ -695,7 +705,10 @@ function calculateGroupMode(totalAssetValue) {
 
     // ✅ 결과 출력 수정
     document.getElementById('result').innerHTML = `
-        <h3>계산 결과 (전체 상속)</h3>
+        <h3>💰 총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
+        <h3>📝 공제 합계: ${totalExemptions.toLocaleString()} 원</h3>
+        <h3>💵 과세 대상 금액: ${totalTaxableAmount.toLocaleString()} 원</h3>
+        <h3>📌 계산 결과 (전체 상속)</h3>
         ${heirs.map((heir) => `
             <p>
                 <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
