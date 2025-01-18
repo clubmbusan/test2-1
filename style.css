@@ -414,3 +414,16 @@ button {
     }
 </style>
 
+/* ✅ 개인 상속 - 관계 선택 & 추가 필드 같은 줄에서 정렬 */
+#personalFieldsContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 각 요소 간 간격 */
+    flex-wrap: wrap; /* 반응형 화면에서 줄 바꿈 가능하도록 설정 */
+}
+
+#personalFieldsContainer select,
+#personalFieldsContainer input {
+    width: auto; /* 기본 width: 100% 설정을 제거하여 한 줄에 배치되도록 수정 */
+    min-width: 120px; /* 최소 너비 지정 */
+}
