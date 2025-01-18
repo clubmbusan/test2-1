@@ -171,25 +171,33 @@
     <button type="button" id="addBusinessGroupHeirButton">상속인 추가</button>
 </div>
 
-        <!-- ✅ 상속 비용 입력 버튼 (상속세 계산하기 버튼 위에 위치) -->
-    <button class="btn" id="openModal">상속비용</button>
+      <!-- ✅ 상속 비용 입력 버튼 (상속세 계산하기 버튼 위에 위치) -->
+<button class="btn" id="openModal">상속비용</button>
 
-    <!-- ✅ 상속 경비 입력 모달 -->
-    <div id="costModal" class="modal">
-        <div class="modal-content">
-            <h2>상속 경비 입력</h2>
-            <label>장례비:</label>
-            <input type="number" id="funeralCost" placeholder="금액 입력">
-            <label>법무비용:</label>
-            <input type="number" id="legalFees" placeholder="금액 입력">
-            <label>미납 세금:</label>
-            <input type="number" id="unpaidTaxes" placeholder="금액 입력">
-            <label>피상속인 채무:</label>
-            <input type="number" id="debt" placeholder="금액 입력">
-            <button class="btn btn-save" id="saveCost">저장</button>
-            <button class="btn btn-close" id="closeModal">닫기</button>
-        </div>
+<!-- ✅ 모달 배경 오버레이 (배경 클릭 시 닫기) -->
+<div id="modalOverlay" class="modal-overlay"></div>
+
+<!-- ✅ 상속 경비 입력 모달 -->
+<div id="costModal" class="modal">
+    <div class="modal-content">
+        <h2>상속 경비 입력</h2>
+        
+        <label>장례비:</label>
+        <input type="number" id="funeralCost" placeholder="금액 입력">
+        
+        <label>법무비용:</label>
+        <input type="number" id="legalFees" placeholder="금액 입력">
+        
+        <label>미납 세금:</label>
+        <input type="number" id="unpaidTaxes" placeholder="금액 입력">
+        
+        <label>피상속인 채무:</label>
+        <input type="number" id="debt" placeholder="금액 입력">
+        
+        <button class="btn btn-save" id="saveCost">저장</button>
+        <button class="btn btn-close" id="closeModal">닫기</button>
     </div>
+</div>
         
         <!-- 계산 버튼 -->
         <button type="button" id="calculateButton">계산 하기</button>
