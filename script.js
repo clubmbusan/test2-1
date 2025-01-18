@@ -943,17 +943,6 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
     
-    //상속비용
-document.addEventListener("DOMContentLoaded", function () {
-    let openModalButton = document.getElementById("openModal");
-    let closeModalButton = document.getElementById("closeModal");
-    let modal = document.getElementById("costModal");
-
-    if (!openModalButton || !modal || !closeModalButton) {
-        console.error("⚠️ '상속비용' 버튼 또는 모달창 요소를 찾을 수 없습니다. HTML을 확인하세요.");
-        return;
-    }
-
     // ✅ "상속비용" 버튼 클릭 시 모달 열기
     openModalButton.addEventListener("click", function() {
         console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
