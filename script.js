@@ -943,6 +943,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
     
+    //상속비용
 document.addEventListener("DOMContentLoaded", function () {
     let openModalButton = document.getElementById("openModal");
     let closeModalButton = document.getElementById("closeModal");
