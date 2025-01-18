@@ -633,18 +633,27 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
  
+// ✅ 배우자 추가 공제 계산 함수
+function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
+    let maxExemption = totalAssetValue - 500000000 - spouseShare; // 배우자를 제외한 나머지 재산 차감
+    return Math.min(spouseShare, maxExemption, 3000000000); // 최대 30억 적용
+}
+
 // ✅ 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
+    let totalBasicExemption = 200000000; // 기초 공제 2억
     let totalRelationshipExemption = 0; // 관계 공제 합계
+
+    // ✅ 상속인 정보 저장 배열
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         const age = parseInt(heir.querySelector('.ageField')?.value || '0'); // 나이 정보 추가
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
-        // ✅ 개별 관계 공제 계산 (공통 함수 호출)
+        // ✅ 관계 공제 계산
         let relationshipExemption = calculateRelationshipExemption(relationship, age);
 
         // ✅ 총 관계 공제 합산
@@ -664,19 +673,17 @@ function calculateGroupMode(totalAssetValue) {
         totalRelationshipExemption = 500000000;
     }
 
-    // ✅ 과세 대상 금액 계산
-    let taxableAmount = totalAssetValue - totalRelationshipExemption;
+    // ✅ 과세 대상 금액 계산 (총 상속 재산 - 기초 공제 - 관계 공제)
+    let taxableAmount = totalAssetValue - totalBasicExemption - totalRelationshipExemption;
 
     // ✅ 각 상속인의 과세 대상 금액 배분 및 배우자 추가 공제 적용
     heirs = heirs.map((heir) => {
         const shareAmount = (taxableAmount * heir.sharePercentage) / 100;
 
-        // ✅ 배우자 추가 공제 계산 (최대 30억 원)
+        // ✅ 배우자 추가 공제 계산
         let spouseAdditionalExemption = 0;
         if (heir.relationship === 'spouse') {
-            let maxExemption = totalAssetValue - 500000000 - shareAmount; // 배우자를 제외한 나머지 재산 차감
-            spouseAdditionalExemption = Math.min(shareAmount, maxExemption, 3000000000); // 최소값 적용
-            spouseAdditionalExemption = Math.max(spouseAdditionalExemption, 0); // 음수 방지
+            spouseAdditionalExemption = calculateSpouseAdditionalExemption(shareAmount, totalAssetValue);
         }
 
         // ✅ 최종 과세 금액 계산
@@ -710,7 +717,6 @@ function calculateGroupMode(totalAssetValue) {
         `).join('')}
     `;
 }
-
 
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
