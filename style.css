@@ -414,14 +414,6 @@ button {
     }
 </style>
 
-/* ✅ 개인 상속 - 관계 선택 & 추가 필드 같은 줄에서 정렬 */
-#personalFieldsContainer {
-    display: flex;
-    align-items: center; /* 요소들을 수직 가운데 정렬 */
-    gap: 10px; /* 요소 간 간격 */
-    flex-wrap: nowrap; /* 한 줄 유지 */
-}
-
 /* ✅ 부모 연령 & 미성년 나이 입력 필드 크기 통일 및 같은 줄 정렬 */
 #parentAgeContainer,
 #minorChildAgeContainer {
