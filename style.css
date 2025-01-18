@@ -437,7 +437,7 @@ button {
 
 /* ✅ 미성년 나이 입력 필드 크기 통일 */
 #minorChildAge {
-    width: 180px; /* 다른 입력 필드와 동일한 너비 */
+    width: 120px; /* 다른 입력 필드와 동일한 너비 */
     height: 40px; /* 동일한 높이 */
     padding: 8px; /* 내부 여백 */
     font-size: 16px; /* 글자 크기 */
