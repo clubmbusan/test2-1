@@ -58,10 +58,7 @@ if (relationshipSelect && minorChildAgeContainer) {
     });
 }
 
- /**
- * 전체 상속 - 상속인 추가 버튼 기능 및 부모/미성년 선택 시 추가 필드 표시
- */
-document.addEventListener("DOMContentLoaded", function () {
+     document.addEventListener("DOMContentLoaded", function () {
     const addHeirButton = document.getElementById("addHeirButton");
     const heirContainer = document.getElementById("heirContainer");
 
@@ -93,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         heirContainer.appendChild(newHeirEntry);
 
-        // 추가된 `.relationship` 요소에도 이벤트 리스너 등록
+        // ✅ 새로 추가된 요소에도 이벤트 리스너 추가
         const relationshipSelect = newHeirEntry.querySelector(".relationship");
         relationshipSelect.addEventListener("change", function () {
             handleRelationshipChange(newHeirEntry, relationshipSelect.value);
@@ -103,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
     addHeirButton.addEventListener("click", addHeir);
 
     /**
-     * 전체 상속 - 부모 또는 미성년 자녀 선택 시 추가 입력 필드 표시
+     * ✅ 개인 및 전체 상속에서 부모/미성년 선택 시 추가 입력 필드 표시
      */
     function handleRelationshipChange(heirEntry, selectedValue) {
         const parentAgeField = heirEntry.querySelector(".parentAgeField");
@@ -116,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         minorChildAgeField.style.display = selectedValue === "minorChild" ? "block" : "none";
     }
 
-    // 기존 및 새로 추가된 요소의 관계 선택 변경 시 추가 필드 표시
+    // ✅ 기존 및 추가된 필드 모두에서 동작하도록 이벤트 리스너 적용
     document.addEventListener("change", function (event) {
         if (!event.target.classList.contains("relationship")) return;
 
@@ -126,7 +123,6 @@ document.addEventListener("DOMContentLoaded", function () {
         handleRelationshipChange(heirEntry, event.target.value);
     });
 });
-
     
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
