@@ -632,14 +632,26 @@ function calculatePersonalMode(totalAssetValue) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
- 
-// ✅ 배우자 추가 공제 계산 함수
+
+    // ✅ 1. 관계 공제 계산 함수
+function calculateRelationshipExemption(relationship, age = 0) {
+    switch (relationship) {
+        case 'spouse': return 5000000000; // 배우자: 5억 원
+        case 'adultChild': return 50000000; // 성년 자녀: 5천만 원
+        case 'minorChild': return 10000000 * (20 - age); // 미성년 자녀: 1천만 원 × (20 - 나이)
+        case 'parent': return (age >= 60) ? 100000000 : 50000000; // 부모: 60세 이상 1억 원, 미만 5천만 원
+        case 'other': return 10000000; // 기타 상속인: 1천만 원
+        default: return 0;
+    }
+}
+
+// ✅ 2. 배우자 추가 공제 계산 함수
 function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
     let maxExemption = totalAssetValue - 500000000 - spouseShare; // 배우자를 제외한 나머지 재산 차감
     return Math.min(spouseShare, maxExemption, 3000000000); // 최대 30억 적용
 }
 
-// ✅ 전체 상속 계산 함수
+// ✅ 3. 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
@@ -653,7 +665,7 @@ function calculateGroupMode(totalAssetValue) {
         const age = parseInt(heir.querySelector('.ageField')?.value || '0'); // 나이 정보 추가
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
-        // ✅ 관계 공제 계산
+        // ✅ 관계 공제 계산 (🚀 여기에 함수 호출 적용)
         let relationshipExemption = calculateRelationshipExemption(relationship, age);
 
         // ✅ 총 관계 공제 합산
