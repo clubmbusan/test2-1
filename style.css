@@ -428,9 +428,10 @@ button {
     min-width: 120px; /* 최소 너비 지정 */
 }
 
-/* ✅ 개인 상속 - 관계 선택 & 추가 필드 같은 줄에서 정렬 */
+/* ✅ 부모 연령 & 미성년 나이 입력 필드 기본 숨김 */
 #parentAgeContainer,
 #minorChildAgeContainer {
     display: none; /* 기본적으로 숨김 */
-    margin-left: 10px; /* 간격 추가 */
+    margin-left: 10px; /* 관계 선택 필드와 간격 추가 */
 }
+
