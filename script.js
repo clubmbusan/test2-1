@@ -39,13 +39,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-     // ✅ 개인 상속의 부모 연령 선택 필드 (기존 코드 유지)
+    // ✅ 개인 상속의 부모 연령 선택 필드 (수정된 코드)
 const relationshipSelect = document.getElementById("relationshipPersonal");
 const parentAgeContainer = document.getElementById("parentAgeContainer");
 
 if (relationshipSelect && parentAgeContainer) {
     relationshipSelect.addEventListener("change", function () {
-        parentAgeContainer.style.display = this.value === "parent" ? "inline-block" : "none";
+        if (this.value === "parent") {
+            parentAgeContainer.style.display = "block"; // ✅ inline-block → block 변경
+        } else {
+            parentAgeContainer.style.display = "none";
+        }
     });
 }
 
