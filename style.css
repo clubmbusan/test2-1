@@ -417,7 +417,7 @@ button {
 /* ✅ 개인 상속 - 관계 선택 & 추가 필드 같은 줄에서 정렬 */
 #personalFieldsContainer {
     display: flex;
-    align-items: center;
+    align-items: center; /* 요소들을 수직 가운데 정렬 */
     gap: 10px; /* 요소 간 간격 */
     flex-wrap: nowrap; /* 한 줄 유지 */
 }
@@ -426,28 +426,11 @@ button {
 #parentAgeContainer,
 #minorChildAgeContainer {
     display: none; /* 기본적으로 숨김 */
-    display: flex; /* 같은 줄에서 정렬 */
-    align-items: center; /* 수직 정렬 */
-    gap: 5px; /* 요소 간 간격 */
-}
-
-#parentAgeContainer select,
-#minorChildAgeContainer input {
-    width: 180px; /* 크기 통일 */
+    min-width: 180px; /* 최소 너비 확보 */
     height: 40px; /* 높이 동일하게 설정 */
-    padding: 5px; /* 내부 여백 */
-    font-size: 16px; /* 글자 크기 */
-    border-radius: 5px; /* 둥근 모서리 */
-    border: 1px solid #ccc; /* 테두리 스타일 */
-}
-
-/* ✅ 미성년 자녀 나이 입력 필드 크기만 키우기 */
-#minorChildAgeContainer input {
-    width: 220px; /* 가로 크기 증가 */
-    height: 45px; /* 높이 증가 */
     padding: 8px; /* 내부 여백 증가 */
     font-size: 16px; /* 글자 크기 */
     border-radius: 5px; /* 둥근 모서리 */
     border: 1px solid #ccc; /* 테두리 스타일 */
-    box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 유지 */
+    box-sizing: border-box; /* 패딩 포함 크기 유지 */
 }
