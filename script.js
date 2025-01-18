@@ -633,10 +633,10 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-    // ✅ 전체 관계 공제 계산 함수
+   // ✅ 관계 공제 계산 함수
 function calculateRelationshipExemption(relationship, age = 0) {
     switch (relationship) {
-        case 'spouse': return 500000000; // 배우자: 5억 원
+        case 'spouse': return 5000000000; // 배우자: 5억 원
         case 'adultChild': return 50000000; // 성년 자녀: 5천만 원
         case 'minorChild': return 10000000 * (20 - age); // 미성년 자녀: 1천만 원 × (20 - 나이)
         case 'parent': return (age >= 60) ? 100000000 : 50000000; // 부모: 60세 이상 1억 원, 미만 5천만 원
@@ -660,7 +660,7 @@ function calculateGroupMode(totalAssetValue) {
 
     // ✅ 상속인 정보 저장
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
+        const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         const age = parseInt(heir.querySelector('.ageField')?.value || '0');
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
@@ -681,20 +681,33 @@ function calculateGroupMode(totalAssetValue) {
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
         const shareAmount = (taxableAmount * heir.sharePercentage) / 100;
-        const relationshipExemption = (totalRelationshipExemption * heir.sharePercentage) / 100;
 
+        // ✅ 배우자의 관계 공제 = 5억 원 (배우자에게만 적용)
+        let relationshipExemption = 0;
+        if (heir.relationship === 'spouse') {
+            relationshipExemption = 5000000000;
+        } else if (heir.relationship === 'adultChild') {
+            // ✅ 성년 자녀는 자기 공제 5천만 원 적용
+            relationshipExemption = 50000000;
+        }
+
+        // ✅ 기초 공제 = 2억 원을 지분 비율대로 적용
+        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
+
+        // ✅ 배우자 추가 공제 계산
         let spouseAdditionalExemption = 0;
         if (heir.relationship === 'spouse') {
             spouseAdditionalExemption = calculateSpouseAdditionalExemption(shareAmount, totalAssetValue);
         }
 
-        const finalTaxableAmount = Math.max(shareAmount - spouseAdditionalExemption, 0);
+        const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
 
         return {
             ...heir,
             shareAmount,
             relationshipExemption,
+            basicExemption,
             spouseAdditionalExemption,
             finalTaxableAmount,
             tax
@@ -704,20 +717,22 @@ function calculateGroupMode(totalAssetValue) {
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
+        <h3>기초 공제 (2억 원) 적용 후 남은 금액: ${(totalAssetValue - totalBasicExemption).toLocaleString()} 원</h3>
         <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
         <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
         ${heirs.map((heir) => `
             <p>
                 <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
+                기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
                 관계 공제: ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
-                ${heir.relationship === 'spouse' ? `추가 공제: ${heir.spouseAdditionalExemption.toLocaleString()} 원 (배우자 추가 공제)<br>` : ''}
+                ${heir.relationship === 'spouse' ? `<strong>추가 공제:</strong> ${heir.spouseAdditionalExemption.toLocaleString()} 원 (배우자 추가 공제)<br>` : ''}
                 <strong>과세 금액:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
                 <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
             </p>
         `).join('')}
     `;
 }
-
+ 
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
       if (value === null || value === undefined) {
