@@ -58,45 +58,10 @@ if (relationshipSelect && minorChildAgeContainer) {
     });
 }
 
-    /**
- * 전체 상속인 입력 필드에서 부모/미성년자 선택 시 추가 입력 필드 표시
- */
-document.addEventListener("change", function (event) {
-    if (!event.target.classList.contains("relationship")) return;
-
-    const heirEntry = event.target.closest(".heir-entry"); // 현재 변경된 상속인 블록 찾기
-    if (!heirEntry) return;
-
-    const selectedValue = event.target.value; // 선택된 관계 값
-    console.log("선택된 관계:", selectedValue); // 디버깅용
-
-    // 부모 연령 필드 & 미성년 나이 입력 필드 찾기
-    let parentAgeField = heirEntry.querySelector(".parentAgeField");
-    let minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
-
-    // 부모 선택 시 연령 필드 표시
-    if (parentAgeField) {
-        if (selectedValue === "parent") {
-            parentAgeField.style.display = "inline-block";
-        } else {
-            parentAgeField.style.display = "none";
-        }
-    }
-
-    // 미성년 자녀 선택 시 나이 입력 필드 표시
-    if (minorChildAgeField) {
-        if (selectedValue === "minorChild") {
-            minorChildAgeField.style.display = "block";
-        } else {
-            minorChildAgeField.style.display = "none";
-        }
-    }
-});
-
  /**
- * ✅ 상속인 추가 버튼 기능 (새로운 입력 필드에도 적용, 중복 방지)
+ * 전체 상속 - 상속인 추가 버튼 기능 및 부모/미성년 선택 시 추가 필드 표시
  */
-   document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const addHeirButton = document.getElementById("addHeirButton");
     const heirContainer = document.getElementById("heirContainer");
 
@@ -128,7 +93,7 @@ document.addEventListener("change", function (event) {
 
         heirContainer.appendChild(newHeirEntry);
 
-        // 🔥 추가된 입력 필드에도 이벤트 리스너 등록
+        // 추가된 `.relationship` 요소에도 이벤트 리스너 등록
         const relationshipSelect = newHeirEntry.querySelector(".relationship");
         relationshipSelect.addEventListener("change", function () {
             handleRelationshipChange(newHeirEntry, relationshipSelect.value);
@@ -137,7 +102,9 @@ document.addEventListener("change", function (event) {
 
     addHeirButton.addEventListener("click", addHeir);
 
-    // 📌 기존 및 새로 추가된 요소의 관계 선택 변경 시 추가 필드 표시
+    /**
+     * 전체 상속 - 부모 또는 미성년 자녀 선택 시 추가 입력 필드 표시
+     */
     function handleRelationshipChange(heirEntry, selectedValue) {
         const parentAgeField = heirEntry.querySelector(".parentAgeField");
         const minorChildAgeField = heirEntry.querySelector(".minorChildAgeField");
@@ -149,6 +116,7 @@ document.addEventListener("change", function (event) {
         minorChildAgeField.style.display = selectedValue === "minorChild" ? "block" : "none";
     }
 
+    // 기존 및 새로 추가된 요소의 관계 선택 변경 시 추가 필드 표시
     document.addEventListener("change", function (event) {
         if (!event.target.classList.contains("relationship")) return;
 
@@ -158,6 +126,7 @@ document.addEventListener("change", function (event) {
         handleRelationshipChange(heirEntry, event.target.value);
     });
 });
+
     
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
