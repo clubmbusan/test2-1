@@ -636,7 +636,7 @@ function calculatePersonalMode(totalAssetValue) {
   // ✅ 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
-    let totalRelationshipExemption = 6000000000; // 관계 공제 합계 (6억 원)
+    let totalRelationshipExemption = 600000000; // 관계 공제 합계 (6억 원)
     let taxableAmount = totalAssetValue - totalRelationshipExemption; // 과세 대상 금액
 
     // ✅ 상속인 정보 저장 배열
