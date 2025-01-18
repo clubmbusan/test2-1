@@ -633,17 +633,17 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-   // ✅ 전체 상속 계산 함수 (단체 상속)
+  // ✅ 전체 상속 계산 함수 (단체 상속)
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer'); // 그룹 상속 컨테이너
-    const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+    let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
         let parentAge = heir.querySelector('.parentAgeField') ? parseInt(heir.querySelector('.parentAgeField').value) || 0 : 0;
         let minorChildAge = heir.querySelector('.minorChildAgeField') ? parseInt(heir.querySelector('.minorChildAgeField').value) || 0 : 0;
 
-        // 상속 비율 유효성 검증
+        // ✅ 상속 비율 유효성 검증
         if (sharePercentage <= 0 || isNaN(sharePercentage)) {
             console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
             return null;
@@ -654,28 +654,27 @@ function calculateGroupMode(totalAssetValue) {
 
         // ✅ 공제 계산 호출
         let { basicExemption, relationshipExemption, totalExemption } = calculateExemptions(
-            shareAmount, relationship, shareAmount, parentAge, minorChildAge
+            shareAmount, relationship, parentAge, minorChildAge
         );
 
-        // ✅ 배우자 추가 공제 (최대 23억)
+        // ✅ 배우자 공제 (최소 5억 원 보장)
         let spouseAdditionalExemption = 0;
         if (relationship === 'spouse') {
-            spouseAdditionalExemption = Math.min(shareAmount - 700000000, 2300000000);
-            if (spouseAdditionalExemption > 0) {
-                totalExemption += spouseAdditionalExemption;
-            }
+            spouseAdditionalExemption = Math.min(shareAmount - 700000000, 3000000000); // 최대 30억까지 가능
+            spouseAdditionalExemption = Math.max(spouseAdditionalExemption, 0); // 0 이하 방지
         }
 
-        // ✅ 배우자가 아닐 경우 최소 공제 5억 보장 (일괄 공제 적용)
+        // ✅ 배우자가 아닐 경우 최소 공제 5억 원 보장 (일괄 공제 적용)
         if (relationship !== 'spouse' && totalExemption < 500000000) {
             totalExemption = 500000000;
         }
 
-        // ✅ 과세표준 계산
+        // ✅ 과세표준 계산 (배우자 추가 공제는 전체에서 제외)
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
+        const taxableAmountForSpouse = (relationship === 'spouse') ? Math.max(taxableAmount - spouseAdditionalExemption, 0) : taxableAmount;
 
         // ✅ 상속세 계산
-        const tax = calculateTax(taxableAmount);
+        const tax = calculateTax(taxableAmountForSpouse);
 
         return {
             name,
@@ -683,11 +682,18 @@ function calculateGroupMode(totalAssetValue) {
             shareAmount,
             exemptions: { basicExemption, relationshipExemption, spouseAdditionalExemption, totalExemption },
             taxableAmount,
+            taxableAmountForSpouse,
             tax,
         };
     }).filter(Boolean); // 잘못된 항목 제거
 
-    // ✅ 결과 출력 수정 (상속인의 이름 정상 표시 + 배우자 추가 공제 포함)
+    // ✅ 최종 상속세 계산 후 지분에 따라 분배
+    const totalTax = heirs.reduce((sum, heir) => sum + heir.tax, 0);
+    heirs.forEach((heir) => {
+        heir.finalTax = (heir.shareAmount / totalAssetValue) * totalTax;
+    });
+
+    // ✅ 결과 출력 수정
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
         ${heirs.map((heir) => `
@@ -699,7 +705,7 @@ function calculateGroupMode(totalAssetValue) {
                 ${heir.relationship === 'spouse' ? `- 배우자 추가 공제: ${heir.exemptions.spouseAdditionalExemption.toLocaleString()} 원<br>` : ''}
                 <strong>총 공제 금액:</strong> ${heir.exemptions.totalExemption.toLocaleString()} 원<br>
                 <strong>과세 금액:</strong> ${heir.taxableAmount.toLocaleString()} 원<br>
-                <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
+                <strong>최종 상속세:</strong> ${heir.finalTax.toLocaleString()} 원
             </p>
         `).join('')}
     `;
