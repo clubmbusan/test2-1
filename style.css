@@ -417,21 +417,31 @@ button {
 /* ✅ 개인 상속 - 관계 선택 & 추가 필드 같은 줄에서 정렬 */
 #personalFieldsContainer {
     display: flex;
-    align-items: center;
+    align-items: center; /* 세로 정렬 */
+    flex-direction: row; /* 수평 정렬 보장 */
     gap: 10px; /* 요소 간 간격 */
-    flex-wrap: nowrap; /* 한 줄 유지 */
+    flex-wrap: nowrap; /* 줄 바꿈 방지 */
 }
 
 /* ✅ 부모 연령 & 미성년 나이 입력 필드 기본 숨김 */
 #parentAgeContainer,
 #minorChildAgeContainer {
     display: none; /* 기본적으로 숨김 */
-    align-items: center; /* 수직 정렬 */
+    display: flex; /* 같은 줄에서 정렬 */
+    flex-direction: row; /* 수평 정렬 */
+    align-items: center; /* 라벨과 입력 필드 정렬 */
     gap: 5px; /* 요소 간 간격 */
 }
 
+/* ✅ 부모 연령 & 미성년 나이 입력 필드 내부 요소 */
 #parentAgeContainer label,
 #minorChildAgeContainer label {
+    white-space: nowrap; /* 라벨 줄 바꿈 방지 */
     margin-right: 5px; /* 라벨과 입력 필드 간 간격 */
 }
 
+#parentAgeContainer select,
+#minorChildAgeContainer input {
+    flex: 1; /* 동일한 비율로 너비 조정 */
+    min-width: 120px; /* 최소 너비 지정 */
+}
