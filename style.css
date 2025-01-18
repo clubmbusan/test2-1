@@ -428,30 +428,39 @@ button {
     visibility: visible !important; /* 숨겨진 상태에서도 크기 유지 */
 }
 
+/* ✅ 기본 스타일 */
 body {
     font-family: Arial, sans-serif;
 }
 
+/* ✅ 버튼 스타일 */
 .btn {
     display: block;
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    background-color: #28a745;
-    color: white;
     border: none;
     cursor: pointer;
     font-size: 16px;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
 }
 
-.btn:hover {
-    background-color: #218838;
-}
+/* ✅ 버튼 색상 */
+.btn-green { background-color: #28a745; }
+.btn-green:hover { background-color: #218838; }
 
+.btn-save { background-color: #007bff; }
+.btn-save:hover { background-color: #0056b3; }
+
+.btn-close { background-color: #6c757d; }
+.btn-close:hover { background-color: #5a6268; }
+
+/* ✅ 모달 스타일 */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -459,14 +468,17 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* ✅ 모달 내부 컨텐츠 */
 .modal-content {
     background-color: white;
-    margin: 10% auto;
+    margin: 15% auto;
     padding: 20px;
-    width: 400px;
+    width: 90%;
+    max-width: 400px;
     border-radius: 5px;
 }
 
+/* ✅ 입력 필드 스타일 */
 .modal-content input {
     width: 100%;
     padding: 8px;
@@ -475,18 +487,4 @@ body {
     border-radius: 4px;
 }
 
-.modal-content .btn-save {
-    background-color: #007bff;
-}
 
-.modal-content .btn-close {
-    background-color: #6c757d;
-}
-
-.btn-calculate {
-    background-color: #17a2b8;
-}
-
-.btn-calculate:hover {
-    background-color: #138496;
-}
