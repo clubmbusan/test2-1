@@ -39,23 +39,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-  // ✅ 개인 상속의 부모 연령 및 미성년 자녀 나이 입력 필드 같은 줄에서 표시
+     // ✅ 개인 상속의 부모 연령 선택 필드 (기존 코드 유지)
 const relationshipSelect = document.getElementById("relationshipPersonal");
 const parentAgeContainer = document.getElementById("parentAgeContainer");
-const minorChildAgeContainer = document.getElementById("minorChildAgeContainer");
 
-if (relationshipSelect && parentAgeContainer && minorChildAgeContainer) {
+if (relationshipSelect && parentAgeContainer) {
     relationshipSelect.addEventListener("change", function () {
-        parentAgeContainer.style.display = "none";
-        minorChildAgeContainer.style.display = "none";
-
-        if (this.value === "parent") {
-            parentAgeContainer.style.display = "flex"; // 같은 줄에서 표시
-        } else if (this.value === "minorChild") {
-            minorChildAgeContainer.style.display = "flex"; // 같은 줄에서 표시
-        }
+        parentAgeContainer.style.display = this.value === "parent" ? "inline-block" : "none";
     });
 }
+
+// ✅ 개인 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
+const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
+
+if (relationshipSelect && minorChildAgeContainer) {
+    relationshipSelect.addEventListener('change', function () {
+        minorChildAgeContainer.style.display = this.value === 'minorChild' ? 'block' : 'none';
+    });
+}
+
 
     // ✅ 전체 상속의 부모 연령 선택 필드 (기존 코드 유지)
 document.getElementById("heirContainer").addEventListener("change", function (event) {
