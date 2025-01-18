@@ -648,7 +648,7 @@ function calculateRelationshipExemption(relationship, age = 0) {
 // ✅ 배우자 추가 공제 계산 함수
 function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
     let maxExemption = totalAssetValue - 500000000 - spouseShare;
-    return Math.min(spouseShare, maxExemption, 30000000000);
+    return Math.min(spouseShare, maxExemption, 3000000000);
 }
 
 // ✅ 전체 상속 계산 함수
@@ -697,7 +697,7 @@ function calculateGroupMode(totalAssetValue) {
         // ✅ 배우자 추가 공제 계산 (최대 30억 원 공제 가능)
         let spouseAdditionalExemption = 0;
         if (heir.relationship === 'spouse') {
-            spouseAdditionalExemption = Math.min(30000000000 - (relationshipExemption + basicExemption), shareAmount);
+            spouseAdditionalExemption = Math.min(3000000000 - (relationshipExemption + basicExemption), shareAmount);
         }
 
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption, 0);
