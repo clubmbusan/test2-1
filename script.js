@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-   // ✅ 개인 상속의 부모 연령 및 미성년 자녀 나이 입력 필드 같은 줄에서 표시
+  // ✅ 개인 상속의 부모 연령 및 미성년 자녀 나이 입력 필드 같은 줄에서 표시
 const relationshipSelect = document.getElementById("relationshipPersonal");
 const parentAgeContainer = document.getElementById("parentAgeContainer");
 const minorChildAgeContainer = document.getElementById("minorChildAgeContainer");
