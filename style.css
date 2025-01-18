@@ -433,5 +433,5 @@ button {
 #minorChildAgeContainer {
     display: none; /* 기본적으로 숨김 */
     margin-left: 10px; /* 관계 선택 필드와 간격 추가 */
+    display: inline-block; /* 같은 줄에서 표시될 수 있도록 변경 */
 }
-
