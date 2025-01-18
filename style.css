@@ -427,3 +427,10 @@ button {
     width: auto; /* 기본 width: 100% 설정을 제거하여 한 줄에 배치되도록 수정 */
     min-width: 120px; /* 최소 너비 지정 */
 }
+
+/* ✅ 개인 상속 - 관계 선택 & 추가 필드 같은 줄에서 정렬 */
+#parentAgeContainer,
+#minorChildAgeContainer {
+    display: none; /* 기본적으로 숨김 */
+    margin-left: 10px; /* 간격 추가 */
+}
