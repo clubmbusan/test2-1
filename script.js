@@ -943,39 +943,46 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
 
-    // ✅ 상속 비용 입력 모달 열기
-document.getElementById("openModal").addEventListener("click", function() {
-    document.getElementById("costModal").style.display = "block";
-});
+    document.addEventListener("DOMContentLoaded", function () {
+    // ✅ "상속비용" 입력 모달 열기
+    document.getElementById("openModal").addEventListener("click", function() {
+        document.getElementById("costModal").style.display = "block";
+    });
 
-// ✅ 상속 비용 입력 모달 닫기
-document.getElementById("closeModal").addEventListener("click", function() {
-    document.getElementById("costModal").style.display = "none";
-});
+    // ✅ "상속비용" 입력 모달 닫기
+    document.getElementById("closeModal").addEventListener("click", function() {
+        document.getElementById("costModal").style.display = "none";
+    });
 
-// ✅ 상속 비용 저장 버튼 클릭 시 총 공제 금액 계산
-document.getElementById("saveCost").addEventListener("click", function() {
-    let funeralCost = parseInt(document.getElementById("funeralCost").value) || 0;
-    let legalFees = parseInt(document.getElementById("legalFees").value) || 0;
-    let unpaidTaxes = parseInt(document.getElementById("unpaidTaxes").value) || 0;
-    let debt = parseInt(document.getElementById("debt").value) || 0;
+    // ✅ "상속비용" 저장 버튼 클릭 시 총 공제 금액 계산
+    document.getElementById("saveCost").addEventListener("click", function() {
+        let funeralCost = parseInt(document.getElementById("funeralCost").value) || 0;
+        let legalFees = parseInt(document.getElementById("legalFees").value) || 0;
+        let unpaidTaxes = parseInt(document.getElementById("unpaidTaxes").value) || 0;
+        let debt = parseInt(document.getElementById("debt").value) || 0;
 
-    let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
+        let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
 
-    alert(`총 공제 금액: ${totalDeductibleCost.toLocaleString()} 원`);
+        alert(`총 공제 금액: ${totalDeductibleCost.toLocaleString()} 원`);
 
-    // ✅ 저장된 데이터를 계산 버튼 클릭 시 반영할 수 있도록 전역 변수 설정
-    window.totalDeductibleCost = totalDeductibleCost;
+        // ✅ 공제 금액을 글로벌 변수로 저장하여 계산에 반영
+        window.totalDeductibleCost = totalDeductibleCost;
 
-    document.getElementById("costModal").style.display = "none";
-});
+        document.getElementById("costModal").style.display = "none";
+    });
 
-// ✅ 상속세 계산하기 버튼 이벤트 (이벤트 핸들러 위에 추가)
-document.querySelector(".btn-calculate").addEventListener("click", function() {
-    let totalAssetValue = 10000000000; // 예제: 총 상속 재산 100억
-    let taxableAmount = totalAssetValue - (window.totalDeductibleCost || 0); // 공제 반영
+    // ✅ "상속세 계산하기" 버튼 이벤트 핸들러 추가
+    let calculateButton = document.querySelector(".btn-calculate");
+    if (calculateButton) {
+        calculateButton.addEventListener("click", function() {
+            let totalAssetValue = 10000000000; // 예제: 총 상속 재산 100억
+            let taxableAmount = totalAssetValue - (window.totalDeductibleCost || 0); // 공제 반영
 
-    alert(`최종 과세 대상 금액: ${taxableAmount.toLocaleString()} 원`);
+            alert(`최종 과세 대상 금액: ${taxableAmount.toLocaleString()} 원`);
+        });
+    } else {
+        console.error("⚠️ '상속세 계산하기' 버튼을 찾을 수 없습니다. HTML을 확인하세요.");
+    }
 });
 
 // 계산 버튼 이벤트
