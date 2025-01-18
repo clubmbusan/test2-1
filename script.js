@@ -694,12 +694,12 @@ function calculateGroupMode(totalAssetValue) {
         // ✅ 기초 공제 = 2억 원을 지분 비율대로 적용
         const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
 
-        // ✅ 배우자 추가 공제 계산
+        // ✅ 배우자 추가 공제 계산 (최대 30억 원 공제 가능)
         let spouseAdditionalExemption = 0;
         if (heir.relationship === 'spouse') {
-            spouseAdditionalExemption = calculateSpouseAdditionalExemption(shareAmount, totalAssetValue);
-        }
-
+            spouseAdditionalExemption = Math.min(30000000000 - (relationshipExemption + basicExemption), shareAmount);
+          }
+     
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
 
