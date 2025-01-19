@@ -945,30 +945,23 @@ function calculateBusinessGroupMode(totalAssetValue) {
     
     // 상속비용 모달
     document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOM 로드 완료!");
+    console.log("✅ DOM 로드 완료! 스크립트 실행됨");
 
-    // ✅ 상속 비용 모달 관련 요소 가져오기
     let openModalButton = document.getElementById("openModal");
     let closeModalButton = document.getElementById("closeModal");
-    let saveCostButton = document.getElementById("saveCost");
     let modal = document.getElementById("costModal");
-    let overlay = document.getElementById("modalOverlay");
 
-    // ✅ 요소 확인 (디버깅)
-    console.log("openModalButton:", openModalButton);
+    console.log("openModalButton:", openModalButton); // 버튼이 존재하는지 확인
     console.log("closeModalButton:", closeModalButton);
-    console.log("saveCostButton:", saveCostButton);
     console.log("modal:", modal);
-    console.log("overlay:", overlay);
 
-    // ✅ 오류 방지: 버튼이 존재하는지 확인 후 이벤트 추가
     if (!openModalButton) {
-        console.error("⚠️ '상속비용' 버튼이 HTML에 없습니다. HTML을 확인하세요.");
+        console.error("❌ '상속비용' 버튼을 찾을 수 없습니다. HTML을 확인하세요.");
         return;
     }
 
-    if (!modal || !closeModalButton || !saveCostButton || !overlay) {
-        console.error("⚠️ 모달 요소가 HTML에 없습니다. HTML을 확인하세요.");
+    if (!modal || !closeModalButton) {
+        console.error("❌ 모달 요소가 존재하지 않습니다. HTML을 확인하세요.");
         return;
     }
 
@@ -976,39 +969,12 @@ function calculateBusinessGroupMode(totalAssetValue) {
     openModalButton.addEventListener("click", function () {
         console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
         modal.style.display = "block";
-        overlay.style.display = "block";
     });
 
     // ✅ "닫기" 버튼 클릭 시 모달 닫기
     closeModalButton.addEventListener("click", function () {
         console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
         modal.style.display = "none";
-        overlay.style.display = "none";
-    });
-
-    // ✅ "저장" 버튼 클릭 시 입력된 비용 계산 후 모달 닫기
-    saveCostButton.addEventListener("click", function () {
-        let funeralCost = parseInt(document.getElementById("funeralCost").value) || 0;
-        let legalFees = parseInt(document.getElementById("legalFees").value) || 0;
-        let unpaidTaxes = parseInt(document.getElementById("unpaidTaxes").value) || 0;
-        let debt = parseInt(document.getElementById("debt").value) || 0;
-
-        let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
-        alert(`총 공제 금액: ${totalDeductibleCost.toLocaleString()} 원`);
-
-        // ✅ 계산을 위해 글로벌 변수 저장
-        window.totalDeductibleCost = totalDeductibleCost;
-
-        // ✅ 모달 닫기
-        modal.style.display = "none";
-        overlay.style.display = "none";
-    });
-
-    // ✅ 오버레이 클릭 시 모달 닫기
-    overlay.addEventListener("click", function () {
-        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
-        modal.style.display = "none";
-        overlay.style.display = "none";
     });
 });
 
