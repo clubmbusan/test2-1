@@ -943,36 +943,29 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
     
-   // ✅ 문서가 로드된 후 실행
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOM 로드 완료!");
+    // 상속비용 모달
+    document.addEventListener("DOMContentLoaded", function () {
+    let openModalButton = document.getElementById("openModal");
+    let closeModalButton = document.getElementById("closeModal");
+    let saveCostButton = document.getElementById("saveCost");
+    let modal = document.getElementById("costModal");
+    let overlay = document.getElementById("modalOverlay");
 
-    // ✅ 상속 비용 모달 관련 요소 가져오기
-    let openModalButton = document.getElementById("openModal");  // 상속비용 버튼
-    let closeModalButton = document.getElementById("closeModal"); // 닫기 버튼
-    let saveCostButton = document.getElementById("saveCost"); // 저장 버튼
-    let modal = document.getElementById("costModal"); // 모달창
-    let overlay = document.getElementById("modalOverlay"); // 오버레이 (배경 클릭 시 닫기)
-
-    // ✅ 필수 요소가 정상적으로 로드되었는지 확인
     if (!openModalButton || !modal || !closeModalButton || !saveCostButton || !overlay) {
         console.error("⚠️ '상속비용' 버튼 또는 모달창 요소를 찾을 수 없습니다. HTML을 확인하세요.");
         return;
     }
 
     // ✅ "상속비용" 버튼 클릭 시 모달 열기
-    openModalButton.addEventListener("click", function (event) {
-        event.preventDefault(); // 기본 동작 방지 (필요한 경우)
-        console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
+    openModalButton.addEventListener("click", function () {
         modal.style.display = "block";
-        overlay.style.display = "block"; // 배경 활성화
+        overlay.style.display = "block";
     });
 
     // ✅ "닫기" 버튼 클릭 시 모달 닫기
     closeModalButton.addEventListener("click", function () {
-        console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
         modal.style.display = "none";
-        overlay.style.display = "none"; // 배경 제거
+        overlay.style.display = "none";
     });
 
     // ✅ "저장" 버튼 클릭 시 입력된 비용 계산 후 모달 닫기
@@ -995,11 +988,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 오버레이 클릭 시 모달 닫기
     overlay.addEventListener("click", function () {
-        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
         modal.style.display = "none";
         overlay.style.display = "none";
     });
 });
+
 
 // 계산 버튼 이벤트
 calculateButton.addEventListener('click', () => {
