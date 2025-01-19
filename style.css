@@ -428,108 +428,60 @@ button {
     visibility: visible !important; /* 숨겨진 상태에서도 크기 유지 */
 }
 
-/* ✅ 기본 스타일 */
-body {
-    font-family: Arial, sans-serif;
-}
-
 /* ✅ 버튼 스타일 */
 .btn {
     display: block;
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     margin: 10px 0;
     border: none;
     cursor: pointer;
     font-size: 16px;
-    border-radius: 5px;
+    color: white;
     text-align: center;
 }
 
-/* ✅ 상속비용 버튼 (초록색) */
-.btn-green {
-    background-color: #28a745;
-    color: white;
-}
+.btn-green { background-color: #28a745; }
+.btn-green:hover { background-color: #218838; }
 
-.btn-green:hover {
-    background-color: #218838;
-}
+.btn-save { background-color: #007bff; }
+.btn-save:hover { background-color: #0056b3; }
 
-/* ✅ 저장 버튼 (파란색) */
-.btn-save {
-    background-color: #007bff;
-    color: white;
-}
-
-.btn-save:hover {
-    background-color: #0056b3;
-}
-
-/* ✅ 닫기 버튼 (회색) */
-.btn-close {
-    background-color: #6c757d;
-    color: white;
-}
-
-.btn-close:hover {
-    background-color: #5a6268;
-}
-
-/* ✅ 계산 버튼 (초록색) */
-.btn-calculate {
-    background-color: #28a745;
-    color: white;
-}
-
-.btn-calculate:hover {
-    background-color: #218838;
-}
-
-/* ✅ 모달 기본 스타일 (처음에 숨김) */
-.modal {
-    display: none; /* 처음에는 숨김 */
-    position: fixed;
-    z-index: 1000;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
+.btn-close { background-color: #6c757d; }
+.btn-close:hover { background-color: #5a6268; }
 
 /* ✅ 모달 배경 오버레이 */
 .modal-overlay {
     display: none;
     position: fixed;
-    z-index: 999;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }
 
-/* ✅ 입력 필드 스타일 */
+/* ✅ 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1000;
+    width: 350px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ 모달 내부 input 스타일 */
 .modal-content input {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 14px;
 }
-
-/* ✅ 입력 폼 세로 정렬 */
-.modal-content label {
-    display: block;
-    text-align: left;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
