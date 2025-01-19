@@ -954,15 +954,21 @@ function calculateBusinessGroupMode(totalAssetValue) {
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay");
 
-    // ✅ 요소 확인 (디버깅용)
+    // ✅ 요소 확인 (디버깅)
     console.log("openModalButton:", openModalButton);
     console.log("closeModalButton:", closeModalButton);
     console.log("saveCostButton:", saveCostButton);
     console.log("modal:", modal);
     console.log("overlay:", overlay);
 
-    if (!openModalButton || !modal || !closeModalButton || !saveCostButton || !overlay) {
-        console.error("⚠️ '상속비용' 버튼 또는 모달창 요소를 찾을 수 없습니다. HTML을 확인하세요.");
+    // ✅ 오류 방지: 버튼이 존재하는지 확인 후 이벤트 추가
+    if (!openModalButton) {
+        console.error("⚠️ '상속비용' 버튼이 HTML에 없습니다. HTML을 확인하세요.");
+        return;
+    }
+
+    if (!modal || !closeModalButton || !saveCostButton || !overlay) {
+        console.error("⚠️ 모달 요소가 HTML에 없습니다. HTML을 확인하세요.");
         return;
     }
 
