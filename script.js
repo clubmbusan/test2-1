@@ -944,7 +944,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
 }
     
     // 상속비용 모달
-   document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ DOM 로드 완료! 스크립트 실행됨");
 
     let openModalButton = document.getElementById("openModal");
@@ -953,13 +953,6 @@ function calculateBusinessGroupMode(totalAssetValue) {
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay"); // ✅ 오버레이 추가
 
-    console.log("openModalButton:", openModalButton); 
-    console.log("closeModalButton:", closeModalButton);
-    console.log("saveCostButton:", saveCostButton);
-    console.log("modal:", modal);
-    console.log("overlay:", overlay);
-
-    // ✅ 요소가 존재하는지 확인 후 실행
     if (!openModalButton || !modal || !closeModalButton || !saveCostButton || !overlay) {
         console.error("❌ 모달 관련 요소가 존재하지 않습니다. HTML을 확인하세요.");
         return;
