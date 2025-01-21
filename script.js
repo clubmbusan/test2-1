@@ -680,12 +680,7 @@ function calculateGroupMode(totalAssetValue) {
 
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
-    
-      // ✅ 상속인 이름 가져오기 (추가된 상속인도 포함)
-      const nameField = heir.querySelector('.heirName') || heir.querySelector('.additionalHeirName');
-      const name = nameField ? nameField.value.trim() : '이름 없음';
-   
-      const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+          const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
         // ✅ 배우자의 관계 공제 = 5억 원 (배우자에게만 적용)
         let relationshipExemption = 0;
@@ -719,16 +714,16 @@ function calculateGroupMode(totalAssetValue) {
     console.log(`   - 계산된 상속세: ${tax.toLocaleString()} 원`);
     console.log("-------------------------------");
        
-       return {
-    ...heir,
-    name,  // ✅ 수정: 새로 가져온 name을 사용하여 상속인 이름을 올바르게 유지
-    shareAmount,
-    relationshipExemption,
-    basicExemption,
-    spouseAdditionalExemption,
-    finalTaxableAmount,
-    tax
-};
+        return {
+            ...heir,
+            name: heir.name,  // ✅ 이름이 제대로 표시되도록 수정
+            shareAmount,
+            relationshipExemption,
+            basicExemption,
+            spouseAdditionalExemption,
+            finalTaxableAmount,
+            tax
+        };
     });
       
     // ✅ 결과 출력 (기초 공제 부분 수정)
