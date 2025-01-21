@@ -719,16 +719,16 @@ function calculateGroupMode(totalAssetValue) {
     console.log(`   - 계산된 상속세: ${tax.toLocaleString()} 원`);
     console.log("-------------------------------");
        
-        return {
-            ...heir,
-            name: heir.name,  // ✅ 이름이 제대로 표시되도록 수정
-            shareAmount,
-            relationshipExemption,
-            basicExemption,
-            spouseAdditionalExemption,
-            finalTaxableAmount,
-            tax
-        };
+       return {
+    ...heir,
+    name,  // ✅ 수정: 새로 가져온 name을 사용하여 상속인 이름을 올바르게 유지
+    shareAmount,
+    relationshipExemption,
+    basicExemption,
+    spouseAdditionalExemption,
+    finalTaxableAmount,
+    tax
+};
     });
       
     // ✅ 결과 출력 (기초 공제 부분 수정)
