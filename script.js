@@ -484,17 +484,20 @@ function calculateFinancialExemption() {
     return financialExemption;
 }
    //금융재산 입력시 안내멘트
-    document.querySelectorAll('.assetValue').forEach(input => {
+    document.querySelectorAll('.assetValue, .stockQuantityField, .stockPriceField').forEach(input => {
     input.addEventListener('focus', function () {
-        let assetTypeSelect = this.closest('.asset-entry')?.querySelector('.assetType'); // 자산 유형 선택
+        let assetTypeSelect = this.closest('.asset-entry')?.querySelector('.assetType');
         let assetType = assetTypeSelect?.value;
 
         console.log("🔍 선택된 자산 유형:", assetType); // 🔎 디버깅 로그 추가
 
         if (assetType === 'cash' || assetType === 'stock') {
             setTimeout(() => {
-                alert("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.");
-            }, 100); // 팝업 딜레이 추가 (입력 방해 방지)
+                let userConfirmed = confirm("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.\n\n확인을 누르면 입력할 수 있습니다.");
+                if (userConfirmed) {
+                    this.focus(); // "확인"을 누르면 입력 필드로 다시 포커스 이동
+                }
+            }, 100);
         }
     });
 });
