@@ -703,6 +703,18 @@ function calculateGroupMode(totalAssetValue) {
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
 
+         // ✅ 디버깅 로그 추가 (개별 상속인별 계산 정보)
+         console.log("🔍 [상속인 개별 정보]");
+         console.log("상속인 이름:", heir.name);
+         console.log("상속 비율:", heir.sharePercentage, "%");
+         console.log("상속 금액:", shareAmount.toLocaleString(), "원");
+         console.log("기초 공제 적용 금액:", basicExemption.toLocaleString(), "원");
+         console.log("관계 공제 적용 금액:", relationshipExemption.toLocaleString(), "원");
+         console.log("배우자 추가 공제 적용 금액:", spouseAdditionalExemption ? spouseAdditionalExemption.toLocaleString() + " 원" : "해당 없음");
+         console.log("최종 과세 금액:", finalTaxableAmount.toLocaleString(), "원");
+         console.log("계산된 상속세:", tax.toLocaleString(), "원");
+         console.log("-------------------------------");
+       
         return {
             ...heir,
             name: heir.name,  // ✅ 이름이 제대로 표시되도록 수정
@@ -714,7 +726,7 @@ function calculateGroupMode(totalAssetValue) {
             tax
         };
     });
-    
+      
     // ✅ 결과 출력 (기초 공제 부분 수정)
     document.getElementById('result').innerHTML = `
          <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
