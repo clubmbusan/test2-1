@@ -965,8 +965,8 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
     
-    // 상속비용 모달
-  (function () {
+   // ✅ 상속비용 모달
+(function () {
     console.log("✅ 강제 실행 테스트 시작");
 
     let openModalButton = document.getElementById("openModal");
@@ -975,7 +975,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay");
 
-    // 강제 확인
+    // ✅ 모달 요소 확인
     console.log("🔍 openModalButton:", openModalButton);
     console.log("🔍 modal:", modal);
     console.log("🔍 overlay:", overlay);
@@ -985,21 +985,21 @@ function calculateBusinessGroupMode(totalAssetValue) {
         return;
     }
 
-    // "상속비용" 버튼 클릭 시 모달 열기
+    // ✅ "상속비용" 버튼 클릭 시 모달 열기
     openModalButton.addEventListener("click", function () {
         console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
         modal.style.display = "block";
         overlay.style.display = "block";
     });
 
-    // "닫기" 버튼 클릭 시 모달 닫기
+    // ✅ "닫기" 버튼 클릭 시 모달 닫기
     closeModalButton.addEventListener("click", function () {
         console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
         modal.style.display = "none";
         overlay.style.display = "none";
     });
 
-   // ✅ "저장" 버튼 클릭 시 입력된 비용을 합산하여 totalDeductibleCost에 저장
+    // ✅ "저장" 버튼 클릭 시 입력된 비용을 합산하여 totalDeductibleCost에 저장
     saveCostButton.addEventListener("click", function () {
         let funeralCost = parseFloat(document.getElementById("funeralCost").value.replace(/,/g, '')) || 0;
         let legalFees = parseFloat(document.getElementById("legalFees").value.replace(/,/g, '')) || 0;
@@ -1023,7 +1023,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
         overlay.style.display = "none";
     });
 
-    // 오버레이 클릭 시 모달 닫기
+    // ✅ 오버레이 클릭 시 모달 닫기
     overlay.addEventListener("click", function () {
         console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
         modal.style.display = "none";
@@ -1033,21 +1033,20 @@ function calculateBusinessGroupMode(totalAssetValue) {
     console.log("✅ 강제 실행 완료");
 })();
 
-   
-    // ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
-    document.getElementById('calculateButton').addEventListener('click', () => {
-        const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
-        const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
- 
-    // 유효성 검사 실행
+// ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
+document.getElementById('calculateButton').addEventListener('click', () => {
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+
+    // ✅ 유효성 검사 실행
     if (!validateHeirRelationship(heirType, relationship)) {
         alert('선택한 후계자 유형과 관계가 맞지 않습니다. 올바른 조합을 선택해주세요.');
         return; // 계산 중단
     }
 
-    // 총 재산 금액 계산
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+    // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
+    let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseFloat(field.value.replace(/,/g, '')) || 0;
         return sum + value;
     }, 0);
 
@@ -1059,19 +1058,19 @@ function calculateBusinessGroupMode(totalAssetValue) {
     totalAssetValue = Math.max(totalAssetValue, 0);
 
     console.log("💰 최종 상속 금액 (공제 적용 후):", totalAssetValue);
-    
-    // 상속 유형에 따라 계산 실행
-    switch (inheritanceType.value) {
-        case 'personal': // 개인 상속
+
+    // ✅ 상속 유형에 따라 계산 실행
+    switch (document.getElementById('inheritanceType').value) {
+        case 'personal':
             calculatePersonalMode(totalAssetValue);
             break;
-        case 'group': // 단체 상속
+        case 'group':
             calculateGroupMode(totalAssetValue);
             break;
-        case 'businessPersonal': // 가업 개인 상속
+        case 'businessPersonal':
             calculateBusinessPersonalMode(totalAssetValue);
             break;
-        case 'businessGroup': // 가업 단체 상속
+        case 'businessGroup':
             calculateBusinessGroupMode(totalAssetValue);
             break;
         default:
