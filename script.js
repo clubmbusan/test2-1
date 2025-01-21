@@ -297,7 +297,7 @@ addHeirButton.addEventListener('click', () => {
     const newHeirEntry = document.createElement('div');
     newHeirEntry.className = 'heir-entry';
     newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름">
+        <input type="text" placeholder="이름" class="heirName">
         <select class="relationship">
             <option value="spouse">배우자</option>
             <option value="adultChild">자녀(성년)</option>
