@@ -196,8 +196,11 @@ document.querySelectorAll('.inheritanceCostField').forEach((input) => {
 });
 
     // 재산 추가 버튼 클릭 이벤트
-document.getElementById('addAssetButton').addEventListener('click', () => {
-    createAssetEntry();
+document.getElementById('addAssetButton').addEventListener('click', (event) => {
+    event.preventDefault(); // 기본 동작 방지
+    event.stopPropagation(); // 이벤트 버블링 방지
+
+    createAssetEntry(); // 자산 항목 생성
 
     // 새롭게 추가된 .assetValue 필드에 콤마 이벤트 등록
     const newAssetValues = document.querySelectorAll('.asset-entry:last-child .assetValue');
