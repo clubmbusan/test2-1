@@ -484,6 +484,14 @@ function calculateFinancialExemption() {
     return financialExemption;
 }
 
+    document.querySelectorAll('.assetType').forEach(select => {
+    select.addEventListener('change', function () {
+        if (this.value === 'cash' || this.value === 'stock') {
+            alert("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.");
+        }
+    });
+});
+
 // ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
     const basicExemption = 200000000; // 기초 공제 (2억 원)
