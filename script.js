@@ -481,7 +481,7 @@ function calculateFinancialExemption() {
     return financialExemption;
 }
    //금융재산 입력시 안내멘트
-   document.querySelectorAll('.assetValue, .stockQuantityField, .stockPriceField').forEach(input => {
+ document.querySelectorAll('.assetValue, .stockQuantityField, .stockPriceField').forEach(input => {
     input.addEventListener('focus', function () {
         const assetEntry = this.closest('.asset-entry');
         if (!assetEntry) {
@@ -493,44 +493,12 @@ function calculateFinancialExemption() {
         const assetType = assetTypeSelect?.value;
 
         if (assetType === 'cash' || assetType === 'stock') {
-            customAlert("📢 금융재산 공제가 적용됩니다! <br> 금융재산의 20% (최대 2억 원)이 공제됩니다.", () => {
-                this.focus(); // "확인" 클릭 후 입력 필드로 포커스 이동
-            });
+            // 기본 alert 사용
+            alert("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.");
+            this.focus(); // 확인 후 입력 필드로 포커스 이동
         }
     });
 });
-
-    function customAlert(message, callback) {
-    // 팝업 요소 생성
-    const alertBox = document.createElement('div');
-    alertBox.style.position = 'fixed';
-    alertBox.style.top = '50%';
-    alertBox.style.left = '50%';
-    alertBox.style.transform = 'translate(-50%, -50%)';
-    alertBox.style.zIndex = '1000';
-    alertBox.style.backgroundColor = 'white';
-    alertBox.style.border = '1px solid #ddd';
-    alertBox.style.borderRadius = '5px';
-    alertBox.style.padding = '20px';
-    alertBox.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-    alertBox.innerHTML = `
-        <p>${message}</p>
-        <button id="customAlertOk" style="margin-top: 10px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-    `;
-
-    // 팝업 추가
-    document.body.appendChild(alertBox);
-
-    // "확인" 버튼 클릭 이벤트
-    const okButton = document.getElementById('customAlertOk');
-    okButton.addEventListener('click', () => {
-        // 팝업 닫기
-        document.body.removeChild(alertBox);
-
-        // 콜백 실행
-        if (callback) callback(); // 전달된 콜백 함수 실행
-    });
-}
 
 // ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
