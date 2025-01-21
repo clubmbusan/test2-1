@@ -488,7 +488,9 @@ function calculateFinancialExemption() {
     input.addEventListener('focus', function () {
         let assetTypeSelect = this.closest('.asset-entry')?.querySelector('.assetType');
         if (assetTypeSelect && (assetTypeSelect.value === 'cash' || assetTypeSelect.value === 'stock')) {
-            alert("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.");
+            setTimeout(() => {
+                alert("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.");
+            }, 100); // 입력 방해 없이 안내 팝업이 뜨도록 딜레이 추가
         }
     });
 });
