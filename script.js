@@ -196,21 +196,26 @@ document.querySelectorAll('.inheritanceCostField').forEach((input) => {
 });
 
     // 재산 추가 버튼 클릭 이벤트
-document.getElementById('addAssetButton').addEventListener('click', (event) => {
-    event.preventDefault(); // 기본 동작 방지
-    event.stopPropagation(); // 이벤트 버블링 방지
+document.getElementById('addAssetButton').addEventListener('click', () => {
+    if (document.getElementById('addAssetButton').disabled) return; // 이미 비활성화된 경우 실행하지 않음
 
-    createAssetEntry(); // 자산 항목 생성
+    document.getElementById('addAssetButton').disabled = true; // 버튼 비활성화 (중복 클릭 방지)
 
-    // 새롭게 추가된 .assetValue 필드에 콤마 이벤트 등록
-    const newAssetValues = document.querySelectorAll('.asset-entry:last-child .assetValue');
-    newAssetValues.forEach(addCommaFormatting);
+    setTimeout(() => {
+        createAssetEntry(); // 재산 입력 필드 추가
 
-    // 새롭게 추가된 .assetType 필드에 이벤트 등록
-    const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
-    if (newAssetTypeSelect) {
-        newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
-    }
+        // 새롭게 추가된 .assetValue 필드에 콤마 이벤트 등록
+        const newAssetValues = document.querySelectorAll('.asset-entry:last-child .assetValue');
+        newAssetValues.forEach(addCommaFormatting);
+
+        // 새롭게 추가된 .assetType 필드에 이벤트 등록
+        const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
+        if (newAssetTypeSelect) {
+            newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
+        }
+
+        document.getElementById('addAssetButton').disabled = false; // 100ms 후 버튼 다시 활성화
+    }, 100); // 100ms 동안 버튼을 비활성화한 후 다시 활성화
 });
 
     // 재산 항목 생성
