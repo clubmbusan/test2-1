@@ -483,22 +483,19 @@ function calculateFinancialExemption() {
    //금융재산 입력시 안내멘트
  document.querySelectorAll('.assetValue, .stockQuantityField, .stockPriceField').forEach(input => {
     input.addEventListener('focus', function () {
-        const assetEntry = this.closest('.asset-entry');
-        if (!assetEntry) {
-            console.error("❌ 'asset-entry' 요소를 찾을 수 없습니다.");
-            return;
-        }
+        console.log("🔍 포커스 이벤트 시작");
+        
+        // 금융재산 공제 안내 팝업
+        alert("📢 금융재산 공제가 적용됩니다!");
 
-        const assetTypeSelect = assetEntry.querySelector('.assetType');
-        const assetType = assetTypeSelect?.value;
+        // 확인 이후 로직 실행 여부 확인
+        console.log("✅ alert 이후 로직 실행");
 
-        if (assetType === 'cash' || assetType === 'stock') {
-            // 기본 alert 사용
-            alert("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.");
-            this.focus(); // 확인 후 입력 필드로 포커스 이동
-        }
+        // 입력 필드에 포커스 이동
+        this.focus();
     });
 });
+
 
 // ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
