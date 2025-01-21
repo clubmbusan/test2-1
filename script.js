@@ -483,10 +483,11 @@ function calculateFinancialExemption() {
 
     return financialExemption;
 }
-
-    document.querySelectorAll('.assetType').forEach(select => {
-    select.addEventListener('change', function () {
-        if (this.value === 'cash' || this.value === 'stock') {
+   //금융재산 입력시 안내멘트
+    document.querySelectorAll('.assetValue').forEach(input => {
+    input.addEventListener('focus', function () {
+        let assetTypeSelect = this.closest('.asset-entry')?.querySelector('.assetType');
+        if (assetTypeSelect && (assetTypeSelect.value === 'cash' || assetTypeSelect.value === 'stock')) {
             alert("📢 금융재산 공제가 적용됩니다! \n 금융재산의 20% (최대 2억 원)이 공제됩니다.");
         }
     });
