@@ -703,17 +703,16 @@ function calculateGroupMode(totalAssetValue) {
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
 
-         // ✅ 디버깅 로그 추가 (개별 상속인별 계산 정보)
-         console.log("🔍 [상속인 개별 정보]");
-         console.log("상속인 이름:", heir.name);
-         console.log("상속 비율:", heir.sharePercentage, "%");
-         console.log("상속 금액:", shareAmount.toLocaleString(), "원");
-         console.log("기초 공제 적용 금액:", basicExemption.toLocaleString(), "원");
-         console.log("관계 공제 적용 금액:", relationshipExemption.toLocaleString(), "원");
-         console.log("배우자 추가 공제 적용 금액:", spouseAdditionalExemption ? spouseAdditionalExemption.toLocaleString() + " 원" : "해당 없음");
-         console.log("최종 과세 금액:", finalTaxableAmount.toLocaleString(), "원");
-         console.log("계산된 상속세:", tax.toLocaleString(), "원");
-         console.log("-------------------------------");
+        // ✅ 디버깅 로그 추가 (각 상속인 정보 확인)
+    console.log(`🔍 [상속인 정보: ${name}]`);
+    console.log(`   - 관계: ${heir.relationship}`);
+    console.log(`   - 상속 금액: ${shareAmount.toLocaleString()} 원`);
+    console.log(`   - 기초 공제 적용 금액: ${basicExemption.toLocaleString()} 원`);
+    console.log(`   - 관계 공제 적용 금액: ${relationshipExemption.toLocaleString()} 원`);
+    console.log(`   - 배우자 추가 공제 적용 여부: ${spouseAdditionalExemption.toLocaleString()} 원`);
+    console.log(`   - 최종 과세 금액: ${finalTaxableAmount.toLocaleString()} 원`);
+    console.log(`   - 계산된 상속세: ${tax.toLocaleString()} 원`);
+    console.log("-------------------------------");
        
         return {
             ...heir,
