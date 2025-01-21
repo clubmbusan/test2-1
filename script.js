@@ -680,7 +680,12 @@ function calculateGroupMode(totalAssetValue) {
 
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
-        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+    
+      // ✅ 상속인 이름 가져오기 (추가된 상속인도 포함)
+      const nameField = heir.querySelector('.heirName') || heir.querySelector('.additionalHeirName');
+      const name = nameField ? nameField.value.trim() : '이름 없음';
+   
+      const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
         // ✅ 배우자의 관계 공제 = 5억 원 (배우자에게만 적용)
         let relationshipExemption = 0;
