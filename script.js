@@ -460,7 +460,29 @@ function handleAssetTypeChange(assetTypeSelect) {
 }
 
 // 재산 추가 버튼 이벤트
-addAssetButton.addEventListener('click', createAssetEntry);    
+addAssetButton.addEventListener('click', createAssetEntry);  
+
+    // ✅ 공용 함수: 금융재산 공제 계산 (현금 & 주식)
+function calculateFinancialExemption() {
+    let totalFinancialAssets = 0;
+
+    // 모든 자산을 검사하여 금융재산(현금 + 주식) 합산
+    document.querySelectorAll('.asset-entry').forEach(asset => {
+        let assetType = asset.querySelector('.assetType')?.value;
+        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
+        if (assetType === 'cash' || assetType === 'stock') {
+            totalFinancialAssets += assetValue;
+        }
+    });
+
+    // 금융재산 공제 계산: 금융재산의 20% (최대 2억)
+    let financialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
+
+    console.log("💰 총 금융재산:", totalFinancialAssets.toLocaleString(), "원");
+    console.log("📉 적용된 금융재산 공제:", financialExemption.toLocaleString(), "원");
+
+    return financialExemption;
+}
 
 // ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
@@ -604,6 +626,9 @@ function calculatePersonalMode(totalAssetValue) {
             totalExemption += spouseAdditionalExemption;
         }
     }
+
+    // ✅ 금융재산 공제 추가
+    let financialExemption = calculateFinancialExemption();
 
     // ✅ 배우자가 아닐 경우, 최종 공제액이 5억 미만이면 5억 보장 (일괄 공제)
     if (relationship !== 'spouse' && totalExemption < 500000000) {
