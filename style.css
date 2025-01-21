@@ -134,23 +134,6 @@ button.removeAssetButton {
     display: block;
 }
 
-/* 결과 출력 스타일 */
-#result {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f1f1f1;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    line-height: 1.6;
-}
-
-/* 결과지를 좌측 정렬로 설정 */
-#result {
-    text-align: left; /* 텍스트를 좌측 정렬 */
-    margin-left: 0;  /* 좌측 여백 제거 */
-    margin-right: auto; /* 오른쪽은 자동으로 여백 채우기 */
-}
-
 /* 섹션 헤더 스타일 */
 h2 {
     margin-top: 20px;
@@ -301,13 +284,13 @@ button {
 
 /* 결과 출력 스타일 (회색 박스) */
 #result {
-    margin: 20px auto; /* 상하 간격 20px, 중앙 정렬 */
-    text-align: center; /* 내용 중앙 정렬 */
+    margin: 20px 0; /* 상하 간격 20px, 좌우 간격 제거 */
+    text-align: left; /* 내용 좌측 정렬 */
     padding: 15px; /* 내부 여백 설정 */
     background-color: #f1f1f1; /* 회색 배경 */
     border: 1px solid #ddd; /* 테두리 추가 */
     border-radius: 5px; /* 모서리 둥글게 */
-    max-width: 600px; /* 최대 너비 설정 (필요에 따라 조정) */
+    max-width: 600px; /* 최대 너비 설정 */
 }
 
 /* 계산하기 버튼과 결과 박스 간격 */
