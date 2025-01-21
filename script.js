@@ -662,6 +662,7 @@ function calculatePersonalMode(totalAssetValue) {
             <li>기초 공제: ${basicExemption.toLocaleString()} 원</li> 
             <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
             ${relationship === 'spouse' ? `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원</li>` : ''}
+            <li>금융재산 공제: ${financialExemption.toLocaleString()} 원</li>
         </ul>
         <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
         <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
@@ -711,6 +712,12 @@ function calculateGroupMode(totalAssetValue) {
         totalRelationshipExemption = 500000000;
     }
 
+     // ✅ 금융재산 공제 적용 (현금 + 주식)
+    let financialExemption = calculateFinancialExemption();
+    
+    // ✅ 최종 공제 금액 계산
+    let totalExemption = totalBasicExemption + totalRelationshipExemption + financialExemption;
+    
     // ✅ 과세 대상 금액 계산
     let taxableAmount = totalAssetValue - totalBasicExemption - totalRelationshipExemption;
 
@@ -767,6 +774,7 @@ function calculateGroupMode(totalAssetValue) {
          <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
          <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
          <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
+         <h3>금융재산 공제: ${financialExemption.toLocaleString()} 원</h3>
          <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
          ${heirs.map((heir) => `
              <p>
