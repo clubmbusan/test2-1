@@ -144,6 +144,13 @@ button.removeAssetButton {
     line-height: 1.6;
 }
 
+/* 결과지를 좌측 정렬로 설정 */
+#result {
+    text-align: left; /* 텍스트를 좌측 정렬 */
+    margin-left: 0;  /* 좌측 여백 제거 */
+    margin-right: auto; /* 오른쪽은 자동으로 여백 채우기 */
+}
+
 /* 섹션 헤더 스타일 */
 h2 {
     margin-top: 20px;
