@@ -184,13 +184,13 @@ if (initialStockPriceField) {
     addCommaFormatting(initialStockPriceField); // 초기 필드 이벤트 등록
 }
 
-    // ✅ 모든 상속 비용 입력 필드에 자동으로 콤마 추가
+   // ✅ 모든 상속 비용 입력 필드에 자동으로 콤마 추가
 document.querySelectorAll('.inheritanceCostField').forEach((input) => {
     input.addEventListener('input', function (event) {
         let value = event.target.value.replace(/,/g, ''); // 기존 콤마 제거
         if (value !== '') { // 빈 값이 아닐 경우에만 변환
-        value = Number(value).toLocaleString(); // 숫자로 변환 후 콤마 추가
-         }   
+            value = parseFloat(value).toLocaleString(); // 숫자로 변환 후 콤마 추가
+        }
         event.target.value = value; // 입력 필드에 반영
     });
 });
