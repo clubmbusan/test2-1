@@ -644,7 +644,8 @@ function calculatePersonalMode(totalAssetValue) {
 
     // ✅ 금융재산 공제 추가
     let financialExemption = calculateFinancialExemption();
-
+    totalExemption += financialExemption; // 금융재산 공제 포함
+    
     // ✅ 배우자가 아닐 경우, 최종 공제액이 5억 미만이면 5억 보장 (일괄 공제)
     if (relationship !== 'spouse' && totalExemption < 500000000) {
         totalExemption = 500000000;
@@ -664,6 +665,7 @@ function calculatePersonalMode(totalAssetValue) {
     console.log("기초 공제:", basicExemption);
     console.log("관계 공제:", relationshipExemption);
     console.log("배우자 추가 공제:", spouseAdditionalExemption);
+    console.log("금융재산 공제:", financialExemption);
     console.log("최종 공제 금액:", totalExemption);
     console.log("과세 금액:", taxableAmount);
     console.log("상속세:", tax);
