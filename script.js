@@ -872,16 +872,14 @@ function calculateGaupExemption(heirAssetValue, heirType, years) {
     return gaupExemption;
 }
 
-
-    // 가업 개인 상속 함수
-    function calculateBusinessPersonalMode(totalAssetValue) {
-    // 관계와 후계자 유형을 명확히 분리
+// ✅ 가업 개인 상속 계산 함수 (금융재산 공제 추가 반영)
+function calculateBusinessPersonalMode(totalAssetValue) {
+    // ✅ 상속인 정보 가져오기
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
-  
-    // 가업 공제 계산
-    let gaupExemption = 0;
 
+    // ✅ 가업 공제 계산
+    let gaupExemption = 0;
     if (heirType === 'adultChild') {
         if (totalAssetValue <= 5000000000) {
             gaupExemption = Math.min(totalAssetValue, 2000000000);
@@ -895,27 +893,38 @@ function calculateGaupExemption(heirAssetValue, heirType, years) {
     } else if (heirType === 'other') {
         gaupExemption = totalAssetValue * 0.3;
     } else {
-        // 잘못된 후계자 유형이 들어왔을 경우 기본값 설정
         console.error('잘못된 후계자 유형 선택:', heirType);
-        heirType = 'other'; // 기본값 설정
+        heirType = 'other';
     }
 
-    // 관계 공제 계산
+    // ✅ 관계 공제 계산
     const exemptions = calculateExemptions(totalAssetValue, relationship, gaupExemption);
-
-    // `relationshipExemption` 가져오기
     const { relationshipExemption } = exemptions;
 
-    // 총 공제 금액 계산
-    const totalExemption = gaupExemption + relationshipExemption;
+    // ✅ 금융재산 총액 계산 (현금 + 주식)
+    let totalFinancialAssets = 0;
+    document.querySelectorAll('.asset-entry').forEach(asset => {
+        let assetType = asset.querySelector('.assetType')?.value;
+        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
 
-    // 과세 금액 계산
-    const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+        if (assetType === 'cash' || assetType === 'stock') {
+            totalFinancialAssets += assetValue;
+        }
+    });
 
-    // 상속세 계산
-    const tax = calculateTax(taxableAmount);
+    // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억 원)
+    let financialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
-    // 결과 출력
+    // ✅ 총 공제 금액 계산
+    let totalExemption = gaupExemption + relationshipExemption + financialExemption;
+
+    // ✅ 과세 금액 계산
+    let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+
+    // ✅ 상속세 계산
+    let tax = calculateTax(taxableAmount);
+
+    // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
@@ -923,13 +932,14 @@ function calculateGaupExemption(heirAssetValue, heirType, years) {
         <ul>
             <li>가업 공제: ${gaupExemption.toLocaleString()} 원</li>
             <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
+            <li>금융재산 공제: ${financialExemption.toLocaleString()} 원</li>
         </ul>
         <p><strong>총 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
-        <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
+        <p>과세 표준: ${taxableAmount.toLocaleString()} 원</p>
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
-
+    
  // 가업 단체 상속 계산 함수
 function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
