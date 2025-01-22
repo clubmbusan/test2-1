@@ -749,14 +749,7 @@ function calculateGroupMode(totalAssetValue) {
         }
                       
         // ✅ 기초 공제 (비율 적용)
-        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
-
-        // ✅ 배우자 추가 공제 (최대 30억 원)
-        let spouseAdditionalExemption = 0;
-        if (heir.relationship === 'spouse') {
-            spouseAdditionalExemption = Math.min(3000000000 - (relationshipExemption + basicExemption), shareAmount);
-        }
-
+        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;   
        
         // ✅ 최종 과세 금액 계산
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption - financialExemption, 0);
