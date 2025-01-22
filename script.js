@@ -917,13 +917,13 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 }
     
     // ✅ 가업 단체 상속 계산 함수 (복수 후계자 가업 공제 처리)
-function calculateBusinessGroupMode(totalAssetValue) {
+    function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('상속 재산:', totalAssetValue);
 
     let totalGaupExemption = 0; // 전체 가업 공제
     let totalFinancialAssets = 0; // 금융재산 총액
-    let financialExemption = 0; // 금융재산 공제 총액 (변수 추가)
+    let financialExemption = 0; // 금융재산 공제 총액
 
     // ✅ 금융재산 총액 계산
     document.querySelectorAll('.asset-entry').forEach(asset => {
@@ -944,6 +944,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
 
         const name = heir.querySelector('.heirName')?.value || `상속인 ${index + 1}`;
         const heirType = heir.querySelector('.heirType')?.value || 'other';
+        const businessYears = parseInt(heir.querySelector('.businessYears')?.value) || 0;
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
         if (!name || sharePercentage <= 0 || isNaN(sharePercentage)) {
@@ -956,13 +957,8 @@ function calculateBusinessGroupMode(totalAssetValue) {
         const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
         console.log(`${name}의 상속 재산 금액:`, heirAssetValue);
 
-        // ✅ 가업 공제 계산 (배우자 및 기타는 50% 적용)
-        let gaupExemption = 0;
-        if (heirType === 'adultChild' || heirType === 'minorChild') {
-            gaupExemption = calculateGaupExemption(heirAssetValue, heirType);
-        } else {
-            gaupExemption = calculateGaupExemption(heirAssetValue, heirType) * 0.5; // 배우자 및 기타 50% 적용
-        }
+        // ✅ 가업 공제 계산 (각 상속인의 개별 경영 연수 적용)
+        let gaupExemption = calculateGaupExemption(heirAssetValue, heirType, businessYears);
         console.log(`${name}의 가업 공제:`, gaupExemption);
         totalGaupExemption += gaupExemption;
 
