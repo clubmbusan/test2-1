@@ -322,7 +322,7 @@ addHeirButton.addEventListener('click', () => {
             <option value="60">60세 이상</option>
         </select>
         <input type="number" class="minorChildAgeField" style="display: none;" min="0" max="18" placeholder="나이 입력">
-        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+        <input type="number" class="sharePercentageField" placeholder="상속 비율(%)">
     `;
 
     // 새로 추가된 상속인 입력 필드에 이벤트 등록
