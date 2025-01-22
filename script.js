@@ -796,7 +796,7 @@ function calculateGroupMode(totalAssetValue) {
                  관계 공제: ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
                  ${heir.relationship === 'spouse' ? `<strong>추가 공제:</strong> ${heir.spouseAdditionalExemption.toLocaleString()} 원 (배우자 추가 공제)<br>` : ''}
                  <strong>금융재산 공제:</strong> ${heir.financialExemption.toLocaleString()} 원<br>
-                 <strong>과세 금액:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
+                 <strong>과세 표준:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
                  <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
              </p>
          `).join('')}
