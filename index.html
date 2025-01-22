@@ -141,22 +141,24 @@
    
     <!-- 상속인 목록 -->
     <div id="businessGroupHeirContainer">
-        <div class="heir-entry-group" style="display: flex; gap: 10px; margin-top: 10px;">
-            <select class="heirType" style="width: 15%;">
+        <div class="heir-entry-group" style="display: flex; gap: 5px; align-items: center; margin-top: 10px;">
+            <select class="heirType" style="width: 20%; border-radius: 5px; padding: 5px;">
                 <option value="" disabled selected>후계자 유형</option>
                 <option value="adultChild">성년 자녀</option>
                 <option value="minorChild">미성년 자녀</option>
                 <option value="other">기타</option>
             </select>
 
-            <input type="text" placeholder="이름" class="heirName" style="width: 25%;">
+            <input type="text" placeholder="이름" class="heirName" 
+                style="width: 25%; border-radius: 5px; padding: 5px; border: 1px solid #ccc;">
 
-            <input type="number" class="businessYears" min="10" placeholder="경영기간" style="width: 25%;">
+            <input type="number" class="businessYears" min="10" placeholder="경영기간"
+                style="width: 20%; border-radius: 5px; padding: 5px; border: 1px solid #ccc;">
 
-            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)" style="width: 25%;">
+            <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)" 
+                style="width: 20%; border-radius: 5px; padding: 5px; border: 1px solid #ccc;">
         </div>
     </div>
-
 
     <button type="button" id="addBusinessGroupHeirButton">상속인 추가</button>
 </div>
