@@ -395,17 +395,9 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
         <!-- 이름 -->
         <input type="text" placeholder="이름" class="heirName">
 
-        <!-- 관계 -->
-        <select class="relationship">
-            <option value="" disabled selected>관계 선택</option>
-            <option value="spouse">배우자</option>
-            <option value="adultChild">성년 자녀</option>
-            <option value="minorChild">미성년 자녀</option>
-            <option value="parent">부모</option>
-            <option value="sibling">형제자매</option>
-            <option value="other">기타</option>
-        </select>
-
+        <!-- 경영기간 입력 -->
+        <input type="number" class="businessYears" min="10" placeholder="경영기간">
+        
         <!-- 상속 비율 -->
         <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
