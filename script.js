@@ -757,9 +757,7 @@ function calculateGroupMode(totalAssetValue) {
             spouseAdditionalExemption = Math.min(3000000000 - (relationshipExemption + basicExemption), shareAmount);
         }
 
-        // ✅ 금융재산 공제 적용
-        let financialExemption = financialExemptionByHeir[heir.name] || 0;
-
+       
         // ✅ 최종 과세 금액 계산
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption - financialExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
