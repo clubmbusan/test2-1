@@ -739,6 +739,9 @@ function calculateGroupMode(totalAssetValue) {
     heirs = heirs.map((heir) => {
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
+        // ✅ 관계 공제 적용
+        let relationshipExemption = calculateRelationshipExemption(heir.relationship, heir.age);
+        
          // ✅ 배우자의 관계 공제 = 5억 원 (배우자에게만 적용)
         let relationshipExemption = 0;
         if (heir.relationship === 'spouse') {
@@ -756,7 +759,10 @@ function calculateGroupMode(totalAssetValue) {
         if (heir.relationship === 'spouse') {
             spouseAdditionalExemption = Math.min(3000000000 - (relationshipExemption + basicExemption), shareAmount);
         }
-       
+
+        // ✅ 금융재산 공제 적용
+        let financialExemption = financialExemptionByHeir[heir.name] || 0;
+        
         // ✅ 최종 과세 금액 계산
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption - financialExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
