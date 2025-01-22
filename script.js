@@ -747,10 +747,7 @@ function calculateGroupMode(totalAssetValue) {
             // ✅ 성년 자녀는 자기 공제 5천만 원 적용
             relationshipExemption = 50000000;
         }
-        
-        // ✅ 관계 공제 적용
-        let relationshipExemption = calculateRelationshipExemption(heir.relationship, heir.age);
-        
+                      
         // ✅ 기초 공제 (비율 적용)
         const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
 
