@@ -944,18 +944,25 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
     // ✅ 모든 상속인 데이터 수집
     const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
-        console.log(`상속인 ${index + 1} 데이터 수집 시작`);
+    console.log(`상속인 ${index + 1} 데이터 수집 시작`);
 
-        const name = heir.querySelector('.heirName')?.value || `상속인 ${index + 1}`;
-        const heirType = heir.querySelector('.heirType')?.value || 'other';
-        const businessYears = parseInt(heir.querySelector('.businessYears')?.value) || 0;
-        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
+    const name = heir.querySelector('.heirName')?.value.trim() || `상속인 ${index + 1}`;
+    const heirType = heir.querySelector('.heirType')?.value || 'other';
+    const businessYears = parseInt(heir.querySelector('.businessYears')?.value) || 0;
+    
+    // ✅ 숫자로 변환 후 NaN 방지
+    let sharePercentage = heir.querySelector('.sharePercentageField')?.value.trim();
+    sharePercentage = sharePercentage ? parseFloat(sharePercentage) : NaN; 
 
-        if (!name || sharePercentage <= 0 || isNaN(sharePercentage)) {
-            console.error(`${name}의 필수 데이터가 누락되었거나 상속 비율이 잘못되었습니다.`);
-            alert(`${name}의 데이터를 확인해주세요. 상속 비율은 0보다 커야 합니다.`);
-            return null;
-        }
+    // 🚨 상속 비율 검증 로직 (NaN 체크 추가)
+    if (!name || isNaN(sharePercentage) || sharePercentage <= 0) {
+        console.error(`${name}의 필수 데이터가 누락되었거나 상속 비율이 잘못되었습니다.`);
+        alert(`상속인 ${index + 1}의 데이터를 확인해주세요. 상속 비율은 0보다 커야 합니다.`);
+        return null;
+    }
+
+    return { name, heirType, businessYears, sharePercentage };
+}).filter(Boolean);
 
         // ✅ 가업 후계자인 경우 목록에 추가
         if (heirType === 'adultChild' || heirType === 'minorChild') {
