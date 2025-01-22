@@ -723,15 +723,7 @@ function calculateGroupMode(totalAssetValue) {
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
           const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
-
-        // ✅ 배우자의 관계 공제 = 5억 원 (배우자에게만 적용)
-        let relationshipExemption = 0;
-        if (heir.relationship === 'spouse') {
-            relationshipExemption = 500000000;
-        } else if (heir.relationship === 'adultChild') {
-            // ✅ 성년 자녀는 자기 공제 5천만 원 적용
-            relationshipExemption = 50000000;
-        }
+      
 
         // ✅ 기초 공제 = 2억 원을 지분 비율대로 적용
         const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
@@ -752,6 +744,7 @@ function calculateGroupMode(totalAssetValue) {
     console.log(`   - 기초 공제 적용 금액: ${basicExemption.toLocaleString()} 원`);
     console.log(`   - 관계 공제 적용 금액: ${relationshipExemption.toLocaleString()} 원`);
     console.log(`   - 배우자 추가 공제 적용 여부: ${spouseAdditionalExemption.toLocaleString()} 원`);
+    console.log(`   - 금융재산 공제: ${financialExemption.toLocaleString()} 원`);
     console.log(`   - 최종 과세 금액: ${finalTaxableAmount.toLocaleString()} 원`);
     console.log(`   - 계산된 상속세: ${tax.toLocaleString()} 원`);
     console.log("-------------------------------");
