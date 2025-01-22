@@ -938,7 +938,11 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
     financialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
-    // ✅ 상속인 정보 저장
+    // ✅ 가업 후계자 목록 생성
+    let businessSuccessors = [];
+    let maxBusinessYears = 0;
+
+    // ✅ 모든 상속인 데이터 수집
     const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
         console.log(`상속인 ${index + 1} 데이터 수집 시작`);
 
@@ -953,72 +957,78 @@ function calculateBusinessPersonalMode(totalAssetValue) {
             return null;
         }
 
+        // ✅ 가업 후계자인 경우 목록에 추가
+        if (heirType === 'adultChild' || heirType === 'minorChild') {
+            businessSuccessors.push({ name, sharePercentage, businessYears });
+            maxBusinessYears = Math.max(maxBusinessYears, businessYears);
+        }
+
         // ✅ 상속 재산 계산
         const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
         console.log(`${name}의 상속 재산 금액:`, heirAssetValue);
 
-        // ✅ 가업 공제 계산 (각 상속인의 개별 경영 연수 적용)
-        let gaupExemption = calculateGaupExemption(heirAssetValue, heirType, businessYears);
-        console.log(`${name}의 가업 공제:`, gaupExemption);
-        totalGaupExemption += gaupExemption;
-
-        // ✅ 일괄 공제 계산
-        const defaultGaupExemptionByHeir = (500000000 * sharePercentage) / 100;
-
-        // ✅ 금융재산 공제 적용 (총 금융재산 공제에서 각 상속인의 비율대로 분배)
-        const financialExemptionByHeir = (financialExemption * sharePercentage) / 100;
-
-        // ✅ 총 공제 계산
-        const totalExemption = gaupExemption + defaultGaupExemptionByHeir + financialExemptionByHeir;
-        console.log(`${name}의 총 공제 금액:`, totalExemption);
-
-        // ✅ 과세 금액 계산
-        const taxableAmount = Math.max(heirAssetValue - totalExemption, 0);
-        const tax = calculateTax(taxableAmount);
-        console.log(`${name}의 과세 금액:`, taxableAmount);
-        console.log(`${name}의 상속세:`, tax);
-
         return {
             name,
+            heirType,
             heirAssetValue,
-            gaupExemption,
-            defaultGaupExemptionByHeir,
-            financialExemptionByHeir,
-            totalExemption,
-            taxableAmount,
-            tax,
+            sharePercentage,
+            businessYears
         };
     }).filter(Boolean);
 
-    // ✅ 계산 결과 요약
-    const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.heirAssetValue, 0);
-    const totalExemption = heirs.reduce((sum, heir) => sum + heir.totalExemption, 0);
-    const totalTax = heirs.reduce((sum, heir) => sum + heir.tax, 0);
+    // ✅ 가장 긴 경영 연수 기준으로 가업 공제 한도 설정
+    let maxExemptionByYears = 0;
+    if (maxBusinessYears >= 30) {
+        maxExemptionByYears = 60000000000; // 30년 이상: 최대 600억 원
+    } else if (maxBusinessYears >= 20) {
+        maxExemptionByYears = 40000000000; // 20년 이상: 최대 400억 원
+    } else if (maxBusinessYears >= 10) {
+        maxExemptionByYears = 30000000000; // 10년 이상: 최대 300억 원
+    }
 
-    console.log('--- 최종 계산 결과 ---');
-    console.log('상속 재산:', totalInheritedAssets);
-    console.log('총 공제 금액:', totalExemption);
-    console.log('총 상속세:', totalTax);
+    // ✅ 가업 공제 적용 (후계자의 상속 비율에 따라 배분)
+    let gaupExemptionByHeir = {};
+    if (businessSuccessors.length > 0) {
+        totalGaupExemption = maxExemptionByYears;
+        businessSuccessors.forEach(successor => {
+            gaupExemptionByHeir[successor.name] = (totalGaupExemption * successor.sharePercentage) / 100;
+        });
+    }
+
+    // ✅ 최종 상속세 계산
+    heirs.forEach(heir => {
+        const gaupExemption = gaupExemptionByHeir[heir.name] || 0;
+        const defaultGaupExemptionByHeir = (500000000 * heir.sharePercentage) / 100;
+        const financialExemptionByHeir = (financialExemption * heir.sharePercentage) / 100;
+
+        // ✅ 최종 공제 합산
+        const totalExemption = gaupExemption + defaultGaupExemptionByHeir + financialExemptionByHeir;
+        const taxableAmount = Math.max(heir.heirAssetValue - totalExemption, 0);
+        const tax = calculateTax(taxableAmount);
+
+        console.log(`${heir.name}의 가업 공제:`, gaupExemption);
+        console.log(`${heir.name}의 과세 금액:`, taxableAmount);
+        console.log(`${heir.name}의 상속세:`, tax);
+    });
 
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 단체 상속)</h3>
-        <p><strong>상속 재산:</strong> ${formatNumberWithCommas(totalInheritedAssets)} 원</p>
+        <p><strong>상속 재산:</strong> ${formatNumberWithCommas(totalAssetValue)} 원</p>
         <p><strong>일괄 공제:</strong> ${formatNumberWithCommas(500000000)} 원</p>
         <p><strong>가업 공제:</strong> ${formatNumberWithCommas(totalGaupExemption)} 원</p>
         <p><strong>금융재산 공제:</strong> ${formatNumberWithCommas(financialExemption)} 원</p>
-        <p><strong>과세 표준:</strong> ${formatNumberWithCommas(totalInheritedAssets - totalExemption)} 원</p>
-        <p><strong>상속세:</strong> ${formatNumberWithCommas(totalTax)} 원</p>
+        <p><strong>과세 표준:</strong> ${formatNumberWithCommas(totalAssetValue - totalGaupExemption - financialExemption)} 원</p>
 
         ${heirs.map(heir => `
             <p>
                 <strong>${heir.name}</strong><br>
                 - 상속 재산: ${formatNumberWithCommas(heir.heirAssetValue)} 원<br>
-                - 일괄 공제: ${formatNumberWithCommas(heir.defaultGaupExemptionByHeir)} 원<br>
-                - 가업 공제: ${formatNumberWithCommas(heir.gaupExemption)} 원<br>
-                - 금융재산 공제: ${formatNumberWithCommas(heir.financialExemptionByHeir)} 원<br>
-                - 과세 표준: ${formatNumberWithCommas(heir.taxableAmount)} 원<br>
-                - 상속세: ${formatNumberWithCommas(heir.tax)} 원
+                - 일괄 공제: ${formatNumberWithCommas(defaultGaupExemptionByHeir)} 원<br>
+                - 가업 공제: ${formatNumberWithCommas(gaupExemptionByHeir[heir.name] || 0)} 원<br>
+                - 금융재산 공제: ${formatNumberWithCommas(financialExemptionByHeir)} 원<br>
+                - 과세 표준: ${formatNumberWithCommas(heir.heirAssetValue - (gaupExemptionByHeir[heir.name] || 0) - defaultGaupExemptionByHeir - financialExemptionByHeir)} 원<br>
+                - 상속세: ${formatNumberWithCommas(calculateTax(heir.heirAssetValue - (gaupExemptionByHeir[heir.name] || 0) - defaultGaupExemptionByHeir - financialExemptionByHeir))} 원
             </p>
         `).join('')}
     `;
