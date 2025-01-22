@@ -931,7 +931,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p><strong>공제 내역:</strong></p>
         <ul>
             <li>가업 공제: ${gaupExemption.toLocaleString()} 원</li>
-            <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
+            <li>일괄 공제: ${defaultGaupExemption.toLocaleString()} 원</li>
             <li>금융재산 공제: ${financialExemption.toLocaleString()} 원</li>
         </ul>
         <p><strong>총 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
