@@ -664,7 +664,7 @@ function calculatePersonalMode(totalAssetValue) {
             <li>금융재산 공제: ${financialExemption.toLocaleString()} 원</li>
         </ul>
         <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
-        <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
+        <p>과세 표준: ${taxableAmount.toLocaleString()} 원</p>
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
