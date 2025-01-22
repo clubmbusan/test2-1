@@ -217,9 +217,9 @@ function createAssetEntry() {
     newAsset.innerHTML = `
         <label>재산 유형:</label>
         <select class="assetType">
-            <option value="cash">현금 <금융 재산 20% 공제 최대 2억></option>
+            <option value="cash">현금</option>
             <option value="realEstate">부동산</option>
-            <option value="stock">주식 <금융 재산 20% 공제 최대 2억></option>
+            <option value="stock">주식</option>
             <option value="others">기타</option>
         </select>
         <div class="assetFields">
