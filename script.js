@@ -399,7 +399,7 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
         <input type="number" class="businessYears" min="10" placeholder="경영기간">
         
         <!-- 상속 비율 -->
-        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
+        <input type="number" class="sharePercentageField" placeholder="상속 비율(%)">
     `;
 
     // 가업 단체 상속 섹션에 필드 추가
