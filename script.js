@@ -395,8 +395,13 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
         <!-- 이름 -->
         <input type="text" placeholder="이름" class="heirName">
 
-        <!-- 경영기간 입력 -->
-        <input type="number" class="businessYears" min="10" placeholder="경영기간입력">
+        <!-- 경영기간 선택 -->
+        <select class="businessYears">
+            <option value="" disabled selected>경영기간 선택</option>
+            <option value="10">10년 이상</option>
+            <option value="20">20년 이상</option>
+            <option value="30">30년 이상</option>
+        </select>
         
         <!-- 상속 비율 -->
         <input type="number" class="sharePercentageField" placeholder="상속 비율(%)">
