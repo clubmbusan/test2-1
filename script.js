@@ -397,7 +397,7 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
 
         <!-- 경영기간 선택 -->
         <select class="businessYears">
-            <option value="" disabled selected>경영기간 선택</option>
+            <option value="" disabled selected>경영기간선택</option>
             <option value="10">10년 이상</option>
             <option value="20">20년 이상</option>
             <option value="30">30년 이상</option>
