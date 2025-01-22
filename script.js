@@ -919,18 +919,34 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
     
- // 가업 단체 상속 계산 함수
+ // ✅ 가업 단체 상속 계산 함수 (일괄 공제 + 금융재산 공제 반영)
 function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('총 재산 금액:', totalAssetValue);
 
-    // 상속인 데이터 저장
+    // ✅ 기본 일괄 공제 (5억 원)
+    let defaultGaupExemption = 500000000;
+
+    // ✅ 금융재산 총액 계산 (현금 + 주식)
+    let totalFinancialAssets = 0;
+    document.querySelectorAll('.asset-entry').forEach(asset => {
+        let assetType = asset.querySelector('.assetType')?.value;
+        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
+
+        if (assetType === 'cash' || assetType === 'stock') {
+            totalFinancialAssets += assetValue;
+        }
+    });
+
+    // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억 원)
+    let financialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
+
+    // ✅ 상속인 데이터 저장
     const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
         console.log(`상속인 ${index + 1} 데이터 수집 시작`);
 
         const name = heir.querySelector('.heirName')?.value || `상속인 ${index + 1}`;
         const heirType = heir.querySelector('.heirType')?.value || 'other';
-        const relationship = heir.querySelector('.relationship')?.value || 'other';
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
         if (!name || sharePercentage <= 0 || isNaN(sharePercentage)) {
@@ -939,22 +955,29 @@ function calculateBusinessGroupMode(totalAssetValue) {
             return null;
         }
 
-        // 상속 재산 계산
+        // ✅ 상속 재산 계산
         const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
         console.log(`${name}의 상속 재산 금액:`, heirAssetValue);
 
-        // 가업 공제 계산
-        const gaupExemption = calculateGaupExemption(heirAssetValue, heirType);
-        console.log(`${name}의 가업 공제:`, gaupExemption);
+        // ✅ 가업 공제 계산 (가업 경영 연수에 따라 다르게 적용)
+        const businessYears = parseInt(document.querySelector('#businessYearsGroup')?.value) || 0;
+        let gaupExemption = 0;
+        if (businessYears >= 30) {
+            gaupExemption = Math.min(heirAssetValue, 60000000000); // 30년 이상: 최대 600억
+        } else if (businessYears >= 20) {
+            gaupExemption = Math.min(heirAssetValue, 40000000000); // 20년 이상: 최대 400억
+        } else if (businessYears >= 10) {
+            gaupExemption = Math.min(heirAssetValue, 30000000000); // 10년 이상: 최대 300억
+        }
 
-        // 관계 공제 계산
-        const { relationshipExemption } = calculateExemptions(heirAssetValue, relationship);
+        // ✅ 개별 금융재산 공제 (상속 비율에 따라 분배)
+        let financialExemptionByHeir = (financialExemption * sharePercentage) / 100;
 
-        // 총 공제 계산
-        const totalExemption = gaupExemption + relationshipExemption;
+        // ✅ 총 공제 금액 계산 (일괄 공제 + 가업 공제 + 금융재산 공제)
+        const totalExemption = defaultGaupExemption + gaupExemption + financialExemptionByHeir;
         console.log(`${name}의 총 공제 금액:`, totalExemption);
 
-        // 과세 금액 계산
+        // ✅ 과세 금액 계산
         const taxableAmount = Math.max(heirAssetValue - totalExemption, 0);
         const tax = calculateTax(taxableAmount);
         console.log(`${name}의 과세 금액:`, taxableAmount);
@@ -964,14 +987,14 @@ function calculateBusinessGroupMode(totalAssetValue) {
             name,
             heirAssetValue,
             gaupExemption,
-            relationshipExemption,
+            financialExemptionByHeir,
             totalExemption,
             taxableAmount,
             tax,
         };
     }).filter(Boolean);
 
-    // 계산 결과 요약
+    // ✅ 최종 계산 결과 요약
     const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.heirAssetValue, 0);
     const totalExemption = heirs.reduce((sum, heir) => sum + heir.totalExemption, 0);
     const totalTax = heirs.reduce((sum, heir) => sum + heir.tax, 0);
@@ -981,7 +1004,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
     console.log('총 공제 금액:', totalExemption);
     console.log('총 상속세:', totalTax);
 
-    // 결과 출력
+    // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 단체 상속)</h3>
         <p><strong>총 상속 재산:</strong> ${formatNumberWithCommas(totalInheritedAssets)} 원</p>
@@ -992,7 +1015,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
                 <strong>${heir.name}</strong>:<br>
                 - 상속 재산: ${formatNumberWithCommas(heir.heirAssetValue)} 원<br>
                 - 가업 공제: ${formatNumberWithCommas(heir.gaupExemption)} 원<br>
-                - 관계 공제: ${formatNumberWithCommas(heir.relationshipExemption)} 원<br>
+                - 금융재산 공제: ${formatNumberWithCommas(heir.financialExemptionByHeir)} 원<br>
                 - 총 공제 금액: ${formatNumberWithCommas(heir.totalExemption)} 원<br>
                 - 과세 금액: ${formatNumberWithCommas(heir.taxableAmount)} 원<br>
                 - 상속세: ${formatNumberWithCommas(heir.tax)} 원
@@ -1000,6 +1023,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
         `).join('')}
     `;
 }
+
     
    // ✅ 상속비용 모달
 (function () {
