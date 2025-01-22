@@ -919,15 +919,29 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
     
-// ✅ 가업 단체 상속 계산 함수 (복수 후계자 가업 공제 처리)
+    // ✅ 가업 단체 상속 계산 함수 (복수 후계자 가업 공제 처리)
 function calculateBusinessGroupMode(totalAssetValue) {
     console.log('--- 가업 단체 상속 계산 시작 ---');
     console.log('상속 재산:', totalAssetValue);
 
     let totalGaupExemption = 0; // 전체 가업 공제
     let totalFinancialAssets = 0; // 금융재산 총액
+    let financialExemption = 0; // 금융재산 공제 총액 (변수 추가)
 
-    // ✅ 상속인 데이터 저장
+    // ✅ 금융재산 총액 계산
+    document.querySelectorAll('.asset-entry').forEach(asset => {
+        let assetType = asset.querySelector('.assetType')?.value;
+        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
+
+        if (assetType === 'cash' || assetType === 'stock') {
+            totalFinancialAssets += assetValue;
+        }
+    });
+
+    // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
+    financialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
+
+    // ✅ 상속인 정보 저장
     const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
         console.log(`상속인 ${index + 1} 데이터 수집 시작`);
 
@@ -945,16 +959,6 @@ function calculateBusinessGroupMode(totalAssetValue) {
         const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
         console.log(`${name}의 상속 재산 금액:`, heirAssetValue);
 
-        // ✅ 금융재산 총액 계산
-        document.querySelectorAll('.asset-entry').forEach(asset => {
-            let assetType = asset.querySelector('.assetType')?.value;
-            let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
-
-            if (assetType === 'cash' || assetType === 'stock') {
-                totalFinancialAssets += assetValue;
-            }
-        });
-
         // ✅ 가업 공제 계산 (배우자 및 기타는 50% 적용)
         let gaupExemption = 0;
         if (heirType === 'adultChild' || heirType === 'minorChild') {
@@ -968,8 +972,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
         // ✅ 일괄 공제 계산
         const defaultGaupExemptionByHeir = (500000000 * sharePercentage) / 100;
 
-        // ✅ 금융재산 공제 계산 (총 금융재산의 20%, 최대 2억)
-        let financialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
+        // ✅ 금융재산 공제 적용 (총 금융재산 공제에서 각 상속인의 비율대로 분배)
         const financialExemptionByHeir = (financialExemption * sharePercentage) / 100;
 
         // ✅ 총 공제 계산
@@ -1027,8 +1030,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
         `).join('')}
     `;
 }
-
-    
+   
    // ✅ 상속비용 모달
 (function () {
     console.log("✅ 강제 실행 테스트 시작");
