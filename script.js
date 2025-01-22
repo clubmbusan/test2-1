@@ -713,7 +713,8 @@ function calculateGroupMode(totalAssetValue) {
 
      // ✅ 금융재산 공제 적용 (현금 + 주식)
     let financialExemption = calculateFinancialExemption();
-    
+     totalExemption += financialExemption; // 금융재산 공제 포함
+   
     // ✅ 최종 공제 금액 계산
     let totalExemption = totalBasicExemption + totalRelationshipExemption + financialExemption;
     
