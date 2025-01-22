@@ -813,22 +813,7 @@ function calculateGroupMode(totalAssetValue) {
       }
       return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
   }
-
-    // 유효성 검사 함수 (가업개인/단체 공통)
-function validateHeirRelationship(heirType, relationship) {
-    const validPairs = {
-        adultChild: ['adultChild'], // 성년 자녀 후계자 -> 성년 자녀 관계만 허용
-        minorChild: ['minorChild'], // 미성년 자녀 후계자 -> 미성년 자녀 관계만 허용
-        other: ['spouse', 'parent', 'sibling', 'other'], // 기타 후계자 -> 부모, 형제자매, 기타만 허용
-    };
-
-    if (!validPairs[heirType]?.includes(relationship)) {
-        return false; // 잘못된 조합
-    }
-
-    return true;
-}
-
+   
     /**
  * 가업 공제 계산 (공용)
  * @param {number} heirAssetValue - 상속인의 상속 재산 금액
@@ -1094,13 +1079,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
 document.getElementById('calculateButton').addEventListener('click', () => {
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
-
-    // ✅ 유효성 검사 실행
-    if (!validateHeirRelationship(heirType, relationship)) {
-        alert('선택한 후계자 유형과 관계가 맞지 않습니다. 올바른 조합을 선택해주세요.');
-        return; // 계산 중단
-    }
-
+   
     // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
     let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseFloat(field.value.replace(/,/g, '')) || 0;
