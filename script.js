@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ✅ DOM 요소 참조 (원래 개수 12개 유지)
+    // ✅ DOM 요소 참조 (원래 개수 16개 유지)
     const inheritanceType = document.getElementById('inheritanceType');
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    // 🔹 수정된 부분: 부동산 입력 필드 추가
+    const fixedRealEstateFields = document.getElementById('fixedRealEstateFields');
+    const fixedRealEstateValue = document.getElementById('fixedRealEstateValue');
+ 
     console.log("🔍 DOM 요소 로드 완료");
 
     // ✅ 섹션 초기화 함수
@@ -32,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
         [dwellingFields, farmingFields, factoryFields].forEach(field => {
             if (field) field.style.display = 'none';
         });
+       // 🔹 수정된 부분: 기타 상속 선택 해제 시 부동산 필드 숨기기
+        if (fixedRealEstateFields) fixedRealEstateFields.style.display = 'none';
     }
 
     // ✅ 초기 로딩 시 개인 상속을 기본값으로 설정
@@ -62,6 +68,9 @@ inheritanceType.addEventListener('change', () => {
             if (otherSection) otherSection.style.display = 'block';
             if (otherAssetContainer) otherAssetContainer.style.display = 'block';
             if (otherFieldsContainer) otherFieldsContainer.style.display = 'block';
+
+            // 🔹 수정된 부분: 기타 상속 선택 시 부동산 필드 항상 표시
+            if (fixedRealEstateFields) fixedRealEstateFields.style.display = 'block';
             break;
         default: 
             console.error('❌ 잘못된 상속 유형 선택'); 
