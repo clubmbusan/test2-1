@@ -67,28 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
    
-
-    // ✅ 기타 상속 유형(동거주택, 영농, 공장) 선택 시 해당 섹션 표시
-    otherAssetType.addEventListener('change', () => {
-        dwellingSection.style.display = 'none';
-        farmingSection.style.display = 'none';
-        factorySection.style.display = 'none';
-
-        switch (otherAssetType.value) {
-            case 'dwelling':
-                dwellingSection.style.display = 'block';
-                break;
-            case 'farming':
-                farmingSection.style.display = 'block';
-                break;
-            case 'factory':
-                factorySection.style.display = 'block';
-                break;
-        }
-    });
-
-    // ✅ 영농·공장 공제 자동 처리
+    // ✅ 기타 상속 유형(동거주택, 영농, 공장) 선택 시 해당 섹션 표시 및 공제 자동 처리
 otherAssetType.addEventListener('change', () => {
+    // 모든 섹션 초기화
     dwellingSection.style.display = 'none';
     farmingSection.style.display = 'none';
     factorySection.style.display = 'none';
@@ -106,7 +87,7 @@ otherAssetType.addEventListener('change', () => {
             document.getElementById('factoryYears').value = 10; // 자동 10년 이상 입력
             break;
     }
-});
+});  
 
     // ✅ 개인 상속의 부모 연령 선택 필드 (수정된 코드)
 const relationshipSelect = document.getElementById("relationshipPersonal");
@@ -945,30 +926,33 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 }
 
     // ✅ 기타 상속 계산 함수 추가
-function calculateOtherInheritance() {
+    function calculateOtherInheritance() {
     let totalInheritance = 0;
     let deduction = 0;
     let assetValue = parseInt(document.getElementById('assetValue').value) || 0;
-    
-    // 기타 상속 유형별 공제 계산
+
+    console.log(`🛠️ 기타 상속 유형 선택: ${otherAssetType.value}`);
+    console.log(`💰 입력된 자산 금액: ${assetValue}`);
+
     switch (otherAssetType.value) {
-        case 'dwelling': // 동거주택
-            deduction = Math.min(assetValue, 6000000000); // 최대 6억 공제
+        case 'dwelling': 
+            deduction = Math.min(assetValue, 6000000000); // 동거주택 공제: 최대 6억
             break;
-        case 'farming': // 영농 상속
-            deduction = Math.min(assetValue, 15000000000); // 최대 15억 공제
+        case 'farming': 
+            deduction = Math.min(assetValue, 15000000000); // 영농 공제: 최대 15억
             break;
-        case 'factory': // 공장 상속
-            deduction = Math.min(assetValue * 0.8, 20000000000); // 80% 공제, 최대 20억
+        case 'factory': 
+            deduction = Math.min(assetValue * 0.8, 20000000000); // 공장 공제: 80% or 최대 20억
             break;
         default:
             console.error('잘못된 기타 상속 유형 선택');
             return;
     }
 
-    totalInheritance = Math.max(0, assetValue - deduction); // 공제 적용 후 상속재산 계산
+    totalInheritance = Math.max(0, assetValue - deduction);
+    
+    console.log(`💰 최종 상속 금액 (공제 적용 후): ${totalInheritance}`); // 🛠️ 디버깅 추가
 
-    // ✅ 결과 출력
     document.getElementById('result').innerText = `
         기타 상속 유형: ${otherAssetType.options[otherAssetType.selectedIndex].text}
         총 재산: ${assetValue.toLocaleString()} 원
