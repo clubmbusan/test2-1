@@ -1147,6 +1147,7 @@ document.getElementById('calculateButton').addEventListener('click', () => {
             break;
           default:
             console.error('잘못된 계산 요청');
+            alert("⚠️ 올바른 상속 유형을 선택하세요.");  // 사용자에게 경고창 표시
             break;
     }
 });
