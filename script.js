@@ -103,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     console.log("✅ 스크립트 실행 완료");
-}); // ✅ 닫는 괄호 추가
 
     // ✅ 개인 상속의 부모 연령 선택 필드 (수정된 코드)
 const relationshipSelect = document.getElementById("relationshipPersonal");
