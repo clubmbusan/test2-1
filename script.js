@@ -1145,10 +1145,7 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         case 'businessPersonal':
             calculateBusinessPersonalMode(totalAssetValue);
             break;
-        case 'businessGroup':
-            calculateBusinessGroupMode(totalAssetValue);
-            break;
-        default:
+          default:
             console.error('잘못된 계산 요청');
             break;
     }
