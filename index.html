@@ -24,9 +24,8 @@
             <select id="inheritanceType" class="form-control">
                 <option value="personal" selected>개인 상속</option>
                 <option value="group">전원 상속</option>
-                <option value="other">기타 상속</option>
                 <option value="businessPersonal">가업 상속</option> 
-                
+                <option value="other">기타 상속</option>
             </select>
         </div>
        
@@ -40,30 +39,22 @@
             </select>
         </div>
 
-        <!-- ✅ 기타 상속 시 고정되는 "부동산" 입력 필드 -->
-        <div id="fixedRealEstateFields" class="form-group" style="display: none;">
-            <label>재산 유형 (부동산)</label>
-            <input type="text" id="fixedRealEstateValue" class="form-control" placeholder="평가액 (원)">
-         </div>
-        
-          <!-- 기타 상속 유형별 추가 필드 -->
-<div id="otherFieldsContainer" style="display: none;">
-    <!-- 동거주택 상속 -->
-    <div id="dwellingFields" class="extra-fields" style="display: none; flex-direction: column; gap: 5px;">
-       ✅ 동거주택 공제는 10년 이상 거주해야 합니다.</small>
-    </div>
+        <!-- 기타 상속 유형별 추가 필드 -->
+        <div id="dwellingSection" class="section">
+            <h2>동거주택 상속</h2>
+            <p>동거주택 공제 적용 여부를 확인합니다.</p>
+        </div>
 
-    <!-- 영농 상속 -->
-    <div id="farmingFields" class="extra-fields" style="display: none; flex-direction: column; gap: 5px;">
-       ✅ 영농 상속 공제는 최소 10년 이상 영농을 지속해야 합니다.</small>
-    </div>
+        <div id="farmingSection" class="section">
+            <h2>영농 상속</h2>
+            <p>영농 상속 공제를 적용하려면 농지를 10년 이상 보유해야 합니다.</p>
+        </div>
 
-    <!-- 공장 상속 -->
-    <div id="factoryFields" class="extra-fields" style="display: none; flex-direction: column; gap: 5px;">
-       ✅ 공장 상속 공제는 최소 10년 이상 운영해야 합니다.</small>
-    </div>
-</div>
-           
+        <div id="factorySection" class="section">
+            <h2>공장 상속</h2>
+            <p>공장 상속 공제 여부를 확인합니다.</p>
+        </div>
+            
         <!-- 재산 유형 및 금액 -->
         <div id="assetContainer">
             <h2>상속 재산</h2>
@@ -211,4 +202,4 @@
     </div>
     <script src="script.js"></script>
 </body>
-</html>
+</html> 
