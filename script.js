@@ -943,6 +943,39 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
+
+    // ✅ 기타 상속 계산 함수 추가
+function calculateOtherInheritance() {
+    let totalInheritance = 0;
+    let deduction = 0;
+    let assetValue = parseInt(document.getElementById('assetValue').value) || 0;
+    
+    // 기타 상속 유형별 공제 계산
+    switch (otherAssetType.value) {
+        case 'dwelling': // 동거주택
+            deduction = Math.min(assetValue, 6000000000); // 최대 6억 공제
+            break;
+        case 'farming': // 영농 상속
+            deduction = Math.min(assetValue, 15000000000); // 최대 15억 공제
+            break;
+        case 'factory': // 공장 상속
+            deduction = Math.min(assetValue * 0.8, 20000000000); // 80% 공제, 최대 20억
+            break;
+        default:
+            console.error('잘못된 기타 상속 유형 선택');
+            return;
+    }
+
+    totalInheritance = Math.max(0, assetValue - deduction); // 공제 적용 후 상속재산 계산
+
+    // ✅ 결과 출력
+    document.getElementById('result').innerText = `
+        기타 상속 유형: ${otherAssetType.options[otherAssetType.selectedIndex].text}
+        총 재산: ${assetValue.toLocaleString()} 원
+        공제 금액: ${deduction.toLocaleString()} 원
+        과세 대상 금액: ${totalInheritance.toLocaleString()} 원
+    `;
+}
     
    // ✅ 상속비용 모달
 (function () {
