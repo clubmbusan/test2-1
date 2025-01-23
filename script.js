@@ -945,24 +945,19 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
     // ✅ 특수(기타) 상속 계산 함수 추가
     function calculateSpecialInheritance() {
-    // ✅ 기타상속(특수상속) 선택 여부 확인
-    let inheritanceType = document.getElementById("inheritanceType").value;
-    let isOtherInheritance = (inheritanceType === "other");
+    // ✅ 상속 재산 입력 필드 확인
+    let inheritanceInput = document.getElementById("inheritanceAmount");
+    console.log("📌 입력 필드 존재 여부:", inheritanceInput);
 
-    if (!isOtherInheritance) {
-        console.error("⚠️ 기타(특수)상속이 선택되지 않았습니다.");
-        alert("⚠️ 특수상속 유형을 선택해야 합니다.");
+    if (!inheritanceInput) {
+        console.error("❌ 상속 재산 입력 필드가 존재하지 않습니다.");
         return;
     }
 
-    // ✅ 상속 재산 가져오기
-    let inheritanceInput = document.getElementById("inheritanceAmount");
+    // ✅ 입력값 가져오기
     let totalInheritance = parseInt(inheritanceInput.value);
-
-    // ✅ 디버깅 로그 추가
-    console.log("📌 특수상속 선택 여부:", isOtherInheritance);
-    console.log("📌 입력된 총 상속 재산 값:", inheritanceInput.value);
-    console.log("💰 변환된 총 상속 재산:", totalInheritance);
+    console.log("📌 입력된 총 상속 재산 값 (원본):", inheritanceInput.value);
+    console.log("💰 변환된 총 상속 재산 (숫자):", totalInheritance);
 
     // ✅ 입력값 검증
     if (!totalInheritance || isNaN(totalInheritance) || totalInheritance <= 0) {
@@ -971,11 +966,20 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         return;
     }
 
+    // ✅ 결과 출력 요소 확인
+    let resultContainer = document.getElementById("result");
+    console.log("📌 결과 표시 영역 존재 여부:", resultContainer);
+
+    if (!resultContainer) {
+        console.error("❌ 결과를 표시할 `#result` 요소가 존재하지 않습니다.");
+        return;
+    }
+
     // ✅ 특수상속 유형 가져오기
     let otherAssetType = document.getElementById("otherAssetType");
-    let otherType = otherAssetType.value;
+    let otherType = otherAssetType ? otherAssetType.value : null;
 
-    console.log("📌 선택된 상속 유형:", otherType);
+    console.log("📌 선택된 특수상속 유형:", otherType);
 
     if (!otherType) {
         console.error("⚠️ 기타 상속 유형이 선택되지 않았습니다.");
@@ -1030,7 +1034,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     console.log("💸 최종 상속세:", inheritanceTax);
 
     // ✅ 결과 출력
-    document.getElementById("result").innerHTML = `
+    resultContainer.innerHTML = `
         <h3>📌 특수상속 계산 결과</h3>
         <p>✔️ 상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
         <p>💰 총 상속 재산: <strong>${totalInheritance.toLocaleString()} 원</strong></p>
