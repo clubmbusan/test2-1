@@ -944,21 +944,42 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 }
 
     // ✅ 특수(기타) 상속 계산 함수 추가
-    function calculateSpecialInheritance() {
-    // ✅ 총 상속 재산 가져오기
-    let totalInheritance = parseInt(document.getElementById("inheritanceAmount").value) || 0;
+   function calculateSpecialInheritance() {
+    // ✅ 기타상속(특수상속) 선택 여부 확인
+    let inheritanceType = document.getElementById("inheritanceType").value;
+    let isOtherInheritance = (inheritanceType === "other");
+
+    if (!isOtherInheritance) {
+        console.error("⚠️ 기타(특수)상속이 선택되지 않았습니다.");
+        alert("⚠️ 특수상속 유형을 선택해야 합니다.");
+        return;
+    }
+
+    // ✅ 상속 재산 가져오기
+    let inheritanceInput = document.getElementById("inheritanceAmount");
+    let totalInheritance = parseInt(inheritanceInput.value);
+
+    // ✅ 디버깅 로그 추가
+    console.log("📌 특수상속 선택 여부:", isOtherInheritance);
+    console.log("📌 입력된 총 상속 재산 값:", inheritanceInput.value);
+    console.log("💰 변환된 총 상속 재산:", totalInheritance);
+
+    // ✅ 입력값 검증
+    if (!totalInheritance || isNaN(totalInheritance) || totalInheritance <= 0) {
+        console.error("⚠️ 총 상속 재산 값이 올바르지 않습니다.");
+        alert("⚠️ 총 상속 재산을 올바르게 입력하세요.");
+        return;
+    }
 
     // ✅ 특수상속 유형 가져오기
-    let otherType = document.getElementById("otherAssetType").value;
+    let otherAssetType = document.getElementById("otherAssetType");
+    let otherType = otherAssetType.value;
 
-    // ✅ 디버깅 로그 추가 (선택된 값 확인)
     console.log("📌 선택된 상속 유형:", otherType);
-    console.log("💰 총 상속 재산 입력값:", totalInheritance);
 
-    // ✅ 입력값 검증 (NaN 또는 0이면 오류 발생)
-    if (isNaN(totalInheritance) || totalInheritance <= 0) {
-        console.error("⚠️ 총 상속 재산 값이 올바르지 않습니다. 다시 입력하세요.");
-        alert("⚠️ 총 상속 재산을 올바르게 입력하세요.");
+    if (!otherType) {
+        console.error("⚠️ 기타 상속 유형이 선택되지 않았습니다.");
+        alert("⚠️ 상속 유형을 선택하세요.");
         return;
     }
 
@@ -992,27 +1013,26 @@ function calculateBusinessPersonalMode(totalAssetValue) {
             return;
     }
 
-    // ✅ 공제 금액 확인
     console.log("🔻 공제 금액:", deduction);
 
     // ✅ 과세 표준 계산 (공제 후 금액)
     let taxableAmount = Math.max(0, totalInheritance - deduction);
-    console.log("📊 과세 표준 계산 결과:", taxableAmount);
+    console.log("📊 과세 표준:", taxableAmount);
 
-    // ✅ 상속세 계산 (누진세율 적용)
-    if (isNaN(taxableAmount)) {
-        console.error("⚠️ 과세 표준 값이 NaN입니다. 계산 중단.");
-        alert("⚠️ 계산 오류 발생: 과세 표준 값이 올바르지 않습니다.");
+    if (taxableAmount === 0) {
+        console.warn("⚠️ 공제 후 과세 표준이 0입니다. 세금이 계산되지 않습니다.");
+        alert("⚠️ 공제 후 과세 표준이 0원입니다. 세금이 부과되지 않습니다.");
         return;
     }
 
+    // ✅ 상속세 계산
     let inheritanceTax = calculateInheritanceTax(taxableAmount);
     console.log("💸 최종 상속세:", inheritanceTax);
 
     // ✅ 결과 출력
     document.getElementById("result").innerHTML = `
         <h3>📌 특수상속 계산 결과</h3>
-        <p>✔️ 상속 유형: <strong>${document.getElementById("otherAssetType").options[document.getElementById("otherAssetType").selectedIndex].text}</strong></p>
+        <p>✔️ 상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
         <p>💰 총 상속 재산: <strong>${totalInheritance.toLocaleString()} 원</strong></p>
         <p>🔻 공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
         <p>📊 과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
@@ -1021,6 +1041,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
     `;
 }
+
     
    // ✅ 상속비용 모달
 (function () {
