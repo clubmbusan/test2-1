@@ -35,12 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ✅ 초기 로딩 시 개인 상속을 기본값으로 설정
-    function initializeDefaultView() {
-        console.log("초기 화면 설정");
+   function initializeDefaultView() {
+        console.log("🛠️ 초기 화면 설정");
         resetSections();
-        personalSection.style.display = 'block';
+        if (personalSection) personalSection.style.display = 'block';
     }
-     initializeDefaultView();
+
+    initializeDefaultView();
     
     // ✅ 상속 유형 변경 이벤트 리스너
     inheritanceType.addEventListener('change', () => {
