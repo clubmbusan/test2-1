@@ -37,35 +37,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ✅ 상속 유형 변경 이벤트 리스너 (기타 상속 기능 추가)
-    inheritanceType.addEventListener('change', () => {
-        resetSections();
-        
-        if (inheritanceType.value === 'other') {
-            otherAssetContainer.style.display = 'block';  // 기타 상속 선택 시 보이도록 설정
-            assetType.disabled = true;  // 일반 재산 유형 비활성화 (중복 입력 방지)
-        } else {
-            otherAssetContainer.style.display = 'none';  // 기타 상속이 아닐 경우 숨김
-            assetType.disabled = false;  // 일반 재산 유형 다시 활성화
-        }
+   inheritanceType.addEventListener('change', () => {
+    resetSections();
+    
+    if (inheritanceType.value === 'other') {
+        otherAssetContainer.style.display = 'block';  // 기타 상속 선택 시 보이도록 설정
+        assetType.value = 'realEstate'; // '부동산'으로 자동 설정
+        assetType.disabled = true;  // 일반 재산 유형 선택 비활성화 (기타 상속은 부동산만 적용)
+    } else {
+        otherAssetContainer.style.display = 'none';  // 기타 상속이 아닐 경우 숨김
+        assetType.disabled = false;  // 일반 재산 유형 다시 활성화
+    }
 
-        switch (inheritanceType.value) {
-            case 'personal': 
-                personalSection.style.display = 'block'; 
-                break;
-            case 'group': 
-                groupSection.style.display = 'block'; 
-                break;
-            case 'businessPersonal': 
-                businessPersonalSection.style.display = 'block'; 
-                break;
-            case 'other': 
-                otherAssetContainer.style.display = 'block'; 
-                break;
-            default: 
-                console.error('잘못된 상속 유형 선택'); 
-                break;
-        }
-    });
+    switch (inheritanceType.value) {
+        case 'personal': 
+            personalSection.style.display = 'block'; 
+            break;
+        case 'group': 
+            groupSection.style.display = 'block'; 
+            break;
+        case 'businessPersonal': 
+            businessPersonalSection.style.display = 'block'; 
+            break;
+        case 'other': 
+            otherAssetContainer.style.display = 'block'; 
+            break;
+        default: 
+            console.error('잘못된 상속 유형 선택'); 
+            break;
+    }
+});
    
     // ✅ 기타 상속 유형(동거주택, 영농, 공장) 선택 시 해당 섹션 표시 및 공제 자동 처리
 otherAssetType.addEventListener('change', () => {
