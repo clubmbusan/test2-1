@@ -1136,20 +1136,23 @@ document.getElementById('calculateButton').addEventListener('click', () => {
 
     // ✅ 상속 유형에 따라 계산 실행
     switch (document.getElementById('inheritanceType').value) {
-        case 'personal':
-            calculatePersonalMode(totalAssetValue);
-            break;
-        case 'group':
-            calculateGroupMode(totalAssetValue);
-            break;
-        case 'businessPersonal':
-            calculateBusinessPersonalMode(totalAssetValue);
-            break;
-          default:
-            console.error('잘못된 계산 요청');
-            alert("⚠️ 올바른 상속 유형을 선택하세요.");  // 사용자에게 경고창 표시
-            break;
-    }
+    case 'personal':
+        calculatePersonalMode(totalAssetValue);
+        break;
+    case 'group':
+        calculateGroupMode(totalAssetValue);
+        break;
+    case 'businessPersonal':
+        calculateBusinessPersonalMode(totalAssetValue);
+        break;
+    case 'other':  // ✅ 특수상속 추가
+        calculateSpecialInheritance();  
+        break;
+    default:
+        console.error('⚠️ 잘못된 계산 요청 - 올바른 상속 유형을 선택하세요.');
+        alert("⚠️ 올바른 상속 유형을 선택하세요.");  
+        break;
+   }
 });
     
 // 숫자 포맷 함수
