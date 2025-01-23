@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ✅ DOM 요소 참조 (원래 개수 12개 유지)
+    // ✅ DOM 요소 참조 (모든 요소 포함 13개)
     const inheritanceType = document.getElementById('inheritanceType');
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
     const businessPersonalSection = document.getElementById('businessPersonalSection');
+    const otherAssetContainer = document.getElementById('otherAssetContainer'); 
+    const otherAssetType = document.getElementById('otherAssetType'); 
+    const assetType = document.getElementById('assetType');
     const addAssetButton = document.getElementById('addAssetButton');
     const assetContainer = document.getElementById('assetContainer');
     const addHeirButton = document.getElementById('addHeirButton');
@@ -11,16 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // ✅ 기타 상속 관련 요소 추가
-    const otherAssetContainer = document.getElementById('otherAssetContainer'); // 기타 상속 재산 유형 선택
-    const otherAssetType = document.getElementById('otherAssetType'); // 기타 상속 세부 유형
-    const assetType = document.getElementById('assetType'); // 일반 재산 유형 선택
+    // ✅ 기타 상속 관련 필드
+    const dwellingSection = document.getElementById('dwellingSection');
+    const farmingSection = document.getElementById('farmingSection');
+    const factorySection = document.getElementById('factorySection');
+    const farmingYears = document.getElementById('farmingYears'); // 영농 연수
+    const factoryYears = document.getElementById('factoryYears'); // 공장 연수
 
-    const dwellingSection = document.getElementById('dwellingSection'); // 동거주택 입력 필드
-    const farmingSection = document.getElementById('farmingSection'); // 영농 입력 필드
-    const factorySection = document.getElementById('factorySection'); // 공장 입력 필드
-
-     // ✅ 섹션 초기화 함수
+    // ✅ 재산 입력 필드
+    const cashAmount = document.getElementById('cashAmount');
+    const realEstateValue = document.getElementById('realEstateValue');
+    const othersValue = document.getElementById('othersValue')
+  
+    // ✅ 섹션 초기화 함수
     function resetSections() {
         personalSection.style.display = 'none';
         groupSection.style.display = 'none';
@@ -28,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dwellingSection.style.display = 'none';
         farmingSection.style.display = 'none';
         factorySection.style.display = 'none';
+        otherAssetContainer.style.display = 'none';
     }
 
     // ✅ 초기 로딩 시 개인 상속을 기본값으로 설정
@@ -36,45 +43,49 @@ document.addEventListener('DOMContentLoaded', () => {
         personalSection.style.display = 'block';
     }
 
-   // ✅ 상속 유형 변경 이벤트 리스너 (기타 상속 선택 시 재산 유형 고정)
-inheritanceType.addEventListener('change', () => {
-    resetSections();
-    
-    if (inheritanceType.value === 'other') {
-        otherAssetContainer.style.display = 'block';  
-        assetType.value = 'realEstate';  // 부동산으로 고정
-        assetType.disabled = true;  // 재산 유형 선택 비활성화
+   // ✅ 상속 유형 변경 이벤트 리스너 (기타 상속 시 재산 유형 고정)
+    inheritanceType.addEventListener('change', () => {
+        resetSections();
+        
+        if (inheritanceType.value === 'other') {
+            otherAssetContainer.style.display = 'block';  
+            assetType.value = 'realEstate';  // 부동산으로 고정
+            assetType.disabled = true;  // 재산 유형 선택 비활성화
 
-        // ✅ 부동산 입력 필드만 표시
-        document.getElementById('cashAmount').style.display = 'none';
-        document.getElementById('realEstateValue').style.display = 'block';
-        document.getElementById('othersValue').style.display = 'none';
+            // ✅ 부동산 입력 필드만 표시
+            cashAmount.style.display = 'none';
+            realEstateValue.style.display = 'block';
+            othersValue.style.display = 'none';
 
-        // ✅ 부동산 필드명 변경 ('기타 금액' → '평가액')
-        document.getElementById('realEstateValue').setAttribute("placeholder", "평가액 (원)");
-    } else {
-        otherAssetContainer.style.display = 'none';  
-        assetType.disabled = false;  // 재산 유형 다시 활성화
-    }
+            // ✅ 부동산 필드명 변경 ('기타 금액' → '평가액')
+            realEstateValue.setAttribute("placeholder", "평가액 (원)");
+        } else {
+            otherAssetContainer.style.display = 'none';  
+            assetType.disabled = false;  // 재산 유형 다시 활성화
 
-    switch (inheritanceType.value) {
-        case 'personal': 
-            personalSection.style.display = 'block'; 
-            break;
-        case 'group': 
-            groupSection.style.display = 'block'; 
-            break;
-        case 'businessPersonal': 
-            businessPersonalSection.style.display = 'block'; 
-            break;
-        case 'other': 
-            otherAssetContainer.style.display = 'block'; 
-            break;
-        default: 
-            console.error('잘못된 상속 유형 선택'); 
-            break;
-    }
-});
+            // ✅ 기타 상속 -> 다른 유형 변경 시 연수 입력 필드 초기화
+            if (farmingYears) farmingYears.value = "";
+            if (factoryYears) factoryYears.value = "";
+        }
+
+        switch (inheritanceType.value) {
+            case 'personal': 
+                personalSection.style.display = 'block'; 
+                break;
+            case 'group': 
+                groupSection.style.display = 'block'; 
+                break;
+            case 'businessPersonal': 
+                businessPersonalSection.style.display = 'block'; 
+                break;
+            case 'other': 
+                otherAssetContainer.style.display = 'block'; 
+                break;
+            default: 
+                console.error('잘못된 상속 유형 선택'); 
+                break;
+        }
+    });
    
     // ✅ 기타 상속 유형(동거주택, 영농, 공장) 선택 시 해당 섹션 표시 및 공제 자동 처리
 otherAssetType.addEventListener('change', () => {
