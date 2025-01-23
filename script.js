@@ -944,7 +944,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 }
 
     // ✅ 특수(기타) 상속 계산 함수 추가
-   function calculateSpecialInheritance() {
+    function calculateSpecialInheritance() {
     // ✅ 기타상속(특수상속) 선택 여부 확인
     let inheritanceType = document.getElementById("inheritanceType").value;
     let isOtherInheritance = (inheritanceType === "other");
@@ -1041,7 +1041,6 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
     `;
 }
-
     
    // ✅ 상속비용 모달
 (function () {
