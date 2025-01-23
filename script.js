@@ -86,7 +86,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
     });
-    
+
+    // ✅ 영농·공장 공제 자동 처리
+otherAssetType.addEventListener('change', () => {
+    dwellingSection.style.display = 'none';
+    farmingSection.style.display = 'none';
+    factorySection.style.display = 'none';
+
+    switch (otherAssetType.value) {
+        case 'dwelling':
+            dwellingSection.style.display = 'block';
+            break;
+        case 'farming':
+            farmingSection.style.display = 'block';
+            document.getElementById('farmingYears').value = 10; // 자동 10년 이상 입력
+            break;
+        case 'factory':
+            factorySection.style.display = 'block';
+            document.getElementById('factoryYears').value = 10; // 자동 10년 이상 입력
+            break;
+    }
+});
+
     // ✅ 개인 상속의 부모 연령 선택 필드 (수정된 코드)
 const relationshipSelect = document.getElementById("relationshipPersonal");
 const parentAgeContainer = document.getElementById("parentAgeContainer");
