@@ -11,12 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // ✅ 섹션 초기화 함수
+    // ✅ 기타 상속 관련 요소 추가
+    const otherAssetContainer = document.getElementById('otherAssetContainer'); // 기타 상속 재산 유형 선택
+    const otherAssetType = document.getElementById('otherAssetType'); // 기타 상속 세부 유형
+    const assetType = document.getElementById('assetType'); // 일반 재산 유형 선택
+
+    const dwellingSection = document.getElementById('dwellingSection'); // 동거주택 입력 필드
+    const farmingSection = document.getElementById('farmingSection'); // 영농 입력 필드
+    const factorySection = document.getElementById('factorySection'); // 공장 입력 필드
+
+     // ✅ 섹션 초기화 함수
     function resetSections() {
         personalSection.style.display = 'none';
         groupSection.style.display = 'none';
         businessPersonalSection.style.display = 'none';
-     }
+        dwellingSection.style.display = 'none';
+        farmingSection.style.display = 'none';
+        factorySection.style.display = 'none';
+    }
 
     // ✅ 초기 로딩 시 개인 상속을 기본값으로 설정
     function initializeDefaultView() {
@@ -24,17 +36,57 @@ document.addEventListener('DOMContentLoaded', () => {
         personalSection.style.display = 'block';
     }
 
-    // ✅ 상속 유형 변경 이벤트 리스너
+    // ✅ 상속 유형 변경 이벤트 리스너 (기타 상속 기능 추가)
     inheritanceType.addEventListener('change', () => {
         resetSections();
+        
+        if (inheritanceType.value === 'other') {
+            otherAssetContainer.style.display = 'block';  // 기타 상속 선택 시 보이도록 설정
+            assetType.disabled = true;  // 일반 재산 유형 비활성화 (중복 입력 방지)
+        } else {
+            otherAssetContainer.style.display = 'none';  // 기타 상속이 아닐 경우 숨김
+            assetType.disabled = false;  // 일반 재산 유형 다시 활성화
+        }
+
         switch (inheritanceType.value) {
-            case 'personal': personalSection.style.display = 'block'; break;
-            case 'group': groupSection.style.display = 'block'; break;
-            case 'businessPersonal': businessPersonalSection.style.display = 'block'; break;
-            default: console.error('잘못된 상속 유형 선택'); break;
+            case 'personal': 
+                personalSection.style.display = 'block'; 
+                break;
+            case 'group': 
+                groupSection.style.display = 'block'; 
+                break;
+            case 'businessPersonal': 
+                businessPersonalSection.style.display = 'block'; 
+                break;
+            case 'other': 
+                otherAssetContainer.style.display = 'block'; 
+                break;
+            default: 
+                console.error('잘못된 상속 유형 선택'); 
+                break;
         }
     });
+   
 
+    // ✅ 기타 상속 유형(동거주택, 영농, 공장) 선택 시 해당 섹션 표시
+    otherAssetType.addEventListener('change', () => {
+        dwellingSection.style.display = 'none';
+        farmingSection.style.display = 'none';
+        factorySection.style.display = 'none';
+
+        switch (otherAssetType.value) {
+            case 'dwelling':
+                dwellingSection.style.display = 'block';
+                break;
+            case 'farming':
+                farmingSection.style.display = 'block';
+                break;
+            case 'factory':
+                factorySection.style.display = 'block';
+                break;
+        }
+    });
+    
     // ✅ 개인 상속의 부모 연령 선택 필드 (수정된 코드)
 const relationshipSelect = document.getElementById("relationshipPersonal");
 const parentAgeContainer = document.getElementById("parentAgeContainer");
