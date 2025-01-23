@@ -24,10 +24,31 @@
             <select id="inheritanceType" class="form-control">
                 <option value="personal" selected>개인 상속</option>
                 <option value="group">전원 상속</option>
-                <option value="businessPersonal">가업 상속</option>          
+                <option value="businessPersonal">가업 상속</option> 
+                <option value="other">기타 상속</option>
             </select>
         </div>
-     
+
+        <!-- 기타 상속 유형 선택 (기본 숨김) -->
+        <div id="otherInheritanceContainer" class="form-group" style="display: none;">
+            <label for="otherInheritanceType">기타 상속 유형:</label>
+            <select id="otherInheritanceType" class="form-control">
+                <option value="dwelling">동거주택 상속</option>
+                <option value="farming">영농 상속</option>
+                <option value="factory">공장 상속</option>
+            </select>
+          </div> 
+
+         <!-- ✅ 기타 상속 선택 시 나타나는 재산 유형 선택 -->
+        <div id="otherAssetContainer" class="form-group" style="display: none;">
+            <label for="otherAssetType">재산 유형:</label>
+            <select id="otherAssetType" class="form-control">
+                <option value="dwelling">동거주택</option>
+                <option value="farming">영농</option>
+                <option value="factory">공장</option>
+            </select>
+        </div>
+            
         <!-- 재산 유형 및 금액 -->
         <div id="assetContainer">
             <h2>상속 재산</h2>
@@ -57,6 +78,22 @@
             <button type="button" id="addAssetButton">재산 추가</button>
         </div>
 
+           <!-- 기타 상속 유형별 추가 필드 -->
+        <div id="dwellingSection" class="section">
+            <h2>동거주택 상속</h2>
+            <p>동거주택 공제 적용 여부를 확인합니다.</p>
+        </div>
+
+        <div id="farmingSection" class="section">
+            <h2>영농 상속</h2>
+            <p>영농 상속 공제를 적용하려면 농지를 10년 이상 보유해야 합니다.</p>
+        </div>
+
+        <div id="factorySection" class="section">
+            <h2>공장 상속</h2>
+            <p>공장 상속 공제 여부를 확인합니다.</p>
+        </div>
+            
         <!-- 개인 상속 계산 -->
         <div id="personalSection" class="section active">
         <h2>개인 상속 계산</h2>
