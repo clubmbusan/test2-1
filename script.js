@@ -938,25 +938,44 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     function calculateOtherInheritance() {
     // ✅ 기타 상속 유형 가져오기
     const otherType = document.getElementById("otherAssetType").value;
-    let totalInheritance = parseFloat(document.getElementById("realEstateValue").value.replace(/,/g, "")) || 0; // 부동산 평가액
-    
-    // ✅ 공제 금액 초기화
-    let deduction = 0;
+    let assetValue = document.getElementById("realEstateValue");
 
-    // ✅ 기타 상속 공제 로직 적용
+    if (!assetValue) {
+        console.error("⚠️ 부동산 평가액 입력 필드가 없습니다.");
+        return;
+    }
+
+    let totalInheritance = parseFloat(assetValue.value.replace(/,/g, "")) || 0; // 부동산 평가액  
+    let deduction = 0;  // 공제 초기화
+    let policyMessage = "";  // 안내 메시지
+    let eligibilityMessage = "❌ 조건 미충족"; // 기본값: 미충족
+
+    console.log(`🛠 기타 상속 유형 선택: ${otherType}`);
+    console.log(`💰 입력된 자산 금액: ${totalInheritance}`);
+
+    // ✅ 기타 상속 유형별 공제 계산
     switch (otherType) {
-        case "dwelling": // 동거주택 상속 (6억 공제)
-            deduction = Math.min(totalInheritance, 600000000);  
+        case "dwelling": // 동거주택 (최대 6억 공제)
+            deduction = Math.min(totalInheritance, 600000000);
+            policyMessage = "🏠 동거주택은 최대 6억 원까지 공제됩니다.";
+            eligibilityMessage = "✅ 10년 이상 거주 요건 충족";
             break;
-        case "farming": // 영농 상속 공제 (최대 15억)
-            deduction = Math.min(totalInheritance, 1500000000);  
+
+        case "farming": // 영농 상속 (최대 15억)
+            deduction = Math.min(totalInheritance, 1500000000);
+            policyMessage = "🌾 영농 상속 공제는 농지를 10년 이상 유지해야 합니다. (최대 15억 공제)";
+            eligibilityMessage = "✅ 10년 이상 영농 요건 충족";
             break;
-        case "factory": // 공장 상속 공제 (80% 공제 or 최대 20억)
+
+        case "factory": // 공장 상속 (80% 공제, 최대 20억)
             deduction = Math.min(totalInheritance * 0.8, 2000000000);
+            policyMessage = "🏭 공장 상속 공제는 10년 이상 유지 조건이 필요합니다. (80% 또는 최대 20억)";
+            eligibilityMessage = "✅ 10년 이상 공장 운영 요건 충족";
             break;
+
         default:
-            deduction = 0;
-            break;
+            console.error("⚠️ 잘못된 기타 상속 유형 선택");
+            return;
     }
 
     // ✅ 최종 과세 표준 계산 (공제 후 금액)
@@ -965,14 +984,16 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     // ✅ 상속세 계산 (누진세율 적용)
     let inheritanceTax = calculateInheritanceTax(taxableAmount);
 
-    // ✅ 결과 출력
+    // ✅ 결과 출력 (안내문 추가)
     document.getElementById("result").innerHTML = `
-        <h3> 기타 상속 계산 결과</h3>
-        <p> 상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
-        <p> 총 상속 재산: <strong>${totalInheritance.toLocaleString()} 원</strong></p>
-        <p> 공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
-        <p> 과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
-        <p> 최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
+        <h3>📌 기타 상속 계산 결과</h3>
+        <p>✔️ 상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
+        <p>💰 총 상속 재산: <strong>${totalInheritance.toLocaleString()} 원</strong></p>
+        <p>🔻 공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
+        <p>📊 과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
+        <p>💸 최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
+        <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
+        <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
     `;
 }
 
