@@ -936,39 +936,46 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
     // ✅ 기타 상속 계산 함수 추가
     function calculateOtherInheritance() {
-    let totalInheritance = 0;
+    // ✅ 기타 상속 유형 가져오기
+    const otherType = document.getElementById("otherAssetType").value;
+    let totalInheritance = parseFloat(document.getElementById("realEstateValue").value.replace(/,/g, "")) || 0; // 부동산 평가액
+    
+    // ✅ 공제 금액 초기화
     let deduction = 0;
-    let assetValue = parseInt(document.getElementById('assetValue').value) || 0;
 
-    console.log(`🛠️ 기타 상속 유형 선택: ${otherAssetType.value}`);
-    console.log(`💰 입력된 자산 금액: ${assetValue}`);
-
-    switch (otherAssetType.value) {
-        case 'dwelling': 
-            deduction = Math.min(assetValue, 6000000000); // 동거주택 공제: 최대 6억
+    // ✅ 기타 상속 공제 로직 적용
+    switch (otherType) {
+        case "dwelling": // 동거주택 상속 (6억 공제)
+            deduction = Math.min(totalInheritance, 600000000);  
             break;
-        case 'farming': 
-            deduction = Math.min(assetValue, 15000000000); // 영농 공제: 최대 15억
+        case "farming": // 영농 상속 공제 (최대 15억)
+            deduction = Math.min(totalInheritance, 1500000000);  
             break;
-        case 'factory': 
-            deduction = Math.min(assetValue * 0.8, 20000000000); // 공장 공제: 80% or 최대 20억
+        case "factory": // 공장 상속 공제 (80% 공제 or 최대 20억)
+            deduction = Math.min(totalInheritance * 0.8, 2000000000);
             break;
         default:
-            console.error('잘못된 기타 상속 유형 선택');
-            return;
+            deduction = 0;
+            break;
     }
 
-    totalInheritance = Math.max(0, assetValue - deduction);
-    
-    console.log(`💰 최종 상속 금액 (공제 적용 후): ${totalInheritance}`); // 🛠️ 디버깅 추가
+    // ✅ 최종 과세 표준 계산 (공제 후 금액)
+    let taxableAmount = Math.max(0, totalInheritance - deduction);
 
-    document.getElementById('result').innerText = `
-        기타 상속 유형: ${otherAssetType.options[otherAssetType.selectedIndex].text}
-        총 재산: ${assetValue.toLocaleString()} 원
-        공제 금액: ${deduction.toLocaleString()} 원
-        과세 대상 금액: ${totalInheritance.toLocaleString()} 원
+    // ✅ 상속세 계산 (누진세율 적용)
+    let inheritanceTax = calculateInheritanceTax(taxableAmount);
+
+    // ✅ 결과 출력
+    document.getElementById("result").innerHTML = `
+        <h3> 기타 상속 계산 결과</h3>
+        <p> 상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
+        <p> 총 상속 재산: <strong>${totalInheritance.toLocaleString()} 원</strong></p>
+        <p> 공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
+        <p> 과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
+        <p> 최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
     `;
 }
+
     
    // ✅ 상속비용 모달
 (function () {
