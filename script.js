@@ -1023,7 +1023,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     }
 
     // ✅ 상속세 계산 (누진세율 적용)
-    let inheritanceTax = calculateInheritanceTax(taxableAmount);
+    let inheritanceTax = calculateTax(taxableAmount);
     console.log("💸 최종 상속세:", inheritanceTax);
 
     // ✅ 결과 출력
