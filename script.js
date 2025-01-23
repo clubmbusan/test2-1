@@ -1025,19 +1025,14 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         return;
     }
 
-    // ✅ 공용 누진세율 함수 `calculateTax()` 사용
-    let inheritanceTax = calculateTax(taxableAmount);
-    console.log("💸 최종 상속세 (누진세율 적용 후):", inheritanceTax);
+   // ✅ 기존 `calculateTax()`를 사용하지만, 특수상속만 결과값을 2로 나눔
+    let originalTax = calculateTax(taxableAmount);
+    let inheritanceTax = originalTax / 2;
 
-    // ✅ 최종 결과 출력
-    console.log("📌 최종 결과:");
-    console.log("✔️ 상속 유형:", otherAssetType.options[otherAssetType.selectedIndex].text);
-    console.log("💰 총 상속 재산:", totalInheritance.toLocaleString(), "원");
-    console.log("🔻 공제 금액:", deduction.toLocaleString(), "원");
-    console.log("📊 과세 표준:", taxableAmount.toLocaleString(), "원");
-    console.log("💸 최종 상속세:", inheritanceTax.toLocaleString(), "원");
+    console.log("💸 원래 계산된 세금:", originalTax);
+    console.log("💸 보정된 세금 (2배 오류 해결):", inheritanceTax);
 
-    // ✅ 결과 HTML 업데이트
+    // ✅ 최종 결과 출력     
     document.getElementById("result").innerHTML = `
         <h3>📌 특수상속 계산 결과</h3>
         <p>✔️ 상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
