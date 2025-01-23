@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ 섹션 초기화 함수
    function resetSections() {
-        console.log(섹션 초기화 실행");
+        console.log("섹션 초기화 실행");
         [personalSection, groupSection, businessPersonalSection, otherSection].forEach(section => {
             if (section) section.style.display = 'none';
         });
