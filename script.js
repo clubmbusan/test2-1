@@ -945,7 +945,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
     // ✅ 특수(기타) 상속 계산 함수 추가
    function calculateSpecialInheritance() {
-    // ✅ 상속 재산 입력 필드 가져오기 (`realEstateValue` 사용)
+    // ✅ 상속 재산 입력 필드 가져오기
     let inheritanceInput = document.getElementById("realEstateValue");
 
     if (!inheritanceInput) {
@@ -954,11 +954,12 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         return;
     }
 
-    let totalInheritance = parseInt(inheritanceInput.value) || 0;
+    // ✅ 쉼표 제거 후 숫자로 변환
+    let totalInheritance = parseInt(inheritanceInput.value.replace(/,/g, "")) || 0;
 
     // ✅ 디버깅 로그 추가
     console.log("📌 입력된 총 상속 재산 값:", inheritanceInput.value);
-    console.log("💰 변환된 총 상속 재산:", totalInheritance);
+    console.log("💰 변환된 총 상속 재산 (쉼표 제거 후):", totalInheritance);
 
     // ✅ 입력값 검증
     if (isNaN(totalInheritance) || totalInheritance <= 0) {
@@ -1037,6 +1038,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
     `;
 }
+
     
    // ✅ 상속비용 모달
 (function () {
