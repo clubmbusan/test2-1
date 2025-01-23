@@ -40,25 +40,24 @@
             </select>
         </div>
 
-        <!-- 기타 상속 유형별 추가 필드 -->
-        <div id="otherFieldsContainer" style="display: none;">
-    <div id="dwellingFields" class="extra-fields">
-        <label>동거주택 평가액:</label>
-        <input type="text" id="dwellingValue" placeholder="평가액 (원)">
+           <!-- 기타 상속 유형별 추가 필드 -->
+<div id="otherFieldsContainer" style="display: none;">
+    <!-- 동거주택 상속 -->
+    <div id="dwellingFields" class="extra-fields" style="display: none; display: flex; gap: 10px;">
+        <input type="text" id="dwellingValue" placeholder="동거주택 평가액 입력 (원)" style="flex: 2;">
+        <input type="number" id="dwellingYears" placeholder="동거 연수 입력 (년)" value="10" style="flex: 1;">
     </div>
 
-    <div id="farmingFields" class="extra-fields" style="display: none;">
-        <label>영농 평가액:</label>
-        <input type="text" id="farmingValue" placeholder="평가액 (원)">
-        <label>영농 지속 연수:</label>
-        <input type="number" id="farmingYears" placeholder="연수 (최소 10년)">
+    <!-- 영농 상속 -->
+    <div id="farmingFields" class="extra-fields" style="display: none; display: flex; gap: 10px;">
+        <input type="text" id="farmingValue" placeholder="영농 평가액 입력 (원)" style="flex: 2;">
+        <input type="number" id="farmingYears" placeholder="영농 지속 연수 입력 (년)" value="10" style="flex: 1;">
     </div>
 
-    <div id="factoryFields" class="extra-fields" style="display: none;">
-        <label>공장 평가액:</label>
-        <input type="text" id="factoryValue" placeholder="평가액 (원)">
-        <label>공장 운영 연수:</label>
-        <input type="number" id="factoryYears" placeholder="연수 (최소 10년)">
+    <!-- 공장 상속 -->
+    <div id="factoryFields" class="extra-fields" style="display: none; display: flex; gap: 10px;">
+        <input type="text" id="factoryValue" placeholder="공장 평가액 입력 (원)" style="flex: 2;">
+        <input type="number" id="factoryYears" placeholder="공장 운영 연수 입력 (년)" value="10" style="flex: 1;">
     </div>
 </div>        
            
