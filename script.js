@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    console.log("🔍 DOM 요소 로드 완료");
+
     // ✅ 섹션 초기화 함수
    function resetSections() {
         console.log("섹션 초기화 실행");
@@ -72,13 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ✅ 기타 상속 유형(동거주택, 영농, 공장) 선택 시 해당 필드만 표시
-    otherAssetType.addEventListener('change', () => {
+     otherAssetType.addEventListener('change', () => {
         console.log(`🔄 기타 상속 유형 선택: ${otherAssetType.value}`);
 
         // 모든 필드 숨기기
-        if (dwellingFields) dwellingFields.style.display = 'none';
-        if (farmingFields) farmingFields.style.display = 'none';
-        if (factoryFields) factoryFields.style.display = 'none';
+        [dwellingFields, farmingFields, factoryFields].forEach(field => {
+            if (field) field.style.display = 'none';
+        });
 
         switch (otherAssetType.value) {
             case 'dwelling':
@@ -100,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     console.log("✅ 스크립트 실행 완료");
-});
+}); // ✅ 닫는 괄호 추가
 
     // ✅ 개인 상속의 부모 연령 선택 필드 (수정된 코드)
 const relationshipSelect = document.getElementById("relationshipPersonal");
