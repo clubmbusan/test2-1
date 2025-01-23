@@ -40,26 +40,26 @@
             </select>
         </div>
 
-           <!-- 기타 상속 유형별 추가 필드 -->
+          <!-- 기타 상속 유형별 추가 필드 -->
 <div id="otherFieldsContainer" style="display: none;">
     <!-- 동거주택 상속 -->
-    <div id="dwellingFields" class="extra-fields" style="display: none; display: flex; gap: 10px;">
-        <input type="text" id="dwellingValue" placeholder="동거주택 평가액 입력 (원)" style="flex: 2;">
-        <input type="number" id="dwellingYears" placeholder="동거 연수 입력 (년)" value="10" style="flex: 1;">
+    <div id="dwellingFields" class="extra-fields" style="display: none; flex-direction: column; gap: 5px;">
+        <input type="text" id="dwellingValue" placeholder="🏠 동거주택 평가액 입력 (원)" readonly style="width: 100%;">
+        <small>✅ 동거주택 공제는 10년 이상 거주해야 합니다.</small>
     </div>
 
     <!-- 영농 상속 -->
-    <div id="farmingFields" class="extra-fields" style="display: none; display: flex; gap: 10px;">
-        <input type="text" id="farmingValue" placeholder="영농 평가액 입력 (원)" style="flex: 2;">
-        <input type="number" id="farmingYears" placeholder="영농 지속 연수 입력 (년)" value="10" style="flex: 1;">
+    <div id="farmingFields" class="extra-fields" style="display: none; flex-direction: column; gap: 5px;">
+        <input type="text" id="farmingValue" placeholder="🌾 영농 평가액 입력 (원)" readonly style="width: 100%;">
+        <small>✅ 영농 상속 공제는 최소 10년 이상 영농을 지속해야 합니다.</small>
     </div>
 
     <!-- 공장 상속 -->
-    <div id="factoryFields" class="extra-fields" style="display: none; display: flex; gap: 10px;">
-        <input type="text" id="factoryValue" placeholder="공장 평가액 입력 (원)" style="flex: 2;">
-        <input type="number" id="factoryYears" placeholder="공장 운영 연수 입력 (년)" value="10" style="flex: 1;">
+    <div id="factoryFields" class="extra-fields" style="display: none; flex-direction: column; gap: 5px;">
+        <input type="text" id="factoryValue" placeholder="🏭 공장 평가액 입력 (원)" readonly style="width: 100%;">
+        <small>✅ 공장 상속 공제는 최소 10년 이상 운영해야 합니다.</small>
     </div>
-</div>        
+</div>
            
         <!-- 재산 유형 및 금액 -->
         <div id="assetContainer">
