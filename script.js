@@ -571,29 +571,33 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
  * @param {number} taxableAmount - 과세 금액
  * @returns {number} 상속세 금액
  */
-function calculateTax(taxableAmount) {
+    function calculateTax(taxableAmount) {
     const taxBrackets = [
-        { limit: 100000000, rate: 0.1 },   // 1억 이하: 10%
-        { limit: 500000000, rate: 0.2 },   // 1억 초과 ~ 5억: 20%
-        { limit: 1000000000, rate: 0.3 },  // 5억 초과 ~ 10억: 30%
-        { limit: 3000000000, rate: 0.4 },  // 10억 초과 ~ 30억: 40%
-        { limit: Infinity, rate: 0.5 },    // 30억 초과: 50%
+        { limit: 100000000, rate: 0.1, baseTax: 0 },         
+        { limit: 500000000, rate: 0.2, baseTax: 10000000 },  
+        { limit: 1000000000, rate: 0.3, baseTax: 90000000 }, 
+        { limit: 3000000000, rate: 0.4, baseTax: 240000000 },
+        { limit: Infinity, rate: 0.5, baseTax: 1040000000 }, 
     ];
 
     let tax = 0;
     let previousLimit = 0;
+
+    console.log("📌 과세 표준 입력값:", taxableAmount);
 
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
             tax += (bracket.limit - previousLimit) * bracket.rate;
             previousLimit = bracket.limit;
         } else {
-            tax += (taxableAmount - previousLimit) * bracket.rate;
+            tax += (taxableAmount - previousLimit) * bracket.rate + bracket.baseTax;
+            console.log(`✅ 적용 구간: ${previousLimit} ~ ${taxableAmount} (세율: ${bracket.rate * 100}%)`);
             break;
         }
     }
 
-    return Math.max(tax, 0); // 음수 방지
+    console.log("💸 최종 계산된 상속세 (누진공제 적용 후):", tax);
+    return Math.max(tax, 0);
 }
 
 // 주식 총액을 assetValue에 포함
