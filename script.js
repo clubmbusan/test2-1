@@ -679,12 +679,12 @@ function calculatePersonalMode(totalAssetValue) {
         generalExemption = 500000000;
     }
 
-    // ✅ 최종 공제 계산
+    // ✅ 최종 공제 계산 (금융재산 공제 포함)
     let totalExemption = basicExemption + relationshipExemption + financialExemption;
     if (relationship === 'spouse') {
         totalExemption += spouseAdditionalExemption;
     } else {
-        totalExemption = Math.max(totalExemption, generalExemption);
+        totalExemption = Math.max(totalExemption, generalExemption) + financialExemption;
     }
 
     // ✅ 과세 금액 계산
@@ -692,20 +692,6 @@ function calculatePersonalMode(totalAssetValue) {
 
     // ✅ 상속세 계산
     const tax = calculateTax(taxableAmount);
-
-    // 🔍 디버깅용 콘솔 로그
-    console.log("🔍 Debug Info:");
-    console.log("총 재산 금액:", totalAssetValue);
-    console.log("부모 연령:", parentAge);
-    console.log("미성년 자녀 나이:", minorChildAge);
-    console.log("기초 공제:", basicExemption);
-    console.log("관계 공제:", relationshipExemption);
-    console.log("배우자 추가 공제:", spouseAdditionalExemption);
-    console.log("일괄 공제:", generalExemption);
-    console.log("금융재산 공제:", financialExemption, "(자산 유형:", assetType, ")");
-    console.log("최종 공제 금액:", totalExemption);
-    console.log("과세 금액:", taxableAmount);
-    console.log("상속세:", tax);
 
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
@@ -727,7 +713,7 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-  // ✅ 전체 관계 공제 계산 함수
+  // ✅ 전원 관계 공제 계산 함수
 function calculateRelationshipExemption(relationship, age = 0) {
     switch (relationship) {
         case 'spouse': return 500000000; // 배우자: 5억 원
