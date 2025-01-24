@@ -582,6 +582,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 
     let tax = 0;
     let previousLimit = 0;
+    let lastBaseTax = 0;  // ✅ 마지막 적용된 baseTax 저장
 
     console.log("📌 과세 표준 입력값:", taxableAmount);
 
@@ -589,9 +590,15 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
         if (taxableAmount > bracket.limit) {
             tax += (bracket.limit - previousLimit) * bracket.rate;  // ✅ 각 구간별 세금 누적
             previousLimit = bracket.limit;
+            lastBaseTax = bracket.baseTax;  // ✅ 마지막 적용된 baseTax 저장
         } else {
             tax += (taxableAmount - previousLimit) * bracket.rate;  // ✅ 마지막 구간 계산
-            tax += bracket.baseTax;  // ✅ 누진공제 적용
+            
+            // ✅ 10억 이하일 때는 baseTax 적용 X (중복 방지)
+            if (taxableAmount > 1000000000) {
+                tax += lastBaseTax;  
+            }
+
             console.log(`✅ 적용 구간: ${previousLimit} ~ ${taxableAmount} (세율: ${bracket.rate * 100}%)`);
             break;
         }
