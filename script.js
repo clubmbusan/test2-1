@@ -546,9 +546,9 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
             break;
 
         case 'minorChild': 
-            const yearsUntilAdult = Math.max(19 - minorChildAge, 0);
-            relationshipExemption = 10000000 + (yearsUntilAdult * 10000000); // 연 1천만 원 추가 공제
-            break;
+             const yearsUntilAdult = Math.max(19 - minorChildAge, 0);
+             relationshipExemption = yearsUntilAdult * 10000000; // 연 1천만 원 추가 공제 (기본 1천만 원 제거)
+             break;
 
         case 'parent': 
             relationshipExemption = parentAge >= 60 ? 100000000 : 50000000;
