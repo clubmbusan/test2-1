@@ -573,11 +573,11 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
  */
 function calculateTax(taxableAmount) {
     const taxBrackets = [
-        { limit: 100000000, rate: 0.1, baseTax: 0 },
-        { limit: 500000000, rate: 0.2, baseTax: 10000000 },
-        { limit: 1000000000, rate: 0.3, baseTax: 90000000 },
-        { limit: 3000000000, rate: 0.4, baseTax: 240000000 },
-        { limit: Infinity, rate: 0.5, baseTax: 1040000000 },
+        { limit: 100000000, rate: 0.1, baseTax: 0 },         // 1억 이하 (10%)
+        { limit: 500000000, rate: 0.2, baseTax: 10000000 },  // 1억 ~ 5억 (20%, 누진공제 1천만 원)
+        { limit: 1000000000, rate: 0.3, baseTax: 60000000 }, // 5억 ~ 10억 (30%, 누진공제 6천만 원)
+        { limit: 3000000000, rate: 0.4, baseTax: 160000000 }, // 10억 ~ 30억 (40%, 누진공제 1억 6천만 원)
+        { limit: Infinity, rate: 0.5, baseTax: 460000000 },  // 30억 초과 (50%, 누진공제 4억 6천만 원)
     ];
 
     let tax = 0;
