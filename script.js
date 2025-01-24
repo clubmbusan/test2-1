@@ -393,18 +393,27 @@ addHeirButton.addEventListener('click', () => {
         <input type="number" class="sharePercentageField" placeholder="상속 비율(%)">
     `;
 
-    // 새로 추가된 상속인 입력 필드에 이벤트 등록
-    const relationshipSelect = newHeirEntry.querySelector('.relationship');
-    relationshipSelect.addEventListener("change", function () {
-        const parentAgeField = newHeirEntry.querySelector(".parentAgeField");
-        const minorChildAgeField = newHeirEntry.querySelector(".minorChildAgeField");
+    / 새로 추가된 상속인 입력 필드에 이벤트 등록
+const relationshipSelect = newHeirEntry.querySelector('.relationship');
+const minorChildAgeField = newHeirEntry.querySelector(".minorChildAgeField");
 
-        // 부모 선택 시 연령 필드 표시
-        parentAgeField.style.display = this.value === "parent" ? "inline-block" : "none";
+relationshipSelect.addEventListener("change", function () {
+    const parentAgeField = newHeirEntry.querySelector(".parentAgeField");
 
-        // 미성년 자녀 선택 시 나이 입력 필드 표시
-        minorChildAgeField.style.display = this.value === "minorChild" ? "block" : "none";
-    });
+    // 부모 선택 시 연령 필드 표시
+    parentAgeField.style.display = this.value === "parent" ? "inline-block" : "none";
+
+    // 미성년 자녀 선택 시 나이 입력 필드 표시
+    minorChildAgeField.style.display = this.value === "minorChild" ? "block" : "none";
+
+    // 🔥 미성년자 선택 시 기본 나이를 17세로 설정 (입력되지 않았을 경우)
+    if (this.value === "minorChild") {
+        if (!minorChildAgeField.value || isNaN(minorChildAgeField.value)) {
+            minorChildAgeField.value = 17;
+        }
+        console.log("미성년자 나이 설정됨:", minorChildAgeField.value);
+    }
+});
 
     // 새로 추가된 상속 비율 필드 이벤트 등록
     const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
