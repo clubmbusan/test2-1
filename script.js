@@ -741,7 +741,7 @@ function calculateGroupMode(totalAssetValue) {
     let totalRelationshipExemption = 0;
     let totalFinancialAssets = 0; // 금융재산 총액
 
-  // ✅ 상속인 정보 저장 (미성년자 나이를 정확하게 가져오기)
+   // ✅ 상속인 정보 저장 (미성년자 나이를 정확하게 가져오기)
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
@@ -749,11 +749,12 @@ function calculateGroupMode(totalAssetValue) {
         const age = ageField ? parseInt(ageField.value) || 0 : 0;  // 🔥 미성년자 나이를 정확히 가져옴
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
-        totalRelationshipExemption += calculateRelationshipExemption(relationship, age);
+        let relationshipExemption = calculateRelationshipExemption(relationship, age);
+        totalRelationshipExemption += relationshipExemption;
 
-        return { name, relationship, age, sharePercentage };
+        return { name, relationship, age, sharePercentage, relationshipExemption };
     });
-
+    
     // ✅ 관계 공제 총합이 5억 미만이면 보정
     if (totalRelationshipExemption < 500000000) {
         totalRelationshipExemption = 500000000;
