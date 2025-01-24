@@ -997,19 +997,19 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     switch (otherType) {
         case "dwelling": // 동거주택 (최대 6억 공제)
             deduction = Math.min(totalInheritance, 600000000);
-            policyMessage = " 동거주택은 최대 6억 원까지 공제됩니다.";
-            eligibilityMessage = "✅ 10년 이상 거주 요건 충족";
+            policyMessage = " 동거주택은 피상속인의 1세대 1주택에서 10년 동거했어야 하며 상속인은 상속 개시일(사망일)이후 3년 거주해야 합니다.(최대 6억 공제)";
+            eligibilityMessage = "✅ 10년 이상 동거 요건 충족";
             break;
 
         case "farming": // 농림재산 (최대 15억 공제)
             deduction = Math.min(totalInheritance, 1500000000);
-            policyMessage = " 농림재산 상속 공제는 10년 이상 직접 경작해야 하며, 상속인은 3년 이상 영농을 지속해야 합니다.(최대 15억 공제)";
-            eligibilityMessage = "✅ 10년 이상 자경 요건 및 상속인 3년 유지 요건 충족";
+            policyMessage = " 농림재산 상속 공제는 10년 이상 직접 경작했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 영농을 지속해야 합니다.(최대 15억 공제)";
+            eligibilityMessage = "✅ 10년 이상 자경 요건 충족";
             break;
 
         case "factory": // 공장 상속 (80% 공제, 최대 20억)
             deduction = Math.min(totalInheritance * 0.8, 2000000000);
-            policyMessage = " 공장 상속 공제는 10년 이상 운영 조건이 필요합니다. (80% 또는 최대 20억)";
+            policyMessage = " 공장 상속 공제는 10년 이상 직접 운영했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 공장을 운영해야 합니다. (80% 또는 최대 20억)";
             eligibilityMessage = "✅ 10년 이상 공장 운영 요건 충족";
             break;
 
