@@ -524,12 +524,13 @@ function calculateFinancialExemption() {
     return financialExemption;
 }
    
-// ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
+// ✅ 개인 관계 공제 계산 로직 (일괄공제 최소 5억 보장)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0, hasFinancialAssets = false) {
     const basicExemption = 200000000; // 기초 공제 (2억 원)
     let relationshipExemption = 0;
     let spouseExtraExemption = 0; // 배우자 추가 공제
     let financialExemption = hasFinancialAssets ? 200000000 : 0; // 금융재산 공제 최대 2억 원
+    let generalExemption = 500000000; // 일괄공제 (최소 5억)
 
     switch (relationship) {
         case 'spouse': 
@@ -546,9 +547,9 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
             break;
 
         case 'minorChild': 
-             const yearsUntilAdult = Math.max(19 - minorChildAge, 0);
-             relationshipExemption = yearsUntilAdult * 10000000; // 연 1천만 원 추가 공제
-             break;
+            const yearsUntilAdult = Math.max(19 - minorChildAge, 0);
+            relationshipExemption = Math.max(yearsUntilAdult * 10000000, 500000000); // 미성년자 최소 5억 보장
+            break;
 
         case 'parent': 
             relationshipExemption = parentAge >= 60 ? 100000000 : 50000000;
@@ -564,27 +565,22 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
             return { basicExemption, relationshipExemption: 0, totalExemption: 0 };
     }
 
-    // ✅ 기초 공제 + 관계 공제 + 배우자 추가 공제 계산
-    let relationshipTotalExemption = basicExemption + relationshipExemption + spouseExtraExemption;
-
-    // ✅ 배우자가 아닌 경우, 관계 공제 최소 5억 보장
-    if (relationship !== 'spouse' && relationshipTotalExemption < 500000000) {
-        relationshipTotalExemption = 500000000;
+    // ✅ 배우자가 아닌 경우, 최소 5억 보장
+    if (relationship !== 'spouse') {
+        generalExemption = 500000000; // 최소 5억
     }
 
-    // 🔥 금융재산 공제를 별도로 추가 적용 (이 부분이 실제 수정됨!)
-    let totalExemption = relationshipTotalExemption; // 금융재산 공제 미포함 상태 유지
-    if (relationship !== 'spouse') { 
-        totalExemption += financialExemption; // 배우자가 아닌 경우 금융재산 공제 별도 추가
-    }
-    
-    console.log(`✅ 최종 공제 계산: 일괄공제(${relationshipTotalExemption}) + 금융재산공제(${financialExemption}) = ${totalExemption}`);
+    // 🔥 금융재산 공제는 일괄공제(5억)에 포함하지 않고, 별도로 추가 적용
+    let totalExemption = generalExemption + financialExemption;
+
+    console.log(`✅ 최종 공제 계산: 일괄공제(${generalExemption}) + 금융재산공제(${financialExemption}) = ${totalExemption}`);
     
     return { 
         basicExemption, 
         relationshipExemption, 
         spouseExtraExemption, // 배우자 추가 공제 값 반환
-        financialExemption, // 금융재산 공제 값 반환
+        generalExemption, // 일괄공제 (5억) 칸 추가
+        financialExemption, // 금융재산 공제 칸 추가
         totalExemption 
     };
 }
