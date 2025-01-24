@@ -571,7 +571,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
  * @param {number} taxableAmount - 과세 금액
  * @returns {number} 상속세 금액
  */
- function calculateTax(taxableAmount) {
+function calculateTax(taxableAmount) {
     const taxBrackets = [
         { limit: 100000000, rate: 0.1, baseTax: 0 },
         { limit: 500000000, rate: 0.2, baseTax: 10000000 },
@@ -582,23 +582,18 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 
     let tax = 0;
     let previousLimit = 0;
-    let lastBaseTax = 0;  // ✅ 마지막 적용된 baseTax 저장
 
     console.log("📌 과세 표준 입력값:", taxableAmount);
 
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
-            tax += (bracket.limit - previousLimit) * bracket.rate;  // ✅ 각 구간별 세금 누적
+            // ✅ 올바른 방식: 모든 구간별 세금을 누적 계산
+            tax += (bracket.limit - previousLimit) * bracket.rate;
+            console.log(`✅ 적용 구간: ${previousLimit} ~ ${bracket.limit} (세율: ${bracket.rate * 100}%)`);
             previousLimit = bracket.limit;
-            lastBaseTax = bracket.baseTax;  // ✅ 마지막 적용된 baseTax 저장
         } else {
-            tax += (taxableAmount - previousLimit) * bracket.rate;  // ✅ 마지막 구간 계산
-            
-            // ✅ 50억 이상에서는 baseTax를 다시 추가하지 않음 (중복 방지)
-            if (previousLimit > 0) {
-                tax += lastBaseTax;  
-            }
-
+            // ✅ 마지막 구간에서 정확한 세금 계산
+            tax += (taxableAmount - previousLimit) * bracket.rate;
             console.log(`✅ 적용 구간: ${previousLimit} ~ ${taxableAmount} (세율: ${bracket.rate * 100}%)`);
             break;
         }
