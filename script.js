@@ -590,6 +590,53 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
     return Math.max(totalInheritance - exemptions.totalExemption, 0); // 음수일 경우 0 처리
 }
 
+ /**
+ * 상속세 계산 함수 (누진세 적용)
+ * @param {number} taxableAmount - 과세 표준 금액
+ * @returns {number} 계산된 상속세 금액
+ */
+function calculateTax(taxableAmount) {
+    if (taxableAmount <= 0) return 0; // 과세 표준이 0 이하이면 세금 없음
+
+    // ✅ 누진세 구간별 세율 및 누진 공제
+    const taxBrackets = [
+        { threshold: 100000000, rate: 0.1, deduction: 0 },           // 1억 이하: 10%
+        { threshold: 500000000, rate: 0.2, deduction: 10000000 },    // 5억 이하: 20% (누진공제 1천만 원)
+        { threshold: 1000000000, rate: 0.3, deduction: 60000000 },   // 10억 이하: 30% (누진공제 6천만 원)
+        { threshold: 3000000000, rate: 0.4, deduction: 160000000 },  // 30억 이하: 40% (누진공제 1억6천만 원)
+        { threshold: 10000000000, rate: 0.5, deduction: 460000000 }  // 100억 이하: 50% (누진공제 4억6천만 원)
+    ];
+
+    let tax = 0;
+
+    // ✅ 과세 표준에 맞는 세율 적용
+    for (let i = taxBrackets.length - 1; i >= 0; i--) {
+        if (taxableAmount > taxBrackets[i].threshold) {
+            tax = (taxableAmount * taxBrackets[i].rate) - taxBrackets[i].deduction;
+            break;
+        }
+    }
+
+    console.log(`📢 과세 표준: ${taxableAmount.toLocaleString()} 원`);
+    console.log(`📢 계산된 상속세: ${tax.toLocaleString()} 원`);
+
+    return Math.max(tax, 0); // 음수 방지
+}
+    
+    // 주식 총액을 assetValue에 포함
+document.addEventListener('input', () => {
+    const stockQuantity = document.getElementById('stockQuantity');
+    const stockPrice = document.getElementById('stockPrice');
+    const stockTotal = document.getElementById('stockTotal');
+
+    if (stockQuantity && stockPrice && stockTotal) {
+        const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+        const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산
+        stockTotal.classList.add('assetValue'); // assetValue 클래스를 추가하여 총액 계산에 포함
+    }
+});    
+    
 /**
  * 개인 상속 계산 함수
  * @param {number} totalAssetValue - 총 상속 재산 금액
