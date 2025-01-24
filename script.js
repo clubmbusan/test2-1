@@ -741,19 +741,24 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
     let totalRelationshipExemption = 0;
     let totalFinancialAssets = 0; // 금융재산 총액
 
-   // ✅ 상속인 정보 저장 (미성년자 나이를 정확하게 가져오기)
+   // ✅ 상속인 정보 저장
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         const ageField = heir.querySelector('.ageField');
-        const age = ageField ? parseInt(ageField.value) || 0 : 0;  // 🔥 미성년자 나이를 정확히 가져옴
+        const age = ageField ? parseInt(ageField.value) || 0 : 0;
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
+        const shareAmount = (totalAssetValue * sharePercentage) / 100;
 
-        let relationshipExemption = calculateRelationshipExemption(relationship, age);
+        // ✅ 개인 상속 공제 함수 활용
+        let { basicExemption, relationshipExemption, spouseAdditionalExemption, financialExemption, totalExemption } =
+            calculateExemptions(totalAssetValue, relationship, shareAmount, 0, age);
+
         totalRelationshipExemption += relationshipExemption;
 
-        return { name, relationship, age, sharePercentage, relationshipExemption };
+        return { name, relationship, age, sharePercentage, shareAmount, relationshipExemption, basicExemption, spouseAdditionalExemption, financialExemption, totalExemption };
     });
+
     
     // ✅ 관계 공제 총합이 5억 미만이면 보정
     if (totalRelationshipExemption < 500000000) {
