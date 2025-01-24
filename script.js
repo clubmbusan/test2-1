@@ -589,11 +589,12 @@ function calculateTax(taxableAmount) {
             previousLimit = bracket.limit;
         } else {
             tax += (taxableAmount - previousLimit) * bracket.rate;
-            return Math.max(tax - bracket.baseTax, 0); // ✅ 해당 구간의 누진공제만 차감
+            tax -= bracket.baseTax;  // ✅ 해당 과세 구간에서 적용되는 누진공제 차감
+            break;
         }
     }
 
-    return tax;  // 예외 처리
+    return Math.max(tax, 0);
 }
 
 // 주식 총액을 assetValue에 포함
