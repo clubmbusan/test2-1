@@ -571,7 +571,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
  * @param {number} taxableAmount - 과세 금액
  * @returns {number} 상속세 금액
  */
-function calculateTax(taxableAmount) {
+ function calculateTax(taxableAmount) {
     const taxBrackets = [
         { limit: 100000000, rate: 0.1, baseTax: 0 },         // 1억 이하 (10%)
         { limit: 500000000, rate: 0.2, baseTax: 10000000 },  // 1억 ~ 5억 (20%, 누진공제 1천만 원)
@@ -582,6 +582,7 @@ function calculateTax(taxableAmount) {
 
     let tax = 0;
     let previousLimit = 0;
+    let applicableBaseTax = 0;  // ✅ 마지막 구간의 누진공제 값 저장
 
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
@@ -589,10 +590,13 @@ function calculateTax(taxableAmount) {
             previousLimit = bracket.limit;
         } else {
             tax += (taxableAmount - previousLimit) * bracket.rate;
-            tax -= bracket.baseTax;  // ✅ 해당 과세 구간에서 적용되는 누진공제 차감
+            applicableBaseTax = bracket.baseTax;  // ✅ 마지막 과세 구간에서 누진공제 설정
             break;
         }
     }
+
+    // ✅ 마지막 적용된 과세 구간에서만 누진공제 차감
+    tax -= applicableBaseTax;
 
     return Math.max(tax, 0);
 }
