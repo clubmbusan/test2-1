@@ -594,8 +594,8 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
         } else {
             tax += (taxableAmount - previousLimit) * bracket.rate;  // ✅ 마지막 구간 계산
             
-            // ✅ 10억 이하일 때는 baseTax 적용 X (중복 방지)
-            if (taxableAmount > 1000000000) {
+            // ✅ 50억 이상에서는 baseTax를 다시 추가하지 않음 (중복 방지)
+            if (previousLimit > 0) {
                 tax += lastBaseTax;  
             }
 
