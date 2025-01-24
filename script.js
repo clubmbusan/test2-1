@@ -525,10 +525,11 @@ function calculateFinancialExemption() {
 }
    
 // ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
-function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
+function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0, hasFinancialAssets = false) {
     const basicExemption = 200000000; // 기초 공제 (2억 원)
     let relationshipExemption = 0;
     let spouseExtraExemption = 0; // 배우자 추가 공제
+    let financialExemption = hasFinancialAssets ? 200000000 : 0; // 금융재산 공제 최대 2억 원
 
     switch (relationship) {
         case 'spouse': 
@@ -538,7 +539,6 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
             if (spouseShare > 500000000) {
                 spouseExtraExemption = Math.min(spouseShare - 500000000, 3000000000);
             }
-
             break;
 
         case 'adultChild': 
@@ -547,7 +547,7 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
 
         case 'minorChild': 
              const yearsUntilAdult = Math.max(19 - minorChildAge, 0);
-             relationshipExemption = yearsUntilAdult * 10000000; // 연 1천만 원 추가 공제 (기본 1천만 원 제거)
+             relationshipExemption = yearsUntilAdult * 10000000; // 연 1천만 원 추가 공제
              break;
 
         case 'parent': 
@@ -564,7 +564,7 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
             return { basicExemption, relationshipExemption: 0, totalExemption: 0 };
     }
 
-    // ✅ 최종 공제 계산 (배우자 추가 공제 포함)
+    // ✅ 기본 공제 + 관계 공제 + 배우자 추가 공제 계산
     let totalExemption = basicExemption + relationshipExemption + spouseExtraExemption;
 
     // ✅ 배우자가 아닌 경우 최종 공제 최소 5억 보장
@@ -572,15 +572,21 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
         totalExemption = 500000000;
     }
 
+    // 배우자가 아닌 경우, 금융재산 공제를 별도로 추가 적용
+    if (relationship !== 'spouse') {
+        totalExemption += financialExemption;
+    }
+
     return { 
         basicExemption, 
         relationshipExemption, 
         spouseExtraExemption, // 배우자 추가 공제 값 반환
+        financialExemption, // 금융재산 공제 값 반환
         totalExemption 
     };
 }
 
-// 과세표준 계산 함수
+// ✅ 과세표준 계산 함수 (기존 코드 유지)
 function calculateTaxableAmount(totalInheritance, exemptions) {
     return Math.max(totalInheritance - exemptions.totalExemption, 0); // 음수일 경우 0 처리
 }
