@@ -564,19 +564,19 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
             return { basicExemption, relationshipExemption: 0, totalExemption: 0 };
     }
 
-    // ✅ 기본 공제 + 관계 공제 + 배우자 추가 공제 계산
-    let totalExemption = basicExemption + relationshipExemption + spouseExtraExemption;
+    // ✅ 기초 공제 + 관계 공제 + 배우자 추가 공제 계산
+    let relationshipTotalExemption = basicExemption + relationshipExemption + spouseExtraExemption;
 
-    // ✅ 배우자가 아닌 경우 최종 공제 최소 5억 보장
-    if (relationship !== 'spouse' && totalExemption < 500000000) {
-        totalExemption = 500000000;
+    // ✅ 배우자가 아닌 경우, 관계 공제 최소 5억 보장
+    if (relationship !== 'spouse' && relationshipTotalExemption < 500000000) {
+        relationshipTotalExemption = 500000000;
     }
 
-    // 배우자가 아닌 경우, 금융재산 공제를 별도로 추가 적용
-    if (relationship !== 'spouse') {
-        totalExemption += financialExemption;
-    }
+    // 🔥 금융재산 공제는 일괄공제(5억)에 포함하지 않고, 별도로 추가 적용
+    let totalExemption = relationshipTotalExemption + financialExemption;
 
+    console.log(`✅ 최종 공제 계산: 일괄공제(${relationshipTotalExemption}) + 금융재산공제(${financialExemption}) = ${totalExemption}`);
+    
     return { 
         basicExemption, 
         relationshipExemption, 
