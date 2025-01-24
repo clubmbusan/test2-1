@@ -571,13 +571,13 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
  * @param {number} taxableAmount - 과세 금액
  * @returns {number} 상속세 금액
  */
-function calculateTax(taxableAmount) {
+ function calculateTax(taxableAmount) {
     const taxBrackets = [
-        { limit: 100000000, rate: 0.1, baseTax: 0 },         // 1억 이하: 10%
-        { limit: 500000000, rate: 0.2, baseTax: 10000000 },  // 1억 초과 ~ 5억: 20%, 누진공제 1,000만 원
-        { limit: 1000000000, rate: 0.3, baseTax: 90000000 }, // 5억 초과 ~ 10억: 30%, 누진공제 9,000만 원
-        { limit: 3000000000, rate: 0.4, baseTax: 240000000 },// 10억 초과 ~ 30억: 40%, 누진공제 2억 4,000만 원
-        { limit: Infinity, rate: 0.5, baseTax: 1040000000 }, // 30억 초과: 50%, 누진공제 10억 4,000만 원
+        { limit: 100000000, rate: 0.1, baseTax: 0 },
+        { limit: 500000000, rate: 0.2, baseTax: 10000000 },
+        { limit: 1000000000, rate: 0.3, baseTax: 90000000 },
+        { limit: 3000000000, rate: 0.4, baseTax: 240000000 },
+        { limit: Infinity, rate: 0.5, baseTax: 1040000000 },
     ];
 
     let tax = 0;
@@ -587,9 +587,11 @@ function calculateTax(taxableAmount) {
 
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
+            tax += (bracket.limit - previousLimit) * bracket.rate;  // ✅ 각 구간별 세금 누적
             previousLimit = bracket.limit;
         } else {
-            tax = (taxableAmount - previousLimit) * bracket.rate + bracket.baseTax;
+            tax += (taxableAmount - previousLimit) * bracket.rate;  // ✅ 마지막 구간 계산
+            tax += bracket.baseTax;  // ✅ 누진공제 적용
             console.log(`✅ 적용 구간: ${previousLimit} ~ ${taxableAmount} (세율: ${bracket.rate * 100}%)`);
             break;
         }
