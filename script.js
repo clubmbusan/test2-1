@@ -1003,8 +1003,8 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
         case "farming": // 농림재산 (최대 15억 공제)
             deduction = Math.min(totalInheritance, 1500000000);
-            policyMessage = " 농림재산 상속 공제는 10년 이상 직접 경작해야 합니다. (최대 15억 공제)";
-            eligibilityMessage = "✅ 10년 이상 자경 요건 충족";
+            policyMessage = " 농림재산 상속 공제는 10년 이상 직접 경작해야 하며, 상속인은 3년 이상 영농을 지속해야 합니다.(최대 15억 공제)";
+            eligibilityMessage = "✅ 10년 이상 자경 요건 및 상속인 3년 유지 요건 충족";
             break;
 
         case "factory": // 공장 상속 (80% 공제, 최대 20억)
