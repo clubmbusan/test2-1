@@ -997,7 +997,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     switch (otherType) {
         case "dwelling": // 동거주택 (최대 6억 공제)
             deduction = Math.min(totalInheritance, 600000000);
-            policyMessage = "동거주택 상속 공제는 피상속인이 1세대 1주택자이며, 싱속인은 상속 개시일(사망일)까지 10년 이상 동거하며 무주택자여야 하며, 상속 개시일(사망일)이후 3년간 보유해야 합니다.(최대 6억 공제)";
+            policyMessage = "동거주택 상속 공제는 피상속인이 1세대 1주택자이며, 상속인은 상속 개시일(사망일)까지 10년 이상 동거하며 무주택자여야 하며, 상속 개시일(사망일)이후 3년간 보유해야 합니다.(최대 6억 공제)";
             eligibilityMessage = "✅ 10년 이상 동거 및 무주택 조건 충족";
             break;
 
