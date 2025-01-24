@@ -1027,7 +1027,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
    // ✅ 기존 `calculateTax()`를 사용하지만, 특수상속만 결과값을 2로 나눔
     let originalTax = calculateTax(taxableAmount);
-    let inheritanceTax = originalTax / 2;
+    let inheritanceTax = originalTax ;
 
     console.log(" 원래 계산된 세금:", originalTax);
     console.log(" 보정된 세금 (2배 오류 해결):", inheritanceTax);
