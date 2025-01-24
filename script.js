@@ -583,24 +583,17 @@ function calculateTax(taxableAmount) {
     let tax = 0;
     let previousLimit = 0;
 
-    console.log("📌 과세 표준 입력값:", taxableAmount);
-
     for (const bracket of taxBrackets) {
         if (taxableAmount > bracket.limit) {
-            // ✅ 올바른 방식: 모든 구간별 세금을 누적 계산
             tax += (bracket.limit - previousLimit) * bracket.rate;
-            console.log(`✅ 적용 구간: ${previousLimit} ~ ${bracket.limit} (세율: ${bracket.rate * 100}%)`);
             previousLimit = bracket.limit;
         } else {
-            // ✅ 마지막 구간에서 정확한 세금 계산
             tax += (taxableAmount - previousLimit) * bracket.rate;
-            console.log(`✅ 적용 구간: ${previousLimit} ~ ${taxableAmount} (세율: ${bracket.rate * 100}%)`);
-            break;
+            return Math.max(tax - bracket.baseTax, 0); // ✅ 해당 구간의 누진공제만 차감
         }
     }
 
-    console.log("💸 최종 계산된 상속세 (누진공제 적용 후):", tax);
-    return Math.max(tax, 0);
+    return tax;  // 예외 처리
 }
 
 // 주식 총액을 assetValue에 포함
