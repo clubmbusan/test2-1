@@ -741,11 +741,12 @@ function calculateGroupMode(totalAssetValue) {
     let totalRelationshipExemption = 0;
     let totalFinancialAssets = 0; // 금융재산 총액
 
-    // ✅ 상속인 정보 저장
+  // ✅ 상속인 정보 저장 (미성년자 나이를 정확하게 가져오기)
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
-        const age = parseInt(heir.querySelector('.ageField')?.value || '0');
+        const ageField = heir.querySelector('.ageField');
+        const age = ageField ? parseInt(ageField.value) || 0 : 0;  // 🔥 미성년자 나이를 정확히 가져옴
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
         totalRelationshipExemption += calculateRelationshipExemption(relationship, age);
@@ -803,19 +804,7 @@ function calculateGroupMode(totalAssetValue) {
         // ✅ 최종 과세 금액 계산
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption - financialExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
-
-        // ✅ 디버깅 로그 추가
-        console.log(`🔍 [상속인 정보: ${heir.name}]`);
-        console.log(`   - 관계: ${heir.relationship}`);
-        console.log(`   - 상속 금액: ${shareAmount.toLocaleString()} 원`);
-        console.log(`   - 기초 공제: ${basicExemption.toLocaleString()} 원`);
-        console.log(`   - 관계 공제: ${relationshipExemption.toLocaleString()} 원`);
-        console.log(`   - 배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원`);
-        console.log(`   - 금융재산 공제: ${financialExemption.toLocaleString()} 원`);
-        console.log(`   - 최종 과세 금액: ${finalTaxableAmount.toLocaleString()} 원`);
-        console.log(`   - 상속세: ${tax.toLocaleString()} 원`);
-        console.log("-------------------------------");
-
+    
         return {
             ...heir,
             shareAmount,
