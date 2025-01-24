@@ -997,19 +997,19 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     switch (otherType) {
         case "dwelling": // 동거주택 (최대 6억 공제)
             deduction = Math.min(totalInheritance, 600000000);
-            policyMessage = " 동거주택은 피상속인의 1세대 1주택에서 10년 동거했어야 하며 상속인은 상속 개시일(사망일)이후 3년 거주해야 합니다.(최대 6억 공제)";
-            eligibilityMessage = "✅ 10년 이상 동거 요건 충족";
+            policyMessage = "동거주택 상속 공제는 피상속인이 1세대 1주택자이며, 싱속인은 상속 개시일(사망일)까지 10년 이상 동거하며 무주택자여야 하며, 상속 개시일(사망일)이후 3년간 보유해야 합니다.(최대 6억 공제)";
+            eligibilityMessage = "✅ 10년 이상 동거 및 무주택 조건 충족";
             break;
 
         case "farming": // 농림재산 (최대 15억 공제)
             deduction = Math.min(totalInheritance, 1500000000);
-            policyMessage = " 농림재산 상속 공제는 10년 이상 직접 경작했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 영농을 지속해야 합니다.(최대 15억 공제)";
+            policyMessage = "농림재산 상속 공제는  피상속인이 10년 이상 직접 경작했어야 하며, 상속인은 상속 개시일(사망일)까지 10년 이상 함께 영농했어야하며, 상속 개시일(사망일) 이후 3년 이상 영농을 지속해야 합니다.(최대 15억 공제)";
             eligibilityMessage = "✅ 10년 이상 자경 요건 충족";
             break;
 
         case "factory": // 공장 상속 (80% 공제, 최대 20억)
             deduction = Math.min(totalInheritance * 0.8, 2000000000);
-            policyMessage = " 공장 상속 공제는 10년 이상 직접 운영했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 공장을 운영해야 합니다. (80% 또는 최대 20억)";
+            policyMessage = "공장 상속 공제는 피상속인이 10년 이상 직접 운영했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 공장을 운영해야 합니다. (80% 또는 최대 20억)";
             eligibilityMessage = "✅ 10년 이상 공장 운영 요건 충족";
             break;
 
