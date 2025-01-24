@@ -1028,12 +1028,10 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         return;
     }
 
-   // ✅ 기존 `calculateTax()`를 사용하지만, 특수상속만 결과값을 2로 나눔
-    let originalTax = calculateTax(taxableAmount);
-    let inheritanceTax = originalTax ;
+    // ✅ `calculateTax()`를 한 번만 호출하여 정확한 값 계산
+    let inheritanceTax = calculateTax(taxableAmount);
 
-    console.log(" 원래 계산된 세금:", originalTax);
-    console.log(" 보정된 세금 (2배 오류 해결):", inheritanceTax);
+    console.log("📌 최종 상속세 계산 완료:", inheritanceTax);
 
     // ✅ 최종 결과 출력     
     document.getElementById("result").innerHTML = `
