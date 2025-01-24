@@ -572,9 +572,12 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
         relationshipTotalExemption = 500000000;
     }
 
-    // 🔥 금융재산 공제는 일괄공제(5억)에 포함하지 않고, 별도로 추가 적용
-    let totalExemption = relationshipTotalExemption + financialExemption;
-
+    // 🔥 금융재산 공제를 별도로 추가 적용 (이 부분이 실제 수정됨!)
+    let totalExemption = relationshipTotalExemption; // 금융재산 공제 미포함 상태 유지
+    if (relationship !== 'spouse') { 
+        totalExemption += financialExemption; // 배우자가 아닌 경우 금융재산 공제 별도 추가
+    }
+    
     console.log(`✅ 최종 공제 계산: 일괄공제(${relationshipTotalExemption}) + 금융재산공제(${financialExemption}) = ${totalExemption}`);
     
     return { 
