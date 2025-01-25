@@ -715,10 +715,10 @@ function calculatePersonalMode(totalAssetValue) {
 }
 
 // ✅ 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
-function calculateRelationshipExemption(relationship, age) {
-    let parsedAge = parseInt(age, 10); // 나이를 숫자로 변환
+ function calculateRelationshipExemption(relationship, age) {
+    let parsedAge = parseInt(age, 10) || 0; // undefined, 빈 문자열 방지
 
-    if (isNaN(parsedAge) || parsedAge <= 0) {
+    if (parsedAge <= 0) {
         console.error("❌ 오류: 나이 입력이 잘못되었습니다.", age);
         return 0; // 잘못된 나이 입력이면 공제 없음
     }
@@ -761,15 +761,17 @@ function calculateGroupMode(totalAssetValue) {
 
     // ✅ 상속인 정보 저장
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
-        const relationship = heir.querySelector('.relationship')?.value || 'other';
-        const age = parseInt(heir.querySelector('.ageField')?.value || '0');
-        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
+    const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
+    const relationship = heir.querySelector('.relationship')?.value || 'other';
+    const age = parseInt(heir.querySelector('.ageField')?.value || '0', 10);
+    const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
-        totalRelationshipExemption += calculateRelationshipExemption(relationship, age);
+    console.log(`📌 [상속인 데이터] 이름: ${name}, 관계: ${relationship}, 나이: ${age}, 지분: ${sharePercentage}%`);
 
-        return { name, relationship, age, sharePercentage };
-    });
+    totalRelationshipExemption += calculateRelationshipExemption(relationship, age);
+
+    return { name, relationship, age, sharePercentage };
+});
 
     // ✅ 관계 공제 총합이 5억 미만이면 보정
     if (totalRelationshipExemption < 500000000) {
