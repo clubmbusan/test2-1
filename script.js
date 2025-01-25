@@ -714,48 +714,7 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-  // ✅ 전체 상속 관계 공제 계산 함수 (배우자 없는 경우 5억 배분 + 상속 지분 고려)
-function calculateRelationshipExemptions(heirs) {
-    let totalRelationshipExemption = 0;
-    let hasSpouse = false;
-    let individualExemptions = {}; // 각 상속인의 원래 관계공제 저장
-    let totalShare = 0; // 전체 상속 비율 합
-
-    // ✅ 각 상속인의 관계공제를 먼저 계산
-    heirs.forEach((heir) => {
-        let exemption = 0;
-
-        switch (heir.relationship) {
-            case 'spouse':
-                exemption = 500000000; // 배우자 기본 공제 (5억 원)
-                hasSpouse = true;
-                break;
-            case 'adultChild':
-                exemption = 50000000; // 성년 자녀 공제 (5천만 원)
-                break;
-            case 'minorChild':
-                const yearsUntilAdult = Math.max(19 - heir.age, 0);
-                exemption = yearsUntilAdult * 10000000; // 미성년자 공제 (1천만 원 × (19 - 나이))
-                break;
-            case 'parent':
-                exemption = (heir.age >= 60) ? 100000000 : 50000000;
-                break;
-            case 'other':
-                exemption = 10000000;
-                break;
-        }
-
-        heir.relationshipExemption = exemption;
-        individualExemptions[heir.name] = exemption; // 원래 관계공제 저장
-        totalRelationshipExemption += exemption;
-        totalShare += heir.sharePercentage; // 상속 비율 합산
-    });
-
-    // ✅ 배우자가 없고, 전체 관계공제 합이 5억 미만일 경우 5억으로 보정
-    if (!hasSpouse && totalRelationshipExemption < 500000000) {
-        let deficit = 500000000 - totalRelationshipExemption; // 부족한 금액 계산
-
-        // ✅ 기존 관계공제와 상속 지분을 함께 고려하여 부족한 금액 배분
+// 🔹 수정됨: 기존 관계 공제 비율과 상속 비율을 반영하여 5억 배분
         heirs.forEach((heir) => {
             if (heir.relationship !== 'spouse') {
                 let exemptionRatio = individualExemptions[heir.name] / totalRelationshipExemption; // 기존 관계공제 비율
@@ -769,13 +728,6 @@ function calculateRelationshipExemptions(heirs) {
 
     return heirs;
 }
-
-// ✅ 배우자 추가 공제 계산 함수
-function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
-    let maxExemption = totalAssetValue - 500000000 - spouseShare;
-    return Math.min(spouseShare, maxExemption, 3000000000);
-}
-
    // ✅ 전원 상속 계산 함수 (금융재산 공제 추가 반영)
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
