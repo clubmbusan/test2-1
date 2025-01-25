@@ -800,41 +800,30 @@ function calculateGroupMode(totalAssetValue) {
 
     let totalExemption = totalBasicExemption + spouseExemption + nonSpouseRelationshipExemption;
 
-    // ✅ 금융재산 공제 계산
-    document.querySelectorAll('.asset-entry').forEach(asset => {
-        let assetType = asset.querySelector('.assetType')?.value;
-        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
-        if (assetType === 'cash' || assetType === 'stock') {
-            totalFinancialAssets += assetValue;
-        }
-    });
+     // ✅ 금융재산 총액 계산 (현금 + 주식)
+   let totalFinancialAssets = 0;
+   document.querySelectorAll('.asset-entry').forEach(asset => {
+       let assetType = asset.querySelector('.assetType')?.value;
+       let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
+       if (assetType === 'cash' || assetType === 'stock') {
+        totalFinancialAssets += assetValue;
+       }
+   });
 
-    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200_000_000);
-    totalExemption += maxFinancialExemption;
+   // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
+   let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200_000_000);
 
-    let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
-    
-    // ✅ 금융재산 총액 계산 (현금 + 주식)
-    document.querySelectorAll('.asset-entry').forEach(asset => {
-        let assetType = asset.querySelector('.assetType')?.value;
-        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
-        if (assetType === 'cash' || assetType === 'stock') {
-            totalFinancialAssets += assetValue;
-        }
-    });
+   // ✅ 금융재산 공제를 상속 비율대로 분배
+   let financialExemptionByHeir = {};
+   heirs.forEach(heir => {
+       financialExemptionByHeir[heir.name] = (maxFinancialExemption * heir.sharePercentage) / 100;
+   });
 
-    // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
-    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200_000_000);
+   // ✅ 금융재산 공제를 포함한 최종 공제 금액 계산
+   totalExemption += maxFinancialExemption;
 
-    // ✅ 금융재산 공제를 상속 비율대로 분배
-    let financialExemptionByHeir = {};
-    heirs.forEach(heir => {
-        financialExemptionByHeir[heir.name] = (maxFinancialExemption * heir.sharePercentage) / 100;
-    });
-
-    // ✅ 금융재산 공제를 포함한 최종 공제 금액 계산
-    totalExemption += maxFinancialExemption;
-    let taxableAmount = Math.max(totalAssetValue - totalExemption, 0); // 음수 방지
+   // ✅ 최종 과세 금액 계산 (음수 방지)
+   let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
