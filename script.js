@@ -719,7 +719,7 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
     return Math.min(spouseShare, maxExemption, 3000000000);
 }
     
-  /**
+ /**
  * 전원 상속 계산 함수 (모든 공제 반영)
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
@@ -745,7 +745,7 @@ function calculateGroupMode(totalAssetValue) {
 
         // ✅ 미성년자 공제 적용 (비율 반영)
         if (relationship === 'minorChild') {
-            relationshipExemption = Math.max((19 - age) * 10000000, 0) * (sharePercentage / 100);
+            relationshipExemption = calculateMinorChildExemption(age, sharePercentage);
         }
 
         // ✅ 배우자 추가 공제 (최대 30억 원)
