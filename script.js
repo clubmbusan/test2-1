@@ -714,7 +714,7 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-   // ✅ 전체 상속 관계 공제 계산 함수 (배우자 없는 경우 5억 배분 + 상속 지분 고려)
+  // ✅ 전체 상속 관계 공제 계산 함수 (배우자 없는 경우 5억 배분 + 상속 지분 고려)
 function calculateRelationshipExemptions(heirs) {
     let totalRelationshipExemption = 0;
     let hasSpouse = false;
