@@ -718,7 +718,13 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
     let maxExemption = totalAssetValue - 500000000 - spouseShare;
     return Math.min(spouseShare, maxExemption, 3000000000);
 }
-    
+
+    // ✅ 미성년자 공제 계산 함수 (연간 1천만 원 * (19 - 나이))
+function calculateMinorChildExemption(age, sharePercentage) {
+    const exemption = Math.max((19 - age) * 10000000, 0); 
+    return exemption * (sharePercentage / 100); // 상속 비율 반영
+}
+
  /**
  * 전원 상속 계산 함수 (모든 공제 반영)
  * @param {number} totalAssetValue - 총 상속 재산 금액
