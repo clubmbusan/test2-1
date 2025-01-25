@@ -713,8 +713,11 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-   // ✅ 전원 상속 계산 함수 (금융재산 공제 추가 반영)
-  function calculateGroupMode(totalAssetValue) {
+  /**
+ * 전원 상속 계산 함수 (금융재산 공제 추가 반영)
+ * @param {number} totalAssetValue - 총 상속 재산 금액
+ */
+function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
     let totalBasicExemption = 200000000; // 기초 공제 2억
@@ -772,44 +775,42 @@ function calculatePersonalMode(totalAssetValue) {
     let taxableAmount = Math.max(totalAssetValue - totalExemption, 0); // 음수 방지
 
     // ✅ 개별 상속 계산 (중복 코드 제거 & 필요한 값 유지)
-   heirs = heirs.map((heir) => {
-    let financialExemption = financialExemptionByHeir[heir.name] || 0;
-    let totalExemption = heir.totalExemption || 0; // 🔥 `undefined` 방지
-    let finalTaxableAmount = Math.max(heir.shareAmount - totalExemption, 0);
-    let tax = calculateTax(finalTaxableAmount);
+    heirs = heirs.map((heir) => {
+        let financialExemption = financialExemptionByHeir[heir.name] || 0;
+        let totalExemption = heir.totalExemption || 0; // 🔥 `undefined` 방지
+        let finalTaxableAmount = Math.max(heir.shareAmount - totalExemption - financialExemption, 0);
+        let tax = calculateTax(finalTaxableAmount);
 
-            return { 
-      ...heir,  // ✅ 올바르게 객체 반환
-      shareAmount,
-      relationshipExemption,
-      basicExemption,
-      spouseAdditionalExemption,
-      financialExemption,
-      finalTaxableAmount,
-      tax
-  };    
-});
+        return { 
+            ...heir,  
+            financialExemption, 
+            totalExemption, 
+            finalTaxableAmount, 
+            tax 
+        };
+    });
 
-// ✅ 결과 출력 시, `undefined` 방지를 위한 조건 추가
-document.getElementById('result').innerHTML = `
-     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
-     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
-     <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
-     <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
-     ${heirs.map((heir) => `
-         <p>
-             <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
-             기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
-             관계 공제: ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
-             ${heir.relationship === 'spouse' ? `<strong>배우자 추가 공제:</strong> ${(heir.spouseAdditionalExemption || 0).toLocaleString()} 원<br>` : ''}
-             <strong>금융재산 공제:</strong> ${(financialExemptionByHeir[heir.name] || 0).toLocaleString()} 원<br>
-             <strong>최종 공제 금액:</strong> ${(heir.totalExemption || 0).toLocaleString()} 원<br>
-             <strong>과세 표준:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
-             <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
-         </p>
-     `).join('')}
- `;
+    // ✅ 결과 출력 (전체 적용)
+    document.getElementById('result').innerHTML = `
+         <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
+         <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
+         <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
+         <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
+         <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
+         ${heirs.map((heir) => `
+             <p>
+                 <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
+                 기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
+                 관계 공제: ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
+                 ${heir.relationship === 'spouse' ? `<strong>배우자 추가 공제:</strong> ${(heir.spouseAdditionalExemption || 0).toLocaleString()} 원<br>` : ''}
+                 <strong>금융재산 공제:</strong> ${(financialExemptionByHeir[heir.name] || 0).toLocaleString()} 원<br>
+                 <strong>최종 공제 금액:</strong> ${(heir.totalExemption || 0).toLocaleString()} 원<br>
+                 <strong>과세 표준:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
+                 <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
+             </p>
+         `).join('')}
+     `;
+}
 
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
