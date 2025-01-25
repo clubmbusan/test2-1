@@ -778,13 +778,16 @@ function calculatePersonalMode(totalAssetValue) {
     let finalTaxableAmount = Math.max(heir.shareAmount - totalExemption, 0);
     let tax = calculateTax(finalTaxableAmount);
 
-    return { 
-        ...heir, 
-        financialExemption, 
-        totalExemption,  // 🔥 `undefined` 방지
-        finalTaxableAmount, 
-        tax 
-    };
+            return { 
+      ...heir,  // ✅ 올바르게 객체 반환
+      shareAmount,
+      relationshipExemption,
+      basicExemption,
+      spouseAdditionalExemption,
+      financialExemption,
+      finalTaxableAmount,
+      tax
+  };    
 });
 
 // ✅ 결과 출력 시, `undefined` 방지를 위한 조건 추가
