@@ -713,12 +713,12 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-    // ✅ 관계 공제 계산 함수
+   // ✅ 관계 공제 계산 함수
 function calculateRelationshipExemption(relationship, age = 0) {
     switch (relationship) {
         case 'spouse': return 500000000; // 배우자: 5억 원
         case 'adultChild': return 50000000; // 성년 자녀: 5천만 원
-        case 'minorChild': return 10000000 * (19 - age); // 미성년 자녀: 1천만 원 × (20 - 나이)
+        case 'minorChild': return 10000000 * (20 - age); // 미성년 자녀: 1천만 원 × (20 - 나이)
         case 'parent': return (age >= 60) ? 100000000 : 50000000; // 부모: 60세 이상 1억 원, 미만 5천만 원
         case 'other': return 10000000; // 기타 상속인: 1천만 원
         default: return 0;
@@ -730,10 +730,7 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
     return Math.min(spouseShare, maxExemption, 3000000000);
 }
 
-  /**
- * 전원 상속 계산 함수 (모든 공제 반영)
- * @param {number} totalAssetValue - 총 상속 재산 금액
- */
+   // ✅ 전원 상속 계산 함수 (금융재산 공제 추가 반영)
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
@@ -826,8 +823,7 @@ function calculateGroupMode(totalAssetValue) {
             finalTaxableAmount,
             tax
         };
-     });
-    } 
+    });
 
     // ✅ 결과 출력 (수정된 공제 적용)
     document.getElementById('result').innerHTML = `
@@ -848,6 +844,7 @@ function calculateGroupMode(totalAssetValue) {
              </p>
          `).join('')}
      `;
+} 
     
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
