@@ -800,31 +800,33 @@ function calculateGroupMode(totalAssetValue) {
 
     let totalExemption = totalBasicExemption + spouseExemption + nonSpouseRelationshipExemption;
 
-     // ✅ 금융재산 총액 계산 (현금 + 주식)
-   let totalFinancialAssets = 0;
-   document.querySelectorAll('.asset-entry').forEach(asset => {
-       let assetType = asset.querySelector('.assetType')?.value;
-       let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
-       if (assetType === 'cash' || assetType === 'stock') {
-        totalFinancialAssets += assetValue;
-       }
-   });
+    // ✅ 금융재산 총액 초기화 (기존 변수가 있다면 let 제거)
+    totalFinancialAssets = 0; // 중복 선언 방지
 
-   // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
-   let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200_000_000);
+    // ✅ 금융재산 총액 계산 (현금 + 주식)
+    document.querySelectorAll('.asset-entry').forEach(asset => {
+        let assetType = asset.querySelector('.assetType')?.value;
+        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
+        if (assetType === 'cash' || assetType === 'stock') {
+            totalFinancialAssets += assetValue;
+        }
+    });
 
-   // ✅ 금융재산 공제를 상속 비율대로 분배
-   let financialExemptionByHeir = {};
-   heirs.forEach(heir => {
-       financialExemptionByHeir[heir.name] = (maxFinancialExemption * heir.sharePercentage) / 100;
-   });
+    // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
+    maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200_000_000); // 중복 선언 제거
 
-   // ✅ 금융재산 공제를 포함한 최종 공제 금액 계산
-   totalExemption += maxFinancialExemption;
+    // ✅ 금융재산 공제를 상속 비율대로 분배
+    financialExemptionByHeir = {}; // 중복 선언 방지
+    heirs.forEach(heir => {
+        financialExemptionByHeir[heir.name] = (maxFinancialExemption * heir.sharePercentage) / 100;
+    });
 
-   // ✅ 최종 과세 금액 계산 (음수 방지)
-   let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+    // ✅ 금융재산 공제를 포함한 최종 공제 금액 계산
+    totalExemption += maxFinancialExemption;
 
+    // ✅ 최종 과세 금액 계산 (음수 방지)
+    let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+  
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
