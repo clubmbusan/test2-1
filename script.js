@@ -728,10 +728,10 @@ function calculateRelationshipExemption(relationship, age = 0) {
         case 'adultChild': 
             return 50000000; // 성년 자녀: 5천만 원
         
-        case 'minorChild': {
-            let deduction = (19 - age) * 10_000_000;
-            return deduction > 0 ? deduction : 0; // 음수 방지 (나이가 19세 이상이면 0)
-        }
+       case 'minorChild': 
+            const yearsUntilAdult = Math.max(19 - minorChildAge, 0);
+            relationshipExemption = Math.max(yearsUntilAdult * 10000000, 500000000); // 미성년자 최소 5억 보장
+            break;
 
         case 'parent': 
             return (age >= 60) ? 100000000 : 50000000; // 부모: 60세 이상 1억 원, 미만 5천만 원
