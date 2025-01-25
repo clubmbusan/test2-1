@@ -718,7 +718,7 @@ function calculatePersonalMode(totalAssetValue) {
 function calculateRelationshipExemption(relationship, age) {
     let parsedAge = parseInt(age, 10); // 나이를 숫자로 변환
 
-    if (isNaN(parsedAge) || parsedAge < 0) {
+    if (isNaN(parsedAge) || parsedAge <= 0) {
         console.error("❌ 오류: 나이 입력이 잘못되었습니다.", age);
         return 0; // 잘못된 나이 입력이면 공제 없음
     }
@@ -732,7 +732,7 @@ function calculateRelationshipExemption(relationship, age) {
         
         case 'minorChild': 
             return Math.max(0, (19 - parsedAge) * 10_000_000); 
-            // 미성년자 공제: (19 - 나이) × 1천만 원, 최소 0원
+            // 미성년자 공제: (19 - 나이) × 1천만 원, 19세 이상이면 0원
         
         case 'parent': 
             return (parsedAge >= 60) ? 100_000_000 : 50_000_000; // 부모: 60세 이상 1억 원, 미만 5천만 원
@@ -744,7 +744,6 @@ function calculateRelationshipExemption(relationship, age) {
             return 0;
     }
 }
-
 
 // ✅ 배우자 추가 공제 계산 함수
 function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
