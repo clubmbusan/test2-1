@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const groupSection = document.getElementById('groupSection');
     const businessPersonalSection = document.getElementById('businessPersonalSection');
     const otherAssetContainer = document.getElementById('otherAssetContainer'); 
+Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
+Editing test2-1/script.js at main · clubmbusan/test2-1
+
     const otherAssetType = document.getElementById('otherAssetType'); 
     const assetType = document.getElementById('assetType');
     const addAssetButton = document.getElementById('addAssetButton');
@@ -713,28 +716,60 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-   // ✅ 관계 공제 계산 함수 (미성년자 공제 로직 수정 완료)
-function calculateRelationshipExemption(relationship, age = 0) {
-    switch (relationship) {
-        case 'spouse': 
-            return 500000000; // 배우자: 5억 원
+   // ✅ 전체 상속 관계 공제 계산 함수 (배우자 없는 경우 5억 배분 + 상속 지분 고려)
+function calculateRelationshipExemptions(heirs) {
+    let totalRelationshipExemption = 0;
+    let hasSpouse = false;
+    let individualExemptions = {}; // 각 상속인의 원래 관계공제 저장
+    let totalShare = 0; // 전체 상속 비율 합
 
-        case 'adultChild': 
-            return 50000000; // 성년 자녀: 5천만 원
+    // ✅ 각 상속인의 관계공제를 먼저 계산
+    heirs.forEach((heir) => {
+        let exemption = 0;
 
-        case 'minorChild': 
-            // ✅ 미성년자 관계공제: (19 - age) × 1천만 원
-            return Math.max((19 - age) * 10000000, 0);
+        switch (heir.relationship) {
+            case 'spouse':
+                exemption = 500000000; // 배우자 기본 공제 (5억 원)
+                hasSpouse = true;
+                break;
+            case 'adultChild':
+                exemption = 50000000; // 성년 자녀 공제 (5천만 원)
+                break;
+            case 'minorChild':
+                const yearsUntilAdult = Math.max(19 - heir.age, 0);
+                exemption = yearsUntilAdult * 10000000; // 미성년자 공제 (1천만 원 × (19 - 나이))
+                break;
+            case 'parent':
+                exemption = (heir.age >= 60) ? 100000000 : 50000000;
+                break;
+            case 'other':
+                exemption = 10000000;
+                break;
+        }
 
-        case 'parent': 
-            return (age >= 60) ? 100000000 : 50000000; // 부모: 60세 이상 1억 원, 미만 5천만 원
+        heir.relationshipExemption = exemption;
+        individualExemptions[heir.name] = exemption; // 원래 관계공제 저장
+        totalRelationshipExemption += exemption;
+        totalShare += heir.sharePercentage; // 상속 비율 합산
+    });
 
-        case 'other': 
-            return 10000000; // 기타 상속인: 1천만 원
+    // ✅ 배우자가 없고, 전체 관계공제 합이 5억 미만일 경우 5억으로 보정
+    if (!hasSpouse && totalRelationshipExemption < 500000000) {
+        let deficit = 500000000 - totalRelationshipExemption; // 부족한 금액 계산
 
-        default: 
-            return 0;
+        // ✅ 기존 관계공제와 상속 지분을 함께 고려하여 부족한 금액 배분
+        heirs.forEach((heir) => {
+            if (heir.relationship !== 'spouse') {
+                let exemptionRatio = individualExemptions[heir.name] / totalRelationshipExemption; // 기존 관계공제 비율
+                let shareRatio = heir.sharePercentage / totalShare; // 상속 지분 비율
+                let adjustedRatio = (exemptionRatio + shareRatio) / 2; // 두 비율을 평균 내어 균형 조정
+
+                heir.relationshipExemption += deficit * adjustedRatio; // 부족한 금액 배분
+            }
+        });
     }
+
+    return heirs;
 }
 
 // ✅ 배우자 추가 공제 계산 함수
