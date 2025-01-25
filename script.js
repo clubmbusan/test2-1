@@ -713,6 +713,12 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
+    // ✅ 배우자 추가 공제 계산 함수
+function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
+    let maxExemption = totalAssetValue - 500000000 - spouseShare;
+    return Math.min(spouseShare, maxExemption, 3000000000);
+}
+    
   /**
  * 전원 상속 계산 함수 (금융재산 공제 추가 반영)
  * @param {number} totalAssetValue - 총 상속 재산 금액
