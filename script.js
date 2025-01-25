@@ -826,7 +826,8 @@ function calculateGroupMode(totalAssetValue) {
             finalTaxableAmount,
             tax
         };
-    });
+     });
+    } 
 
     // ✅ 결과 출력 (수정된 공제 적용)
     document.getElementById('result').innerHTML = `
