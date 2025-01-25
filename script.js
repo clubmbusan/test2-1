@@ -714,15 +714,33 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
-// ✅ 관계 공제 계산 함수
+// ✅ 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
 function calculateRelationshipExemption(relationship, age = 0) {
+    if (typeof age !== 'number' || isNaN(age)) {
+        console.error("❌ 오류: 나이 입력이 잘못되었습니다.", age);
+        return 0; // 나이 값이 올바르지 않으면 공제 없음
+    }
+
     switch (relationship) {
-        case 'spouse': return 500000000; // 배우자: 5억 원
-        case 'adultChild': return 50000000; // 성년 자녀: 5천만 원
-        case 'minorChild': return 10000000 * (19 - age); // 미성년 자녀: 1천만 원 × (19 - 나이)
-        case 'parent': return (age >= 60) ? 100000000 : 50000000; // 부모: 60세 이상 1억 원, 미만 5천만 원
-        case 'other': return 10000000; // 기타 상속인: 1천만 원
-        default: return 0;
+        case 'spouse': 
+            return 500000000; // 배우자: 5억 원
+        
+        case 'adultChild': 
+            return 50000000; // 성년 자녀: 5천만 원
+        
+        case 'minorChild': {
+            let deduction = (19 - age) * 10_000_000;
+            return deduction > 0 ? deduction : 0; // 음수 방지 (나이가 19세 이상이면 0)
+        }
+
+        case 'parent': 
+            return (age >= 60) ? 100000000 : 50000000; // 부모: 60세 이상 1억 원, 미만 5천만 원
+        
+        case 'other': 
+            return 10000000; // 기타 상속인: 1천만 원
+        
+        default: 
+            return 0;
     }
 }
 
