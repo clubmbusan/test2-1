@@ -681,9 +681,9 @@ function calculatePersonalMode(totalAssetValue) {
     if (relationship === 'spouse') {
         totalExemption += spouseAdditionalExemption;
     } else {
-        totalExemption = Math.max(totalExemption, generalExemption);
+      totalExemption = Math.max(basicExemption + relationshipExemption, generalExemption) + financialExemption;
     }
-
+    
     // ✅ 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
