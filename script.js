@@ -209,20 +209,40 @@ document.querySelectorAll('.assetType').forEach(select => {
     // 초기화 호출
 initializeDefaultView();
     
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     console.log("✅ HTML 문서 로드 완료!");
 
-    // ✅ "다시 하기" 버튼 클릭 시 페이지 새로고침
-    const resetButton = document.getElementById('resetButton');
-    if (resetButton) {
-        resetButton.addEventListener('click', (event) => {
+    // ✅ "다시 하기" 버튼 (resetAssetButton) 클릭 시 초기화
+    document.querySelectorAll('.resetAssetButton').forEach(button => {
+        button.addEventListener('click', (event) => {
             event.preventDefault();
-            console.log("🔄 페이지 새로고침!");
-            location.reload(); // 🔄 페이지 새로고침
+            console.log("🔄 입력 필드 초기화 실행!");
+
+            // ✅ 상속 유형과 재산 유형 값 저장
+            const inheritanceType = document.getElementById('inheritanceType').value;
+            const assetType = document.getElementById('assetType').value;
+
+            // ✅ 추가된 재산 목록 초기화 (assetContainer 유지)
+            document.querySelectorAll('#assetContainer .asset-entry').forEach(asset => asset.remove());
+
+            // ✅ 추가된 상속인 목록 초기화 (heirContainer 유지)
+            document.querySelectorAll('#heirContainer .heir-entry').forEach(heir => heir.remove());
+
+            // ✅ 모든 입력 필드 초기화 (금액, 비율 등)
+            document.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+
+            // ✅ 결과 영역 초기화
+            document.getElementById('result').innerHTML = '';
+
+            // ✅ 기존 선택 값을 복원
+            document.getElementById('inheritanceType').value = inheritanceType;
+            document.getElementById('assetType').value = assetType;
+
+            console.log("✅ '다시 하기' 버튼 클릭 → 입력 필드 초기화 완료!");
         });
-    } else {
-        console.error("❌ 'resetButton'을 찾을 수 없습니다! HTML을 확인하세요.");
-    }
+    });
 });
         
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
