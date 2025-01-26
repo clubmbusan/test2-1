@@ -734,12 +734,19 @@ function calculatePersonalMode(totalAssetValue) {
     }
         
     switch (relationship) {
-        case 'spouse': return 0; // ❌ 배우자는 관계 공제 없음
-        case 'adultChild': return 50000000; // 성년 자녀: 5천만 원
-        case 'parent': return (age >= 65) ? 100000000 : 50000000; // ✅ 부모: 65세 이상 1억 원, 미만 5천만 원
-        case 'sibling': return 10000000; // ✅ 형제자매: 1천만 원
-        case 'other': return 10000000; // 기타 상속인: 1천만 원
-        default: return 0;
+        case 'spouse': 
+            return 0; // ❌ 배우자는 관계 공제 없음
+        case 'adultChild': 
+            return 50000000; // 성년 자녀: 5천만 원
+        case 'parent': 
+            console.log(`부모 나이 확인: ${age}`); // 디버깅용 로그
+            return (age >= 65) ? 100000000 : 50000000; // ✅ 부모: 65세 이상 1억 원, 미만 5천만 원
+        case 'sibling': 
+            return 10000000; // ✅ 형제자매: 1천만 원
+        case 'other': 
+            return 10000000; // 기타 상속인: 1천만 원
+        default: 
+            return 0;
     }
 }
 
