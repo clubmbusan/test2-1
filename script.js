@@ -553,9 +553,8 @@ function calculateExemptions(totalInheritance, relationship, spouseShare = 0, pa
             break;
 
         case 'parent': 
-            relationshipExemption = parentAge >= 60 ? 100000000 : 50000000;
-            break;
-
+             relationshipExemption = 50000000; // ✅ 부모는 60세 이상 여부 관계없이 무조건 5천만 원 공제
+             break;
         case 'sibling':
         case 'other':
             relationshipExemption = 10000000; // 기타 상속인 공제 (천만 원)
@@ -739,8 +738,7 @@ function calculatePersonalMode(totalAssetValue) {
         case 'adultChild': 
             return 50000000; // 성년 자녀: 5천만 원
         case 'parent': 
-            console.log(`부모 나이 확인: ${age}`); // 디버깅용 로그
-            return (age >= 65) ? 100000000 : 50000000; // ✅ 부모: 65세 이상 1억 원, 미만 5천만 원
+            return 50000000; // ✅ 부모는 60세 이상 여부 관계없이 무조건 5천만 원 공제
         case 'sibling': 
             return 10000000; // ✅ 형제자매: 1천만 원
         case 'other': 
