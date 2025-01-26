@@ -209,17 +209,20 @@ document.querySelectorAll('.assetType').forEach(select => {
     // 초기화 호출
 initializeDefaultView();
     
-  document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
     console.log("✅ HTML 문서 로드 완료!");
 
-    // ✅ "다시 하기" 버튼 (모든 removeAssetButton에 이벤트 추가)
-    document.querySelectorAll('.removeAssetButton').forEach(button => {
-        button.addEventListener('click', (event) => {
+    // ✅ "다시 하기" 버튼 클릭 시 페이지 새로고침
+    const resetButton = document.getElementById('resetButton');
+    if (resetButton) {
+        resetButton.addEventListener('click', (event) => {
             event.preventDefault();
-            console.log("🔄 페이지 새로고침 실행!");
+            console.log("🔄 페이지 새로고침!");
             location.reload(); // 🔄 페이지 새로고침
         });
-    });
+    } else {
+        console.error("❌ 'resetButton'을 찾을 수 없습니다! HTML을 확인하세요.");
+    }
 });
         
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
