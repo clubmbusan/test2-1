@@ -779,6 +779,9 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
+    // ✅ 배우자 포함 관계 공제 총합 (올바르게 반영)
+    let totalRelationshipExemptionFinal = spouseExemption + totalRelationshipExemption;
+        
     // ✅ 배우자 제외 관계 공제 합이 5억 미만이면 일괄 공제 적용
     let generalExemption = 500000000;
     let totalExemptionForNonSpouse = totalRelationshipExemption;
