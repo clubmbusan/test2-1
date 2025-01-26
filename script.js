@@ -811,8 +811,7 @@ function calculateGroupMode(totalAssetValue) {
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
     maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
     totalExemption += maxFinancialExemption;
-
-    let taxableAmount = Math.max(totalAssetValue - totalExemption, 0); // 음수 방지
+    taxableAmount = Math.max(totalAssetValue - totalExemption, 0); // 음수 방지
 
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
