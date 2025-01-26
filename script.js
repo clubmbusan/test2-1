@@ -209,47 +209,54 @@ document.querySelectorAll('.assetType').forEach(select => {
     // 초기화 호출
 initializeDefaultView();
     
- // ✅ "다시 하기" 버튼 클릭 시 초기화 (상속 유형과 재산 선택은 유지)
-document.getElementById('resetButton').addEventListener('click', (event) => {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+    // ✅ 개별 자산 삭제 버튼 (".removeAssetButton") 클릭 시 해당 항목만 삭제
+    document.getElementById('assetContainer').addEventListener('click', (event) => {
+        if (event.target.classList.contains('removeAssetButton')) {
+            event.preventDefault();
 
-    // ✅ 추가된 자산 항목만 제거 (assetContainer 자체는 유지)
-    document.querySelectorAll('.asset-entry').forEach(asset => asset.remove());
+            // ✅ 해당 자산 항목을 삭제
+            const assetEntry = event.target.closest('.asset-entry');
+            if (assetEntry) {
+                assetEntry.remove();
+                console.log("✅ 개별 자산 삭제 완료");
+            }
 
-    // ✅ 추가된 상속인 항목만 제거 (heirContainer 자체는 유지)
-    document.querySelectorAll('.heir-entry').forEach(heir => heir.remove());
+            // ✅ 전체 계산 필드 초기화
+            document.querySelectorAll('.assetValue').forEach(input => input.value = '');
 
-    // ✅ 모든 입력 필드 초기화 (금액, 비율 등)
-    document.querySelectorAll('input').forEach(input => input.value = '');
-
-    // ✅ 결과 영역 초기화
-    document.getElementById('result').innerHTML = '';
-
-    console.log("✅ '다시 하기' 버튼 클릭 → 추가된 항목 초기화 완료!");
-});
-
-// ✅ 개별 자산 삭제 (기존 removeAssetButton 코드 수정)
-document.querySelectorAll('.resetButton').forEach((button) => {
-    button.addEventListener('click', (event) => {
-        event.preventDefault();
-
-        // 해당 자산 항목을 삭제
-        const assetEntry = button.closest('.asset-entry');
-        if (assetEntry) {
-            assetEntry.remove();
+            // ✅ 결과 영역 초기화
+            document.getElementById('result').innerHTML = '';
         }
-
-        // 전체 계산 필드 초기화
-        document.querySelectorAll('.assetValue').forEach(input => input.value = '');
-
-        // 결과 영역 초기화
-        document.getElementById('result').innerHTML = '';
     });
+
+    // ✅ "전체 다시 하기" 버튼 클릭 시 전체 초기화 (상속 유형과 재산 선택은 유지)
+    const resetButton = document.getElementById('resetButton');
+    if (resetButton) {
+        resetButton.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            // ✅ 추가된 자산 항목만 제거 (assetContainer 유지)
+            document.querySelectorAll('.asset-entry').forEach(asset => asset.remove());
+
+            // ✅ 추가된 상속인 항목만 제거 (heirContainer 유지)
+            document.querySelectorAll('.heir-entry').forEach(heir => heir.remove());
+
+            // ✅ 모든 입력 필드 초기화 (금액, 비율 등)
+            document.querySelectorAll('input').forEach(input => input.value = '');
+
+            // ✅ 결과 영역 초기화
+            document.getElementById('result').innerHTML = '';
+
+            console.log("✅ '다시 하기' 버튼 클릭 → 추가된 항목 초기화 완료!");
+        });
+    } else {
+        console.error("❌ 'resetButton'을 찾을 수 없습니다.");
+    }
+
+    // ✅ 콤마 이벤트 등록 (재산 입력 필드)
+    document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 });
-
-// ✅ 콤마 이벤트 등록 (재산 입력 필드)
-document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
-
 
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
