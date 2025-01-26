@@ -723,8 +723,7 @@ function calculatePersonalMode(totalAssetValue) {
    // ✅ 관계 공제 계산 함수
   function calculateRelationshipExemption(relationship, age = 0) {
     if (relationship === 'minorChild') {
-        const yearsUntilAdult = Math.max(19 - age, 0); // 나이가 정상적으로 들어오는지 확인
-        return Math.max(yearsUntilAdult * 10000000, 500000000); // 최소 5억 보장
+        const yearsUntilAdult = Math.max(19 - age, 0); // 나이가 정상적으로 들어오는지 확인        
     }
     
     switch (relationship) {
