@@ -850,7 +850,7 @@ function calculateGroupMode(totalAssetValue) {
 document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
      <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-     <h3>기본 공제: 5,000,000,000 원</h3>
+     <h3>기본 공제: 500,000,000 원</h3>
      <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3> <!-- ✅ 배우자 공제 삭제 -->
      <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
      <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
