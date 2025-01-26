@@ -851,7 +851,6 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
             tax
         };
     });
-}
 
         // ✅ 결과 출력 (일괄 공제 적용)
     document.getElementById('result').innerHTML = `
