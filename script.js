@@ -209,43 +209,47 @@ document.querySelectorAll('.assetType').forEach(select => {
     // 초기화 호출
 initializeDefaultView();
     
- // "다시 하기" 버튼 이벤트 리스너
+ // ✅ "다시 하기" 버튼 클릭 시 초기화 (상속 유형과 재산 선택은 유지)
+document.getElementById('resetButton').addEventListener('click', (event) => {
+    event.preventDefault();
+
+    // ✅ 추가된 자산 항목만 제거 (assetContainer 자체는 유지)
+    document.querySelectorAll('.asset-entry').forEach(asset => asset.remove());
+
+    // ✅ 추가된 상속인 항목만 제거 (heirContainer 자체는 유지)
+    document.querySelectorAll('.heir-entry').forEach(heir => heir.remove());
+
+    // ✅ 모든 입력 필드 초기화 (금액, 비율 등)
+    document.querySelectorAll('input').forEach(input => input.value = '');
+
+    // ✅ 결과 영역 초기화
+    document.getElementById('result').innerHTML = '';
+
+    console.log("✅ '다시 하기' 버튼 클릭 → 추가된 항목 초기화 완료!");
+});
+
+// ✅ 개별 자산 삭제 (기존 removeAssetButton 코드 수정)
 document.querySelectorAll('.removeAssetButton').forEach((button) => {
     button.addEventListener('click', (event) => {
         event.preventDefault();
 
-        // 해당 자산 항목을 초기화
+        // 해당 자산 항목을 삭제
         const assetEntry = button.closest('.asset-entry');
         if (assetEntry) {
-            // 현재 자산 유형 유지
-            const assetTypeSelect = assetEntry.querySelector('.assetType');
-            const currentAssetType = assetTypeSelect.value;
-
-            // 모든 입력 필드 초기화
-            assetEntry.querySelectorAll('input').forEach((input) => {
-                input.value = ''; // 입력 필드 초기화
-            });
-
-            // 필드 표시 상태를 초기화하면서 기존 자산 유형 유지
-            assetTypeSelect.value = currentAssetType; // 자산 유형 복원
-            handleAssetTypeChange(assetTypeSelect); // 필드 표시 상태 업데이트
+            assetEntry.remove();
         }
 
         // 전체 계산 필드 초기화
-        document.querySelectorAll('.assetValue').forEach((input) => {
-            input.value = ''; // 계산 필드 초기화
-        });
+        document.querySelectorAll('.assetValue').forEach(input => input.value = '');
 
         // 결과 영역 초기화
-        const resultArea = document.getElementById('result');
-        if (resultArea) {
-            resultArea.innerHTML = ''; // 결과를 초기화
-        }
+        document.getElementById('result').innerHTML = '';
     });
-}); 
+});
 
-      // 초기화: 모든 .assetValue 필드에 콤마 이벤트 등록
+// ✅ 콤마 이벤트 등록 (재산 입력 필드)
 document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
+
 
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
