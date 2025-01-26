@@ -742,7 +742,7 @@ function calculateRelationshipExemption(relationship, age = 0) {
     }
 }
 
-/ ✅ 배우자 공제(5억 원) 및 배우자 추가 공제 계산 함수
+// ✅ 배우자 공제(5억 원) 및 배우자 추가 공제 계산 함수
 function calculateSpouseExemption(spouseShare, totalAssetValue) {
     let spouseBasicExemption = 500000000; // ✅ 배우자 공제 5억 원
     let spouseAdditionalExemption = Math.min(spouseShare * 0.5, 3000000000); // 배우자 추가 공제 (최대 30억 원)
