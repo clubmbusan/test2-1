@@ -851,9 +851,6 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
             tax
         };
     });
-
-    // ✅ 최종 결과 출력
-    console.log(heirs);
 }
 
         // ✅ 결과 출력 (일괄 공제 적용)
