@@ -209,48 +209,39 @@ document.querySelectorAll('.assetType').forEach(select => {
     // 초기화 호출
 initializeDefaultView();
     
-// "다시 하기" 버튼 이벤트 리스너 (추가된 창 닫기, 입력값 초기화)
+// "다시 하기" 버튼 이벤트 리스너 (추가된 창 닫기 + 입력값 및 결과 초기화)
 document.querySelectorAll('.removeAssetButton').forEach((button) => {
     button.addEventListener('click', (event) => {
         event.preventDefault();
 
-        console.log("🔄 '다시 하기' 버튼 클릭됨! 입력 필드 초기화 실행!");
+        console.log("🔄 '다시 하기' 버튼 클릭됨! 추가된 입력 필드 닫기 & 입력값 초기화 실행!");
 
-        // ✅ 현재 선택된 "상속 유형"과 "재산 유형" 값 저장
-        const inheritanceType = document.getElementById('inheritanceType').value;
-        const assetType = document.getElementById('assetType').value;
-
-        // ✅ 추가된 "재산 항목(.asset-entry)" 삭제 (첫 번째 항목 제외)
+        // ✅ 추가된 "재산 항목(.asset-entry)" 숨기기 (첫 번째 항목 제외)
         document.querySelectorAll('#assetContainer .asset-entry').forEach((asset, index) => {
-            if (index !== 0) asset.remove();
+            if (index !== 0) {
+                asset.style.display = 'none'; // 🔥 추가된 창 닫기 (삭제 X)
+            }
         });
 
-        // ✅ 추가된 "상속인 항목(.heir-entry)" 삭제 (첫 번째 항목 제외)
+        // ✅ 추가된 "상속인 항목(.heir-entry)" 숨기기 (첫 번째 항목 제외)
         document.querySelectorAll('#heirContainer .heir-entry').forEach((heir, index) => {
-            if (index !== 0) heir.remove();
+            if (index !== 0) {
+                heir.style.display = 'none'; // 🔥 추가된 창 닫기 (삭제 X)
+            }
         });
 
-        // ✅ 모든 입력 필드 초기화 (숫자 입력 필드)
+        // ✅ 입력된 모든 값 초기화
         document.querySelectorAll('input').forEach(input => {
-            input.value = ''; // 입력 필드 초기화
+            input.value = ''; // 🔄 입력 필드 초기화
         });
 
         // ✅ 결과 영역 초기화
         const resultArea = document.getElementById('result');
         if (resultArea) {
-            resultArea.innerHTML = ''; // 결과창 초기화
+            resultArea.innerHTML = ''; // 🔄 결과창 초기화
         }
 
-        // ✅ 기존 선택 값을 복원 (상속 유형과 재산 유형 유지)
-        document.getElementById('inheritanceType').value = inheritanceType;
-        document.getElementById('assetType').value = assetType;
-
-        // ✅ 추가 입력창 닫기 (숨기기)
-        document.querySelectorAll('.section').forEach(section => {
-            section.style.display = 'none'; // 모든 추가 창 닫기
-        });
-
-        console.log("✅ 추가된 입력 필드 초기화 완료! 추가 창도 닫힘!");
+        console.log("✅ 추가된 입력 필드 닫기 완료! (기본 입력 필드는 유지됨)");
     });
 });
     
