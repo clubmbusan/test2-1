@@ -645,7 +645,7 @@ function calculatePersonalMode(totalAssetValue) {
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
     const assetType = document.getElementById('assetType')?.value || 'realEstate'; // 기본값 부동산
 
-    // ✅ 부모 연령 가져오기
+    // ✅ 부모 연령 가져오기 (필요 없음, 삭제 가능)
     let parentAge = 0;
     let parentAgeSelect = document.getElementById('parentAge');
     if (relationship === 'parent' && parentAgeSelect) {
@@ -667,31 +667,21 @@ function calculatePersonalMode(totalAssetValue) {
     // ✅ 배우자 추가 공제 (배우자만 적용)
     let spouseAdditionalExemption = 0;
     if (relationship === 'spouse') {
-        spouseAdditionalExemption = Math.min(totalAssetValue - 700000000, 2300000000);
+        spouseAdditionalExemption = Math.max(0, Math.min(totalAssetValue - 700000000, 2300000000));
     }
 
-     // ✅ 배우자가 아닐 경우, 최종 공제액이 5억 미만이면 5억 보장 (일괄 공제)
-    let generalExemption = 0;
-    if (relationship !== 'spouse') {
-        generalExemption = 500000000;
-    }
+    // ✅ 배우자가 아닐 경우, 최종 공제액이 5억 미만이면 5억 보장 (일괄 공제)
+    let generalExemption = (basicExemption + relationshipExemption < 500000000) ? 500000000 : 0;
 
     // ✅ 금융재산 공제 추가 (현금 또는 주식 선택 시에만 적용)
-    let financialExemption = (assetType === 'cash' || assetType === 'stock') ? calculateFinancialExemption() : 0;
+    let financialExemption = (assetType === 'cash' || assetType === 'stock') ? calculateFinancialExemption(totalAssetValue) : 0;
 
-   // ✅ 금융재산 공제를 상속 비율대로 분배
-    let financialExemptionByHeir = {};
-    heirs.forEach(heir => {
-        financialExemptionByHeir[heir.name] = (maxFinancialExemption * heir.sharePercentage) / 100;
-    });
-   
-
-    // ✅ 최종 공제 계산 (금융재산 공제 포함)
+    // ✅ 최종 공제 계산
     let totalExemption = basicExemption + relationshipExemption + financialExemption;
     if (relationship === 'spouse') {
         totalExemption += spouseAdditionalExemption;
     } else {
-        totalExemption = Math.max(totalExemption, generalExemption) + financialExemption;
+        totalExemption = Math.max(totalExemption, generalExemption);
     }
 
     // ✅ 과세 금액 계산
