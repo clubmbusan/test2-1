@@ -728,19 +728,19 @@ function calculatePersonalMode(totalAssetValue) {
  */
   function calculateRelationshipExemption(relationship, age = 0) {
     if (relationship === 'minorChild') {
-        const yearsUntilAdult = Math.max(19 - age, 0); // 나이가 정상적으로 들어오는지 확인
+        const yearsUntilAdult = Math.max(19 - age, 0); // 미성년자 공제 계산
         return yearsUntilAdult * 10000000; // 1천만 원 × (19 - 나이)
     }
-        
+
     switch (relationship) {
         case 'spouse': 
-            return 0; // ❌ 배우자는 관계 공제 없음
+            return 500000000; // ✅ 배우자 공제 5억 원 포함
         case 'adultChild': 
             return 50000000; // 성년 자녀: 5천만 원
         case 'parent': 
-            return 50000000; // ✅ 부모는 60세 이상 여부 관계없이 무조건 5천만 원 공제
+            return 50000000; // 부모: 5천만 원
         case 'sibling': 
-            return 10000000; // ✅ 형제자매: 1천만 원
+            return 10000000; // 형제자매: 1천만 원
         case 'other': 
             return 10000000; // 기타 상속인: 1천만 원
         default: 
@@ -756,17 +756,16 @@ function calculateSpouseExemption(spouseShare, totalAssetValue) {
     return { spouseBasicExemption, spouseAdditionalExemption };
 }
 
-// ✅ 전원 상속 계산 함수 (기초공제 배분 + 배우자 공제 수정)
+ // ✅ 전원 상속 계산 함수 (기초공제 배분 + 배우자 공제 수정)
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
-    let totalBasicExemption = 200000000; // 기초 공제 2억 원
-    let totalRelationshipExemption = 0; // 배우자 제외 관계 공제 합계
-    let spouseExemption = 0; // 배우자 공제 (별도 저장)
-    let totalFinancialAssets = 0; // 총 금융재산
+    let totalBasicExemption = 200000000; // 기초공제 2억 원
+    let totalRelationshipExemption = 0; // 관계 공제 합계 (배우자 포함)
+    let totalFinancialAssets = 0; // 금융재산 총액
     let heirs = [];
 
-    // ✅ 금융재산 총액 계산 (현금 + 주식)
+    // ✅ 금융재산 총액 계산
     document.querySelectorAll('.asset-entry').forEach(asset => {
         let assetType = asset.querySelector('.assetType')?.value;
         let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
@@ -777,7 +776,7 @@ function calculateGroupMode(totalAssetValue) {
     });
 
     // ✅ 상속인 정보 저장
-     heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+    heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         let age = 0;
@@ -790,48 +789,28 @@ function calculateGroupMode(totalAssetValue) {
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
         let relationshipExemption = calculateRelationshipExemption(relationship, age);
 
-        if (relationship === 'spouse') {
-            spouseExemption = 500000000; // ✅ 배우자 공제 5억 원 (관계 공제에서 제외)
-        } else {
-            totalRelationshipExemption += relationshipExemption;
-        }
+        totalRelationshipExemption += relationshipExemption; // ✅ 배우자 공제 포함
 
         return { name, relationship, age, sharePercentage, relationshipExemption };
-    });
-
-     // ✅ 상단 결과지에서 배우자 공제와 관계공제 분리
-    let totalExemption = totalBasicExemption + totalRelationshipExemption;
-    let spouseBasicExemption = 500000000; // 배우자 공제 5억 원
-    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
-    totalExemption += maxFinancialExemption + spouseBasicExemption;
-
-    let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
-      
-    
-    // ✅ 배우자 포함 관계 공제 총합 (올바르게 반영)
-    let totalRelationshipExemptionFinal = spouseExemption + totalRelationshipExemption;
-
-    // ✅ 기본공제 적용 (기존 totalExemption 업데이트)
-     totalExemption += 500000000 + totalRelationshipExemptionFinal; // ✅ 기본공제 5억 추가 반영
+    });       
 
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
-    maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
-    totalExemption += maxFinancialExemption;
-    taxableAmount = Math.max(totalAssetValue - totalExemption, 0); // 음수 방지
+    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
+    
+    // ✅ 총 공제 금액 = 기초공제(2억) + 관계공제(배우자 포함) + 금융재산 공제
+    let totalExemption = totalBasicExemption + totalRelationshipExemption + maxFinancialExemption;
+
+    // ✅ 과세 금액 계산 (음수 방지)
+    let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
-        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100; // 기초공제 지분별 배분
-        let spouseAdditionalExemption = 0;
-
-        if (heir.relationship === 'spouse') {
-            spouseAdditionalExemption = Math.min(3000000000 - (heir.relationshipExemption + basicExemption), shareAmount);
-        }
+        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100; // 기초공제 비율 적용
 
         // ✅ 개별 과세 대상 금액 계산
         const finalTaxableAmount = Math.max(
-            shareAmount - heir.relationshipExemption - basicExemption - spouseAdditionalExemption - (maxFinancialExemption * heir.sharePercentage / 100),
+            shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
             0
         );
 
@@ -841,40 +820,33 @@ function calculateGroupMode(totalAssetValue) {
             ...heir,
             shareAmount,
             basicExemption,
-            spouseAdditionalExemption,
             financialExemption: (maxFinancialExemption * heir.sharePercentage) / 100,
             finalTaxableAmount,
             tax
         };
     });
-
-    // ✅ 배우자 공제 5억 원 변수 선언
-    spouseExemption = 500000000;
-
-// ✅ 상단 결과지 (배우자 공제 삭제)
-document.getElementById('result').innerHTML = `
+   
+    // ✅ 결과지 수정 (기본공제 삭제, 관계공제에 배우자 포함)
+    document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
      <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-     <h3>기본 공제: 500,000,000 원</h3>
-     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3> <!-- ✅ 배우자 공제 삭제 -->
+     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3> <!-- ✅ 배우자 공제 포함 -->
      <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
      <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
      ${heirs.map((heir) => ` 
           <p>
              <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
              기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
-             ${heir.relationship === 'spouse' ? `<strong>배우자 공제:</strong> ${spouseExemption.toLocaleString()} 원<br>` 
-              : `<strong>관계 공제:</strong> ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>`}
-             ${heir.relationship === 'spouse' ? `<strong>추가 공제:</strong> ${heir.spouseAdditionalExemption.toLocaleString()} 원 (배우자 추가 공제)<br>` : ''}
+             <strong>관계 공제:</strong> ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
              <strong>금융재산 공제:</strong> ${heir.financialExemption.toLocaleString()} 원<br>
              <strong>과세 표준:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
              <strong>상속세:</strong> ${heir.tax.toLocaleString()} 원
          </p>
      `).join('')}
- `;  
- console.log(heirs); // ✅ 실행 전에 확인
-} 
- 
+    `;  
+    console.log(heirs); // ✅ 실행 전에 확인
+}   
+     
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
       if (value === null || value === undefined) {
