@@ -874,7 +874,6 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
              </p>
          `).join('')}
      `;
-}
     
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
