@@ -809,7 +809,7 @@ function calculateGroupMode(totalAssetValue) {
      totalExemption += 500000000 + totalRelationshipExemptionFinal; // ✅ 기본공제 5억 추가 반영
 
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
-    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
+    maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
     totalExemption += maxFinancialExemption;
 
     let taxableAmount = Math.max(totalAssetValue - totalExemption, 0); // 음수 방지
