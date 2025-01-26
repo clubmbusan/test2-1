@@ -851,7 +851,10 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
             tax
         };
     });
-
+// ✅ 최종 결과 출력
+    console.log(heirs); // 오류 없이 실행되도록 괄호 확인
+}
+        
         // ✅ 결과 출력 (일괄 공제 적용)
     document.getElementById('result').innerHTML = `
          <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
