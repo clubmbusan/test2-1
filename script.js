@@ -864,6 +864,7 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
          <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
          <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
          ${heirs.map((heir) => `
+         `;
              <p>
                  <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
                  기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
