@@ -851,10 +851,7 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
             tax
         };
     });
-// ✅ 최종 결과 출력
-    console.log(heirs); // 오류 없이 실행되도록 괄호 확인
-}
-        
+
         // ✅ 결과 출력 (일괄 공제 적용)
     document.getElementById('result').innerHTML = `
          <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
@@ -863,8 +860,8 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
          <h3>일괄 공제: ${missingExemption.toLocaleString()} 원</h3>
          <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
          <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
-         ${heirs.map((heir) => `
-         `;
+         ${heirs.map((heir) => ` 
+        `;
              <p>
                  <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
                  기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
@@ -877,7 +874,10 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
              </p>
          `).join('')}
      `;
-    
+
+ console.log(heirs); // ✅ 실행 전에 확인
+} // ✅ 함수 닫기
+ 
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
       if (value === null || value === undefined) {
