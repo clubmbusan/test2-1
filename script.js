@@ -209,65 +209,19 @@ document.querySelectorAll('.assetType').forEach(select => {
     // 초기화 호출
 initializeDefaultView();
     
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("✅ HTML 문서 로드 완료! 이벤트 리스너 등록 시작");
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log("✅ HTML 문서 로드 완료!");
 
-    // ✅ 개별 자산 삭제 버튼 (이벤트 위임 적용)
-    document.getElementById('assetContainer').addEventListener('click', (event) => {
-        if (event.target.classList.contains('removeAssetButton')) {
+    // ✅ "다시 하기" 버튼 (모든 removeAssetButton에 이벤트 추가)
+    document.querySelectorAll('.removeAssetButton').forEach(button => {
+        button.addEventListener('click', (event) => {
             event.preventDefault();
-
-            console.log("🗑 개별 삭제 버튼 클릭됨!");
-
-            // ✅ 해당 자산 항목을 삭제
-            const assetEntry = event.target.closest('.asset-entry');
-            if (assetEntry) {
-                assetEntry.remove();
-                console.log("✅ 개별 자산 삭제 완료");
-            } else {
-                console.warn("⚠️ 삭제할 asset-entry를 찾을 수 없습니다.");
-            }
-
-            // ✅ 전체 계산 필드 초기화
-            document.querySelectorAll('.assetValue').forEach(input => input.value = '');
-
-            // ✅ 결과 영역 초기화
-            document.getElementById('result').innerHTML = '';
-        }
-    });
-
-    // ✅ "전체 다시 하기" 버튼 (resetButton)
-    const resetButton = document.getElementById('resetButton');
-    if (resetButton) {
-        resetButton.addEventListener('click', (event) => {
-            event.preventDefault();
-
-            console.log("🔄 전체 초기화 버튼 클릭됨!");
-
-            // ✅ 모든 추가된 재산 항목 삭제
-            document.querySelectorAll('#assetContainer .asset-entry').forEach(asset => asset.remove());
-
-            // ✅ 모든 추가된 상속인 항목 삭제
-            document.querySelectorAll('#heirContainer .heir-entry').forEach(heir => heir.remove());
-
-            // ✅ 모든 입력 필드 초기화
-            document.querySelectorAll('input').forEach(input => input.value = '');
-
-            // ✅ 결과 영역 초기화
-            document.getElementById('result').innerHTML = '';
-
-            console.log("✅ '다시 하기' 버튼 클릭 → 추가된 재산 및 상속인 초기화 완료!");
+            console.log("🔄 페이지 새로고침 실행!");
+            location.reload(); // 🔄 페이지 새로고침
         });
-    } else {
-        console.error("❌ 'resetButton'을 찾을 수 없습니다. HTML을 확인하세요.");
-    }
-
-    // ✅ 콤마 이벤트 등록 (재산 입력 필드)
-    document.querySelectorAll('.assetValue').forEach(input => addCommaFormatting(input));
-
-    console.log("✅ 이벤트 리스너 등록 완료!");
+    });
 });
-    
+        
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
 if (initialStockPriceField) {
