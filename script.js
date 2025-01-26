@@ -843,7 +843,7 @@ function calculateGroupMode(totalAssetValue) {
     });
 
     // ✅ 배우자 공제 5억 원 변수 선언
-    let spouseExemption = 500000000;
+    spouseExemption = 500000000;
 
 // ✅ 상단 결과지 (배우자 공제 삭제)
 document.getElementById('result').innerHTML = `
