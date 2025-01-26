@@ -210,27 +210,6 @@ document.querySelectorAll('.assetType').forEach(select => {
 initializeDefaultView();
     
 document.addEventListener('DOMContentLoaded', () => {
-    // ✅ 개별 자산 삭제 버튼 (".removeAssetButton") 클릭 시 해당 항목만 삭제
-    document.getElementById('assetContainer').addEventListener('click', (event) => {
-        if (event.target.classList.contains('removeAssetButton')) {
-            event.preventDefault();
-
-            // ✅ 해당 자산 항목을 삭제
-            const assetEntry = event.target.closest('.asset-entry');
-            if (assetEntry) {
-                assetEntry.remove();
-                console.log("✅ 개별 자산 삭제 완료");
-            }
-
-            // ✅ 전체 계산 필드 초기화
-            document.querySelectorAll('.assetValue').forEach(input => input.value = '');
-
-            // ✅ 결과 영역 초기화
-            document.getElementById('result').innerHTML = '';
-        }
-    });
-
- document.addEventListener('DOMContentLoaded', () => {
     // ✅ 개별 자산 삭제 버튼 (이벤트 위임 적용)
     document.getElementById('assetContainer').addEventListener('click', (event) => {
         if (event.target.classList.contains('removeAssetButton')) {
@@ -279,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 });
 
+    
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
 if (initialStockPriceField) {
