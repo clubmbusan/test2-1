@@ -723,9 +723,10 @@ function calculatePersonalMode(totalAssetValue) {
    // ✅ 관계 공제 계산 함수
   function calculateRelationshipExemption(relationship, age = 0) {
     if (relationship === 'minorChild') {
-        const yearsUntilAdult = Math.max(19 - age, 0); // 나이가 정상적으로 들어오는지 확인        
+        const yearsUntilAdult = Math.max(19 - age, 0); // 나이가 정상적으로 들어오는지 확인
+        return yearsUntilAdult * 10000000; // 1천만 원 × (19 - 나이) (최소 5억 보장 제거)
     }
-    
+        
     switch (relationship) {
         case 'spouse': return 500000000; // 배우자: 5억 원
         case 'adultChild': return 50000000; // 성년 자녀: 5천만 원
