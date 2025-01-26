@@ -219,18 +219,18 @@ document.querySelectorAll('.removeAssetButton').forEach((button) => {
         // ✅ 추가된 "재산 항목(.asset-entry)" 숨기기 (첫 번째 항목 제외)
         document.querySelectorAll('#assetContainer .asset-entry').forEach((asset, index) => {
             if (index !== 0) {
-                asset.style.display = 'none'; // 🔥 추가된 창 닫기 (삭제 X)
+                asset.style.display = 'none'; //  추가된 창 닫기 (삭제 X)
             }
         });
 
         // ✅ 추가된 "상속인 항목(.heir-entry)" 숨기기 (첫 번째 항목 제외)
         document.querySelectorAll('#heirContainer .heir-entry').forEach((heir, index) => {
             if (index !== 0) {
-                heir.style.display = 'none'; // 🔥 추가된 창 닫기 (삭제 X)
+                heir.style.display = 'none'; //  추가된 창 닫기 (삭제 X)
             }
         });
 
-        // ✅ 입력된 모든 값 초기화
+        // ✅ 입력된 모든 값 초기화 (숫자 입력 필드만)
         document.querySelectorAll('input').forEach(input => {
             input.value = ''; // 🔄 입력 필드 초기화
         });
@@ -241,9 +241,17 @@ document.querySelectorAll('.removeAssetButton').forEach((button) => {
             resultArea.innerHTML = ''; // 🔄 결과창 초기화
         }
 
+        // ✅ 기존에 기본적으로 열려 있는 관계 입력 창(`personalSection`, `groupSection` 등)은 유지
+        document.querySelectorAll('.section').forEach(section => {
+            if (!section.classList.contains('active')) {
+                section.style.display = 'none'; //  추가된 창만 닫음
+            }
+        });
+
         console.log("✅ 추가된 입력 필드 닫기 완료! (기본 입력 필드는 유지됨)");
     });
 });
+
     
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
