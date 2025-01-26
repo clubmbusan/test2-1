@@ -791,12 +791,14 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
         missingExemption = generalExemption - totalExemptionForNonSpouse; // 부족한 공제 금액
     }
 
-    // ✅ 일괄 공제를 배우자 제외 상속인에게 비율에 따라 분배
+    // ✅ 일괄 공제를 개별 상속인에게 차등 적용
+    let generalExemptionByHeir = {};
     heirs.forEach((heir) => {
         if (heir.relationship !== 'spouse') {
-            heir.generalExemption = (missingExemption * heir.sharePercentage) / 100; // 지분율 기준 분배
+            let deficit = 500000000 - heir.relationshipExemption; // 5억에서 부족한 금액 계산
+            generalExemptionByHeir[heir.name] = Math.min(deficit, missingExemption * (heir.sharePercentage / 100));
         } else {
-            heir.generalExemption = 0; // 배우자는 적용 안 함
+            generalExemptionByHeir[heir.name] = 0;
         }
     });
 
