@@ -229,7 +229,7 @@ document.getElementById('resetButton').addEventListener('click', (event) => {
 });
 
 // ✅ 개별 자산 삭제 (기존 removeAssetButton 코드 수정)
-document.querySelectorAll('.removeAssetButton').forEach((button) => {
+document.querySelectorAll('.resetButton').forEach((button) => {
     button.addEventListener('click', (event) => {
         event.preventDefault();
 
