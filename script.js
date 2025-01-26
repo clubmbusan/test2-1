@@ -273,8 +273,9 @@ document.querySelectorAll('.removeAssetButton').forEach((button) => {
     });
 });
 
-// ✅ 초기화: 모든 .assetValue 필드에 콤마 이벤트 등록
-document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
+   // ✅ 초기화: 모든 .assetValue 필드에 콤마 이벤트 등록
+   document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
+ });   
 
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
