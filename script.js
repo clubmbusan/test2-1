@@ -753,14 +753,22 @@ function calculateSpouseAdditionalExemption(spouseShare, totalAssetValue) {
     let heirs = [];
 
     // ✅ 상속인 정보 저장
-    heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+     heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
-        const age = parseInt(heir.querySelector('.ageField')?.value || '0');
+        let age = 0;
+
+        // ✅ 미성년자 나이 입력 필드 확인
+        if (relationship === 'minorChild') {
+            const minorChildAgeInput = heir.querySelector('.minorChildAgeField');
+            age = minorChildAgeInput && minorChildAgeInput.value ? parseInt(minorChildAgeInput.value) : 0;
+        }
+
+        console.log(`🔍 이름: ${name}, 관계: ${relationship}, 입력된 나이: ${age}`);
+
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
-
-        let relationshipExemption = calculateRelationshipExemption(relationship, age);
-
+        let relationshipExemption = calculateRelationshipExemption(relationship, age);      
+        
         // ✅ 배우자의 공제는 따로 저장 (일괄 공제 대상에서 제외)
         if (relationship === 'spouse') {
             spouseExemption = relationshipExemption;
