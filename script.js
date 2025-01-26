@@ -209,42 +209,41 @@ document.querySelectorAll('.assetType').forEach(select => {
     // 초기화 호출
 initializeDefaultView();
     
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("✅ HTML 문서 로드 완료!");
+ // "다시 하기" 버튼 이벤트 리스너
+document.querySelectorAll('.removeAssetButton').forEach((button) => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
 
-    // ✅ "다시 하기" 버튼 (resetAssetButton) 클릭 시 초기화
-    document.querySelectorAll('.resetAssetButton').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.preventDefault();
-            console.log("🔄 입력 필드 초기화 실행!");
+        // 해당 자산 항목을 초기화
+        const assetEntry = button.closest('.asset-entry');
+        if (assetEntry) {
+            // 현재 자산 유형 유지
+            const assetTypeSelect = assetEntry.querySelector('.assetType');
+            const currentAssetType = assetTypeSelect.value;
 
-            // ✅ 상속 유형과 재산 유형 값 저장
-            const inheritanceType = document.getElementById('inheritanceType').value;
-            const assetType = document.getElementById('assetType').value;
-
-            // ✅ 추가된 재산 목록 초기화 (assetContainer 유지)
-            document.querySelectorAll('#assetContainer .asset-entry').forEach(asset => asset.remove());
-
-            // ✅ 추가된 상속인 목록 초기화 (heirContainer 유지)
-            document.querySelectorAll('#heirContainer .heir-entry').forEach(heir => heir.remove());
-
-            // ✅ 모든 입력 필드 초기화 (금액, 비율 등)
-            document.querySelectorAll('input').forEach(input => {
-                input.value = '';
+            // 모든 입력 필드 초기화
+            assetEntry.querySelectorAll('input').forEach((input) => {
+                input.value = ''; // 입력 필드 초기화
             });
 
-            // ✅ 결과 영역 초기화
-            document.getElementById('result').innerHTML = '';
+            // 필드 표시 상태를 초기화하면서 기존 자산 유형 유지
+            assetTypeSelect.value = currentAssetType; // 자산 유형 복원
+            handleAssetTypeChange(assetTypeSelect); // 필드 표시 상태 업데이트
+        }
 
-            // ✅ 기존 선택 값을 복원
-            document.getElementById('inheritanceType').value = inheritanceType;
-            document.getElementById('assetType').value = assetType;
-
-            console.log("✅ '다시 하기' 버튼 클릭 → 입력 필드 초기화 완료!");
+        // 전체 계산 필드 초기화
+        document.querySelectorAll('.assetValue').forEach((input) => {
+            input.value = ''; // 계산 필드 초기화
         });
+
+        // 결과 영역 초기화
+        const resultArea = document.getElementById('result');
+        if (resultArea) {
+            resultArea.innerHTML = ''; // 결과를 초기화
+        }
     });
-});
-        
+}); 
+    
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
 if (initialStockPriceField) {
