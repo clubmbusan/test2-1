@@ -805,8 +805,8 @@ function calculateGroupMode(totalAssetValue) {
     // ✅ 배우자 포함 관계 공제 총합 (올바르게 반영)
     let totalRelationshipExemptionFinal = spouseExemption + totalRelationshipExemption;
 
-    // ✅ 기본공제 적용 (✅ 일괄공제 삭제)
-    let totalExemption = totalBasicExemption + 500000000 + totalRelationshipExemptionFinal; // ✅ 기본공제 5억 반영
+    // ✅ 기본공제 적용 (기존 totalExemption 업데이트)
+     totalExemption += 500000000 + totalRelationshipExemptionFinal; // ✅ 기본공제 5억 추가 반영
 
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
     let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
