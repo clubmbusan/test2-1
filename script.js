@@ -818,37 +818,37 @@ function calculateGroupMode(totalAssetValue) {
     let finalTotalTax = calculateTax(taxableAmount); // ✅ 최종 상속세 계산
 
     // ✅ 개별 상속세 계산 수정 (전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정)
-    heirs = heirs.map((heir) => {
-        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
-        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
+heirs = heirs.map((heir) => {
+    const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+    const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
 
-        let finalTaxableAmount = Math.max(
-            shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
-            0
-        );
+    let finalTaxableAmount = Math.max(
+        shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
+        0
+    );
 
-        // ✅ 전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정
-        if (taxableAmount === 0) {
-            finalTaxableAmount = 0;
-        }
+    // ✅ 전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정
+    if (taxableAmount === 0) {
+        finalTaxableAmount = 0;
+    }
 
-        const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0; // ✅ 0원이면 상속세 0원 처리
+    const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0; // ✅ 0원이면 상속세 0원 처리
 
-        return {
-            ...heir,
-            shareAmount,
-            basicExemption,
-            finalTaxableAmount,
-            tax
-        };
-    });
+    return {
+        ...heir,
+        shareAmount,
+        basicExemption,
+        finalTaxableAmount,
+        tax
+    };
+});
 
-    // ✅ 최종 결과지 수정 (하단 개별 결과지 추가)
-    document.getElementById('result').innerHTML = `
+   // ✅ 최종 결과지 수정
+document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
      <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
      <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3> <!-- ✅ 배우자 추가 공제 제외 -->
-     <h3>배우자 추가 공제: ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원</h3> <!-- ✅ 별도 표기 -->
+     <h3>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원</h3> <!-- ✅ 별도 표기 -->
      <h3>최종 과세 표준: ${taxableAmount.toLocaleString()} 원</h3>
      <h3>최종 상속세: ${finalTotalTax.toLocaleString()} 원</h3>
 
@@ -863,7 +863,7 @@ function calculateGroupMode(totalAssetValue) {
          </p>
      `).join('')}
     `;
-}
+
      
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
