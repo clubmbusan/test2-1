@@ -932,6 +932,7 @@ function calculateLegalInheritance() {
     let numChildren = 0;
     let spouseExists = false;
     let totalRelationshipExemption = 0;
+    let relationshipExemptions = {}; // ✅ 개별 관계 공제 저장
 
     // ✅ 배우자 및 자녀 수 확인
     heirs.forEach(heir => {
@@ -954,6 +955,7 @@ function calculateLegalInheritance() {
 
     // ✅ 관계 공제 자동 적용
     heirs.forEach(heir => {
+        let name = heir.querySelector(".heirName").value || "상속인";
         let relationship = heir.querySelector(".relationship").value;
         let minorChildAgeField = heir.querySelector(".minorChildAgeField");
         let minorChildAge = minorChildAgeField && minorChildAgeField.value ? parseInt(minorChildAgeField.value) : 0;
@@ -973,6 +975,7 @@ function calculateLegalInheritance() {
             relationshipExemption = 10000000; // 기타 상속인 공제 (1천만 원)
         }
 
+        relationshipExemptions[name] = relationshipExemption; // ✅ 개별 공제 값 저장
         totalRelationshipExemption += relationshipExemption;
     });
 
@@ -995,7 +998,7 @@ function calculateLegalInheritance() {
 
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
-            관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})<br>
+            관계 공제: ${relationshipExemptions[name].toLocaleString()} 원 (${relationship})<br>
             <strong>과세 표준:</strong> ${individualTaxableAmount.toLocaleString()} 원<br>
             <strong>개별 상속세:</strong> ${individualTax.toLocaleString()} 원</p>
         `);
