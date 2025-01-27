@@ -772,12 +772,12 @@ function calculateSpouseExemption(spouseShare, totalAssetValue) {
     return { spouseBasicExemption, spouseAdditionalExemption, totalExemption: spouseBasicExemption + spouseAdditionalExemption };
 }
 
- // ✅ 전원 상속 계산 함수 (배우자 추가 공제 개별 반영)
+ // ✅ 전원 상속 계산 함수 (금융재산 공제 포함)
 function calculateGroupMode(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
     let totalBasicExemption = 200000000; // 기초공제 2억 원
-    let totalRelationshipExemption = 0; // 관계 공제 합계 (배우자 기본 공제 포함)
+    let totalRelationshipExemption = 0; // 관계 공제 합계 (배우자 포함)
     let totalFinancialAssets = 0; // 금융재산 총액
     let heirs = [];
 
@@ -790,6 +790,9 @@ function calculateGroupMode(totalAssetValue) {
             totalFinancialAssets += assetValue;
         }
     });
+
+    // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
+    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
     // ✅ 상속인 정보 저장
     heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
@@ -829,9 +832,6 @@ function calculateGroupMode(totalAssetValue) {
         spouseExemptions = calculateSpouseExemption(spouse.sharePercentage, totalAssetValue);
     }
 
-    // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
-    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
-
     // ✅ 전체 과세 표준 계산 (배우자 추가 공제는 적용하지 않음)
     let totalExemption = totalBasicExemption + totalRelationshipExemption + maxFinancialExemption;
     let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
@@ -842,9 +842,10 @@ function calculateGroupMode(totalAssetValue) {
     heirs = heirs.map((heir) => {
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
         const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
+        const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
 
         let finalTaxableAmount = Math.max(
-            shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
+            shareAmount - heir.relationshipExemption - basicExemption - individualFinancialExemption,
             0
         );
 
@@ -859,12 +860,13 @@ function calculateGroupMode(totalAssetValue) {
             ...heir,
             shareAmount,
             basicExemption,
+            financialExemption: individualFinancialExemption,
             finalTaxableAmount,
             tax
         };
     });
 
-     // ✅ 최종 결과지 수정 (금융재산 공제 추가)
+    // ✅ 최종 결과지 수정 (금융재산 공제 추가)
     document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
      <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
