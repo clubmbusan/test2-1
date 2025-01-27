@@ -792,69 +792,72 @@ function calculateGroupMode(totalAssetValue) {
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
-    // ✅ 배우자 추가 공제 적용
+    // ✅ 배우자 추가 공제 적용 (관계 공제에서 제외)
     let spouse = heirs.find(h => h.relationship === 'spouse');
     let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0, totalExemption: 0 };
 
     if (spouse) {
         spouseExemptions = calculateSpouseExemption(spouse.sharePercentage, totalAssetValue);
-        totalRelationshipExemption += spouseExemptions.spouseBasicExemption; // ✅ 기본 5억 원 반영
+        totalRelationshipExemption += spouseExemptions.spouseBasicExemption; // ✅ 배우자 기본 공제 5억 원만 반영
     }
 
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
     let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
-    // ✅ 총 공제 금액 = 기초공제(2억) + 관계공제(배우자 포함) + 금융재산 공제
+    // ✅ 총 공제 금액 = 기초공제(2억) + 관계공제(배우자 기본 공제 포함) + 금융재산 공제
     let totalExemption = totalBasicExemption + totalRelationshipExemption + maxFinancialExemption;
 
     // ✅ 1차 과세 표준 계산
     let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // ✅ 2차 조정: 배우자 추가 공제 반영
+    // ✅ 2차 조정: 배우자 추가 공제 반영 (관계 공제와 별도로 처리)
     if (spouse) {
         taxableAmount = Math.max(taxableAmount - spouseExemptions.spouseAdditionalExemption, 0);
     }
 
     let finalTotalTax = calculateTax(taxableAmount); // ✅ 최종 상속세 계산
 
-  // ✅ 개별 상속세 계산 수정 (전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정)
-heirs = heirs.map((heir) => {
-    const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
-    const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
+    // ✅ 개별 상속세 계산 수정 (전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정)
+    heirs = heirs.map((heir) => {
+        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
 
-    let finalTaxableAmount = Math.max(
-        shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
-        0
-    );
+        let finalTaxableAmount = Math.max(
+            shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
+            0
+        );
 
-    // ✅ 전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정
-    if (taxableAmount === 0) {
-        finalTaxableAmount = 0;
-    }
+        // ✅ 전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정
+        if (taxableAmount === 0) {
+            finalTaxableAmount = 0;
+        }
 
-    const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0; // ✅ 0원이면 상속세 0원 처리
+        const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0; // ✅ 0원이면 상속세 0원 처리
 
-    return {
-        ...heir,
-        shareAmount,
-        basicExemption,
-        finalTaxableAmount,
-        tax
-    };
-});
+        return {
+            ...heir,
+            shareAmount,
+            basicExemption,
+            finalTaxableAmount,
+            tax
+        };
+    });
 
-    // ✅ 최종 결과지 수정
+    // ✅ 최종 결과지 수정 (하단 개별 결과지 추가)
     document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
      <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
-     <h3>배우자 추가 공제: ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원</h3>
+     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3> <!-- ✅ 배우자 추가 공제 제외 -->
+     <h3>배우자 추가 공제: ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원</h3> <!-- ✅ 별도 표기 -->
      <h3>최종 과세 표준: ${taxableAmount.toLocaleString()} 원</h3>
      <h3>최종 상속세: ${finalTotalTax.toLocaleString()} 원</h3>
+
+     <h3>개별 상속인 결과</h3>
      ${heirs.map((heir) => ` 
           <p>
              <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
              관계 공제: ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
+             기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
              <strong>과세 표준:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
              <strong>개별 상속세:</strong> ${heir.tax.toLocaleString()} 원
          </p>
