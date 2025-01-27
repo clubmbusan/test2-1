@@ -946,7 +946,8 @@ function calculateLegalInheritance() {
     let childShare = numChildren > 0 ? 1 / totalInheritance : 0;
 
     let totalExemption = 500000000; // 일괄 공제 (5억)
-    let spouseExemption = spouseExists ? Math.min(spouseShare * totalAssetValue, 3000000000) : 0; // 배우자 공제 (최대 30억)
+    let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+    let spouseExemption = spouseExists ? Math.min(spouseInheritanceAmount, 3000000000) : 0; // 배우자 공제 (최대 30억)
 
     let totalTaxableAmount = Math.max(totalAssetValue - totalExemption - spouseExemption, 0);
     let totalInheritanceTax = calculateTax(totalTaxableAmount);
@@ -958,7 +959,7 @@ function calculateLegalInheritance() {
         let relationship = heir.querySelector(".relationship").value;
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
-        let individualTaxableAmount = Math.round(totalTaxableAmount * share);
+        let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(totalTaxableAmount * share);
         let individualTax = calculateTax(individualTaxableAmount);
 
         individualResults.push(`
@@ -985,6 +986,7 @@ function calculateLegalInheritance() {
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
+
    
     /**
  * 가업 공제 계산 (공용)
