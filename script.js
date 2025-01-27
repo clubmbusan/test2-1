@@ -792,14 +792,17 @@ function calculateGroupMode(totalAssetValue) {
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
-    // ✅ 배우자 추가 공제 적용 (관계 공제에서 제외)
-    let spouse = heirs.find(h => h.relationship === 'spouse');
-    let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0, totalExemption: 0 };
+   // ✅ 배우자 추가 공제 변수 선언 (기본값 0)
+   let spouseAdditionalExemption = 0;
+
+   // ✅ 배우자 추가 공제 적용 (배우자가 있는 경우만 계산)
+     let spouse = heirs.find(h => h.relationship === 'spouse');
 
     if (spouse) {
-        spouseExemptions = calculateSpouseExemption(spouse.sharePercentage, totalAssetValue);
-        totalRelationshipExemption += spouseExemptions.spouseBasicExemption; // ✅ 배우자 기본 공제 5억 원만 반영
-    }
+        let spouseExemptions = calculateSpouseExemption(spouse.sharePercentage, totalAssetValue);
+        spouseAdditionalExemption = spouseExemptions.spouseAdditionalExemption; // ✅ 배우자 추가 공제 값 할당
+        totalRelationshipExemption += spouseExemptions.spouseBasicExemption; // ✅ 배우자 기본 공제(5억 원)만 관계 공제에 포함
+     }
 
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
     let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
