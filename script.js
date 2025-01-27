@@ -982,11 +982,27 @@ function generateLegalResults(totalAssetValue) {
     `;
 }
 
-// ✅ 계산 버튼 클릭 이벤트 리스너
+// ✅ 계산 버튼 클릭 이벤트 리스너 (법정 상속 포함)
 document.getElementById('calculateButton').addEventListener('click', () => {
     let totalAssetValue = parseInt(document.getElementById("assetValue").value.replace(/,/g, "")) || 0;
-    if (totalAssetValue > 0) {
+    let inheritanceType = document.getElementById("inheritanceType").value;
+
+    if (totalAssetValue <= 0) {
+        alert("상속 재산을 입력하세요.");
+        return;
+    }
+
+    // ✅ 법정 상속 선택 시, 법정 상속 계산 함수 실행
+    if (inheritanceType === "legal") {
         generateLegalResults(totalAssetValue);
+        return; // ✅ 법정 상속이면 여기서 종료 (경고 메시지 방지)
+    }
+
+    // ✅ 협의 상속 또는 기타 유형인 경우 기존 계산 방식 적용
+    if (inheritanceType === "group") {
+        calculateGroupMode(totalAssetValue);
+    } else {
+        alert("올바른 상속 유형을 선택하세요.");
     }
 });
 
