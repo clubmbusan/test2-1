@@ -817,30 +817,31 @@ function calculateGroupMode(totalAssetValue) {
 
     let finalTotalTax = calculateTax(taxableAmount); // ✅ 최종 상속세 계산
 
-    // ✅ 개별 상속 계산
-    heirs = heirs.map((heir) => {
-        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
-        const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
+  // ✅ 개별 상속세 계산 수정 (전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정)
+heirs = heirs.map((heir) => {
+    const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+    const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
 
-        let finalTaxableAmount = Math.max(
-            shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
-            0
-        );
+    let finalTaxableAmount = Math.max(
+        shareAmount - heir.relationshipExemption - basicExemption - (maxFinancialExemption * heir.sharePercentage / 100),
+        0
+    );
 
-        if (heir.relationship === 'spouse') {
-            finalTaxableAmount = Math.max(finalTaxableAmount - spouseExemptions.spouseAdditionalExemption, 0);
-        }
+    // ✅ 전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정
+    if (taxableAmount === 0) {
+        finalTaxableAmount = 0;
+    }
 
-        const tax = calculateTax(finalTaxableAmount);
+    const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0; // ✅ 0원이면 상속세 0원 처리
 
-        return {
-            ...heir,
-            shareAmount,
-            basicExemption,
-            finalTaxableAmount,
-            tax
-        };
-    });
+    return {
+        ...heir,
+        shareAmount,
+        basicExemption,
+        finalTaxableAmount,
+        tax
+    };
+});
 
     // ✅ 최종 결과지 수정
     document.getElementById('result').innerHTML = `
