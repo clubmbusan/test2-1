@@ -923,7 +923,7 @@ function applyLegalShares() {
     return inheritanceShares;
 }
 
-// ✅ 법정 상속 계산 및 결과 출력 함수
+   // ✅ 법정 상속 계산 및 결과 출력 함수
 function calculateLegalInheritance() {
     let assetElement = document.querySelector(".assetValue"); // 안전한 방식으로 변경
     let totalAssetValue = assetElement ? parseInt(assetElement.value.replace(/,/g, "")) || 0 : 0;
@@ -950,7 +950,9 @@ function calculateLegalInheritance() {
         let inheritanceAmount = totalAssetValue * share;
 
         // ✅ 관계 공제 적용
-        let exemption = (relationship === "spouse") ? spouseExemption : (relationship === "adultChild" || relationship === "minorChild") ? 50000000 : 10000000;
+        let exemption = (relationship === "spouse") ? spouseExemption 
+                       : (relationship === "adultChild" || relationship === "minorChild") ? 50000000 
+                       : 10000000;
 
         totalRelationshipExemption += exemption;
         if (relationship === "spouse") {
@@ -971,6 +973,11 @@ function calculateLegalInheritance() {
         let inheritanceAmount = totalAssetValue * share;
         let individualTaxableAmount = totalTaxableAmount * share;
         let individualTax = calculateTax(individualTaxableAmount);
+
+        // ✅ 개별 상속인 관계 공제 다시 정의
+        let exemption = (relationship === "spouse") ? spouseExemption 
+                       : (relationship === "adultChild" || relationship === "minorChild") ? 50000000 
+                       : 10000000;
 
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
