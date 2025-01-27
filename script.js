@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const businessPersonalSection = document.getElementById('businessPersonalSection');
     const otherAssetContainer = document.getElementById('otherAssetContainer'); 
 
+    // ✅ 새로운 법정 상속 관련 요소 추가
+    const legalInheritanceSection = document.getElementById('legalInheritanceSection');
+    const legalHeirContainer = document.getElementById('legalHeirContainer');
+    const addLegalHeirButton = document.getElementById('addLegalHeirButton');
+
     const otherAssetType = document.getElementById('otherAssetType'); 
     const assetType = document.getElementById('assetType');
     const addAssetButton = document.getElementById('addAssetButton');
@@ -31,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetSections() {
         personalSection.style.display = 'none';
         groupSection.style.display = 'none';
+        legalInheritanceSection.style.display = 'none';  // ✅ 법정 상속 섹션 추가
         businessPersonalSection.style.display = 'none';
         dwellingSection.style.display = 'none';
         farmingSection.style.display = 'none';
