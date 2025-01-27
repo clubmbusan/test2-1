@@ -128,18 +128,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-  // ✅ 전체 상속 (협의 상속, 법정 상속): 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
-  document.addEventListener("change", function (event) {
-      if (event.target.classList.contains("relationship")) {
-          const heirEntry = event.target.closest(".heir-entry");
-          const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
+ // ✅ 전체 상속 (협의 상속, 법정 상속): 미성년 자녀 나이 입력 필드 추가 (중복 제거)
+document.addEventListener("change", function (event) {
+    if (event.target.classList.contains("relationship")) {
+        const heirEntry = event.target.closest(".heir-entry");
+        const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
 
-          if (minorChildAgeField) {
-              minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
-          }
-      }
-  });
-    
+        if (minorChildAgeField) {
+            minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
+        }
+    }
+});
+  
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
     const assetEntry = assetTypeSelect.closest('.asset-entry');
@@ -895,57 +895,44 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
-    // ✅ 법정 상속 자동 계산 함수
-    function applyLegalShares() {
-        let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
-        let totalInheritance = 100; // 총 상속 비율 (100%)
-        let spouseShare = 50; // 배우자 법정 상속 비율 (기본 50%)
-        let numChildren = 0;
+    // ✅ 법정 상속 자동 계산 함수 (상속 비율 필드를 추가하지 않음)
+function applyLegalShares() {
+    let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
+    let totalInheritance = 100; // 총 상속 비율 (100%)
+    let spouseShare = 50; // 배우자 법정 상속 비율 (기본 50%)
+    let numChildren = 0;
 
-        heirs.forEach(heir => {
-            let relationship = heir.querySelector(".relationship").value;
-            if (relationship === "adultChild" || relationship === "minorChild") {
-                numChildren++;
-            }
-        });
-
-        let childShare = numChildren > 0 ? (totalInheritance - spouseShare) / numChildren : 0;
-
-        heirs.forEach(heir => {
-            let relationship = heir.querySelector(".relationship").value;
-            let shareField = document.createElement("input");
-            shareField.type = "text";
-            shareField.readOnly = true;
-            shareField.classList.add("shareField");
-
-            if (relationship === "spouse") {
-                shareField.value = spouseShare + "%";
-            } else if (relationship === "adultChild" || relationship === "minorChild") {
-                shareField.value = childShare + "%";
-            } else {
-                shareField.value = "0%";
-            }
-
-            heir.appendChild(shareField);
-        });
-
-        console.log("📌 법정 상속 자동 적용 완료: 배우자 " + spouseShare + "%, 자녀 각 " + childShare + "%");
-    }
-
-    // ✅ 미성년 자녀 나이 입력 필드 자동 표시 (법정 상속에도 적용)
-    document.getElementById("legalHeirContainer").addEventListener("change", function (event) {
-        if (event.target.classList.contains("relationship")) {
-            const heirEntry = event.target.closest(".heir-entry");
-            const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
-
-            if (minorChildAgeField) {
-                minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
-            }
+    heirs.forEach(heir => {
+        let relationship = heir.querySelector(".relationship").value;
+        if (relationship === "adultChild" || relationship === "minorChild") {
+            numChildren++;
         }
     });
 
-    // ✅ 초기화 호출
-    initializeDefaultView();
+    let childShare = numChildren > 0 ? (totalInheritance - spouseShare) / numChildren : 0;
+
+    let shareResults = [];
+    heirs.forEach(heir => {
+        let relationship = heir.querySelector(".relationship").value;
+        let name = heir.querySelector(".heirName").value || "상속인";
+
+        if (relationship === "spouse") {
+            shareResults.push(`<p><strong>${name}</strong>: ${spouseShare}%</p>`);
+        } else if (relationship === "adultChild" || relationship === "minorChild") {
+            shareResults.push(`<p><strong>${name}</strong>: ${childShare}%</p>`);
+        } else {
+            shareResults.push(`<p><strong>${name}</strong>: 0%</p>`);
+        }
+    });
+
+    // ✅ 결과 창에서만 상속 비율 표시 (입력 필드 추가 X)
+    document.getElementById("result").innerHTML = `
+        <h3>법정 상속 비율</h3>
+        ${shareResults.join("")}
+    `;
+
+    console.log("📌 법정 상속 자동 적용 완료: 배우자 " + spouseShare + "%, 자녀 각 " + childShare + "%");
+}    
    
     
   // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
