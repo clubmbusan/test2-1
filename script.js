@@ -952,7 +952,7 @@ function calculateLegalInheritance() {
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
     let spouseExemption = spouseExists ? Math.min(spouseInheritanceAmount, 3000000000) : 0;
 
-    // ✅ 관계 공제 적용 (미성년자는 나이에 따라 추가 공제)
+    // ✅ 관계 공제 자동 적용
     heirs.forEach(heir => {
         let relationship = heir.querySelector(".relationship").value;
         let minorChildAgeField = heir.querySelector(".minorChildAgeField");
@@ -964,7 +964,13 @@ function calculateLegalInheritance() {
         } else if (relationship === "adultChild") {
             relationshipExemption = 50000000; // 성년 자녀 공제 (5천만 원)
         } else if (relationship === "minorChild") {
-            relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 190000000); // 미성년자 공제
+            relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 190000000); // 미성년자 공제 (최대 1,900만 원)
+        } else if (relationship === "parent") {
+            relationshipExemption = 50000000; // 부모 공제 (5천만 원)
+        } else if (relationship === "sibling") {
+            relationshipExemption = 10000000; // 형제자매 공제 (1천만 원)
+        } else {
+            relationshipExemption = 10000000; // 기타 상속인 공제 (1천만 원)
         }
 
         totalRelationshipExemption += relationshipExemption;
@@ -1021,10 +1027,9 @@ function calculateProgressiveTax(amount) {
         { threshold: Infinity, rate: 0.5, cumulativeTax: 460000000 }        // 30억 초과: 50% (누진 공제 4억 6천만 원)
     ];
 
-    // ✅ 해당 구간 찾기
     for (let bracket of taxBrackets) {
         if (amount <= bracket.threshold) {
-            tax = Math.round(amount * bracket.rate - bracket.cumulativeTax); // ✅ 소수점 제거
+            tax = Math.round(amount * bracket.rate - bracket.cumulativeTax);
             break;
         }
     }
@@ -1036,6 +1041,7 @@ function calculateProgressiveTax(amount) {
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
+
    
     /**
  * 가업 공제 계산 (공용)
