@@ -808,20 +808,22 @@ function calculateGroupMode(totalAssetValue) {
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
-     // ✅ totalRelationshipExemption을 한 번만 선언
-      let totalRelationshipExemption = 0; // 최초 선언
+    // ✅ 배우자 기본 공제 적용
+     let spouse = heirs.find(h => h.relationship === 'spouse');
 
-     // ✅ 이후에 변수 값만 변경 (중복 선언 X)
-      if (spouse) {
+     if (spouse) {
          totalRelationshipExemption += 500000000; // 배우자 기본 공제(5억 원) 추가
-      }
+     }
 
-    // ✅ 기타 상속인의 관계 공제 적용 (배우자 제외)
-      heirs.forEach((heir) => {
-          if (heir.relationship !== 'spouse') {
+     // ✅ 기타 상속인의 관계 공제 적용 (배우자 제외)
+     heirs.forEach((heir) => {
+         if (heir.relationship !== 'spouse') {
              totalRelationshipExemption += heir.relationshipExemption;
          }
-      });
+     });
+
+     console.log("✅ 관계 공제 최종값:", totalRelationshipExemption); // 디버깅용
+  }
 
     // ✅ 배우자 추가 공제 변수 선언 (기본값 설정)
     let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0, totalExemption: 0 };
