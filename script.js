@@ -925,7 +925,12 @@ function applyLegalShares() {
 
 // ✅ 법정 상속 계산 및 결과 출력 함수
 function calculateLegalInheritance() {
-    let totalAssetValue = parseInt(document.getElementById("assetValue").value.replace(/,/g, "")) || 0;
+    let assetElement = document.querySelector(".assetValue"); // 안전한 방식으로 변경
+    let totalAssetValue = assetElement ? parseInt(assetElement.value.replace(/,/g, "")) || 0 : 0;
+
+    console.log("📌 assetValue 요소:", assetElement);
+    console.log("📌 최종 상속 금액 (공제 적용 전):", totalAssetValue);
+
     let inheritanceShares = applyLegalShares(); // ✅ 법정 비율 계산 후 적용
     let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
 
@@ -990,7 +995,6 @@ function calculateLegalInheritance() {
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
-
    
     /**
  * 가업 공제 계산 (공용)
