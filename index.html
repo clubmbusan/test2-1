@@ -127,6 +127,30 @@
          <button type="button" id="addHeirButton">상속인 추가</button>
      </div>
 
+          <!-- 법정 상속 계산 -->
+<div id="legalInheritanceSection" class="section">
+    <h2>법정 상속 계산</h2>
+    <p>법정 상속은 민법에 따른 법정 상속 비율을 자동 적용합니다.</p>
+
+    <div id="legalHeirContainer">
+        <div class="heir-entry">
+            <input type="text" placeholder="이름" class="heirName">
+            <select class="relationship">
+                <option value="spouse">배우자</option>
+                <option value="adultChild">성년 자녀</option>
+                <option value="minorChild">미성년 자녀</option>
+                <option value="parent">부모</option>
+                <option value="sibling">형제자매</option>
+                <option value="other">기타</option>
+            </select>
+            <!-- 미성년 자녀 나이 입력 필드 -->
+            <input type="number" class="minorChildAgeField" style="display: none;" min="0" max="18" placeholder="나이 입력">
+            <!-- ✅ 상속 비율 입력란 제거 -->
+        </div>
+    </div>
+    <button type="button" id="addLegalHeirButton">상속인 추가</button>
+</div>
+        
         <!-- 가업 상속 -->
 <div id="businessPersonalSection" class="section">
     <h2>가업 상속</h2> 
