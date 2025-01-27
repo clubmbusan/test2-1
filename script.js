@@ -787,19 +787,29 @@ function calculateGroupMode(totalAssetValue) {
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
         let relationshipExemption = calculateRelationshipExemption(relationship, age);
 
-        totalRelationshipExemption += relationshipExemption; // ✅ 배우자 공제 포함
-
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
-    // ✅ 배우자 공제 변수 선언 (기본값 설정)
-    let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0, totalExemption: 0 };
+    // ✅ 관계 공제 계산 (배우자 추가 공제 제외)
+    let totalRelationshipExemption = 0;
     let spouse = heirs.find(h => h.relationship === 'spouse');
 
-    // ✅ 배우자 추가 공제 적용 (배우자가 있는 경우만 계산)
+    if (spouse) {
+        totalRelationshipExemption += 500000000; // 배우자 기본 공제 5억 원
+    }
+
+    // ✅ 기타 상속인의 관계 공제 적용 (배우자 제외)
+    heirs.forEach((heir) => {
+        if (heir.relationship !== 'spouse') {
+            totalRelationshipExemption += heir.relationshipExemption;
+        }
+    });
+
+    // ✅ 배우자 추가 공제 변수 선언 (기본값 설정)
+    let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0, totalExemption: 0 };
+
     if (spouse) {
         spouseExemptions = calculateSpouseExemption(spouse.sharePercentage, totalAssetValue);
-        totalRelationshipExemption += spouseExemptions.spouseBasicExemption; // ✅ 배우자 기본 공제(5억 원)만 관계 공제에 포함
     }
 
     // ✅ 금융재산 공제 (총 금융재산의 20%, 최대 2억)
@@ -828,12 +838,11 @@ function calculateGroupMode(totalAssetValue) {
             0
         );
 
-        // ✅ 전체 과세 표준이 0원이면 개별 과세 표준도 0원으로 설정
         if (taxableAmount === 0) {
             finalTaxableAmount = 0;
         }
 
-        const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0; // ✅ 0원이면 상속세 0원 처리
+        const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0;
 
         return {
             ...heir,
@@ -848,8 +857,8 @@ function calculateGroupMode(totalAssetValue) {
     document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
      <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3> <!-- ✅ 배우자 추가 공제 제외 -->
-     <h3>배우자 추가 공제: ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원</h3> <!-- ✅ 별도 표기 -->
+     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
+     <h3>배우자 추가 공제: ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원</h3>
      <h3>최종 과세 표준: ${taxableAmount.toLocaleString()} 원</h3>
      <h3>최종 상속세: ${finalTotalTax.toLocaleString()} 원</h3>
 
