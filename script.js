@@ -923,7 +923,7 @@ function applyLegalShares() {
     return inheritanceShares;
 }
 
-   // ✅ 법정 상속 계산 및 결과 출력 함수
+ // ✅ 법정 상속 계산 및 결과 출력 함수 (법정 지분 자동 적용)
 function calculateLegalInheritance() {
     let assetElement = document.querySelector("#cashAmount, #realEstateValue, #stockTotal, #othersValue");
     let totalAssetValue = assetElement ? parseInt(assetElement.value.replace(/,/g, "")) || 0 : 0;
@@ -939,21 +939,26 @@ function calculateLegalInheritance() {
         if (relationship === "adultChild" || relationship === "minorChild") numChildren++;
     });
 
-    let totalInheritance = 1.5 + numChildren; // 배우자 1.5 + 자녀 1씩
-    let spouseShare = spouseExists ? (1.5 / totalInheritance).toFixed(6) : 0;
-    let childShare = numChildren > 0 ? (1 / totalInheritance).toFixed(6) : 0;
+    // ✅ 법정 지분 계산: 배우자(1.5) + 자녀(1씩)
+    let totalInheritance = (spouseExists ? 1.5 : 0) + numChildren;
+    let spouseShare = spouseExists ? (1.5 / totalInheritance) : 0;
+    let childShare = numChildren > 0 ? (1 / totalInheritance) : 0;
 
-    let totalExemption = 500000000; // 일괄 공제 (5억)
+    // ✅ 일괄 공제 (5억)
+    let totalExemption = 500000000;
+
+    // ✅ 배우자 상속분 & 배우자 공제 (최대 30억)
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
-    let spouseExemption = spouseExists ? Math.min(spouseInheritanceAmount, 3000000000) : 0; // 배우자 공제 (최대 30억)
+    let spouseExemption = spouseExists ? Math.min(spouseInheritanceAmount, 3000000000) : 0;
 
+    // ✅ 최종 과세 표준 계산
     let totalTaxableAmount = Math.max(totalAssetValue - totalExemption - spouseExemption, 0);
-    let totalInheritanceTax = calculateTax(totalTaxableAmount);
+    let totalInheritanceTax = calculateProgressiveTax(totalTaxableAmount);
     let individualResults = [];
 
     // ✅ 개별 상속인의 과세 표준 및 상속세 계산
-    let totalChildTaxableAmount = totalTaxableAmount; // 배우자는 0원이므로, 자녀만 과세 표준을 나눔
-    let childTaxableAmount = totalChildTaxableAmount / numChildren;
+    let totalChildTaxableAmount = totalTaxableAmount; // 배우자는 0원, 자녀만 과세 표준 계산
+    let childTaxableAmount = numChildren > 0 ? totalChildTaxableAmount / numChildren : 0;
 
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
@@ -961,7 +966,7 @@ function calculateLegalInheritance() {
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
         let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(childTaxableAmount);
-        let individualTax = calculateTax(individualTaxableAmount);
+        let individualTax = calculateProgressiveTax(individualTaxableAmount);
 
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
@@ -983,19 +988,35 @@ function calculateLegalInheritance() {
     `;
 }
 
-// ✅ 상속세 계산 함수 (세율 적용)
-function calculateTax(amount) {
-    if (amount <= 100000000) return amount * 0.1; // 10%
-    else if (amount <= 500000000) return amount * 0.2 - 10000000; // 20%
-    else if (amount <= 1000000000) return amount * 0.3 - 60000000; // 30%
-    else if (amount <= 3000000000) return amount * 0.4 - 160000000; // 40%
-    else return amount * 0.5 - 460000000; // 50%
+// ✅ 상속세 누진세 계산 함수 (구간별 적용)
+function calculateProgressiveTax(amount) {
+    let tax = 0;
+
+    // ✅ 상속세 구간별 세율 및 누진 공제
+    const taxBrackets = [
+        { threshold: 100000000, rate: 0.1, cumulativeTax: 0 },               // 1억 이하: 10%
+        { threshold: 500000000, rate: 0.2, cumulativeTax: 10000000 },        // 5억 이하: 20% (누진 공제 1천만 원)
+        { threshold: 1000000000, rate: 0.3, cumulativeTax: 60000000 },       // 10억 이하: 30% (누진 공제 6천만 원)
+        { threshold: 3000000000, rate: 0.4, cumulativeTax: 160000000 },      // 30억 이하: 40% (누진 공제 1억 6천만 원)
+        { threshold: Infinity, rate: 0.5, cumulativeTax: 460000000 }        // 30억 초과: 50% (누진 공제 4억 6천만 원)
+    ];
+
+    // ✅ 해당 구간 찾기
+    for (let bracket of taxBrackets) {
+        if (amount <= bracket.threshold) {
+            tax = amount * bracket.rate - bracket.cumulativeTax;
+            break;
+        }
+    }
+
+    return Math.max(tax, 0); // 음수 방지
 }
 
 // ✅ 계산 버튼 이벤트 리스너 추가
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
+
    
     /**
  * 가업 공제 계산 (공용)
