@@ -895,9 +895,8 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
-    // ✅ 법정 상속 자동 계산 함수
-   // ✅ 법정 상속 자동 비율 적용 함수
-function applyLegalShares() {
+    // ✅ 법정 상속 자동 비율 적용 함수
+ function applyLegalShares() {
     let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
     let totalInheritance = 100; // 총 상속 비율 (100%)
     let spouseShare = 50; // 배우자 법정 상속 비율 (기본 50%)
@@ -905,7 +904,7 @@ function applyLegalShares() {
     let inheritanceShares = {};
 
     // ✅ 자녀 수 계산
-    heirs.forEach(heir => {
+   heirs.forEach(heir => {
         let relationship = heir.querySelector(".relationship").value;
         if (relationship === "adultChild" || relationship === "minorChild") {
             numChildren++;
@@ -915,7 +914,7 @@ function applyLegalShares() {
     let childShare = numChildren > 0 ? (totalInheritance - spouseShare) / numChildren : 0;
 
     // ✅ 각 상속인의 법정 지분 계산
-    heirs.forEach(heir => {
+   heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
         let relationship = heir.querySelector(".relationship").value;
         inheritanceShares[name] = (relationship === "spouse") ? spouseShare / 100 : childShare / 100;
@@ -925,9 +924,7 @@ function applyLegalShares() {
 }
 
 // ✅ 법정 상속 계산 및 결과 출력 함수
-function generateLegalResults(totalAssetValue) {
-    let inheritanceShares = applyLegalShares(); // 법정 상속 비율 계산
-    let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
+  let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
     let totalExemption = 200000000; // 기초 공제 2억 원
     let spouseExemption = 500000000; // 배우자 기본 공제 5억 원
     let spouseAdditionalExemption = 0;
@@ -946,22 +943,22 @@ function generateLegalResults(totalAssetValue) {
 
         totalRelationshipExemption += exemption;
         if (relationship === "spouse") {
-            spouseAdditionalExemption = Math.min(inheritanceAmount * 0.5, 3000000000); // 배우자 추가 공제 최대 30억 원
+            spouseAdditionalExemption = Math.min(inheritanceAmount * 0.5, 3000000000);
         }
     });
 
     // ✅ 총 공제 금액 계산
     totalExemption += totalRelationshipExemption + spouseAdditionalExemption;
-    totalTaxableAmount = Math.max(totalAssetValue - totalExemption, 0); // 과세 표준
-    totalInheritanceTax = calculateTax(totalTaxableAmount); // 총 상속세 계산
+    totalTaxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+    totalInheritanceTax = calculateTax(totalTaxableAmount);
 
     // ✅ 개별 상속인의 과세 표준 및 상속세 계산
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
         let share = inheritanceShares[name] || 0;
         let inheritanceAmount = totalAssetValue * share;
-        let individualTaxableAmount = totalTaxableAmount * share; // 과세 표준 분배
-        let individualTax = calculateTax(individualTaxableAmount); // 개별 상속세 계산
+        let individualTaxableAmount = totalTaxableAmount * share;
+        let individualTax = calculateTax(individualTaxableAmount);
 
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
@@ -981,36 +978,6 @@ function generateLegalResults(totalAssetValue) {
         ${individualResults.join("")}
     `;
 }
-
-// ✅ 계산 버튼 클릭 이벤트 리스너 (법정 상속 포함)
-document.getElementById('calculateButton').addEventListener('click', () => {
-    let totalAssetValue = parseInt(document.getElementById("assetValue").value.replace(/,/g, "")) || 0;
-    let inheritanceType = document.getElementById("inheritanceType").value;
-
-    if (totalAssetValue <= 0) {
-        alert("상속 재산을 입력하세요.");
-        return;
-    }
-
-    // ✅ 법정 상속 선택 시, 법정 상속 계산 함수 실행
-    if (inheritanceType === "legal") {
-        generateLegalResults(totalAssetValue);
-        return; // ✅ 법정 상속이면 여기서 종료 (경고 메시지 방지)
-    }
-
-    // ✅ 협의 상속 또는 기타 유형인 경우 기존 계산 방식 적용
-    if (inheritanceType === "group") {
-        calculateGroupMode(totalAssetValue);
-    } else {
-        alert("올바른 상속 유형을 선택하세요.");
-    }
-});
-
-// ✅ 간단한 상속세 계산 함수 (세율 적용 가능)
-function calculateTax(amount) {
-    return amount * 0.1; // 단순히 10% 세율 적용 (추후 세율 로직 추가 가능)
-}
-
    
     /**
  * 가업 공제 계산 (공용)
