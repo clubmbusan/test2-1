@@ -864,11 +864,12 @@ function calculateGroupMode(totalAssetValue) {
         };
     });
 
-    // ✅ 최종 결과지 수정
+     // ✅ 최종 결과지 수정 (금융재산 공제 추가)
     document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
      <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
      <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
+     <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
      <h3>최종 과세 표준: ${taxableAmount.toLocaleString()} 원</h3>
      <h3>최종 상속세: ${finalTotalTax.toLocaleString()} 원</h3>
 
@@ -878,6 +879,7 @@ function calculateGroupMode(totalAssetValue) {
              <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
              관계 공제: ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
              기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
+             금융재산 공제: ${heir.financialExemption.toLocaleString()} 원<br>
              ${heir.relationship === 'spouse' ? `<strong>배우자 추가 공제:</strong> ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원<br>` : ''}
              <strong>과세 표준:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
              <strong>개별 상속세:</strong> ${heir.tax.toLocaleString()} 원
