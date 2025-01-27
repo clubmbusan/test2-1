@@ -1283,27 +1283,31 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     // ✅ 음수 값 방지 (공제 후 0 이하가 되지 않도록 처리)
     totalAssetValue = Math.max(totalAssetValue, 0);
 
-    console.log("💰 최종 상속 금액 (공제 적용 후):", totalAssetValue);
+    console.log("📌 최종 상속 금액 (공제 적용 후):", totalAssetValue);
+    console.log("📌 현재 선택된 상속 유형:", document.getElementById('inheritanceType').value); // 디버깅 추가
 
     // ✅ 상속 유형에 따라 계산 실행
     switch (document.getElementById('inheritanceType').value) {
-    case 'personal':
-        calculatePersonalMode(totalAssetValue);
-        break;
-    case 'group':
-        calculateGroupMode(totalAssetValue);
-        break;
-    case 'businessPersonal':
-        calculateBusinessPersonalMode(totalAssetValue);
-        break;
-    case 'other':  // ✅ 특수상속 추가
-        calculateSpecialInheritance();  
-        break;
-    default:
-        console.error('⚠️ 잘못된 계산 요청 - 올바른 상속 유형을 선택하세요.');
-        alert("⚠️ 올바른 상속 유형을 선택하세요.");  
-        break;
-   }
+        case 'personal':
+            calculatePersonalMode(totalAssetValue);
+            break;
+        case 'group':
+            calculateGroupMode(totalAssetValue);
+            break;
+        case 'businessPersonal':
+            calculateBusinessPersonalMode(totalAssetValue);
+            break;
+        case 'other':  // ✅ 특수상속 추가
+            calculateSpecialInheritance();  
+            break;
+        case 'legal': // ✅ 법정 상속 추가
+            calculateLegalInheritance(totalAssetValue);
+            break;
+        default:
+            console.error('⚠️ 잘못된 계산 요청 - 올바른 상속 유형을 선택하세요.');
+            alert("⚠️ 올바른 상속 유형을 선택하세요.");
+            break;
+    }
 });
     
 // 숫자 포맷 함수
