@@ -928,13 +928,11 @@ function calculateLegalInheritance() {
     let assetElement = document.querySelector("#cashAmount, #realEstateValue, #stockTotal, #othersValue");
     let totalAssetValue = assetElement ? parseInt(assetElement.value.replace(/,/g, "")) || 0 : 0;
 
-    console.log("📌 assetValue 요소:", assetElement);
-    console.log("📌 최종 상속 금액 (공제 적용 전):", totalAssetValue);
-
     let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
     let numChildren = 0;
     let spouseExists = false;
 
+    // ✅ 배우자 및 자녀 수 확인
     heirs.forEach(heir => {
         let relationship = heir.querySelector(".relationship").value;
         if (relationship === "spouse") spouseExists = true;
@@ -942,8 +940,8 @@ function calculateLegalInheritance() {
     });
 
     let totalInheritance = 1.5 + numChildren; // 배우자 1.5 + 자녀 1씩
-    let spouseShare = spouseExists ? 1.5 / totalInheritance : 0;
-    let childShare = numChildren > 0 ? 1 / totalInheritance : 0;
+    let spouseShare = spouseExists ? (1.5 / totalInheritance).toFixed(6) : 0;
+    let childShare = numChildren > 0 ? (1 / totalInheritance).toFixed(6) : 0;
 
     let totalExemption = 500000000; // 일괄 공제 (5억)
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
@@ -953,13 +951,16 @@ function calculateLegalInheritance() {
     let totalInheritanceTax = calculateTax(totalTaxableAmount);
     let individualResults = [];
 
-    // ✅ 개별 상속인 결과 계산
+    // ✅ 개별 상속인의 과세 표준 및 상속세 계산
+    let totalChildTaxableAmount = totalTaxableAmount; // 배우자는 0원이므로, 자녀만 과세 표준을 나눔
+    let childTaxableAmount = totalChildTaxableAmount / numChildren;
+
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
         let relationship = heir.querySelector(".relationship").value;
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
-        let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(totalTaxableAmount * share);
+        let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(childTaxableAmount);
         let individualTax = calculateTax(individualTaxableAmount);
 
         individualResults.push(`
@@ -982,11 +983,19 @@ function calculateLegalInheritance() {
     `;
 }
 
+// ✅ 상속세 계산 함수 (세율 적용)
+function calculateTax(amount) {
+    if (amount <= 100000000) return amount * 0.1; // 10%
+    else if (amount <= 500000000) return amount * 0.2 - 10000000; // 20%
+    else if (amount <= 1000000000) return amount * 0.3 - 60000000; // 30%
+    else if (amount <= 3000000000) return amount * 0.4 - 160000000; // 40%
+    else return amount * 0.5 - 460000000; // 50%
+}
+
 // ✅ 계산 버튼 이벤트 리스너 추가
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
-
    
     /**
  * 가업 공제 계산 (공용)
