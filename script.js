@@ -923,7 +923,7 @@ function applyLegalShares() {
     return inheritanceShares;
 }
 
- // ✅ 법정 상속 계산 및 결과 출력 함수 (법정 지분 자동 적용)
+// ✅ 법정 상속 계산 및 결과 출력 함수
 function calculateLegalInheritance() {
     let assetElement = document.querySelector("#cashAmount, #realEstateValue, #stockTotal, #othersValue");
     let totalAssetValue = assetElement ? parseInt(assetElement.value.replace(/,/g, "")) || 0 : 0;
@@ -931,6 +931,7 @@ function calculateLegalInheritance() {
     let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
     let numChildren = 0;
     let spouseExists = false;
+    let totalRelationshipExemption = 0;
 
     // ✅ 배우자 및 자녀 수 확인
     heirs.forEach(heir => {
@@ -951,26 +952,44 @@ function calculateLegalInheritance() {
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
     let spouseExemption = spouseExists ? Math.min(spouseInheritanceAmount, 3000000000) : 0;
 
+    // ✅ 관계 공제 적용 (미성년자는 나이에 따라 추가 공제)
+    heirs.forEach(heir => {
+        let relationship = heir.querySelector(".relationship").value;
+        let minorChildAgeField = heir.querySelector(".minorChildAgeField");
+        let minorChildAge = minorChildAgeField && minorChildAgeField.value ? parseInt(minorChildAgeField.value) : 0;
+        
+        let relationshipExemption = 0;
+        if (relationship === "spouse") {
+            relationshipExemption = 500000000; // 배우자 기본 공제 (5억)
+        } else if (relationship === "adultChild") {
+            relationshipExemption = 50000000; // 성년 자녀 공제 (5천만 원)
+        } else if (relationship === "minorChild") {
+            relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 190000000); // 미성년자 공제
+        }
+
+        totalRelationshipExemption += relationshipExemption;
+    });
+
     // ✅ 최종 과세 표준 계산
-    let totalTaxableAmount = Math.max(totalAssetValue - totalExemption - spouseExemption, 0);
+    let totalTaxableAmount = Math.max(totalAssetValue - totalExemption - spouseExemption - totalRelationshipExemption, 0);
     let totalInheritanceTax = calculateProgressiveTax(totalTaxableAmount);
     let individualResults = [];
 
     // ✅ 개별 상속인의 과세 표준 및 상속세 계산
     let totalChildTaxableAmount = totalTaxableAmount; // 배우자는 0원, 자녀만 과세 표준 계산
-    let childTaxableAmount = numChildren > 0 ? totalChildTaxableAmount / numChildren : 0;
+    let childTaxableAmount = numChildren > 0 ? Math.floor(totalChildTaxableAmount / numChildren) : 0; // ✅ 소수점 제거
 
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
         let relationship = heir.querySelector(".relationship").value;
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
-        let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(childTaxableAmount);
+        let individualTaxableAmount = (relationship === "spouse") ? 0 : childTaxableAmount;
         let individualTax = calculateProgressiveTax(individualTaxableAmount);
 
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
-            관계 공제: ${relationship === "spouse" ? spouseExemption.toLocaleString() : "50,000,000"} 원 (${relationship})<br>
+            관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})<br>
             <strong>과세 표준:</strong> ${individualTaxableAmount.toLocaleString()} 원<br>
             <strong>개별 상속세:</strong> ${individualTax.toLocaleString()} 원</p>
         `);
@@ -981,6 +1000,7 @@ function calculateLegalInheritance() {
         <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
         <h3>일괄 공제: ${totalExemption.toLocaleString()} 원</h3>
         <h3>배우자 공제: ${spouseExemption.toLocaleString()} 원</h3>
+        <h3>관계 공제 총합: ${totalRelationshipExemption.toLocaleString()} 원</h3>
         <h3>과세 표준: ${totalTaxableAmount.toLocaleString()} 원</h3>
         <h3>총 상속세: ${totalInheritanceTax.toLocaleString()} 원</h3>
         <h3>개별 상속인 결과</h3>
@@ -1004,7 +1024,7 @@ function calculateProgressiveTax(amount) {
     // ✅ 해당 구간 찾기
     for (let bracket of taxBrackets) {
         if (amount <= bracket.threshold) {
-            tax = amount * bracket.rate - bracket.cumulativeTax;
+            tax = Math.round(amount * bracket.rate - bracket.cumulativeTax); // ✅ 소수점 제거
             break;
         }
     }
@@ -1016,7 +1036,6 @@ function calculateProgressiveTax(amount) {
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
-
    
     /**
  * 가업 공제 계산 (공용)
