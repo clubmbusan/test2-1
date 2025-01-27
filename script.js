@@ -118,28 +118,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ✅ 개인 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
+    const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
+    const relationshipSelect = document.querySelector("#relationshipPersonal"); // ✅ 올바른 요소 선택
 
-// ✅ 개인 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
-const minorChildAgeContainer = document.getElementById('minorChildAgeContainer');
-
-if (relationshipSelect && minorChildAgeContainer) {
-    relationshipSelect.addEventListener('change', function () {
-        minorChildAgeContainer.style.display = this.value === 'minorChild' ? 'block' : 'none';
-    });
-}
-   
-
-// ✅ 전체 상속: 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
-document.getElementById("heirContainer").addEventListener("change", function (event) {
-    if (event.target.classList.contains("relationship")) {
-        const heirEntry = event.target.closest(".heir-entry");
-        const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
-
-        if (minorChildAgeField) {
-            minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
-        }
+    if (relationshipSelect && minorChildAgeContainer) {
+        relationshipSelect.addEventListener('change', function () {
+            minorChildAgeContainer.style.display = this.value === 'minorChild' ? 'block' : 'none';
+        });
     }
-});
+
+  // ✅ 전체 상속 (협의 상속, 법정 상속): 미성년 자녀 나이 입력 필드 추가 (수정된 코드)
+  document.addEventListener("change", function (event) {
+      if (event.target.classList.contains("relationship")) {
+          const heirEntry = event.target.closest(".heir-entry");
+          const minorChildAgeField = heirEntry?.querySelector(".minorChildAgeField");
+
+          if (minorChildAgeField) {
+              minorChildAgeField.style.display = event.target.value === "minorChild" ? "block" : "none";
+          }
+      }
+  });
     
     // 자산 유형 변경 처리
     function handleAssetTypeChange(assetTypeSelect) {
