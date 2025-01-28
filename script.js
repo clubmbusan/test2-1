@@ -969,33 +969,43 @@ function calculateLegalInheritance() {
     // ✅ 일괄 공제 (5억 원)
     let lumpSumExemption = 500000000;
 
-// ✅ 먼저 변수를 선언
-let totalTaxableAmount = 0;
+   function calculateLegalInheritance() {
+    // ✅ 모든 변수를 함수 최상단에서 먼저 선언 (초기값 설정)
+    let totalTaxableAmount = 0;
+    let spouseInheritanceAmount = 0;
+    let spouseRelationshipExemption = 0;
+    let spouseFinancialExemption = 0;
+    let spouseRemainingAmount = 0;
+    let spouseAdditionalExemption = 0;
+    let spouseTaxableAmount = 0;
 
-// ✅ 배우자 상속금액 계산
-let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+    // ✅ 배우자 상속금액 계산
+    spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
 
-// ✅ 배우자 기본 공제 (5억)
-let spouseRelationshipExemption = spouseExists ? 500000000 : 0;
+    // ✅ 배우자 기본 공제 (5억) 적용
+    spouseRelationshipExemption = spouseExists ? 500000000 : 0;
 
-// ✅ 배우자 금융재산 공제 (배우자 지분에 대한 20% 공제, 최대 2억 원)
-let spouseFinancialExemption = Math.min(financialExemption * spouseShare, 200000000);
+    // ✅ 배우자 금융재산 공제 (배우자 지분에 대한 20% 공제, 최대 2억 원)
+    spouseFinancialExemption = Math.min(financialExemption * spouseShare, 200000000);
 
-// ✅ 배우자 기본 공제 및 금융재산 공제 차감 후 남은 금액
-let spouseRemainingAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption - spouseFinancialExemption, 0);
+    // ✅ 배우자 기본 공제 및 금융재산 공제 차감 후 남은 금액 (음수 방지)
+    spouseRemainingAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption - spouseFinancialExemption, 0);
 
-// ✅ 배우자 추가 공제 적용 (최대 30억 한도 내에서 자동 계산)
-let spouseAdditionalExemption = Math.min(spouseRemainingAmount, 3000000000);
+    // ✅ 배우자 추가 공제 적용 (최대 30억 한도 내에서 자동 계산)
+    spouseAdditionalExemption = Math.min(spouseRemainingAmount, 3000000000);
 
-// ✅ 배우자의 과세 표준 계산 (음수 방지)
-let spouseTaxableAmount = Math.max(spouseRemainingAmount - spouseAdditionalExemption, 0);
+    // ✅ 배우자의 과세 표준 계산 (음수 방지)
+    spouseTaxableAmount = Math.max(spouseRemainingAmount - spouseAdditionalExemption, 0);
 
-// ✅ 최종 과세 표준 재계산 (배우자 공제 정확히 반영) - 🔥 이제는 오류 없음!
-totalTaxableAmount = Math.max(
-    totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption,
-    0
-);
+    // ✅ 최종 과세 표준 재계산 (배우자 공제 정확히 반영) - 🔥 이제는 오류 없음!
+    totalTaxableAmount = Math.max(
+        totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption,
+        0
+    );
 
+    // ✅ 결과 디버깅 로그 (확인용)
+    console.log("totalTaxableAmount:", totalTaxableAmount);
+}
    
     // ✅ 개별 관계 공제 자동 적용
     heirs.forEach(heir => {
