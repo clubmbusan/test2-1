@@ -970,28 +970,28 @@ function calculateLegalInheritance() {
     let lumpSumExemption = 500000000;
 
      // ✅ 배우자 상속금액 계산
-     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
 
-     // ✅ 배우자 기본 공제 (5억) - 반드시 먼저 선언해야 함!
-     let spouseRelationshipExemption = spouseExists ? 500000000 : 0;
+// ✅ 배우자 기본 공제 (5억)
+let spouseRelationshipExemption = spouseExists ? 500000000 : 0;
 
-     // ✅ 배우자 금융재산 공제 (배우자 지분에 대한 20% 공제, 최대 2억 원)
-     let spouseFinancialExemption = Math.min(financialExemption * spouseShare, 200000000);
+// ✅ 배우자 금융재산 공제 (배우자 지분에 대한 20% 공제, 최대 2억 원)
+let spouseFinancialExemption = Math.min(financialExemption * spouseShare, 200000000);
 
-     // ✅ 배우자 기본 공제 및 금융재산 공제 차감 후 남은 금액
-     let spouseRemainingAmount = spouseInheritanceAmount - spouseRelationshipExemption - spouseFinancialExemption;
+// ✅ 배우자 기본 공제 및 금융재산 공제 차감 후 남은 금액
+let spouseRemainingAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption - spouseFinancialExemption, 0);
 
-     // ✅ 배우자 추가 공제 적용 (최대 30억 한도 내에서 적용) - 정확한 계산 자동 반영
-     let spouseAdditionalExemption = Math.min(spouseRemainingAmount, 3000000000);
+// ✅ 배우자 추가 공제 적용 (최대 30억 한도 내에서 자동 계산)
+let spouseAdditionalExemption = Math.min(spouseRemainingAmount, 3000000000);
 
-     // ✅ 배우자의 과세 표준 계산 (음수 방지)
-     let spouseTaxableAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption - spouseAdditionalExemption, 0);
+// ✅ 배우자의 과세 표준 계산 (음수 방지)
+let spouseTaxableAmount = Math.max(spouseRemainingAmount - spouseAdditionalExemption, 0);
 
-     // ✅ 최종 과세 표준 재계산 (배우자 공제 정확히 반영)
-      totalTaxableAmount = Math.max(
-         totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption,
-         0
-      );
+// ✅ 최종 과세 표준 재계산 (배우자 공제 정확히 반영)
+let totalTaxableAmount = Math.max(
+    totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption,
+    0
+);
    
     // ✅ 개별 관계 공제 자동 적용
     heirs.forEach(heir => {
