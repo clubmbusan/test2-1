@@ -970,20 +970,35 @@ function calculateLegalInheritance() {
     let lumpSumExemption = 500000000;
 
     function calculateLegalInheritance() {
-    // ✅ 모든 변수를 한 번만 선언
-    let totalTaxableAmount;  
-    let spouseInheritanceAmount;  
-    let spouseRelationshipExemption;  
-    let spouseFinancialExemption;  
-    let spouseRemainingAmount;  
-    let spouseAdditionalExemption;  
-    let spouseTaxableAmount;  
+    // ✅ 모든 변수를 함수 최상단에서 선언 (초기화)
+    let totalTaxableAmount = 0;
+    let spouseInheritanceAmount = 0;
+    let spouseRelationshipExemption = 0;  // 🔥 변수를 미리 선언
+    let spouseFinancialExemption = 0;
+    let spouseRemainingAmount = 0;
+    let spouseAdditionalExemption = 0;
+    let spouseTaxableAmount = 0;
+
+    let spouseExists = false;
+    let numChildren = 0;
+    
+    // ✅ 배우자가 있는지 확인
+    heirs.forEach(heir => {
+        let relationship = heir.querySelector(".relationship").value;
+        if (relationship === "spouse") {
+            spouseExists = true;
+        } else if (relationship === "adultChild" || relationship === "minorChild") {
+            numChildren++;
+        }
+    });
+
+    // ✅ 배우자 기본 공제 (5억) 적용
+    if (spouseExists) {
+        spouseRelationshipExemption = 500000000;  // 🔥 이제 오류 발생하지 않음!
+    }
 
     // ✅ 배우자 상속금액 계산
     spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
-
-    // ✅ 배우자 기본 공제 (5억) 적용
-    spouseRelationshipExemption = spouseExists ? 500000000 : 0;
 
     // ✅ 배우자 금융재산 공제 (배우자 지분에 대한 20% 공제, 최대 2억 원)
     spouseFinancialExemption = Math.min(financialExemption * spouseShare, 200000000);
@@ -1006,7 +1021,6 @@ function calculateLegalInheritance() {
     // ✅ 결과 디버깅 로그 (확인용)
     console.log("totalTaxableAmount:", totalTaxableAmount);
 }
-
    
     // ✅ 개별 관계 공제 자동 적용
     heirs.forEach(heir => {
