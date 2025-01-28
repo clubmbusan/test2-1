@@ -931,7 +931,9 @@ function applyLegalShares() {
     return inheritanceShares;
 }
 
-// ✅ 법정 상속 계산 및 결과 출력 함수
+/**
+ * ✅ 법정 상속 계산 함수 (민법에 따른 법정 상속 비율 자동 적용)
+ */
 function calculateLegalInheritance() {
     let assetElement = document.querySelector("#cashAmount, #realEstateValue, #stockTotal, #othersValue");
     let totalAssetValue = assetElement ? parseInt(assetElement.value.replace(/,/g, "")) || 0 : 0;
@@ -954,14 +956,12 @@ function calculateLegalInheritance() {
     let spouseShare = spouseExists ? (1.5 / totalInheritance) : 0;
     let childShare = numChildren > 0 ? (1 / totalInheritance) : 0;
 
-    // ✅ 일괄 공제 (5억)
-    let totalExemption = 500000000;
-
-    // ✅ 배우자 상속분 & 배우자 공제 (최대 30억)
+    // ✅ 배우자 관계공제 (5억 고정) + 추가 공제 (상속 지분 내에서 최대 30억)
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
-    let spouseExemption = spouseExists ? Math.min(spouseInheritanceAmount, 3000000000) : 0;
+    let spouseRelationshipExemption = spouseExists ? 500000000 : 0; // 배우자 관계공제 (5억)
+    let spouseAdditionalExemption = spouseExists ? Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0) : 0;
 
-    // ✅ 관계 공제 자동 적용
+    // ✅ 배우자 외 상속인의 관계 공제 계산
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
         let relationship = heir.querySelector(".relationship").value;
@@ -969,12 +969,10 @@ function calculateLegalInheritance() {
         let minorChildAge = minorChildAgeField && minorChildAgeField.value ? parseInt(minorChildAgeField.value) : 0;
         
         let relationshipExemption = 0;
-        if (relationship === "spouse") {
-            relationshipExemption = 500000000; // 배우자 기본 공제 (5억)
-        } else if (relationship === "adultChild") {
+        if (relationship === "adultChild") {
             relationshipExemption = 50000000; // 성년 자녀 공제 (5천만 원)
         } else if (relationship === "minorChild") {
-            relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 190000000); // 미성년자 공제 (최대 1억 9천만 원)
+            relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 190000000); // 미성년자 공제 (최대 1,900만 원)
         } else if (relationship === "parent") {
             relationshipExemption = 50000000; // 부모 공제 (5천만 원)
         } else if (relationship === "sibling") {
@@ -987,12 +985,12 @@ function calculateLegalInheritance() {
         totalRelationshipExemption += relationshipExemption;
     });
 
+    // ✅ 일괄 공제 (5억)
+    let lumpSumExemption = 500000000; 
+
     // ✅ 최종 과세 표준 계산
-    let totalTaxableAmount = Math.max(totalAssetValue - totalExemption - spouseExemption - totalRelationshipExemption, 0);
-    
-    // ✅ 기존 `calculateProgressiveTax()` 대신 `calculateTax()` 사용
+    let totalTaxableAmount = Math.max(totalAssetValue - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption, 0);
     let totalInheritanceTax = calculateTax(totalTaxableAmount);
-    
     let individualResults = [];
 
     // ✅ 개별 상속인의 과세 표준 및 상속세 계산
@@ -1005,8 +1003,6 @@ function calculateLegalInheritance() {
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
         let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(childTaxableAmount);
-        
-        // ✅ 기존 `calculateProgressiveTax()` 대신 `calculateTax()` 사용
         let individualTax = calculateTax(individualTaxableAmount);
 
         individualResults.push(`
@@ -1020,9 +1016,9 @@ function calculateLegalInheritance() {
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
-        <h3>일괄 공제: ${totalExemption.toLocaleString()} 원</h3>
-        <h3>배우자 공제: ${spouseExemption.toLocaleString()} 원</h3>
-        <h3>관계 공제 총합: ${totalRelationshipExemption.toLocaleString()} 원</h3>
+        <h3>배우자 관계공제: ${spouseRelationshipExemption.toLocaleString()} 원</h3>
+        <h3>배우자 추가공제: ${spouseAdditionalExemption.toLocaleString()} 원</h3>
+        <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
         <h3>과세 표준: ${totalTaxableAmount.toLocaleString()} 원</h3>
         <h3>총 상속세: ${totalInheritanceTax.toLocaleString()} 원</h3>
         <h3>개별 상속인 결과</h3>
