@@ -1020,16 +1020,25 @@ function calculateLegalInheritance() {
     });
 
     // ✅ 결과 출력
-    document.getElementById('result').innerHTML = `
-        <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
+    let resultHTML = `
+       <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>`;
+
+    // ✅ 배우자가 있는 경우에만 "배우자 관계공제"와 "배우자 추가공제" 표시
+    if (spouseExists) {
+        resultHTML += `
         <h3>배우자 관계공제: ${spouseRelationshipExemption.toLocaleString()} 원</h3>
-        <h3>배우자 추가공제: ${spouseAdditionalExemption.toLocaleString()} 원</h3>
+        <h3>배우자 추가공제: ${spouseAdditionalExemption.toLocaleString()} 원</h3>`;
+    }
+
+    resultHTML += `
         <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
         <h3>과세 표준: ${totalTaxableAmount.toLocaleString()} 원</h3>
         <h3>총 상속세: ${totalInheritanceTax.toLocaleString()} 원</h3>
         <h3>개별 상속인 결과</h3>
         ${individualResults.join("")}
     `;
+
+    document.getElementById('result').innerHTML = resultHTML;
 }
 
 // ✅ 계산 버튼 이벤트 리스너 추가
