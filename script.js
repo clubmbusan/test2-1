@@ -900,12 +900,13 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
-    /**
+ /**
  * ✅ 법정 상속 계산 함수 (민법에 따른 법정 상속 비율 자동 적용)
  * @description 법정 상속 방식으로 상속인의 법정 지분을 자동 계산하고, 
  * 상속세 및 관계 공제를 적용하여 최종 과세 표준과 상속세를 산출합니다.
  * @returns {void} - 결과를 화면에 출력
  */
+
 // ✅ 법정 상속 자동 비율 적용 함수
 function applyLegalShares() {
     let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
@@ -969,94 +970,11 @@ function calculateLegalInheritance() {
     // ✅ 일괄 공제 (5억 원)
     let lumpSumExemption = 500000000;
 
-    function calculateLegalInheritance() {
-    // ✅ 1. 먼저 모든 변수를 선언 (초기화)
-    let totalTaxableAmount = 0;
-    let spouseInheritanceAmount = 0;
-    let spouseRelationshipExemption = 0;
-    let spouseFinancialExemption = 0;
-    let spouseRemainingAmount = 0;
-    let spouseAdditionalExemption = 0;
-    let spouseTaxableAmount = 0;
-
-    let spouseExists = false;
-    let numChildren = 0;
-
-    // ✅ 2. 상속인 정보 가져오기
-    let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
-
-    if (!heirs || heirs.length === 0) {
-        console.error("상속인 정보가 없습니다.");
-        return;
-    }
-
-    // ✅ 3. 배우자가 있는지 확인
-    heirs.forEach(heir => {
-        let relationship = heir.querySelector(".relationship").value;
-        if (relationship === "spouse") {
-            spouseExists = true;
-        } else if (relationship === "adultChild" || relationship === "minorChild") {
-            numChildren++;
-        }
-    });
-
-    // ✅ 4. 배우자 기본 공제 (5억) 적용 - 배우자 확인 후 공제 설정
-    spouseRelationshipExemption = spouseExists ? 500000000 : 0;
-
-    // ✅ 5. 배우자 상속금액 계산
-    spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
-
-    // ✅ 6. 배우자 금융재산 공제 (배우자 지분에 대한 20% 공제, 최대 2억 원)
-    spouseFinancialExemption = Math.min(financialExemption * spouseShare, 200000000);
-
-    // ✅ 7. 배우자 기본 공제 및 금융재산 공제 차감 후 남은 금액 (음수 방지)
-    spouseRemainingAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption - spouseFinancialExemption, 0);
-
-    // ✅ 8. 배우자 추가 공제 적용 (최대 30억 한도 내에서 자동 계산)
-    spouseAdditionalExemption = Math.min(spouseRemainingAmount, 3000000000);
-
-    // ✅ 9. 배우자의 과세 표준 계산 (음수 방지)
-    spouseTaxableAmount = Math.max(spouseRemainingAmount - spouseAdditionalExemption, 0);
-
-    // ✅ 10. 최종 과세 표준 재계산 (배우자 공제 정확히 반영)
-    totalTaxableAmount = Math.max(
-        totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption,
-        0
-    );
-
-    // ✅ 11. 최종 결과 확인 (디버깅용)
-    console.log("배우자 상속 금액:", spouseInheritanceAmount);
-    console.log("배우자 기본 공제:", spouseRelationshipExemption);
-    console.log("배우자 금융재산 공제:", spouseFinancialExemption);
-    console.log("배우자 추가 공제:", spouseAdditionalExemption);
-    console.log("배우자 과세 표준:", spouseTaxableAmount);
-    console.log("최종 과세 표준:", totalTaxableAmount);
-}
-   
-    // ✅ 개별 관계 공제 자동 적용
-    heirs.forEach(heir => {
-        let name = heir.querySelector(".heirName").value || "상속인";
-        let relationship = heir.querySelector(".relationship").value;
-        let minorChildAgeField = heir.querySelector(".minorChildAgeField");
-        let minorChildAge = minorChildAgeField && minorChildAgeField.value ? parseInt(minorChildAgeField.value) : 0;
-
-        let relationshipExemption = 0;
-        if (relationship === "spouse") {
-            relationshipExemption = spouseRelationshipExemption;
-        } else if (relationship === "adultChild") {
-            relationshipExemption = 50000000;
-        } else if (relationship === "minorChild") {
-            relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 190000000);
-        } else if (relationship === "parent") {
-            relationshipExemption = 50000000;
-        } else if (relationship === "sibling" || relationship === "other") {
-            relationshipExemption = 10000000;
-        }
-
-        relationshipExemptions[name] = relationshipExemption;
-        totalRelationshipExemption += relationshipExemption;
-    });
-
+    // ✅ 배우자 공제 계산
+    let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+    let spouseRelationshipExemption = spouseExists ? 500000000 : 0; 
+    let spouseAdditionalExemption = spouseExists ? Math.min(spouseInheritanceAmount * 0.5, 3000000000) : 0;
+    
     // ✅ 최종 과세 표준 계산
     let totalTaxableAmount = Math.max(totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption, 0);
     let totalInheritanceTax = calculateProgressiveTax(totalTaxableAmount);
@@ -1105,7 +1023,6 @@ function calculateLegalInheritance() {
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
-
    
     /**
  * 가업 공제 계산 (공용)
