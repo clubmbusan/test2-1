@@ -962,6 +962,9 @@ function calculateLegalInheritance() {
     let spouseRelationshipExemption = spouseExists ? 500000000 : 0; // 배우자 기본 공제 5억
     let spouseAdditionalExemption = spouseExists ? Math.min(spouseInheritanceAmount * 0.5, 3000000000) : 0;
 
+    // ✅ 배우자의 과세 표준 계산
+    let spouseTaxableAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);
+
     // ✅ [개별 관계 공제 자동 적용]
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
@@ -994,9 +997,9 @@ function calculateLegalInheritance() {
 
     let individualResults = [];
 
-    // ✅ [개별 과세 표준 계산] 배우자의 과세 표준을 강제로 0으로 하지 않고 실제 계산
-    let totalNonSpouseTaxableAmount = totalTaxableAmount; // 배우자를 제외한 상속인들의 과세 표준
-    let childTaxableAmount = numChildren > 0 ? Math.floor(totalNonSpouseTaxableAmount / numChildren) : 0; // ✅ 소수점 제거
+    // ✅ [개별 과세 표준 계산] 배우자의 과세 표준을 0으로 조정 후, 자녀에게 배분
+    let totalNonSpouseTaxableAmount = totalTaxableAmount - spouseTaxableAmount; // 배우자 제외한 과세 표준
+    let childTaxableAmount = numChildren > 0 ? Math.floor(totalNonSpouseTaxableAmount / numChildren) : 0;
 
     // ✅ [개별 상속세 계산]
     heirs.forEach(heir => {
@@ -1005,8 +1008,8 @@ function calculateLegalInheritance() {
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
 
-        let individualTaxableAmount = (relationship === "spouse") ? Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0) : Math.round(childTaxableAmount);
-        let individualTax = calculateTax(individualTaxableAmount); // ✅ 개별 상속세 계산
+        let individualTaxableAmount = (relationship === "spouse") ? spouseTaxableAmount : Math.round(childTaxableAmount);
+        let individualTax = Math.round((individualTaxableAmount / totalTaxableAmount) * totalInheritanceTax); // ✅ 정확한 비율 계산
 
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
@@ -1016,7 +1019,7 @@ function calculateLegalInheritance() {
         `);
     });
 
-    // ✅ [결과 출력] 배우자가 없는 경우 "배우자 공제" 관련 항목 숨김
+    // ✅ [결과 출력]
     let resultHTML = `<h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>`;
 
     if (spouseExists) {
@@ -1036,7 +1039,7 @@ function calculateLegalInheritance() {
     document.getElementById('result').innerHTML = resultHTML;
 }
 
-// ✅ [계산 버튼 클릭 이벤트 리스너]
+// ✅ 계산 버튼 이벤트 리스너
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
