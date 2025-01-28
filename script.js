@@ -969,7 +969,9 @@ function calculateLegalInheritance() {
         let minorChildAge = minorChildAgeField && minorChildAgeField.value ? parseInt(minorChildAgeField.value) : 0;
         
         let relationshipExemption = 0;
-        if (relationship === "adultChild") {
+        if (relationship === "spouse") {
+            relationshipExemption = spouseRelationshipExemption; // ✅ 배우자 관계공제 (5억) 적용
+        } else if (relationship === "adultChild") {
             relationshipExemption = 50000000; // 성년 자녀 공제 (5천만 원)
         } else if (relationship === "minorChild") {
             relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 190000000); // 미성년자 공제 (최대 1,900만 원)
@@ -1005,9 +1007,13 @@ function calculateLegalInheritance() {
         let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(childTaxableAmount);
         let individualTax = calculateTax(individualTaxableAmount);
 
+        // ✅ 5억 이하일 경우 개별 관계 공제는 따로 표시하지 않음
+        let relationshipExemptionText = (totalRelationshipExemption > lumpSumExemption) ?
+            `${relationshipExemptions[name].toLocaleString()} 원 (${relationship})` : `-`;
+
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
-            관계 공제: ${relationshipExemptions[name].toLocaleString()} 원 (${relationship})<br>
+            관계 공제: ${relationshipExemptionText}<br>
             <strong>과세 표준:</strong> ${individualTaxableAmount.toLocaleString()} 원<br>
             <strong>개별 상속세:</strong> ${individualTax.toLocaleString()} 원</p>
         `);
