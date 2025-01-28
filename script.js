@@ -960,7 +960,7 @@ function calculateLegalInheritance() {
     // ✅ [배우자 공제 계산]
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
     let spouseRelationshipExemption = spouseExists ? 500000000 : 0; // 배우자 기본 공제 5억
-    let spouseAdditionalExemption = spouseExists ? Math.min(spouseInheritanceAmount - spouseRelationshipExemption, 3000000000) : 0;
+    let spouseAdditionalExemption = spouseExists ? Math.min(spouseInheritanceAmount * 0.5, 3000000000) : 0;
 
     // ✅ [개별 관계 공제 자동 적용]
     heirs.forEach(heir => {
@@ -994,24 +994,29 @@ function calculateLegalInheritance() {
 
     let individualResults = [];
 
-    // ✅ [개별 상속세 계산] "총 상속세"를 비율에 따라 배분 (방법 ① 적용)
+    // ✅ [개별 과세 표준 계산] 배우자의 과세 표준을 강제로 0으로 하지 않고 실제 계산
+    let totalNonSpouseTaxableAmount = totalTaxableAmount; // 배우자를 제외한 상속인들의 과세 표준
+    let childTaxableAmount = numChildren > 0 ? Math.floor(totalNonSpouseTaxableAmount / numChildren) : 0; // ✅ 소수점 제거
+
+    // ✅ [개별 상속세 계산]
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName").value || "상속인";
         let relationship = heir.querySelector(".relationship").value;
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
-        
-        let individualTax = Math.round(share * totalInheritanceTax);  // ✅ 총 상속세를 비율에 따라 배분
+
+        let individualTaxableAmount = (relationship === "spouse") ? Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0) : Math.round(childTaxableAmount);
+        let individualTax = calculateTax(individualTaxableAmount); // ✅ 개별 상속세 계산
 
         individualResults.push(`
             <p><strong>${name}</strong> (${(share * 100).toFixed(2)}% 지분): ${inheritanceAmount.toLocaleString()} 원<br>
             관계 공제: ${(relationshipExemptions[name] || 0).toLocaleString()} 원 (${relationship})<br>
-            <strong>과세 표준:</strong> ${totalTaxableAmount.toLocaleString()} 원<br>
+            <strong>과세 표준:</strong> ${individualTaxableAmount.toLocaleString()} 원<br>
             <strong>개별 상속세:</strong> ${individualTax.toLocaleString()} 원</p>
         `);
     });
 
-    // ✅ [결과 출력] 배우자 없는 경우 "배우자 공제" 관련 항목 숨김
+    // ✅ [결과 출력] 배우자가 없는 경우 "배우자 공제" 관련 항목 숨김
     let resultHTML = `<h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>`;
 
     if (spouseExists) {
