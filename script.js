@@ -982,10 +982,10 @@ function calculateLegalInheritance() {
     let spouseAdditionalExemption = Math.min(spouseRemainingAmount, 3000000000);
 
     // ✅ 최종 과세 표준 재계산 (배우자 공제 정확히 반영)
-    let totalTaxableAmount = Math.max(
-        totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption,
-        0
-     );
+     totalTaxableAmount = Math.max(
+         totalAssetValue - financialExemption - lumpSumExemption - spouseRelationshipExemption - spouseAdditionalExemption - totalRelationshipExemption,
+         0
+       );
 
     // ✅ 배우자의 과세 표준 계산 (음수 방지)
     let spouseTaxableAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption - spouseAdditionalExemption, 0);
