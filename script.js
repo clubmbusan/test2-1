@@ -279,9 +279,6 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
     // 새롭게 추가된 .assetValue 필드에 콤마 이벤트 등록
     const newAssetValues = document.querySelectorAll('.asset-entry:last-child .assetValue');
     newAssetValues.forEach(addCommaFormatting);
-Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
-Editing test2-1/script.js at main · clubmbusan/test2-1
-
 
     // 새롭게 추가된 .assetType 필드에 이벤트 등록
     const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
