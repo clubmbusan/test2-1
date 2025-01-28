@@ -993,7 +993,7 @@ function calculateLegalInheritance() {
         let relationship = heir.querySelector(".relationship").value;
         let share = (relationship === "spouse") ? spouseShare : childShare;
         let inheritanceAmount = Math.round(totalAssetValue * share);
-        let individualTaxableAmount = (relationship === "spouse") ? 0 : childTaxableAmount;
+        let individualTaxableAmount = (relationship === "spouse") ? 0 : Math.round(childTaxableAmount);
         let individualTax = calculateProgressiveTax(individualTaxableAmount);
 
         individualResults.push(`
@@ -1044,7 +1044,6 @@ function calculateProgressiveTax(amount) {
 document.getElementById('calculateButton').addEventListener('click', () => {
     calculateLegalInheritance();
 });
-
    
     /**
  * 가업 공제 계산 (공용)
