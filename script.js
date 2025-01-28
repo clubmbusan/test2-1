@@ -976,7 +976,6 @@ let spouseFinancialExemption = 0;
 let spouseRemainingAmount = 0;
 let spouseAdditionalExemption = 0;
 let spouseTaxableAmount = 0;
-let totalTaxableAmount = 0;
 
 // ✅ 배우자 상속금액 계산
 spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
