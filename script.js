@@ -933,7 +933,22 @@ function applyLegalShares() {
         inheritanceShares[name] = (relationship === "spouse") ? spouseShare : childShare;
     });
 
-    return inheritanceShares;
+    return inheritanceShares;    
+}
+
+    // ✅ 공용 상속세율 계산 함수 (누진세율 적용)
+function calculateInheritanceTax(taxableAmount) {
+    if (taxableAmount <= 100000000) {
+        return Math.round(taxableAmount * 0.10);
+    } else if (taxableAmount <= 500000000) {
+        return Math.round(taxableAmount * 0.20 - 10000000);
+    } else if (taxableAmount <= 1000000000) {
+        return Math.round(taxableAmount * 0.30 - 60000000);
+    } else if (taxableAmount <= 3000000000) {
+        return Math.round(taxableAmount * 0.40 - 160000000);
+    } else {
+        return Math.round(taxableAmount * 0.50 - 460000000);
+    }
 }
 
 // ✅ [법정 상속] 계산 함수
