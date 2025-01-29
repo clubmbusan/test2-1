@@ -1030,9 +1030,6 @@ function calculateLegalInheritance() {
         ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
         : 0;
 
-    // ✅ 배우자 제외 상속인의 기초공제 + 관계공제 총합 계산
-    let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
-
     // ✅ 일괄공제 보정: 배우자 제외 상속인의 공제 총합이 5억 미만이면 부족한 만큼 보정
     let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
     let lumpSumExemption = 0;
