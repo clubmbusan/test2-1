@@ -994,7 +994,9 @@ function calculateLegalInheritance() {
 
     // ✅ 기초공제 (2억 원) 추가 및 배분
     let totalBasicExemption = 200000000;
-
+    let spouseBasicExemption = Math.round(spouseShare * totalBasicExemption);
+    let childBasicExemption = numChildren > 0 ? Math.round(childShare * totalBasicExemption) : 0;
+  
     // ✅ 개별 관계 공제 추가
     heirs.forEach(heir => {
         let nameElement = heir.querySelector(".heirName");
@@ -1032,15 +1034,16 @@ function calculateLegalInheritance() {
     let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
 
     // ✅ 일괄공제 보정: 배우자 제외 상속인의 공제 총합이 5억 미만이면 부족한 만큼 보정
+    let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
     let lumpSumExemption = 0;
     if (spouseExists && totalNonSpouseExemptions < 500000000) {
-       lumpSumExemption = 500000000 - totalNonSpouseExemptions;
+        lumpSumExemption = 500000000 - totalNonSpouseExemptions;
     } else if (!spouseExists) {
         lumpSumExemption = 500000000;
     }
-
-   // ✅ 개별 상속인별 일괄 공제 보정액 계산 (배우자 제외 상속인 수로 나눔)
-   let individualLumpSumExemption = numChildren > 0 ? Math.round(lumpSumExemption / numChildren) : 0;
+   
+    // ✅ 개별 상속인별 일괄 공제 보정액 계산 (배우자 제외 상속인 수로 나눔)
+    let individualLumpSumExemption = numChildren > 0 ? Math.round(lumpSumExemption / numChildren) : 0;
 
    // ✅ 개별 상속인별 과세 표준 및 상속세 계산
     let totalInheritanceTax = 0;
