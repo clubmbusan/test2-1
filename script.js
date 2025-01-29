@@ -1087,7 +1087,7 @@ function calculateLegalInheritance() {
 
 // ✅ 계산 버튼 클릭 시 법정 상속 계산 실행
 document.getElementById('calculateButton').addEventListener('click', calculateLegalInheritance);
-   
+
     /**
  * 가업 공제 계산 (공용)
  * @param {number} heirAssetValue - 상속인의 상속 재산 금액
