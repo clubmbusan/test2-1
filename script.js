@@ -980,30 +980,38 @@ function calculateLegalInheritance() {
     // ✅ 기초공제 (2억 원) 추가 및 배분 (배우자 포함 모든 상속인 대상)
     let totalBasicExemption = 200000000;
 
-    // ✅ 개별 관계 공제 추가
-    heirs.forEach(heir => {
-        let relationshipElement = heir.querySelector(".relationship");
-        let nameElement = heir.querySelector(".heirName");
-        let ageElement = heir.querySelector(".heirAge");
+     // ✅ 개별 관계 공제 추가
+     heirs.forEach(heir => {
+         let nameElement = heir.querySelector(".heirName");
+         let relationshipElement = heir.querySelector(".relationship");
+         let ageElement = heir.querySelector(".minorChildAgeField"); // ✅ 미성년자의 나이를 가져오기 위한 필드 추가
 
-        if (!relationshipElement || !nameElement) return;
-        let relationship = relationshipElement.value;
-        let name = nameElement.value || "상속인";
+         if (!relationshipElement || !nameElement) return;
+    let name = nameElement.value || "상속인";
+    let relationship = relationshipElement.value;
+    let minorChildAge = ageElement && ageElement.value ? parseInt(ageElement.value) : 0;
 
-        if (relationship === "spouse") {
-            relationshipExemptions[name] = 500000000; // 배우자 5억 원 공제
-        } else if (relationship === "adultChild") {
-            relationshipExemptions[name] = 50000000; // 성년 자녀 5천만 원 공제
-            nonSpouseRelationshipExemptionTotal += 50000000;
-        } else if (relationship === "minorChild") {
-            let age = ageElement?.value ? parseInt(ageElement.value) : 0; // ✅ 나이 값이 없을 경우 기본값 0 방지
-            let minorExemption = (19 - age) * 10000000;
-            minorExemption = Math.max(minorExemption, 0); // ✅ 음수 값 방지 (예: 나이가 20 이상이면 0 처리)
+    let relationshipExemption = 0; // 기본 공제 금액
+
+    if (relationship === "spouse") {
+        relationshipExemption = 500000000; // ✅ 배우자 관계공제 (5억)
+    } else if (relationship === "adultChild") {
+        relationshipExemption = 50000000; // ✅ 성년 자녀 공제 (5천만 원)
+    } else if (relationship === "minorChild") {
+        relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // ✅ 미성년자 공제 (최대 3천만 원)
+    } else if (relationship === "parent") {
+        relationshipExemption = 50000000; // ✅ 부모 공제 (5천만 원)
+    } else if (relationship === "sibling") {
+        relationshipExemption = 10000000; // ✅ 형제자매 공제 (1천만 원)
+    } else {
+        relationshipExemption = 10000000; // ✅ 기타 상속인 공제 (1천만 원)
+    }
+
+    relationshipExemptions[name] = relationshipExemption; // ✅ 개별 공제 값 저장
+    nonSpouseRelationshipExemptionTotal += relationshipExemption; // ✅ 배우자 제외 공제 총합 계산
+});
+
     
-            relationshipExemptions[name] = minorExemption;
-            nonSpouseRelationshipExemptionTotal += minorExemption;
-          }
-       });
     
     // ✅ 배우자 제외 관계 공제 합이 5억 미만일 경우 부족분을 일괄 공제로 보충
     let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
