@@ -987,32 +987,30 @@ function calculateLegalInheritance() {
          let ageElement = heir.querySelector(".minorChildAgeField"); // ✅ 미성년자의 나이를 가져오기 위한 필드 추가
 
          if (!relationshipElement || !nameElement) return;
-    let name = nameElement.value || "상속인";
-    let relationship = relationshipElement.value;
-    let minorChildAge = ageElement && ageElement.value ? parseInt(ageElement.value) : 0;
+         let name = nameElement.value || "상속인";
+         let relationship = relationshipElement.value;
+         let minorChildAge = ageElement && ageElement.value ? parseInt(ageElement.value) : 0;
 
-    let relationshipExemption = 0; // 기본 공제 금액
+         let relationshipExemption = 0; // 기본 공제 금액
 
-    if (relationship === "spouse") {
-        relationshipExemption = 500000000; // ✅ 배우자 관계공제 (5억)
-    } else if (relationship === "adultChild") {
-        relationshipExemption = 50000000; // ✅ 성년 자녀 공제 (5천만 원)
-    } else if (relationship === "minorChild") {
-        relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // ✅ 미성년자 공제 (최대 3천만 원)
-    } else if (relationship === "parent") {
-        relationshipExemption = 50000000; // ✅ 부모 공제 (5천만 원)
-    } else if (relationship === "sibling") {
-        relationshipExemption = 10000000; // ✅ 형제자매 공제 (1천만 원)
-    } else {
-        relationshipExemption = 10000000; // ✅ 기타 상속인 공제 (1천만 원)
-    }
+         if (relationship === "spouse") {
+             relationshipExemption = 500000000; // ✅ 배우자 관계공제 (5억)
+         } else if (relationship === "adultChild") {
+             relationshipExemption = 50000000; // ✅ 성년 자녀 공제 (5천만 원)
+         } else if (relationship === "minorChild") {
+             relationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // ✅ 미성년자 공제 (최대 3천만 원)
+         } else if (relationship === "parent") {
+             relationshipExemption = 50000000; // ✅ 부모 공제 (5천만 원)
+         } else if (relationship === "sibling") {
+             relationshipExemption = 10000000; // ✅ 형제자매 공제 (1천만 원)
+         } else {
+             relationshipExemption = 10000000; // ✅ 기타 상속인 공제 (1천만 원)
+         }
 
-    relationshipExemptions[name] = relationshipExemption; // ✅ 개별 공제 값 저장
-    nonSpouseRelationshipExemptionTotal += relationshipExemption; // ✅ 배우자 제외 공제 총합 계산
-});
-
-    
-    
+         relationshipExemptions[name] = relationshipExemption; // ✅ 개별 공제 값 저장
+         nonSpouseRelationshipExemptionTotal += relationshipExemption; // ✅ 배우자 제외 공제 총합 계산
+      });
+        
     // ✅ 배우자 제외 관계 공제 합이 5억 미만일 경우 부족분을 일괄 공제로 보충
     let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
     let lumpSumExemption = 0;
