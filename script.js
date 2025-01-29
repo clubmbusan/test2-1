@@ -1043,7 +1043,6 @@ function calculateLegalInheritance() {
    let individualLumpSumExemption = numChildren > 0 ? Math.round(lumpSumExemption / numChildren) : 0;
 
    // ✅ 개별 상속인별 과세 표준 및 상속세 계산
-    function calculateLegalInheritance() {
     let totalInheritanceTax = 0;
     let individualResults = [];
 
