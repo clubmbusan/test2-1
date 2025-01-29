@@ -1052,6 +1052,7 @@ function calculateLegalInheritance() {
             <h4>${name} (${(share * 100).toFixed(2)}% 지분)</h4>
             <p>상속 금액: ${inheritanceAmount.toLocaleString()} 원</p>
             <p>금융재산 공제: ${individualFinancialExemption.toLocaleString()} 원</p>
+            <p>기초 공제: ${individualBasicExemption.toLocaleString()} 원</p>
             <p>관계 공제: ${individualRelationshipExemption.toLocaleString()} 원</p>
             <p>배우자 추가 공제: ${individualSpouseAdditionalExemption.toLocaleString()} 원</p>
             <p>과세 표준: ${individualTaxableAmount.toLocaleString()} 원</p>
@@ -1066,6 +1067,7 @@ function calculateLegalInheritance() {
     document.getElementById('result').innerHTML = `
         <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
         <h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>
+        <p>기초 공제: ${individualBasicExemption.toLocaleString()} 원</p>
         <h3>배우자 관계공제: ${spouseRelationshipExemption.toLocaleString()} 원</h3>
         <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
         <h3>과세 표준: ${totalTaxableAmount.toLocaleString()} 원</h3>
