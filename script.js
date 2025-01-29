@@ -1032,17 +1032,9 @@ function calculateLegalInheritance() {
 
     // ✅ 일괄공제 보정: 배우자 제외 상속인의 공제 총합이 5억 미만이면 부족한 만큼 보정
     let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
-    let lumpSumExemption = 0;
-    if (spouseExists && totalNonSpouseExemptions < 500000000) {
-        lumpSumExemption = 500000000 - totalNonSpouseExemptions;
-    } else if (!spouseExists) {
-        lumpSumExemption = 500000000;
-    }
+    let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? 500000000 - totalNonSpouseExemptions : 0;
    
-    // ✅ 개별 상속인별 일괄 공제 보정액 계산 (배우자 제외 상속인 수로 나눔)
-    let individualLumpSumExemption = numChildren > 0 ? Math.round(lumpSumExemption / numChildren) : 0;
-
-   // ✅ 개별 상속인별 과세 표준 및 상속세 계산
+     // ✅ 개별 상속인별 과세 표준 및 상속세 계산
     let totalInheritanceTax = 0;
     let individualResults = [];
 
@@ -1053,28 +1045,14 @@ function calculateLegalInheritance() {
         let inheritanceAmount = Math.round(totalAssetValue * share);
 
         let individualFinancialExemption = (relationship === "spouse") ? spouseFinancialExemption : childFinancialExemption;
+        let individualBasicExemption = (relationship === "spouse") ? spouseBasicExemption : childBasicExemption;
         let individualRelationshipExemption = relationshipExemptions[name] || 0;
-
-        // ✅ 배우자 제외 상속인의 기초공제 + 관계공제 총합 계산
-        let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
-
-        // ✅ 일괄공제 보정 (배우자 제외 상속인의 공제 총합이 5억 미만이면 보정)
-        let lumpSumExemption = 0;
-        if (spouseExists && totalNonSpouseExemptions < 500000000) {
-            lumpSumExemption = 500000000 - totalNonSpouseExemptions;
-        } else if (!spouseExists) {
-            lumpSumExemption = 500000000;
-        }
-
-        // ✅ 개별 상속인의 일괄공제 보정액 계산 (배우자 제외 상속인에게만 적용)
-        let individualLumpSumExemption = (relationship === "spouse") ? 0 : Math.min(lumpSumExemption / numChildren, 250000000 - individualRelationshipExemption);
-
-        // ✅ 배우자 추가 공제 (배우자에게만 적용)
+        let individualLumpSumExemption = (relationship !== "spouse") ? Math.min(lumpSumExemption / numChildren, 250000000 - individualRelationshipExemption) : 0;
         let individualSpouseAdditionalExemption = (relationship === "spouse") ? spouseAdditionalExemption : 0;
 
         // ✅ 개별 상속인의 과세 표준 계산
         let individualTaxableAmount = Math.max(
-            inheritanceAmount - individualFinancialExemption - totalBasicExemption - individualRelationshipExemption - individualLumpSumExemption - individualSpouseAdditionalExemption, 
+            inheritanceAmount - individualFinancialExemption - individualBasicExemption - individualRelationshipExemption - individualLumpSumExemption - individualSpouseAdditionalExemption, 
             0
         );
 
@@ -1082,12 +1060,12 @@ function calculateLegalInheritance() {
         let individualTax = calculateInheritanceTax(individualTaxableAmount);
         totalInheritanceTax += individualTax;
 
-        // ✅ 개별 상속인 결과 생성 (배우자에게는 일괄공제 미적용)
+        // ✅ 개별 상속인 결과 생성
         individualResults.push(`
             <h4>${name} (${(share * 100).toFixed(2)}% 지분)</h4>
             <p>상속 금액: ${inheritanceAmount.toLocaleString()} 원</p>
             <p>금융재산 공제: ${individualFinancialExemption.toLocaleString()} 원</p>
-            <p>기초 공제: ${totalBasicExemption.toLocaleString()} 원</p>
+            <p>기초 공제: ${individualBasicExemption.toLocaleString()} 원</p>
             <p>관계 공제: ${individualRelationshipExemption.toLocaleString()} 원</p>
             ${relationship !== "spouse" ? `<p>일괄 공제 보정액: ${individualLumpSumExemption.toLocaleString()} 원</p>` : ""}
             ${relationship === "spouse" ? `<p>배우자 추가 공제: ${individualSpouseAdditionalExemption.toLocaleString()} 원</p>` : ""}
@@ -1104,12 +1082,10 @@ function calculateLegalInheritance() {
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     <h3>배우자 관계공제: 500,000,000 원</h3>
     <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
-    <h3>최종 과세 표준: ${totalInheritanceTax.toLocaleString()} 원</h3>
-    <h3>개별 상속인 결과</h3>
-    ${individualResults.join("")}  
+    ${individualResults.join("")}
     <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
-`;  
-} 
+    `;
+}
     
     // ✅ 계산 버튼 클릭 시 실행
 document.getElementById('calculateButton').addEventListener('click', calculateLegalInheritance);
