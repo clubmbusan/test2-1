@@ -1109,8 +1109,9 @@ function calculateLegalInheritance() {
     <h3>개별 상속인 결과</h3>
     ${individualResults.join("")}  
     <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
-`;  // ✅ 백틱(``` ` ```)이 올바르게 닫힘
-
+`;  
+} 
+    
     // ✅ 계산 버튼 클릭 시 실행
 document.getElementById('calculateButton').addEventListener('click', calculateLegalInheritance);
 
