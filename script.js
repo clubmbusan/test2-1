@@ -979,8 +979,7 @@ function calculateLegalInheritance() {
 
     // ✅ 기초공제 (2억 원) 추가 및 배분
     let totalBasicExemption = 200000000;
-    let spouseBasicExemption = spouseExists ? Math.round(spouseShare * totalBasicExemption) : 0;
-
+  
     // ✅ 개별 관계 공제 추가
     heirs.forEach(heir => {
         let relationshipElement = heir.querySelector(".relationship");
