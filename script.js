@@ -996,13 +996,15 @@ function calculateLegalInheritance() {
             relationshipExemptions[name] = 50000000; // 성년 자녀 5천만 원 공제
             nonSpouseRelationshipExemptionTotal += 50000000;
         } else if (relationship === "minorChild") {
-            let age = parseInt(ageElement?.value) || 0;
-            let minorExemption = (19 - age) * 10000000; // 정확한 나이 적용
+            let age = ageElement?.value ? parseInt(ageElement.value) : 0; // ✅ 나이 값이 없을 경우 기본값 0 방지
+            let minorExemption = (19 - age) * 10000000;
+            minorExemption = Math.max(minorExemption, 0); // ✅ 음수 값 방지 (예: 나이가 20 이상이면 0 처리)
+    
             relationshipExemptions[name] = minorExemption;
             nonSpouseRelationshipExemptionTotal += minorExemption;
-        }
-    });
-
+          }
+       });
+    
     // ✅ 배우자 제외 관계 공제 합이 5억 미만일 경우 부족분을 일괄 공제로 보충
     let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalBasicExemption;
     let lumpSumExemption = 0;
