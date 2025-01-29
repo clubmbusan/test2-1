@@ -1100,16 +1100,16 @@ function calculateLegalInheritance() {
 
     // ✅ 최종 결과 출력
     document.getElementById('result').innerHTML = `
-        <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
-        <h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>
-        <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-        <h3>배우자 관계공제: 500,000,000 원</h3>
-        <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
-        <h3>최종 과세 표준: ${totalInheritanceTax.toLocaleString()} 원</h3>
-        <h3>개별 상속인 결과</h3>
-        ${individualResults.join("")}
-    <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>
-`;
+    <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
+    <h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>
+    <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
+    <h3>배우자 관계공제: 500,000,000 원</h3>
+    <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
+    <h3>최종 과세 표준: ${totalInheritanceTax.toLocaleString()} 원</h3>
+    <h3>개별 상속인 결과</h3>
+    ${individualResults.join("")}  
+    <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
+`;  // ✅ 백틱(``` ` ```)이 올바르게 닫힘
 }
 
     // ✅ 계산 버튼 클릭 시 실행
