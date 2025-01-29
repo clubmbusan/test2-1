@@ -1004,9 +1004,6 @@ function calculateLegalInheritance() {
         }
     });
 
-    // ✅ 배우자 제외한 총 기초 공제
-    let totalNonSpouseBasicExemption = totalBasicExemption - spouseBasicExemption;
-
     // ✅ 배우자 제외 관계 공제 합이 5억 미만일 경우 부족분을 일괄 공제로 보충
     let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalNonSpouseBasicExemption;
     let lumpSumExemption = 0;
