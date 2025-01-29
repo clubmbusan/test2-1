@@ -1047,11 +1047,7 @@ heirs.forEach(heir => {
         inheritanceAmount - individualFinancialExemption - totalBasicExemption - individualRelationshipExemption - individualLumpSumExemption - individualSpouseAdditionalExemption, 
         0
     );
-
-    // ✅ 개별 상속세 계산 (단순 예제, 실제 계산은 누진세율 적용 필요)
-    let individualTax = Math.round(individualTaxableAmount * 0.2); // 예제: 20% 세율 적용 가정
-    totalInheritanceTax += individualTax;
-
+    
     individualResults.push(`
         <h4>${name} (${(share * 100).toFixed(2)}% 지분)</h4>
         <p>상속 금액: ${inheritanceAmount.toLocaleString()} 원</p>
