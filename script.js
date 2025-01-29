@@ -1005,9 +1005,8 @@ function calculateLegalInheritance() {
     });
 
     // ✅ 배우자 제외 관계 공제 합이 5억 미만일 경우 부족분을 일괄 공제로 보충
-    let totalNonSpouseExemptions = nonSpouseRelationshipExemptionTotal + totalNonSpouseBasicExemption;
-    let lumpSumExemption = 0;
-
+    let individualBasicExemption = Math.round(share * totalBasicExemption);
+    
     if (spouseExists) {
         if (totalNonSpouseExemptions < 500000000) {
             lumpSumExemption = 500000000 - totalNonSpouseExemptions;
