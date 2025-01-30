@@ -1028,16 +1028,19 @@ function calculateLegalInheritance() {
         nonSpouseRelationshipExemptionTotal += relationshipExemption;
     });
 
-  // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
-let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
-let spouseAdditionalExemption = spouseExists 
-    ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
-    : 0;
+   // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
+ let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+ let spouseAdditionalExemption = spouseExists 
+     ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
+     : 0;
 
-// ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합 계산
-let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
-    let relationship = heir.querySelector(".relationship")?.value;
-    if (relationship !== "spouse") {
+   // ✅ 상속인 목록을 배열로 변환 (NodeList → Array)
+   let heirs = Array.from(document.querySelectorAll("#legalHeirContainer .heir-entry"));
+  
+   // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합 계산
+   let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
+   let relationship = heir.querySelector(".relationship")?.value;
+     if (relationship !== "spouse") {
         let individualBasicExemption = parseInt(heir.dataset.basicExemption) || 0;
         let individualRelationshipExemption = parseInt(heir.dataset.relationshipExemption) || 0;
         return sum + individualBasicExemption + individualRelationshipExemption;
