@@ -1078,9 +1078,9 @@ heirs.forEach(heir => {
 
     // ✅ 부족한 공제액을 일괄공제로 보정 (개별 배분액보다 부족한 경우만 보정)
     let individualLumpSumExemption = (relationship !== "spouse") 
-        ? Math.max(0, Math.min(maxIndividualLumpSumExemption, maxIndividualLumpSumExemption - totalIndividualExemption)) // ✅ 무조건 개별 배분액 적용
-        : 0;
-
+       ? Math.max(0, maxIndividualLumpSumExemption - totalIndividualExemption) // ✅ 부족한 부분을 무조건 보정
+       : 0;
+    
     let individualSpouseAdditionalExemption = (relationship === "spouse") ? spouseAdditionalExemption : 0;
 
     // ✅ 개별 상속인의 과세 표준 계산
