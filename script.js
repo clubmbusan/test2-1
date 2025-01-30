@@ -1116,7 +1116,7 @@ heirs.forEach(heir => {
         <p>금융재산 공제: ${individualFinancialExemption.toLocaleString()} 원</p>
         <p>기초 공제: ${individualBasicExemption.toLocaleString()} 원</p>
         <p>관계 공제: ${individualRelationshipExemption.toLocaleString()} 원</p>
-        <p>일괄 공제 보정액: ${individualLumpSumExemption.toLocaleString()} 원</p>
+        ${relationship !== "spouse" ? `<p>일괄 공제 보정액: ${individualLumpSumExemption.toLocaleString()} 원</p>` : ""}
         <p>과세 표준: ${individualTaxableAmount.toLocaleString()} 원</p>
         <p>개별 상속세: ${individualTax.toLocaleString()} 원</p>
         <hr>
