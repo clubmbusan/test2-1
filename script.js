@@ -219,8 +219,6 @@ initializeDefaultView();
             console.log("✅ 초기화 완료! (최초 상속인 입력 필드는 유지됨)");
         }
     });
-});
-
     
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
