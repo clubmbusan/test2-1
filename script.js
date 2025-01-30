@@ -771,6 +771,23 @@ function calculateAgreementInheritance() {
 
     let totalFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
+     // ✅ 상속인 정보 저장
+    heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+        const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
+        const relationship = heir.querySelector('.relationship')?.value || 'other';
+        let age = 0;
+
+        if (relationship === 'minorChild') {
+            const minorChildAgeInput = heir.querySelector('.minorChildAgeField');
+            age = minorChildAgeInput && minorChildAgeInput.value ? parseInt(minorChildAgeInput.value) : 0;
+        }
+
+        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
+        let relationshipExemption = calculateRelationshipExemption(relationship, age);
+
+        return { name, relationship, age, sharePercentage, relationshipExemption };
+    });
+
     // ✅ 지분 합이 100%인지 확인
     let totalShare = heirs.reduce((sum, heir) => sum + (parseFloat(heir.querySelector(".sharePercentage")?.value) || 0), 0);
     if (totalShare !== 100) {
