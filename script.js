@@ -1028,33 +1028,57 @@ function calculateLegalInheritance() {
         nonSpouseRelationshipExemptionTotal += relationshipExemption;
     });
 
-   // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
+ // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
 let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
 let spouseAdditionalExemption = spouseExists 
     ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
     : 0;
 
-// ✅ 일괄공제 보정: 배우자 제외 상속인의 공제 총합이 5억 미만이면 부족한 만큼 보정
+// ✅ 배우자 제외한 기초공제 + 관계공제 합 계산
 let totalNonSpouseExemptions = totalBasicExemption + nonSpouseRelationshipExemptionTotal;
-let lumpSumExemption = Math.max(500000000 - totalNonSpouseExemptions, 0); // ✅ 음수 방지
 
-// ✅ 배우자 제외 상속인의 수 (0 이하가 되지 않도록 보정)
-let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1); // ✅ 1 이상 유지
+// ✅ 상단 결과지에서 일괄공제(5억) 확정
+let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? 500000000 : 0; // ✅ 부족하면 5억 보정
+
+// ✅ 배우자 제외한 상속인 수 (0 이하 방지)
+let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
+
+// ✅ 배우자 제외 상속인의 1인당 최대 배분 가능 일괄공제 금액
+let maxIndividualLumpSumExemption = lumpSumExemption / nonSpouseHeirs; 
 
 // ✅ 개별 상속인별 과세 표준 및 상속세 계산
 heirs.forEach(heir => {
     let name = heir.querySelector(".heirName")?.value || "상속인";
     let relationship = heir.querySelector(".relationship")?.value;
+    let minorChildAge = heir.querySelector(".minorChildAgeField")?.value || null;
     let share = (relationship === "spouse") ? spouseShare : childShare;
     let inheritanceAmount = Math.round(totalAssetValue * share);
 
     let individualFinancialExemption = (relationship === "spouse") ? spouseFinancialExemption : childFinancialExemption;
     let individualBasicExemption = (relationship === "spouse") ? spouseBasicExemption : childBasicExemption;
-    let individualRelationshipExemption = relationshipExemptions[name] || 0;
     
-    // ✅ 배우자 제외 상속인에게만 일괄 공제 적용 (음수 방지 추가)
+    // ✅ 미성년자, 부모, 형제 관계 공제 (나이에 따라 계산)
+    let individualRelationshipExemption = 0;
+    if (relationship === "spouse") {
+        individualRelationshipExemption = 500000000; // 배우자 관계공제 (5억)
+    } else if (relationship === "adultChild") {
+        individualRelationshipExemption = 50000000; // 성년 자녀 (5천만)
+    } else if (relationship === "minorChild") {
+        individualRelationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // 미성년자 관계 공제 (최대 3천만)
+    } else if (relationship === "parent") {
+        individualRelationshipExemption = 50000000; // 부모 (직계존속) 공제 (5천만)
+    } else if (relationship === "sibling") {
+        individualRelationshipExemption = 10000000; // 형제·자매 공제 (1천만)
+    } else {
+        individualRelationshipExemption = 10000000; // 기타 상속인 (1천만)
+    }
+
+    // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합
+    let totalIndividualExemption = individualBasicExemption + individualRelationshipExemption;
+
+    // ✅ 부족한 공제액을 일괄공제로 보정 (최대치: 개별 배분 가능 금액)
     let individualLumpSumExemption = (relationship !== "spouse") 
-        ? Math.min(lumpSumExemption / nonSpouseHeirs, Math.max(250000000 - individualRelationshipExemption, 0)) 
+        ? Math.min(maxIndividualLumpSumExemption, Math.max(0, maxIndividualLumpSumExemption - totalIndividualExemption)) 
         : 0;
 
     let individualSpouseAdditionalExemption = (relationship === "spouse") ? spouseAdditionalExemption : 0;
@@ -1084,19 +1108,19 @@ heirs.forEach(heir => {
     `);
 });
 
-// ✅ 최종 결과 출력
+// ✅ 최종 결과 출력 (상단에서 일괄공제 5억 확정 표시)
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
     <h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     <h3>배우자 관계공제: 500,000,000 원</h3>
-    <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
+    <h3>일괄 공제: 500,000,000 원</h3> <!-- ✅ 5억 확정 표시 -->
     ${individualResults.join("")}
     <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
 `;
 }
-    
-    // ✅ 계산 버튼 클릭 시 실행
+
+// ✅ 계산 버튼 클릭 시 실행
 document.getElementById('calculateButton').addEventListener('click', calculateLegalInheritance);
 
     /**
