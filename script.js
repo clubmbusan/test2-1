@@ -1028,26 +1028,33 @@ function calculateLegalInheritance() {
         nonSpouseRelationshipExemptionTotal += relationshipExemption;
     });
 
- // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
-let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
-let spouseAdditionalExemption = spouseExists 
-    ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
-    : 0;
+  // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
+  let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+  let spouseAdditionalExemption = spouseExists 
+      ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
+      : 0;
 
-// ✅ 배우자 제외한 기초공제 + 관계공제 합 계산
-let totalNonSpouseExemptions = totalBasicExemption + nonSpouseRelationshipExemptionTotal;
+  // ✅ 배우자 제외한 기초공제 + 관계공제 합 계산
+   let totalNonSpouseExemptions = totalBasicExemption + nonSpouseRelationshipExemptionTotal;
 
-// ✅ 상단 결과지에서 일괄공제(5억) 확정
-let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? 500000000 : 0; 
+  // ✅ 일괄공제: 배우자 제외한 상속인의 기초공제 + 관계공제 합이 5억 미만이면 보정 적용
+   let lumpSumExemption = (totalNonSpouseExemptions < 500000000) 
+      ? 500000000 - totalNonSpouseExemptions  // ✅ 부족한 만큼 보정
+      : 0;  // ✅ 5억 이상이면 보정 불필요
 
-// ✅ 배우자 제외한 상속인 수 (0 이하 방지)
-let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
+  // ✅ 배우자 제외한 상속인 수 (0 이하 방지)
+   let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
 
-// ✅ 배우자 제외 상속인의 1인당 최대 배분 가능 일괄공제 금액
-let maxIndividualLumpSumExemption = lumpSumExemption / nonSpouseHeirs; 
+  // ✅ 배우자 제외 상속인의 1인당 최대 배분 가능 일괄공제 금액
+   let maxIndividualLumpSumExemption = lumpSumExemption / nonSpouseHeirs; 
 
-// ✅ 개별 상속인별 과세 표준 및 상속세 계산
-heirs.forEach(heir => {
+  // ✅ 상단 결과지에서 "일괄공제" 대신 "배우자 제외 관계공제 합" 표시
+   let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000) 
+      ? 500000000  // ✅ 부족하면 5억으로 표시
+      : totalNonSpouseExemptions;  // ✅ 5억 이상이면 실제 관계공제 합을 표시
+   
+   // ✅ 개별 상속인별 과세 표준 및 상속세 계산
+ heirs.forEach(heir => {
     let name = heir.querySelector(".heirName")?.value || "상속인";
     let relationship = heir.querySelector(".relationship")?.value;
     let minorChildAge = heir.querySelector(".minorChildAgeField")?.value || null;
