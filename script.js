@@ -964,7 +964,8 @@ function calculateLegalInheritance() {
 
     // ✅ 상속세 총합 변수 초기화
      let totalInheritanceTax = 0; // ✅ 오류 해결: 함수 시작 부분에서 변수 선언
-  
+     let individualResults = []; // ✅ 개별 상속 결과 배열 초기화 (오류 해결)
+
     // ✅ 상속인 목록 가져오기
     let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
 
