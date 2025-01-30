@@ -962,6 +962,9 @@ function calculateLegalInheritance() {
     // ✅ 총 상속 재산 계산
     let totalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
 
+    // ✅ 상속세 총합 변수 초기화
+     let totalInheritanceTax = 0; // ✅ 오류 해결: 함수 시작 부분에서 변수 선언
+  
     // ✅ 상속인 목록 가져오기
     let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
 
