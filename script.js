@@ -1037,23 +1037,27 @@ function calculateLegalInheritance() {
  // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합 계산
 let totalNonSpouseExemptions = totalBasicExemption + nonSpouseRelationshipExemptionTotal;
 
-// ✅ 일괄공제: 배우자 제외한 상속인의 기초공제 + 관계공제 합이 5억 미만이면 보정 적용
-let lumpSumExemption = (totalNonSpouseExemptions < 500000000) 
-    ? 500000000 - totalNonSpouseExemptions  // ✅ 부족한 만큼 보정
-    : 0;  // ✅ 5억 이상이면 보정 불필요
+ // ✅ 일괄공제: 배우자 제외한 상속인의 기초공제 + 관계공제 합이 5억 미만이면 보정 적용
+ let lumpSumExemption = (totalNonSpouseExemptions < 500000000) 
+     ? 500000000 - totalNonSpouseExemptions  // ✅ 부족한 만큼 보정
+     : 0;  // ✅ 5억 이상이면 보정 불필요
 
-// ✅ 배우자 제외한 상속인 수 (0 이하 방지)
-let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
+ // ✅ 배우자 제외한 상속인 수 (0 이하 방지)
+ let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
 
-// ✅ 배우자 제외 상속인의 1인당 최대 배분 가능 일괄공제 금액
-let maxIndividualLumpSumExemption = lumpSumExemption / nonSpouseHeirs;
+ // ✅ 배우자 제외 상속인의 1인당 최대 배분 가능 일괄공제 금액
+ let maxIndividualLumpSumExemption = lumpSumExemption / nonSpouseHeirs;
 
-// ✅ 상단 결과지에서 "일괄공제" 대신 "배우자 제외 관계공제 합" 표시
-let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000) 
-    ? 500000000  // ✅ 부족하면 5억으로 표시
-    : totalNonSpouseExemptions;  // ✅ 5억 이상이면 실제 관계공제 합을 표시
+ // ✅ 상단 결과지에 "일괄공제" 표시 (5억이 아니라 실제 계산된 값 반영)
+ let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000) 
+     ? 500000000  // ✅ 부족하면 5억 적용
+     : totalNonSpouseExemptions;  // ✅ 5억 이상이면 실제 값 적용 (초과 금액이 나오지 않도록 보정)
 
-// ✅ 개별 상속인별 과세 표준 및 상속세 계산
+// ✅ 디버깅 코드 추가 (값을 콘솔에서 확인)
+console.log("총 기초공제 + 관계공제 합:", totalNonSpouseExemptions);
+console.log("최종 일괄공제 값:", displayLumpSumExemption);
+
+    // ✅ 개별 상속인별 과세 표준 및 상속세 계산
 heirs.forEach(heir => {
     let name = heir.querySelector(".heirName")?.value || "상속인";
     let relationship = heir.querySelector(".relationship")?.value;
