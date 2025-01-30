@@ -771,7 +771,19 @@ function calculateAgreementInheritance() {
 
     let totalFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
-     // ✅ 상속인 정보 저장
+    // ✅ 상속인별 지분 가져오기 (지분 입력값 반영)
+    let totalShare = heirs.reduce((sum, heir) => {
+        let shareInput = heir.querySelector(".sharePercentageField")?.value || "0";
+        return sum + parseFloat(shareInput);
+    }, 0);
+
+    // ✅ 지분 합이 100%인지 확인
+    if (totalShare !== 100) {
+        alert("지분 합계가 100%가 아닙니다. 모든 상속인의 지분 합이 100%가 되도록 입력하세요.");
+        return;
+    }        
+    
+    // ✅ 상속인 정보 저장
     heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
@@ -787,13 +799,6 @@ function calculateAgreementInheritance() {
 
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
-
-    // ✅ 지분 합이 100%인지 확인
-    let totalShare = heirs.reduce((sum, heir) => sum + (parseFloat(heir.querySelector(".sharePercentage")?.value) || 0), 0);
-    if (totalShare !== 100) {
-        alert("지분 합계가 100%가 아닙니다.");
-        return;
-    }
 
     // ✅ 배우자 확인 및 공제 계산
     let spouse = heirs.find(h => h.querySelector(".relationship")?.value === 'spouse');
