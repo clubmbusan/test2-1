@@ -1047,15 +1047,21 @@ function calculateLegalInheritance() {
         let individualFinancialExemption = (relationship === "spouse") ? spouseFinancialExemption : childFinancialExemption;
         let individualBasicExemption = (relationship === "spouse") ? spouseBasicExemption : childBasicExemption;
 
-        // ✅ 관계 공제 (배우자 5억, 성년 자녀 5천만, 미성년 자녀 연령에 따라 계산)
-        let individualRelationshipExemption = 0;
-        if (relationship === "spouse") {
-            individualRelationshipExemption = 500000000;
-        } else if (relationship === "adultChild") {
-            individualRelationshipExemption = 50000000;
-        } else if (relationship === "minorChild") {
-            individualRelationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000);
-        }
+       // ✅ 관계 공제 (배우자 5억, 부모 5천만, 성년 자녀 5천만, 미성년 자녀 연령에 따라 계산, 형제 1천만, 기타 1천만)
+       let individualRelationshipExemption = 0;
+       if (relationship === "spouse") {
+           individualRelationshipExemption = 500000000; // 배우자 (5억)
+       } else if (relationship === "parent") {
+           individualRelationshipExemption = 50000000; // 부모 (5천만)
+       } else if (relationship === "adultChild") {
+           individualRelationshipExemption = 50000000; // 성년 자녀 (5천만)
+       } else if (relationship === "minorChild") {
+           individualRelationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // 미성년 자녀 (최대 3천만)
+       } else if (relationship === "sibling") {
+           individualRelationshipExemption = 10000000; // 형제자매 (1천만)
+       } else {
+           individualRelationshipExemption = 10000000; // 기타 상속인 (1천만)
+       }
 
         // ✅ 개별 상속인의 기초공제 + 관계공제 합산
         let totalIndividualExemption = individualBasicExemption + individualRelationshipExemption;
