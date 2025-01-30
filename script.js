@@ -195,30 +195,35 @@ initializeDefaultView();
 
   // ✅ "다시 하기" 버튼 이벤트 리스너 (추가된 필드 숨기기 + 입력값 초기화)   
      document.body.addEventListener("click", function (event) {
-        if (event.target.classList.contains("removeAssetButton")) {
-            event.preventDefault();
-            console.log("🔄 '다시 하기' 버튼 클릭됨! 추가된 입력 필드 닫기 & 입력값 초기화 실행!");
+    if (event.target.classList.contains("removeAssetButton")) {
+        event.preventDefault();
+        console.log("🔄 '다시 하기' 버튼 클릭됨! 추가된 입력 필드 닫기 & 입력값 초기화 실행!");
 
-            // ✅ 모든 입력값 초기화 (숫자 입력 필드만)
-            document.querySelectorAll("input").forEach(input => input.value = "");
+        // ✅ 모든 입력값 초기화 (숫자 입력 필드만)
+        document.querySelectorAll("input").forEach(input => input.value = "");
 
-            // ✅ 추가된 "재산 항목(.asset-entry)" 모두 삭제
-            document.querySelectorAll("#assetContainer .asset-entry").forEach((asset, index) => {
-                if (index !== 0) asset.remove();
-            });
+        // ✅ 협의상속 - 추가된 상속인 입력 필드 삭제 (첫 번째 항목 유지)
+        document.querySelectorAll("#heirContainer .heir-entry").forEach((heir, index) => {
+            if (index !== 0) heir.remove(); 
+        });
 
-            // ✅ 협의상속 & 법정상속 구분 없이 추가된 "상속인 항목(.heir-entry)" 모두 삭제
-            document.querySelectorAll("#heirContainer .heir-entry").forEach((heir, index) => {
-                if (index !== 0) heir.remove(); // ✅ 첫 번째 입력 필드만 유지
-            });
+        // ✅ 법정상속 - 추가된 상속인 입력 필드 삭제 (첫 번째 항목 유지)
+        document.querySelectorAll("#legalHeirContainer .heir-entry").forEach((heir, index) => {
+            if (index !== 0) heir.remove(); 
+        });
 
-            // ✅ 결과창 초기화
-            const resultArea = document.getElementById("result");
-            if (resultArea) resultArea.innerHTML = "";
+        // ✅ 협의상속 - 재산 입력 필드 초기화 (첫 번째 항목 유지)
+        document.querySelectorAll("#assetContainer .asset-entry").forEach((asset, index) => {
+            if (index !== 0) asset.remove();
+        });
 
-            console.log("✅ 초기화 완료! (최초 상속인 입력 필드는 유지됨)");
-        }
-    });
+        // ✅ 결과창 초기화
+        const resultArea = document.getElementById("result");
+        if (resultArea) resultArea.innerHTML = "";
+
+        console.log("✅ 초기화 완료! (최초 상속인 입력 필드는 유지됨)");
+    }
+});
     
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
