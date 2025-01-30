@@ -1004,6 +1004,9 @@ function calculateLegalInheritance() {
     // ✅ 금융재산 공제 **상속 지분에 따라 배분**
     let spouseFinancialExemption = Math.round(spouseShare * totalFinancialExemption);
     let childFinancialExemption = numChildren > 0 ? Math.round(childShare * totalFinancialExemption) : 0;
+    let parentFinancialExemption = numParents > 0 ? Math.round(parentShare * totalFinancialExemption) : 0;
+    let siblingFinancialExemption = numSiblings > 0 ? Math.round(siblingShare * totalFinancialExemption) : 0;
+    let otherFinancialExemption = numOthers > 0 ? Math.round(otherShare * totalFinancialExemption) : 0;
 
     // ✅ 기초공제 (2억 원) 추가 및 배분
     let totalBasicExemption = 200000000;
