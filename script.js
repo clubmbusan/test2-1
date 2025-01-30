@@ -1038,7 +1038,7 @@ let spouseAdditionalExemption = spouseExists
 let totalNonSpouseExemptions = totalBasicExemption + nonSpouseRelationshipExemptionTotal;
 
 // ✅ 상단 결과지에서 일괄공제(5억) 확정
-let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? 500000000 : 0; // ✅ 부족하면 5억 보정
+let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? 500000000 : 0; 
 
 // ✅ 배우자 제외한 상속인 수 (0 이하 방지)
 let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
@@ -1064,11 +1064,11 @@ heirs.forEach(heir => {
     } else if (relationship === "adultChild") {
         individualRelationshipExemption = 50000000; // 성년 자녀 (5천만)
     } else if (relationship === "minorChild") {
-        individualRelationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // 미성년자 관계 공제 (최대 3천만)
+        individualRelationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // 미성년자 관계 공제
     } else if (relationship === "parent") {
-        individualRelationshipExemption = 50000000; // 부모 (직계존속) 공제 (5천만)
+        individualRelationshipExemption = 50000000; // 부모 (5천만)
     } else if (relationship === "sibling") {
-        individualRelationshipExemption = 10000000; // 형제·자매 공제 (1천만)
+        individualRelationshipExemption = 10000000; // 형제자매 (1천만)
     } else {
         individualRelationshipExemption = 10000000; // 기타 상속인 (1천만)
     }
@@ -1076,9 +1076,9 @@ heirs.forEach(heir => {
     // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합
     let totalIndividualExemption = individualBasicExemption + individualRelationshipExemption;
 
-    // ✅ 부족한 공제액을 일괄공제로 보정 (최대치: 개별 배분 가능 금액)
-    let individualLumpSumExemption = (relationship !== "spouse") 
-        ? Math.min(maxIndividualLumpSumExemption, Math.max(0, maxIndividualLumpSumExemption - totalIndividualExemption)) 
+    // ✅ 부족한 공제액을 일괄공제로 보정 (개별 배분액보다 부족한 경우만 보정)
+    let individualLumpSumExemption = (relationship !== "spouse" && totalIndividualExemption < maxIndividualLumpSumExemption) 
+        ? maxIndividualLumpSumExemption - totalIndividualExemption 
         : 0;
 
     let individualSpouseAdditionalExemption = (relationship === "spouse") ? spouseAdditionalExemption : 0;
