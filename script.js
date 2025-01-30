@@ -1035,19 +1035,14 @@ let spouseAdditionalExemption = spouseExists
     : 0;
 
 // ✅ 상속인 목록을 배열로 변환 (NodeList → Array)
-// ✅ 이미 선언된 경우에는 let을 사용하지 않고, 처음 선언할 때만 let 사용
-if (typeof heirs === "undefined") {
-    var heirs = Array.from(document.querySelectorAll("#legalHeirContainer .heir-entry"));
-} else {
-    heirs = Array.from(document.querySelectorAll("#legalHeirContainer .heir-entry"));
-}
+heirs = Array.from(document.querySelectorAll("#legalHeirContainer .heir-entry"));
 
 // ✅ heirs 배열이 비어 있는 경우 기본값을 설정하여 오류 방지
 if (heirs.length === 0) {
     console.warn("❗ heirs 배열이 비어 있습니다. 상속인 목록을 확인하세요.");
 }
 
-// ✅ 배우자 존재 여부 확인
+// ✅ 배우자 존재 여부 확인 (삭제하면 안 됨!)
 let spouseExists = heirs.some(heir => heir.querySelector(".relationship")?.value === "spouse");
 
 // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합 계산
