@@ -989,20 +989,48 @@ function calculateLegalInheritance() {
         }
     });
 
+    // ✅ 부모, 형제자매, 기타 상속인을 고려하여 변수 추가
+    let numChildren = 0;
+    let numParents = 0;
+    let numSiblings = 0;
+    let numOthers = 0;
+    let spouseExists = false;
+
+    heirs.forEach(heir => {
+        let relationship = heir.querySelector(".relationship")?.value;
+        if (relationship === "spouse") {
+            spouseExists = true;
+        } else if (relationship === "adultChild" || relationship === "minorChild") {
+            numChildren++;
+        } else if (relationship === "parent") {
+            numParents++;
+        } else if (relationship === "sibling") {
+            numSiblings++;
+        } else {
+            numOthers++;
+        }
+    });
+   
     // ✅ 법정 상속 비율 계산
-    let totalInheritance = (spouseExists ? 1.5 : 0) + numChildren;
+    let totalInheritance = (spouseExists ? 1.5 : 0) + numChildren + numParents + numSiblings + numOthers;
     let spouseShare = spouseExists ? (1.5 / totalInheritance) : 0;
     let childShare = numChildren > 0 ? (1 / totalInheritance) : 0;
-
+    let parentShare = numParents > 0 ? (1 / totalInheritance) : 0;
+    let siblingShare = numSiblings > 0 ? (1 / totalInheritance) : 0;
+    let otherShare = numOthers > 0 ? (1 / totalInheritance) : 0;
+  
     // ✅ 금융재산 공제 **상속 지분에 따라 배분**
     let spouseFinancialExemption = Math.round(spouseShare * totalFinancialExemption);
     let childFinancialExemption = numChildren > 0 ? Math.round(childShare * totalFinancialExemption) : 0;
 
     // ✅ 기초공제 (2억 원) 추가 및 배분
     let totalBasicExemption = 200000000;
-    let spouseBasicExemption = Math.round(spouseShare * totalBasicExemption);
+    let spouseBasicExemption = spouseExists ? Math.round(spouseShare * totalBasicExemption) : 0;
     let childBasicExemption = numChildren > 0 ? Math.round(childShare * totalBasicExemption) : 0;
-
+    let parentBasicExemption = numParents > 0 ? Math.round(parentShare * totalBasicExemption) : 0;
+    let siblingBasicExemption = numSiblings > 0 ? Math.round(siblingShare * totalBasicExemption) : 0;
+    let otherBasicExemption = numOthers > 0 ? Math.round(otherShare * totalBasicExemption) : 0;
+  
     // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
     let spouseAdditionalExemption = spouseExists 
@@ -1040,12 +1068,23 @@ function calculateLegalInheritance() {
     heirs.forEach(heir => {
         let name = heir.querySelector(".heirName")?.value || "상속인";
         let relationship = heir.querySelector(".relationship")?.value;
-        let minorChildAge = heir.querySelector(".minorChildAgeField")?.value || null;
-        let share = (relationship === "spouse") ? spouseShare : childShare;
+        let share = (relationship === "spouse") ? spouseShare : 
+                    (relationship === "adultChild" || relationship === "minorChild") ? childShare : 
+                    (relationship === "parent") ? parentShare : 
+                    (relationship === "sibling") ? siblingShare : 
+                    (relationship === "other") ? otherShare : 0;
         let inheritanceAmount = Math.round(totalAssetValue * share);
 
-        let individualFinancialExemption = (relationship === "spouse") ? spouseFinancialExemption : childFinancialExemption;
-        let individualBasicExemption = (relationship === "spouse") ? spouseBasicExemption : childBasicExemption;
+        let individualFinancialExemption = (relationship === "spouse") ? spouseFinancialExemption :
+                                           (relationship === "adultChild" || relationship === "minorChild") ? childFinancialExemption :
+                                           (relationship === "parent") ? parentFinancialExemption :
+                                           (relationship === "sibling") ? siblingFinancialExemption :
+                                           (relationship === "other") ? otherFinancialExemption : 0;
+        let individualBasicExemption = (relationship === "spouse") ? spouseBasicExemption :
+                                       (relationship === "adultChild" || relationship === "minorChild") ? childBasicExemption :
+                                       (relationship === "parent") ? parentBasicExemption :
+                                       (relationship === "sibling") ? siblingBasicExemption :
+                                       (relationship === "other") ? otherBasicExemption : 0;
 
        // ✅ 관계 공제 (배우자 5억, 부모 5천만, 성년 자녀 5천만, 미성년 자녀 연령에 따라 계산, 형제 1천만, 기타 1천만)
        let individualRelationshipExemption = 0;
