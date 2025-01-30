@@ -751,15 +751,15 @@ function calculateSpouseExemption(spouseShare, totalAssetValue) {
 }
 
 /**
- * ✅ 협의 상속 계산 함수
+ * ✅ 협의 상속 계산 함수 (상속 비율 적용)
  */
 function calculateGroupInheritance() {
     const totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
-    let totalBasicExemption = 200000000;
-    let totalRelationshipExemption = 0;
-    let totalFinancialAssets = 0;
+    let totalBasicExemption = 200000000; // 기초공제 2억 원
+    let totalRelationshipExemption = 0; // 관계 공제 합계
+    let totalFinancialAssets = 0; // 금융재산 총액
     let heirs = [];
 
     // ✅ 금융재산 총액 계산
@@ -793,7 +793,7 @@ function calculateGroupInheritance() {
 
     // ✅ 배우자 기본 공제 적용
     let spouse = heirs.find(h => h.relationship === 'spouse');
-    if (spouse) totalRelationshipExemption += 500000000;
+    if (spouse) totalRelationshipExemption += 500000000; // 배우자 기본 공제(5억 원) 추가
 
     // ✅ 기타 상속인의 관계 공제 적용 (배우자 제외)
     heirs.forEach((heir) => {
