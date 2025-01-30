@@ -194,24 +194,22 @@ document.querySelectorAll('.assetType').forEach(select => {
 initializeDefaultView();
 
   // ✅ "다시 하기" 버튼 이벤트 리스너 (추가된 필드 숨기기 + 입력값 초기화)   
-  document.addEventListener("DOMContentLoaded", function () {
-     document.addEventListener("click", function (event) {
-         // ✅ "다시 하기" 버튼이 클릭되었을 때 실행
-         if (event.target.classList.contains("removeAssetButton")) {
+     document.body.addEventListener("click", function (event) {
+        if (event.target.classList.contains("removeAssetButton")) {
             event.preventDefault();
             console.log("🔄 '다시 하기' 버튼 클릭됨! 추가된 입력 필드 닫기 & 입력값 초기화 실행!");
 
-            // ✅ 기존 입력값 초기화 (숫자 입력 필드만)
+            // ✅ 모든 입력값 초기화 (숫자 입력 필드만)
             document.querySelectorAll("input").forEach(input => input.value = "");
 
-            // ✅ "재산 항목(.asset-entry)" 중 첫 번째 항목 제외하고 숨기기
+            // ✅ 추가된 "재산 항목(.asset-entry)" 모두 삭제
             document.querySelectorAll("#assetContainer .asset-entry").forEach((asset, index) => {
-                if (index !== 0) asset.style.display = "none";
+                if (index !== 0) asset.remove();
             });
 
-            // ✅ "상속인 항목(.heir-entry)" 중 첫 번째 항목 제외하고 숨기기
+            // ✅ 추가된 "상속인 항목(.heir-entry)" 모두 삭제
             document.querySelectorAll("#heirContainer .heir-entry").forEach((heir, index) => {
-                if (index !== 0) heir.remove(); // ✅ 추가된 항목만 삭제
+                if (index !== 0) heir.remove();
             });
 
             // ✅ 결과창 초기화
@@ -222,6 +220,7 @@ initializeDefaultView();
         }
     });
 });
+
     
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
