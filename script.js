@@ -1116,7 +1116,7 @@ heirs.forEach(heir => {
     individualResults.push(`
         <h4>${name} (${(share * 100).toFixed(2)}% 지분)</h4>
         <p>상속 금액: ${inheritanceAmount.toLocaleString()} 원</p>
-        <p>금융재산 공제: ${individualFinancialExemption.toLocaleString()} 원</p>
+        ${individualFinancialExemption > 0 ? `<p>금융재산 공제: ${individualFinancialExemption.toLocaleString()} 원</p>` : ""}
         <p>기초 공제: ${individualBasicExemption.toLocaleString()} 원</p>
         <p>관계 공제: ${individualRelationshipExemption.toLocaleString()} 원</p>
         ${relationship !== "spouse" ? `<p>일괄 공제 보정액: ${individualLumpSumExemption.toLocaleString()} 원</p>` : ""}
@@ -1129,7 +1129,7 @@ heirs.forEach(heir => {
 // ✅ 최종 결과 출력
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
-    <h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>
+    ${totalFinancialExemption > 0 ? `<h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>` : ""}
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     ${spouseExists ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
     <h3>일괄 공제: ${displayLumpSumExemption.toLocaleString()} 원</h3> 
