@@ -947,30 +947,24 @@ function calculateLegalInheritance() {
         console.warn("❗ heirs 배열이 비어 있습니다. 상속인 목록을 확인하세요.");
     }
 
-    // ✅ 배우자 존재 여부 확인
-    let spouseExists = heirs.some(heir => heir.querySelector(".relationship")?.value === "spouse");
-    
-    // ✅ 부모, 형제자매, 기타 상속인을 고려하여 변수 추가
-    let numChildren = 0;
-    let numParents = 0;
-    let numSiblings = 0;
-    let numOthers = 0;
-    let spouseExists = false;
+   // ✅ 배우자 존재 여부 및 상속인 유형별 수 확인
+   let spouseExists = false;
+   let numChildren = 0, numParents = 0, numSiblings = 0, numOthers = 0;
 
-    heirs.forEach(heir => {
-        let relationship = heir.querySelector(".relationship")?.value;
-        if (relationship === "spouse") {
-            spouseExists = true;
-        } else if (relationship === "adultChild" || relationship === "minorChild") {
-            numChildren++;
-        } else if (relationship === "parent") {
-            numParents++;
-        } else if (relationship === "sibling") {
-            numSiblings++;
-        } else {
-            numOthers++;
-        }
-    });
+   heirs.forEach(heir => {
+       let relationship = heir.querySelector(".relationship")?.value;
+       if (relationship === "spouse") {
+           spouseExists = true;  // ✅ 배우자가 존재하면 true로 설정
+       } else if (relationship === "adultChild" || relationship === "minorChild") {
+           numChildren++;
+       } else if (relationship === "parent") {
+           numParents++;
+       } else if (relationship === "sibling") {
+           numSiblings++;
+       } else {
+           numOthers++;
+       }
+   });
    
     // ✅ 법정 상속 비율 계산
     let totalInheritance = (spouseExists ? 1.5 : 0) + numChildren + numParents + numSiblings + numOthers;
