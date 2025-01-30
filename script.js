@@ -1034,27 +1034,27 @@ function calculateLegalInheritance() {
       ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
       : 0;
 
-  // ✅ 배우자 제외한 기초공제 + 관계공제 합 계산
-   let totalNonSpouseExemptions = totalBasicExemption + nonSpouseRelationshipExemptionTotal;
+ // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합 계산
+let totalNonSpouseExemptions = totalBasicExemption + nonSpouseRelationshipExemptionTotal;
 
-  // ✅ 일괄공제: 배우자 제외한 상속인의 기초공제 + 관계공제 합이 5억 미만이면 보정 적용
-   let lumpSumExemption = (totalNonSpouseExemptions < 500000000) 
-      ? 500000000 - totalNonSpouseExemptions  // ✅ 부족한 만큼 보정
-      : 0;  // ✅ 5억 이상이면 보정 불필요
+// ✅ 일괄공제: 배우자 제외한 상속인의 기초공제 + 관계공제 합이 5억 미만이면 보정 적용
+let lumpSumExemption = (totalNonSpouseExemptions < 500000000) 
+    ? 500000000 - totalNonSpouseExemptions  // ✅ 부족한 만큼 보정
+    : 0;  // ✅ 5억 이상이면 보정 불필요
 
-  // ✅ 배우자 제외한 상속인 수 (0 이하 방지)
-   let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
+// ✅ 배우자 제외한 상속인 수 (0 이하 방지)
+let nonSpouseHeirs = Math.max(heirs.length - (spouseExists ? 1 : 0), 1);
 
-  // ✅ 배우자 제외 상속인의 1인당 최대 배분 가능 일괄공제 금액
-   let maxIndividualLumpSumExemption = lumpSumExemption / nonSpouseHeirs; 
+// ✅ 배우자 제외 상속인의 1인당 최대 배분 가능 일괄공제 금액
+let maxIndividualLumpSumExemption = lumpSumExemption / nonSpouseHeirs;
 
-  // ✅ 상단 결과지에서 "일괄공제" 대신 "배우자 제외 관계공제 합" 표시
-   let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000) 
-      ? 500000000  // ✅ 부족하면 5억으로 표시
-      : totalNonSpouseExemptions;  // ✅ 5억 이상이면 실제 관계공제 합을 표시
-   
-   // ✅ 개별 상속인별 과세 표준 및 상속세 계산
- heirs.forEach(heir => {
+// ✅ 상단 결과지에서 "일괄공제" 대신 "배우자 제외 관계공제 합" 표시
+let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000) 
+    ? 500000000  // ✅ 부족하면 5억으로 표시
+    : totalNonSpouseExemptions;  // ✅ 5억 이상이면 실제 관계공제 합을 표시
+
+// ✅ 개별 상속인별 과세 표준 및 상속세 계산
+heirs.forEach(heir => {
     let name = heir.querySelector(".heirName")?.value || "상속인";
     let relationship = heir.querySelector(".relationship")?.value;
     let minorChildAge = heir.querySelector(".minorChildAgeField")?.value || null;
@@ -1083,24 +1083,22 @@ function calculateLegalInheritance() {
     // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합
     let totalIndividualExemption = individualBasicExemption + individualRelationshipExemption;
 
-    // ✅ 개별 일괄 공제 보정 적용 (기초공제 + 관계공제 부족 시 보정)
-    let individualLumpSumExemption = (relationship !== "spouse") 
-        ? Math.max(0, Math.min(maxIndividualLumpSumExemption, 500000000 / nonSpouseHeirs - totalIndividualExemption)) // ✅ 부족한 만큼 무조건 보정
+    // ✅ 일괄공제 보정 적용 (5억 미만일 때만 적용, 5억 이상이면 0)
+    let individualLumpSumExemption = (relationship !== "spouse" && totalNonSpouseExemptions < 500000000) 
+        ? Math.max(0, maxIndividualLumpSumExemption - totalIndividualExemption) 
         : 0;
 
-    // ✅ 배우자의 추가 공제 (배우자만 적용)
     let individualSpouseAdditionalExemption = (relationship === "spouse") ? spouseAdditionalExemption : 0;
 
     // ✅ 개별 상속인의 과세 표준 계산
     let individualTaxableAmount = Math.max(
         inheritanceAmount - individualFinancialExemption - individualBasicExemption - individualRelationshipExemption - individualLumpSumExemption - individualSpouseAdditionalExemption, 
         0
-     );
+    );
 
     // ✅ 개별 상속세 계산
     let individualTax = calculateInheritanceTax(individualTaxableAmount);
     totalInheritanceTax += individualTax;
-
 
     // ✅ 개별 상속인 결과 반영
     individualResults.push(`
@@ -1117,16 +1115,16 @@ function calculateLegalInheritance() {
     `);
 });
 
-// ✅ 최종 결과 출력 (상단에서 일괄공제 5억 확정 표시)
+// ✅ 최종 결과 출력
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
     <h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     <h3>배우자 관계공제: 500,000,000 원</h3>
-    <h3>일괄 공제: 500,000,000 원</h3> <!-- ✅ 5억 확정 표시 -->
+    <h3>일괄 공제: ${displayLumpSumExemption.toLocaleString()} 원</h3> <!-- ✅ 5억이 아니라 실제 관계공제 합을 표시 -->
     ${individualResults.join("")}
     <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
-`;
+ `;
 }
 
 // ✅ 계산 버튼 클릭 시 실행
