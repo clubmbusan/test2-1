@@ -979,16 +979,7 @@ function calculateLegalInheritance() {
 
     // ✅ 배우자 존재 여부 확인
     let spouseExists = heirs.some(heir => heir.querySelector(".relationship")?.value === "spouse");
-
-    // ✅ 배우자 및 자녀 수 확인
-    let numChildren = 0;
-    heirs.forEach(heir => {
-        let relationship = heir.querySelector(".relationship")?.value;
-        if (relationship === "adultChild" || relationship === "minorChild") {
-            numChildren++;
-        }
-    });
-
+    
     // ✅ 부모, 형제자매, 기타 상속인을 고려하여 변수 추가
     let numChildren = 0;
     let numParents = 0;
