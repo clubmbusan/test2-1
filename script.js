@@ -207,9 +207,9 @@ initializeDefaultView();
                 if (index !== 0) asset.remove();
             });
 
-            // ✅ 추가된 "상속인 항목(.heir-entry)" 모두 삭제
+            // ✅ 협의상속 & 법정상속 구분 없이 추가된 "상속인 항목(.heir-entry)" 모두 삭제
             document.querySelectorAll("#heirContainer .heir-entry").forEach((heir, index) => {
-                if (index !== 0) heir.remove();
+                if (index !== 0) heir.remove(); // ✅ 첫 번째 입력 필드만 유지
             });
 
             // ✅ 결과창 초기화
