@@ -252,7 +252,6 @@ document.getElementById("resetButton").addEventListener("click", (event) => {
 
     console.log("✅ 추가된 입력 필드 닫기 완료! (기본 상속인 입력 필드는 유지됨)");
   });
-});
     
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
