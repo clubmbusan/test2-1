@@ -906,6 +906,33 @@ function calculateGroupMode(totalAssetValue) {
  * 상속세 및 관계 공제를 적용하여 최종 과세 표준과 상속세를 산출합니다.
  * @returns {void} - 결과를 화면에 출력
  */
+   function applyLegalShares() {
+    let heirs = document.querySelectorAll("#legalHeirContainer .heir-entry");
+    let totalInheritance = 1.5; // 배우자 1.5
+    let numChildren = 0;
+    let inheritanceShares = {};
+
+    // ✅ 자녀 수 계산
+    heirs.forEach(heir => {
+        let relationship = heir.querySelector(".relationship").value;
+        if (relationship === "adultChild" || relationship === "minorChild") {
+            numChildren++;
+        }
+    });
+
+    totalInheritance += numChildren; // 배우자 1.5 + 자녀 1씩 추가
+    let spouseShare = numChildren > 0 ? 1.5 / totalInheritance : 1;
+    let childShare = numChildren > 0 ? 1 / totalInheritance : 0;
+
+    // ✅ 각 상속인의 법정 지분 계산
+    heirs.forEach(heir => {
+        let name = heir.querySelector(".heirName").value || "상속인";
+        let relationship = heir.querySelector(".relationship").value;
+        inheritanceShares[name] = (relationship === "spouse") ? spouseShare : childShare;
+    });
+
+    return inheritanceShares;    
+}
     // ✅ 공용 상속세율 계산 함수 (누진세율 적용)
 function calculateInheritanceTax(taxableAmount) {
     if (taxableAmount <= 100000000) {
