@@ -194,65 +194,64 @@ document.querySelectorAll('.assetType').forEach(select => {
 initializeDefaultView();
     
 // ✅ "다시 하기" 버튼 이벤트 리스너 (추가된 필드 숨기기 + 입력값 초기화)
-document.querySelectorAll('.removeAssetButton').forEach((button) => {
-    button.addEventListener('click', (event) => {
-        event.preventDefault();
+document.getElementById("resetButton").addEventListener("click", (event) => {
+    event.preventDefault();
 
-        console.log("🔄 '다시 하기' 버튼 클릭됨! 추가된 입력 필드 닫기 & 입력값 초기화 실행!");
+    console.log("🔄 '다시 하기' 버튼 클릭됨! 추가된 입력 필드 닫기 & 입력값 초기화 실행!");
 
-        // ✅ 선택된 '상속 유형'과 '재산 유형' 값을 저장
-        const selectedInheritanceType = document.querySelector('#inheritanceType')?.value; // 상속 유형
-        const selectedAssetType = document.querySelector('.assetType')?.value; // 재산 유형
+    // ✅ 선택된 '상속 유형'과 '재산 유형' 값을 저장
+    const selectedInheritanceType = document.querySelector("#inheritanceType")?.value; // 상속 유형
+    const selectedAssetType = document.querySelector(".assetType")?.value; // 재산 유형
 
-        // ✅ 추가된 "재산 항목(.asset-entry)" 숨기기 (첫 번째 항목 제외)
-        document.querySelectorAll('#assetContainer .asset-entry').forEach((asset, index) => {
-            if (index !== 0) {
-                asset.style.display = 'none'; // 추가된 입력 필드 숨기기
-            }
-        });
-
-        // ✅ 추가된 "상속인 항목(.heir-entry)" 숨기기 (첫 번째 항목 제외)
-        document.querySelectorAll('#heirContainer .heir-entry').forEach((heir, index) => {
-            if (index !== 0) {
-                heir.style.display = 'none'; // 추가된 입력 필드 숨기기
-            }
-        });
-
-        // ✅ 모든 입력 필드 초기화 (숫자 입력 필드만)
-        document.querySelectorAll('input').forEach(input => {
-            input.value = ''; // 🔄 입력 필드 초기화
-        });
-
-        // ✅ 결과 영역 초기화
-        const resultArea = document.getElementById('result');
-        if (resultArea) {
-            resultArea.innerHTML = ''; // 🔄 결과창 초기화
+    // ✅ 추가된 "재산 항목(.asset-entry)" 숨기기 (첫 번째 항목 제외)
+    document.querySelectorAll("#assetContainer .asset-entry").forEach((asset, index) => {
+        if (index !== 0) {
+            asset.style.display = "none"; // 추가된 입력 필드 숨기기
         }
-
-        // ✅ 기존에 기본적으로 열려 있는 관계 입력 창(`personalSection`, `groupSection` 등)은 유지
-        document.querySelectorAll('.section').forEach(section => {
-            if (!section.classList.contains('active')) {
-                section.style.display = 'none'; // 추가된 창만 닫음
-            }
-        });
-
-        // ✅ 유지해야 할 '상속 유형', '재산 유형', '기본 상속인 입력 필드' 설정
-        if (selectedInheritanceType) {
-            document.querySelector('#inheritanceType').value = selectedInheritanceType;
-        }
-        if (selectedAssetType) {
-            document.querySelector('.assetType').value = selectedAssetType;
-        }
-
-        // ✅ 기본 상속인 입력 필드는 유지 (첫 번째 항목은 다시 보이게 설정)
-        document.querySelectorAll('#heirContainer .heir-entry').forEach((heir, index) => {
-            if (index === 0) {
-                heir.style.display = 'block'; // 기본 필드는 유지
-            }
-        });
-
-        console.log("✅ 추가된 입력 필드 닫기 완료! (기본 상속인 입력 필드는 유지됨)");
     });
+
+    // ✅ 추가된 "상속인 항목(.heir-entry)" 숨기기 (첫 번째 항목 제외)
+    document.querySelectorAll("#heirContainer .heir-entry").forEach((heir, index) => {
+        if (index !== 0) {
+            heir.style.display = "none"; // 추가된 입력 필드 숨기기
+        }
+    });
+
+    // ✅ 모든 입력 필드 초기화 (숫자 입력 필드만)
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.value = ""; // 🔄 숫자 입력 필드 초기화
+    });
+
+    // ✅ 결과 영역 초기화
+    const resultArea = document.getElementById("result");
+    if (resultArea) {
+        resultArea.innerHTML = ""; // 🔄 결과창 초기화
+    }
+
+    // ✅ 기존에 기본적으로 열려 있는 관계 입력 창(`personalSection`, `groupSection` 등)은 유지
+    document.querySelectorAll(".section").forEach(section => {
+        if (!section.classList.contains("active")) {
+            section.style.display = "none"; // 추가된 창만 닫음
+        }
+    });
+
+    // ✅ 유지해야 할 '상속 유형', '재산 유형', '기본 상속인 입력 필드' 설정
+    if (selectedInheritanceType) {
+        document.querySelector("#inheritanceType").value = selectedInheritanceType;
+    }
+    if (selectedAssetType) {
+        document.querySelector(".assetType").value = selectedAssetType;
+    }
+
+    // ✅ 기본 상속인 입력 필드는 유지 (첫 번째 항목은 다시 보이게 설정)
+    document.querySelectorAll("#heirContainer .heir-entry").forEach((heir, index) => {
+        if (index === 0) {
+            heir.style.display = "block"; // 기본 필드는 유지
+        }
+    });
+
+    console.log("✅ 추가된 입력 필드 닫기 완료! (기본 상속인 입력 필드는 유지됨)");
+  });
 });
     
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
