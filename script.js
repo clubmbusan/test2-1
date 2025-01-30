@@ -1076,22 +1076,24 @@ heirs.forEach(heir => {
     // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합
     let totalIndividualExemption = individualBasicExemption + individualRelationshipExemption;
 
-    // ✅ 부족한 공제액을 일괄공제로 보정 (개별 배분액보다 부족한 경우만 보정)
+    // ✅ 개별 일괄 공제 보정 적용 (기초공제 + 관계공제 부족 시 보정)
     let individualLumpSumExemption = (relationship !== "spouse") 
-       ? Math.max(0, maxIndividualLumpSumExemption - totalIndividualExemption) // ✅ 부족한 부분을 무조건 보정
-       : 0;
-    
+        ? Math.max(0, Math.min(maxIndividualLumpSumExemption, 500000000 / nonSpouseHeirs - totalIndividualExemption)) // ✅ 부족한 만큼 무조건 보정
+        : 0;
+
+    // ✅ 배우자의 추가 공제 (배우자만 적용)
     let individualSpouseAdditionalExemption = (relationship === "spouse") ? spouseAdditionalExemption : 0;
 
     // ✅ 개별 상속인의 과세 표준 계산
     let individualTaxableAmount = Math.max(
         inheritanceAmount - individualFinancialExemption - individualBasicExemption - individualRelationshipExemption - individualLumpSumExemption - individualSpouseAdditionalExemption, 
         0
-    );
+     );
 
     // ✅ 개별 상속세 계산
     let individualTax = calculateInheritanceTax(individualTaxableAmount);
     totalInheritanceTax += individualTax;
+
 
     // ✅ 개별 상속인 결과 반영
     individualResults.push(`
