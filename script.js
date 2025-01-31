@@ -859,7 +859,10 @@ console.log("🔍 배우자가 받을 상속 금액:", spouse ? (spouse.sharePer
     `);
 });  // ✅ forEach 닫는 중괄호 위치 확인
 
-// ✅ 최종 결과 출력 (forEach 이후 실행해야 함)
+// ✅ 금융재산 공제 변수 정의 (오류 해결)
+let totalFinancialExemption = maxFinancialExemption; // 금융재산 공제 값 저장
+
+// ✅ 최종 결과 출력 (법정 상속과 동일한 형식 유지)
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
     ${totalFinancialExemption > 0 ? `<h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>` : ""}
