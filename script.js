@@ -845,6 +845,11 @@ let nonSpouseTotalShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== 'spouse' ? sum + heir.sharePercentage : sum;
 }, 0);
 
+    // ✅ `maxIndividualLumpSumExemption` 정의 (undefined 오류 방지)
+let maxIndividualLumpSumExemption = (displayLumpSumExemption > 0 && nonSpouseTotalShare > 0) 
+    ? displayLumpSumExemption / nonSpouseTotalShare * 100  
+    : 0;
+
 // ✅ 개별 상속인의 "일괄 공제 보정액" 계산 (배우자가 있으면 나머지 상속인의 지분을 100%로 환산)
 heirs.forEach((heir) => {
     if (heir.relationship !== 'spouse' && nonSpouseTotalShare > 0) {
