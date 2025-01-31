@@ -838,31 +838,25 @@ let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000)
 let nonSpouseHeirs = heirs.filter(heir => heir.relationship !== 'spouse').length;
 
 // ✅ 일괄 공제 최대 상한 계산 (5억 ÷ 배우자 제외 상속인 수)
-let maxLumpSumPerHeir = (nonSpouseHeirs > 0) ? Math.floor(500000000 / nonSpouseHeirs) : 0;
+let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) 
+    ? Math.floor(500000000 / nonSpouseHeirs) 
+    : 0;
     
  // ✅ 배우자 제외 상속인의 총 지분 계산
 let nonSpouseTotalShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== 'spouse' ? sum + heir.sharePercentage : sum;
 }, 0);
 
-    // ✅ `maxIndividualLumpSumExemption` 정의 (undefined 오류 방지)
-let maxIndividualLumpSumExemption = (displayLumpSumExemption > 0 && nonSpouseTotalShare > 0) 
-    ? displayLumpSumExemption / nonSpouseTotalShare * 100  
-    : 0;
-
-// ✅ 개별 상속인의 "일괄 공제 보정액" 계산 (배우자가 있으면 나머지 상속인의 지분을 100%로 환산)
+   // ✅ 개별 상속인의 "일괄 공제 보정액" 계산
 heirs.forEach((heir) => {
-    if (heir.relationship !== 'spouse' && nonSpouseTotalShare > 0) {
-        let adjustedShareRatio = heir.sharePercentage / nonSpouseTotalShare; // ✅ 배우자 제외 상속인 기준 100%로 조정
-
-        // ✅ 최대 공제 가능 금액에서 개별 기초 공제 + 관계 공제 뺀 값이 보정액이 되어야 함
-        let maxAllowedExemption = 250000000; // ✅ 일괄 공제 최대 상한 (2.5억)
-        let possibleExemption = maxAllowedExemption - (heir.basicExemption + heir.relationshipExemption);
+    if (heir.relationship !== 'spouse') {
+        // ✅ 개별 공제 가능 금액 = 최대 공제 상한 - (기초 공제 + 관계 공제)
+        let possibleExemption = maxIndividualLumpSumExemption - (heir.basicExemption + heir.relationshipExemption);
         
         // ✅ 공제 가능한 범위를 넘지 않도록 보정
-        heir.individualLumpSumExemption = Math.min(possibleExemption, Math.round(displayLumpSumExemption * adjustedShareRatio));
+        heir.individualLumpSumExemption = Math.max(0, Math.min(possibleExemption, maxIndividualLumpSumExemption));
     } else {
-        heir.individualLumpSumExemption = 0; // 나누기 오류 방지
+        heir.individualLumpSumExemption = 0; // 배우자는 일괄 공제 없음
     }
 });
 
