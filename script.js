@@ -817,21 +817,11 @@ let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000)
     ? 500000000  
     : 0;
 
-// ✅ 배우자 제외 상속인 수 (최소 1명 보장)
-let nonSpouseHeirs = Math.max(heirs.length - (spouse ? 1 : 0), 1);
-
-// ✅ 개별 상속인의 "일괄 공제 보정액" 계산 (최대 한도 적용)
-let maxIndividualLumpSumExemption = (displayLumpSumExemption > 0) 
-    ? Math.round(displayLumpSumExemption / nonSpouseHeirs) 
-    : 0;
-
+    // ✅ 개별 상속인의 "일괄 공제 보정액" 계산 (각 상속 지분 비율에 따라 조정)
 heirs.forEach((heir) => {
     if (heir.relationship !== 'spouse') {
-        // ✅ 개별 최대 공제 한도 적용
-        let individualLumpSumExemption = Math.min(maxIndividualLumpSumExemption, 
-            heir.relationship === "adultChild" ? 240000000 : 210000000); // 성년 자녀: 2억 4천, 미성년 자녀: 2억 1천
-
-        heir.individualLumpSumExemption = individualLumpSumExemption;
+        let shareRatio = heir.sharePercentage / 100; // ✅ 상속인의 지분 비율
+        heir.individualLumpSumExemption = Math.round(displayLumpSumExemption * shareRatio);
     }
 });
 
