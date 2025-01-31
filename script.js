@@ -934,7 +934,7 @@ function calculateLegalInheritance() {
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
 
     // ✅ 배우자 기초 공제 계산 (배우자 지분에 따른 비율 적용)
-    let spouseBasicExemption = Math.round(spouseShare * 200000000);
+    spouseBasicExemption = Math.round(spouseShare * 200000000);
 
     // ✅ 배우자 추가 공제 계산 (소수점 없는 정수 값으로 반올림)
     let spouseAdditionalExemption = spouseExists 
