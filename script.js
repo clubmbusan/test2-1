@@ -723,7 +723,7 @@ function calculatePersonalMode(totalAssetValue) {
 function calculateRelationshipExemption(relationship, age = 0) {
     if (relationship === 'minorChild') {
         const yearsUntilAdult = Math.max(19 - age, 0);
-        return Math.min(yearsUntilAdult * 10000000, 30000000); // 최대 3천만 원 제한
+        return Math.min(yearsUntilAdult * 10000000, 190000000); // 최대 1억 9천만 원 제한
     }
 
     switch (relationship) {
@@ -804,7 +804,24 @@ heirs.forEach((heir) => {
     }
 });
 
-// ✅ 배우자 이외 상속인의 일괄 공제 적용
+// ✅ 미성년자 관계 공제 수정 (연령 기준 정확한 계산)
+function calculateRelationshipExemption(relationship, age = 0) {
+    if (relationship === 'minorChild') {
+        const yearsUntilAdult = Math.max(19 - age, 0);
+        return Math.min(yearsUntilAdult * 10000000, 40000000); // 최대 4천만 원까지 적용되도록 수정
+    }
+
+    switch (relationship) {
+        case 'spouse': return 500000000;
+        case 'adultChild': return 50000000;
+        case 'parent': return 50000000;
+        case 'sibling': return 10000000;
+        case 'other': return 10000000;
+        default: return 0;
+    }
+}
+
+// ✅ 배우자 제외 상속인의 일괄 공제 적용
 let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
     if (heir.relationship !== 'spouse') {
         return sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0);
@@ -817,20 +834,28 @@ let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000)
     ? 500000000  
     : 0;
 
-// ✅ 배우자 제외 상속인의 총 지분 계산
+// ✅ 배우자 제외 상속인의 총 수 계산
+let nonSpouseHeirs = heirs.filter(heir => heir.relationship !== 'spouse').length;
+
+// ✅ 일괄 공제 최대 상한 계산 (5억 ÷ 배우자 제외 상속인 수)
+let maxLumpSumPerHeir = (nonSpouseHeirs > 0) ? Math.floor(500000000 / nonSpouseHeirs) : 0;
+    
+ // ✅ 배우자 제외 상속인의 총 지분 계산
 let nonSpouseTotalShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== 'spouse' ? sum + heir.sharePercentage : sum;
 }, 0);
 
 // ✅ 개별 상속인의 "일괄 공제 보정액" 계산 (배우자가 있으면 나머지 상속인의 지분을 100%로 환산)
-let maxIndividualLumpSumExemption = (displayLumpSumExemption > 0 && nonSpouseTotalShare > 0) 
-    ? displayLumpSumExemption / nonSpouseTotalShare * 100  // 배우자 제외 상속인의 지분을 100%로 보고 배분
-    : 0;
-
 heirs.forEach((heir) => {
     if (heir.relationship !== 'spouse' && nonSpouseTotalShare > 0) {
-        let adjustedShareRatio = (heir.sharePercentage / nonSpouseTotalShare); // ✅ 배우자 제외 상속인 기준 100%로 조정
-        heir.individualLumpSumExemption = Math.round(displayLumpSumExemption * adjustedShareRatio);
+        let adjustedShareRatio = heir.sharePercentage / nonSpouseTotalShare; // ✅ 배우자 제외 상속인 기준 100%로 조정
+
+        // ✅ 최대 공제 가능 금액에서 개별 기초 공제 + 관계 공제 뺀 값이 보정액이 되어야 함
+        let maxAllowedExemption = 250000000; // ✅ 일괄 공제 최대 상한 (2.5억)
+        let possibleExemption = maxAllowedExemption - (heir.basicExemption + heir.relationshipExemption);
+        
+        // ✅ 공제 가능한 범위를 넘지 않도록 보정
+        heir.individualLumpSumExemption = Math.min(possibleExemption, Math.round(displayLumpSumExemption * adjustedShareRatio));
     } else {
         heir.individualLumpSumExemption = 0; // 나누기 오류 방지
     }
