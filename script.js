@@ -643,22 +643,34 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 }
     
 /**
- * ✅ 개인 상속 계산 함수 (중복 출력 문제 해결)
+ * ✅ 개인 상속 계산 함수 (독립적인 함수로 수정)
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
 function calculatePersonalMode(totalAssetValue) {
+    // ✅ 관계(배우자, 자녀, 부모 등) 선택
     const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
     const assetType = document.getElementById('assetType')?.value || 'realEstate'; // 기본값 부동산
 
-    // ✅ 공제 계산 (기초 공제 + 관계 공제)
-    let { basicExemption, relationshipExemption } = calculateExemptions(
-        totalAssetValue, relationship, totalAssetValue
-    );
+    // ✅ 기초 공제 (2억) & 관계 공제 적용
+    let basicExemption = 200000000;
+    let relationshipExemption = 0;
+
+    // ✅ 관계 공제 조건 설정
+    if (relationship === 'spouse') {
+        relationshipExemption = 500000000; // 배우자 관계 공제 (5억)
+    } else if (relationship === 'parent') {
+        relationshipExemption = 50000000; // 부모 관계 공제 (5천만)
+    } else if (relationship === 'adultChild') {
+        relationshipExemption = 50000000; // 성년 자녀 (5천만)
+    } else if (relationship === 'minorChild') {
+        relationshipExemption = 10000000; // 미성년 자녀 (1천만)
+    }
 
     // ✅ 배우자 추가 공제 (배우자만 적용)
     let spouseAdditionalExemption = 0;
     if (relationship === 'spouse') {
-        spouseAdditionalExemption = Math.min((totalAssetValue - 700000000) * 0.5, 3000000000);
+        let spouseInheritanceAmount = totalAssetValue; // 배우자의 실제 상속분
+        spouseAdditionalExemption = Math.min(spouseInheritanceAmount, 3000000000); // 최대 30억 공제
     }
 
     // ✅ 배우자가 아닐 경우, 일괄 공제 적용 (최소 5억 보장)
@@ -667,8 +679,11 @@ function calculatePersonalMode(totalAssetValue) {
         generalExemption = Math.max(500000000 - (basicExemption + relationshipExemption), 0);
     }
 
-    // ✅ 금융재산 공제 추가 (현금 또는 주식 선택 시에만 적용)
-    let financialExemption = (assetType === 'cash' || assetType === 'stock') ? calculateFinancialExemption(totalAssetValue) : 0;
+    // ✅ 금융재산 공제 (현금 또는 주식 선택 시에만 적용, 최대 2억)
+    let financialExemption = 0;
+    if (assetType === 'cash' || assetType === 'stock') {
+        financialExemption = Math.min(totalAssetValue * 0.2, 200000000);
+    }
 
     // ✅ 최종 공제 계산 (총합)
     let totalExemption = basicExemption + relationshipExemption + financialExemption;
@@ -677,17 +692,17 @@ function calculatePersonalMode(totalAssetValue) {
     } else {
         totalExemption += generalExemption;
     }
-    
-    // ✅ 과세 금액 계산
+
+    // ✅ 과세 표준 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // ✅ 상속세 계산
+    // ✅ 상속세 계산 (누진세율 적용)
     const tax = calculateTax(taxableAmount);
 
     // ✅ 기존 결과 지우기 (중복 방지)
     document.getElementById('result').innerHTML = "";
 
-    // ✅ 결과 출력 (중복 방지)
+    // ✅ 개인 상속 전용 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (개인 상속)</h3>
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
