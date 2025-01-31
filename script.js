@@ -817,7 +817,7 @@ let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000)
     ? 500000000  
     : 0;
 
-  // ✅ 배우자 제외 상속인의 총 수 계산
+ // ✅ 배우자 제외 상속인의 총 수 계산
 let nonSpouseHeirs = heirs.filter(heir => heir.relationship !== 'spouse').length;
 
 // ✅ 배우자 제외 상속인의 총 지분 계산
@@ -825,7 +825,7 @@ let nonSpouseTotalShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== 'spouse' ? sum + heir.sharePercentage : sum;
 }, 0);
 
-// ✅ 일괄 공제 최대 상한 계산 (5억 ÷ 배우자 제외 상속인 수, 최소 0으로 설정)
+// ✅ 일괄 공제 최대 상한 계산 (5억 ÷ 배우자 제외 상속인 수)
 let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) 
     ? Math.floor(500000000 / nonSpouseHeirs) 
     : 0;
@@ -833,12 +833,8 @@ let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0)
 // ✅ 개별 상속인의 "일괄 공제 보정액" 계산
 heirs.forEach((heir) => {
     if (heir.relationship !== 'spouse') {
-        // ✅ 기본 공제 값이 undefined가 되지 않도록 `|| 0` 설정
-        let basicExemption = heir.basicExemption || 0;
-        let relationshipExemption = heir.relationshipExemption || 0;
-
-        // ✅ 개별 공제 가능 금액 = 최대 공제 상한 - (기초 공제 + 관계 공제)
-        let possibleExemption = maxIndividualLumpSumExemption - (basicExemption + relationshipExemption);
+        let adjustedShareRatio = heir.sharePercentage / nonSpouseTotalShare;
+        let possibleExemption = maxIndividualLumpSumExemption * adjustedShareRatio;
 
         // ✅ 공제 가능한 범위를 넘지 않도록 보정
         heir.individualLumpSumExemption = Math.max(0, Math.min(possibleExemption, maxIndividualLumpSumExemption));
@@ -849,7 +845,7 @@ heirs.forEach((heir) => {
 
 // ✅ 개별 상속세 계산 (NaN 방지)
 heirs.forEach((heir) => {
-    const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+    const shareAmount = (totalAssetValue * (heir.sharePercentage || 0)) / 100;
 
     // ✅ 기본값 설정 (NaN 방지)
     const basicExemption = heir.basicExemption || 0;
@@ -858,7 +854,11 @@ heirs.forEach((heir) => {
     const individualLumpSumExemption = heir.individualLumpSumExemption || 0;
 
     let finalTaxableAmount = Math.max(
-        shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - individualLumpSumExemption,
+        (shareAmount || 0) - 
+        (relationshipExemption || 0) - 
+        (basicExemption || 0) - 
+        (individualFinancialExemption || 0) - 
+        (individualLumpSumExemption || 0),
         0
     );
 
@@ -875,14 +875,7 @@ heirs.forEach((heir) => {
     const individualTax = calculateInheritanceTax(finalTaxableAmount);
     totalInheritanceTax += individualTax;
 
-    console.log("🔍 배우자 추가 공제 값:", spouseExemptions.spouseAdditionalExemption);
-    console.log("🔍 일괄 공제 보정액:", maxIndividualLumpSumExemption);
-    console.log("🔍 배우자 관계 공제 적용 여부:", spouse ? "적용됨" : "없음");
-    console.log("🔍 배우자 정보:", spouse);
-    console.log("🔍 배우자 제외 상속인의 일괄 공제 계산 기준:", totalNonSpouseExemptions);
-    console.log("🔍 배우자가 받을 상속 금액:", spouse ? (spouse.sharePercentage / 100) * totalAssetValue : 0);
-
-    // ✅ 개별 상속인 결과를 `individualResults` 배열에 저장 (보정액이 0원이면 결과지에서 삭제)
+    // ✅ 개별 상속인 결과를 `individualResults` 배열에 저장
     individualResults.push(`
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
         <p>상속 금액: ${shareAmount.toLocaleString()} 원</p>
