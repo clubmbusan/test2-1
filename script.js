@@ -831,8 +831,9 @@ function calculateGroupMode() {
     // ✅ 최종 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
-        <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
+        ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
         <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
+        ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
         <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
         ${individualResults.join("")}
         <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
