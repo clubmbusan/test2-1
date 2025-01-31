@@ -266,6 +266,9 @@ function createAssetEntry() {
         <select class="assetType">
             <option value="cash">현금</option>
             <option value="realEstate">부동산</option>
+Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
+Editing test2-1/script.js at main · clubmbusan/test2-1
+
             <option value="stock">주식</option>
             <option value="others">기타</option>
         </select>
@@ -1090,6 +1093,7 @@ document.getElementById('result').innerHTML = `
     ${totalFinancialExemption > 0 ? `<h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>` : ""}
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     ${spouseExists ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
+    ${spouseExists ? `<h3>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원</h3>` : ""}
     <h3>일괄 공제: ${displayLumpSumExemption.toLocaleString()} 원</h3> 
     ${individualResults.join("")}
     <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
