@@ -718,9 +718,9 @@ function calculatePersonalMode(totalAssetValue) {
 }
 
  /**
- * ✅ 협의 상속 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
+ * ✅ 협의 상속 계산 함수
  */
-  function calculateGroupMode() {
+function calculateGroupMode() {
     const totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
@@ -730,7 +730,7 @@ function calculatePersonalMode(totalAssetValue) {
     let totalInheritanceTax = 0; // 최종 상속세 합계
     let individualResults = []; // 개별 상속 결과 배열
 
-    // ✅ 금융 재산 총액 계산 (현금 + 주식)
+    // ✅ 금융 재산 총액 계산
     document.querySelectorAll('.asset-entry').forEach(asset => {
         let assetType = asset.querySelector('.assetType')?.value;
         let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
@@ -739,7 +739,7 @@ function calculatePersonalMode(totalAssetValue) {
         }
     });
 
-    // ✅ 금융 재산 공제 (총 금융자산의 20%, 최대 2억)
+    // ✅ 금융 재산 공제 (20%, 최대 2억)
     let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
     // ✅ 상속인 정보 가져오기
@@ -748,16 +748,19 @@ function calculatePersonalMode(totalAssetValue) {
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         let age = 0;
 
-        if (relationship === 'minorChild') {
+        if (relationship === "minorChild") {
             const minorChildAgeInput = heir.querySelector('.minorChildAgeField');
             age = minorChildAgeInput && minorChildAgeInput.value ? parseInt(minorChildAgeInput.value) : 0;
         }
 
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
-        let relationshipExemption = calculateRelationshipExemption(relationship, age);
+        let relationshipExemption = calculateRelationshipExemption(relationship, age); // ✅ 함수 호출
 
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
+
+    console.log("상속인 데이터:", heirs); // ✅ 디버깅 확인용 (결과값 확인)
+}
 
     // ✅ 배우자 공제 관련 계산
     let spouse = heirs.find(h => h.relationship === 'spouse');
