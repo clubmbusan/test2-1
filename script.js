@@ -807,7 +807,7 @@ heirs.forEach((heir) => {
 // ✅ 배우자 이외 상속인의 일괄 공제 적용
 let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
     if (heir.relationship !== 'spouse') {
-        return sum + heir.relationshipExemption;
+        return sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0);
     }
     return sum;
 }, 0);
@@ -817,7 +817,15 @@ let displayLumpSumExemption = (totalNonSpouseExemptions < 500000000)
     ? 500000000  
     : 0;
 
-    // ✅ 개별 상속인의 "일괄 공제 보정액" 계산 (각 상속 지분 비율에 따라 조정)
+// ✅ 배우자 제외 상속인 수 (최소 1명 보장)
+let nonSpouseHeirs = Math.max(heirs.length - (spouse ? 1 : 0), 1);
+
+// ✅ 개별 상속인의 "일괄 공제 보정액" 계산 (각 상속 지분 비율에 따라 조정)
+let maxIndividualLumpSumExemption = (displayLumpSumExemption > 0) 
+    ? Math.round(displayLumpSumExemption / nonSpouseHeirs) 
+    : 0;
+
+// ✅ 개별 상속인의 "일괄 공제 보정액" 할당 (지분 비율에 따라 분배)
 heirs.forEach((heir) => {
     if (heir.relationship !== 'spouse') {
         let shareRatio = heir.sharePercentage / 100; // ✅ 상속인의 지분 비율
