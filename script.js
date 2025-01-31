@@ -837,6 +837,11 @@ function calculateGroupMode() {
         };
     });
 
+    // ✅ 총 일괄 공제 계산 (기초공제 + 관계공제 + 개별 일괄 공제 보정액의 합이 5억을 넘으면 5억으로 제한)
+    lumpSumExemption = Math.min(processedHeirs.reduce((sum, heir) => {
+        return sum + heir.basicExemption + heir.relationshipExemption + heir.lumpSumExemption;
+    }, 0), 500000000);
+   
     // ✅ 최종 결과 출력 (객체 배열을 활용한 동적 HTML 생성)
     document.getElementById('result').innerHTML = `
         <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
