@@ -752,10 +752,21 @@ function calculateSpouseExemption(spouseShare, totalAssetValue) {
 }
 
  /**
+ * ✅ 배우자 공제(5억 원) 및 배우자 추가 공제(최대 30억 원) 계산
+ */
+function calculateSpouseExemption(spouseShare, totalAssetValue) {
+    let spouseBasicExemption = 500000000; // ✅ 배우자 기본 공제 5억 원
+    let spouseActualInheritance = (spouseShare / 100) * totalAssetValue; // 배우자가 실제 상속받은 금액
+
+    let spouseAdditionalExemption = Math.min(spouseActualInheritance * 0.5, 3000000000); // 추가 공제 (최대 30억 원)
+
+    return { spouseBasicExemption, spouseAdditionalExemption, totalExemption: spouseBasicExemption + spouseAdditionalExemption };
+}
+
+/**
  * ✅ 협의 상속 계산 함수 (상속 비율 적용)
  */
-function calculateGroupInheritance() {
-    const totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+function calculateGroupInheritance(totalAssetValue) {
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
     let totalBasicExemption = 200000000; // 기초공제 2억 원
@@ -815,7 +826,7 @@ function calculateGroupInheritance() {
 
     // ✅ 개별 상속세 계산 (배우자 추가 공제 반영)
     heirs = heirs.map((heir) => {
-        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100; // ✅ 상속 비율 적용
         const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
         const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
 
@@ -840,7 +851,7 @@ function calculateGroupInheritance() {
             tax
         };
     });
-   
+
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
      <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
