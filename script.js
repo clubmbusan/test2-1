@@ -717,6 +717,24 @@ function calculatePersonalMode(totalAssetValue) {
     `;
 }
 
+    **
+ * ✅ 관계 공제 계산 함수 (배우자, 부모, 자녀 등)
+ */
+function calculateRelationshipExemption(relationship, age) {
+    if (relationship === "spouse") {
+        return 500000000; // 배우자 관계 공제 (5억 원)
+    } else if (relationship === "parent") {
+        return 50000000; // 부모 (5천만 원)
+    } else if (relationship === "adultChild") {
+        return 50000000; // 성년 자녀 (5천만 원)
+    } else if (relationship === "minorChild") {
+        return Math.min((19 - age) * 10000000, 30000000); // 미성년 자녀 (최대 3천만 원)
+    } else if (relationship === "sibling") {
+        return 10000000; // 형제자매 (1천만 원)
+    } else {
+        return 10000000; // 기타 상속인 (1천만 원)
+    }
+}
  /**
  * ✅ 협의 상속 계산 함수
  */
