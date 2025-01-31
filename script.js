@@ -804,23 +804,6 @@ heirs.forEach((heir) => {
     }
 });
 
-// ✅ 미성년자 관계 공제 수정 (연령 기준 정확한 계산)
-function calculateRelationshipExemption(relationship, age = 0) {
-    if (relationship === 'minorChild') {
-        const yearsUntilAdult = Math.max(19 - age, 0);
-        return Math.min(yearsUntilAdult * 10000000, 40000000); // 최대 4천만 원까지 적용되도록 수정
-    }
-
-    switch (relationship) {
-        case 'spouse': return 500000000;
-        case 'adultChild': return 50000000;
-        case 'parent': return 50000000;
-        case 'sibling': return 10000000;
-        case 'other': return 10000000;
-        default: return 0;
-    }
-}
-
 // ✅ 배우자 제외 상속인의 일괄 공제 적용
 let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
     if (heir.relationship !== 'spouse') {
