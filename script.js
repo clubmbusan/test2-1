@@ -751,22 +751,11 @@ function calculateSpouseExemption(spouseShare, totalAssetValue) {
     return { spouseBasicExemption, spouseAdditionalExemption, totalExemption: spouseBasicExemption + spouseAdditionalExemption };
 }
 
- /**
- * ✅ 배우자 공제(5억 원) 및 배우자 추가 공제(최대 30억 원) 계산
- */
-function calculateSpouseExemption(spouseShare, totalAssetValue) {
-    let spouseBasicExemption = 500000000; // ✅ 배우자 기본 공제 5억 원
-    let spouseActualInheritance = (spouseShare / 100) * totalAssetValue; // 배우자가 실제 상속받은 금액
-
-    let spouseAdditionalExemption = Math.min(spouseActualInheritance * 0.5, 3000000000); // 추가 공제 (최대 30억 원)
-
-    return { spouseBasicExemption, spouseAdditionalExemption, totalExemption: spouseBasicExemption + spouseAdditionalExemption };
-}
-
 /**
  * ✅ 협의 상속 계산 함수 (상속 비율 적용)
  */
-function calculateGroupInheritance(totalAssetValue) {
+function calculateGroupMode() { // ✅ 함수명을 calculateGroupMode()로 변경하여 올바르게 호출됨
+    const totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
     let totalBasicExemption = 200000000; // 기초공제 2억 원
@@ -803,15 +792,22 @@ function calculateGroupInheritance(totalAssetValue) {
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
+    // ✅ 배우자 확인 (2명 이상 추가 방지)
+    let spouses = heirs.filter(h => h.relationship === 'spouse');
+    if (spouses.length > 1) {
+        alert("배우자는 한 명만 추가할 수 있습니다.");
+        return;
+    }
+
     // ✅ 배우자 기본 공제 및 추가 공제 적용
-    let spouse = heirs.find(h => h.relationship === 'spouse');
+    let spouse = spouses.length > 0 ? spouses[0] : null;
     let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0, totalExemption: 0 };
 
     if (spouse) {
         totalRelationshipExemption += 500000000; // 배우자 기본 공제(5억 원) 추가
         spouseExemptions = calculateSpouseExemption(spouse.sharePercentage, totalAssetValue);
     }
-    
+
     // ✅ 기타 상속인의 관계 공제 적용 (배우자 제외)
     heirs.forEach((heir) => {
         if (heir.relationship !== 'spouse') {
