@@ -643,20 +643,20 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 }
     
 /**
- * ✅ 개인 상속 계산 함수 (형제·기타 공제 추가)
+ * ✅ 개인 상속 계산 함수 (최신 관계 선택 반영)
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
 function calculatePersonalMode(totalAssetValue) {
-    // ✅ 실시간으로 드롭다운에서 관계 값 가져오기
+    // ✅ 실시간으로 드롭다운에서 관계 값 가져오기 (🚀 최신 값 반영)
     const relationshipElement = document.getElementById('relationshipPersonal');
     if (!relationshipElement) {
         console.error("❗ 관계 선택 드롭다운을 찾을 수 없습니다.");
         return;
     }
-    const relationship = relationshipElement.value || 'other'; // 드롭다운에서 최신 값 가져오기
+    const relationship = relationshipElement.value || 'other'; // ✅ 최신 드롭다운 값 가져오기
     const assetType = document.getElementById('assetType')?.value || 'realEstate'; // 기본값 부동산
 
-    console.log(`🔄 관계 변경됨: ${relationship}`); // 콘솔에서 확인
+    console.log(`🔄 관계 변경됨: ${relationship}`); // 🔥 콘솔에서 확인
 
     // ✅ 기초 공제 (2억) & 관계 공제 적용
     let basicExemption = 200000000;
@@ -708,7 +708,7 @@ function calculatePersonalMode(totalAssetValue) {
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
     // ✅ 상속세 계산 (누진세율 적용)
-    const tax = calculateTax(taxableAmount);
+    const tax = calculateProgressiveTax(taxableAmount);
 
     // ✅ 기존 결과 지우기 (중복 방지)
     document.getElementById('result').innerHTML = "";
@@ -732,12 +732,13 @@ function calculatePersonalMode(totalAssetValue) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
-    
-// ✅ 🔄 드롭다운 값이 변경될 때 계산 함수 실행 (자동 업데이트)
-document.getElementById('relationshipPersonal')?.addEventListener('change', function () {
+
+// ✅ 🔄 "계산하기" 버튼 클릭 시 최신 관계 값 반영!
+document.getElementById('calculateButton')?.addEventListener('click', function () {
     let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    calculatePersonalMode(totalAssetValue);
+    calculatePersonalMode(totalAssetValue); // ✅ 최신 관계 값 반영하도록 수정!
 });
+
 
 /**
  * ✅ 전원 상속 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
