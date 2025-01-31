@@ -643,11 +643,10 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 }
     
 /**
- * ✅ 개인 상속 계산 함수 (최신 관계 선택 반영)
- * @param {number} totalAssetValue - 총 상속 재산 금액
+ * ✅ 개인 상속 계산 함수 (배우자 추가 공제 표시 오류 수정)
  */
 function calculatePersonalMode(totalAssetValue) {
-    // ✅ 실시간으로 드롭다운에서 관계 값 가져오기 (🚀 최신 값 반영)
+    // ✅ 최신 관계 값 가져오기
     const relationshipElement = document.getElementById('relationshipPersonal');
     if (!relationshipElement) {
         console.error("❗ 관계 선택 드롭다운을 찾을 수 없습니다.");
@@ -662,7 +661,7 @@ function calculatePersonalMode(totalAssetValue) {
     let basicExemption = 200000000;
     let relationshipExemption = 0;
 
-    // ✅ 관계 공제 로직 (형제·기타 포함)
+    // ✅ 관계 공제 로직 (배우자, 부모, 자녀, 형제 등)
     if (relationship === 'spouse') {
         relationshipExemption = 500000000; // 배우자 관계 공제 (5억)
     } else if (relationship === 'parent') {
@@ -672,16 +671,16 @@ function calculatePersonalMode(totalAssetValue) {
     } else if (relationship === 'minorChild') {
         relationshipExemption = 10000000; // 미성년 자녀 기본 공제 (1천만)
     } else if (relationship === 'sibling') {
-        relationshipExemption = 10000000; // 🔹 형제·자매 (1천만 원) ✅ 추가됨
+        relationshipExemption = 10000000; // 형제·자매 (1천만 원)
     } else if (relationship === 'other') {
-        relationshipExemption = 10000000; // 🔹 기타 상속인 (1천만 원) ✅ 추가됨
+        relationshipExemption = 10000000; // 기타 상속인 (1천만 원)
     }
 
-    // ✅ 배우자 추가 공제 (배우자만 적용)
+    // ✅ 배우자 추가 공제 (올바르게 계산)
     let spouseAdditionalExemption = 0;
     if (relationship === 'spouse') {
         let spouseInheritanceAmount = totalAssetValue; // 배우자의 실제 상속분
-        spouseAdditionalExemption = Math.min(spouseInheritanceAmount, 3000000000); // 최대 30억 공제
+        spouseAdditionalExemption = Math.min((spouseInheritanceAmount - (basicExemption + relationshipExemption)) * 0.5, 3000000000); // ✅ 최대 30억 공제
     }
 
     // ✅ 배우자가 아닐 경우, 일괄 공제 적용 (최소 5억 보장)
@@ -722,7 +721,7 @@ function calculatePersonalMode(totalAssetValue) {
             <li>기초 공제: ${basicExemption.toLocaleString()} 원</li> 
             <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
             ${relationship === 'spouse' ? 
-                `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원</li>` : 
+                `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원 (최대 30억)</li>` : 
                 `<li>일괄 공제: ${generalExemption.toLocaleString()} 원</li>`}
             ${(assetType === 'cash' || assetType === 'stock') ? 
                 `<li>금융재산 공제: ${financialExemption.toLocaleString()} 원</li>` : ''}
@@ -738,7 +737,6 @@ document.getElementById('calculateButton')?.addEventListener('click', function (
     let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
     calculatePersonalMode(totalAssetValue); // ✅ 최신 관계 값 반영하도록 수정!
 });
-
 
 /**
  * ✅ 전원 상속 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
