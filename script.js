@@ -752,19 +752,20 @@ function calculateSpouseExemption(spouseShare, totalAssetValue) {
 }
 
 // ✅ 협의 상속 계산 함수
-function calculateGroupMode(totalAssetValue) {
+function calculateGroupMode() {
+    const totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
     let totalBasicExemption = 200000000; // 기초공제 2억 원
-    let totalRelationshipExemption = 0; // 관계 공제 합계 (배우자 포함)
+    let totalRelationshipExemption = 0; // 관계 공제 합계
     let totalFinancialAssets = 0; // 금융재산 총액
-    let heirs = [];
+    let totalInheritanceTax = 0; // ✅ 최종 상속세 합계
+    let individualResults = []; // ✅ 개별 상속 결과 배열
 
     // ✅ 금융재산 총액 계산
     document.querySelectorAll('.asset-entry').forEach(asset => {
         let assetType = asset.querySelector('.assetType')?.value;
         let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
-
         if (assetType === 'cash' || assetType === 'stock') {
             totalFinancialAssets += assetValue;
         }
@@ -774,7 +775,7 @@ function calculateGroupMode(totalAssetValue) {
     let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
     // ✅ 상속인 정보 저장
-    heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+    let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         let age = 0;
@@ -790,7 +791,7 @@ function calculateGroupMode(totalAssetValue) {
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
-    // ✅ 배우자 기본 공제 적용
+    // ✅ 배우자 기본 공제 및 추가 공제 적용
     let spouse = heirs.find(h => h.relationship === 'spouse');
     let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0, totalExemption: 0 };
 
@@ -809,12 +810,11 @@ function calculateGroupMode(totalAssetValue) {
     // ✅ 전체 과세 표준 계산 (배우자 추가 공제는 적용하지 않음)
     let totalExemption = totalBasicExemption + totalRelationshipExemption + maxFinancialExemption;
     let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
-
-    let finalTotalTax = calculateTax(taxableAmount); // ✅ 최종 상속세 계산
+    let finalTotalTax = calculateInheritanceTax(taxableAmount); // ✅ 최종 상속세 계산
 
     // ✅ 개별 상속세 계산 (배우자 추가 공제 반영)
-    heirs = heirs.map((heir) => {
-        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+    heirs.forEach((heir) => {
+        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100; // ✅ 상속 비율 적용
         const basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
         const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
 
@@ -828,41 +828,36 @@ function calculateGroupMode(totalAssetValue) {
             finalTaxableAmount = Math.max(finalTaxableAmount - spouseExemptions.spouseAdditionalExemption, 0);
         }
 
-        const tax = (finalTaxableAmount > 0) ? calculateTax(finalTaxableAmount) : 0;
+        const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
+        totalInheritanceTax += individualTax; // ✅ 총 상속세 합계 계산
 
-        return {
-            ...heir,
-            shareAmount,
-            basicExemption,
-            financialExemption: individualFinancialExemption,
-            finalTaxableAmount,
-            tax
-        };
+        // ✅ 개별 상속인 결과 반영 (법정 상속과 동일한 포맷 유지)
+        individualResults.push(`
+            <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
+            <p>상속 금액: ${shareAmount.toLocaleString()} 원</p>
+            ${individualFinancialExemption > 0 ? `<p>금융재산 공제: ${individualFinancialExemption.toLocaleString()} 원</p>` : ""}
+            <p>기초 공제: ${basicExemption.toLocaleString()} 원</p>
+            <p>관계 공제: ${heir.relationshipExemption.toLocaleString()} 원</p>
+            <p>과세 표준: ${finalTaxableAmount.toLocaleString()} 원</p>
+            <p>개별 상속세: ${individualTax.toLocaleString()} 원</p>
+            <hr>
+        `);
     });
 
-    // ✅ 최종 결과지 수정 (배우자 추가 공제 반영)
+    // ✅ 최종 결과 출력 (개별 상속세 아래에 총 상속세 표시)
     document.getElementById('result').innerHTML = `
-     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
-     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-     <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
-     <h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>
-     <h3>최종 과세 표준: ${taxableAmount.toLocaleString()} 원</h3>
-     <h3>최종 상속세: ${finalTotalTax.toLocaleString()} 원</h3>
-
-     <h3>개별 상속인 결과</h3>
-     ${heirs.map((heir) => ` 
-          <p>
-             <strong>${heir.name}</strong> (${heir.sharePercentage}% 지분): ${heir.shareAmount.toLocaleString()} 원<br>
-             관계 공제: ${heir.relationshipExemption.toLocaleString()} 원 (${heir.relationship})<br>
-             기초 공제: ${heir.basicExemption.toLocaleString()} 원<br>
-             금융재산 공제: ${heir.financialExemption.toLocaleString()} 원<br>
-             ${heir.relationship === 'spouse' ? `<strong>배우자 추가 공제:</strong> ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원<br>` : ''}
-             <strong>과세 표준:</strong> ${heir.finalTaxableAmount.toLocaleString()} 원<br>
-             <strong>개별 상속세:</strong> ${heir.tax.toLocaleString()} 원
-         </p>
-     `).join('')}
+        <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
+        ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
+        <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
+        ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
+        <h3>일괄 공제: ${totalRelationshipExemption.toLocaleString()} 원</h3> 
+        ${individualResults.join("")}
+        <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
     `;
 }
+
+// ✅ 계산 버튼 클릭 시 실행
+document.getElementById('calculateGroupButton').addEventListener('click', calculateGroupMode);
 
  /**
  * ✅ 법정 상속 계산 함수 (민법에 따른 법정 상속 비율 자동 적용)
