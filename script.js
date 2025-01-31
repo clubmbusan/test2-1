@@ -643,7 +643,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 }
     
 /**
- * ✅ 개인 상속 계산 함수 (배우자 추가 공제 & 일괄 공제 오류 수정)
+ * ✅ 개인 상속 계산 함수 (중복 출력 문제 해결)
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
 function calculatePersonalMode(totalAssetValue) {
@@ -684,7 +684,10 @@ function calculatePersonalMode(totalAssetValue) {
     // ✅ 상속세 계산
     const tax = calculateTax(taxableAmount);
 
-    // ✅ 결과 출력
+    // ✅ 기존 결과 지우기 (중복 방지)
+    document.getElementById('result').innerHTML = "";
+
+    // ✅ 결과 출력 (중복 방지)
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (개인 상속)</h3>
         <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
@@ -703,7 +706,6 @@ function calculatePersonalMode(totalAssetValue) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
-
 
 /**
  * ✅ 전원 상속 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
