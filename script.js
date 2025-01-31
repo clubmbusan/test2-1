@@ -930,11 +930,19 @@ function calculateLegalInheritance() {
     let siblingBasicExemption = numSiblings > 0 ? Math.round(siblingShare * totalBasicExemption) : 0;
     let otherBasicExemption = numOthers > 0 ? Math.round(otherShare * totalBasicExemption) : 0;
   
-    // ✅ 배우자 추가공제 계산 (배우자 상속 재산의 50%, 최대 30억 원)
+    // ✅ 배우자 상속 금액 계산 (배우자 지분 적용)
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+
+    // ✅ 배우자 기초 공제 계산 (배우자 지분에 따른 비율 적용)
+    let spouseBasicExemption = Math.round(spouseShare * 200000000);
+
+    // ✅ 배우자 추가 공제 계산 (소수점 없는 정수 값으로 반올림)
     let spouseAdditionalExemption = spouseExists 
-        ? Math.min((spouseInheritanceAmount - spouseFinancialExemption) * 0.5, 3000000000) 
+        ? Math.min(Math.round((spouseInheritanceAmount - spouseBasicExemption - 500000000) * 0.5), 3000000000) 
         : 0;
+
+    // ✅ 최종 배우자 추가 공제 값 로그 확인 (소수점 없는 정수 값 출력)
+    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString(), "원");
 
     // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합계
     let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
