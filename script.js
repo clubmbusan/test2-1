@@ -657,24 +657,25 @@ function calculatePersonalMode(totalAssetValue) {
 
     console.log(`🔄 관계 변경됨: ${relationship}`); // 🔥 콘솔에서 확인
 
-    // ✅ 기초 공제 (2억) & 관계 공제 적용
-    let basicExemption = 200000000;
-    let relationshipExemption = 0;
+   // ✅ 기초 공제 (2억) & 관계 공제 적용
+   let basicExemption = 200000000;
+   let relationshipExemption = 0;
 
-    // ✅ 관계 공제 로직 (배우자, 부모, 자녀, 형제 등)
-    if (relationship === 'spouse') {
-        relationshipExemption = 500000000; // 배우자 관계 공제 (5억)
-    } else if (relationship === 'parent') {
-        relationshipExemption = 50000000; // 부모 관계 공제 (5천만)
-    } else if (relationship === 'adultChild') {
-        relationshipExemption = 50000000; // 성년 자녀 (5천만)
-    } else if (relationship === 'minorChild') {
-        relationshipExemption = 10000000; // 미성년 자녀 기본 공제 (1천만)
-    } else if (relationship === 'sibling') {
-        relationshipExemption = 10000000; // 형제·자매 (1천만 원)
-    } else if (relationship === 'other') {
-        relationshipExemption = 10000000; // 기타 상속인 (1천만 원)
-    }
+   // ✅ 관계 공제 로직 (배우자, 부모, 자녀, 형제 등)
+   if (relationship === 'spouse') {
+       relationshipExemption = 500000000; // 배우자 관계 공제 (5억)
+   } else if (relationship === 'parent') {
+       relationshipExemption = 50000000; // 부모 관계 공제 (5천만 원)
+   } else if (relationship === 'adultChild') {
+       relationshipExemption = 50000000; // 성년 자녀 (5천만 원)
+   } else if (relationship === 'minorChild') {
+      const yearsUntilAdult = Math.max(19 - minorChildAge, 0);
+       relationshipExemption = yearsUntilAdult * 10000000; // ✅ 미성년자 공제 (최대 1억 9천만 원)
+   } else if (relationship === 'sibling') {
+       relationshipExemption = 10000000; // 형제·자매 (1천만 원)
+   } else {
+       relationshipExemption = 10000000; // 기타 상속인 (1천만 원)
+   }
 
     // ✅ 배우자 추가 공제 (올바르게 계산)
     let spouseAdditionalExemption = 0;
