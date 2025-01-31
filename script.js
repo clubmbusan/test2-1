@@ -643,19 +643,26 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 }
     
 /**
- * ✅ 개인 상속 계산 함수 (독립적인 함수로 수정)
+ * ✅ 개인 상속 계산 함수 (형제·기타 공제 추가)
  * @param {number} totalAssetValue - 총 상속 재산 금액
  */
 function calculatePersonalMode(totalAssetValue) {
-    // ✅ 관계(배우자, 자녀, 부모 등) 선택
-    const relationship = document.getElementById('relationshipPersonal')?.value || 'other';
+    // ✅ 실시간으로 드롭다운에서 관계 값 가져오기
+    const relationshipElement = document.getElementById('relationshipPersonal');
+    if (!relationshipElement) {
+        console.error("❗ 관계 선택 드롭다운을 찾을 수 없습니다.");
+        return;
+    }
+    const relationship = relationshipElement.value || 'other'; // 드롭다운에서 최신 값 가져오기
     const assetType = document.getElementById('assetType')?.value || 'realEstate'; // 기본값 부동산
+
+    console.log(`🔄 관계 변경됨: ${relationship}`); // 콘솔에서 확인
 
     // ✅ 기초 공제 (2억) & 관계 공제 적용
     let basicExemption = 200000000;
     let relationshipExemption = 0;
 
-    // ✅ 관계 공제 조건 설정
+    // ✅ 관계 공제 로직 (형제·기타 포함)
     if (relationship === 'spouse') {
         relationshipExemption = 500000000; // 배우자 관계 공제 (5억)
     } else if (relationship === 'parent') {
@@ -663,7 +670,11 @@ function calculatePersonalMode(totalAssetValue) {
     } else if (relationship === 'adultChild') {
         relationshipExemption = 50000000; // 성년 자녀 (5천만)
     } else if (relationship === 'minorChild') {
-        relationshipExemption = 10000000; // 미성년 자녀 (1천만)
+        relationshipExemption = 10000000; // 미성년 자녀 기본 공제 (1천만)
+    } else if (relationship === 'sibling') {
+        relationshipExemption = 10000000; // 🔹 형제·자매 (1천만 원) ✅ 추가됨
+    } else if (relationship === 'other') {
+        relationshipExemption = 10000000; // 🔹 기타 상속인 (1천만 원) ✅ 추가됨
     }
 
     // ✅ 배우자 추가 공제 (배우자만 적용)
@@ -679,7 +690,7 @@ function calculatePersonalMode(totalAssetValue) {
         generalExemption = Math.max(500000000 - (basicExemption + relationshipExemption), 0);
     }
 
-    // ✅ 금융재산 공제 (현금 또는 주식 선택 시에만 적용, 최대 2억)
+    // ✅ 금융재산 공제 추가 (현금 또는 주식 선택 시에만 적용, 최대 2억)
     let financialExemption = 0;
     if (assetType === 'cash' || assetType === 'stock') {
         financialExemption = Math.min(totalAssetValue * 0.2, 200000000);
@@ -721,6 +732,12 @@ function calculatePersonalMode(totalAssetValue) {
         <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
+    
+// ✅ 🔄 드롭다운 값이 변경될 때 계산 함수 실행 (자동 업데이트)
+document.getElementById('relationshipPersonal')?.addEventListener('change', function () {
+    let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+    calculatePersonalMode(totalAssetValue);
+});
 
 /**
  * ✅ 전원 상속 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
