@@ -836,6 +836,14 @@ heirs.forEach((heir) => {
     const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
     totalInheritanceTax += individualTax;
 
+    console.log("🔍 배우자 추가 공제 값:", spouseExemptions.spouseAdditionalExemption);
+console.log("🔍 일괄 공제 보정액:", maxIndividualLumpSumExemption);
+console.log("🔍 배우자 관계 공제 적용 여부:", spouse ? "적용됨" : "없음");
+console.log("🔍 배우자 정보:", spouse);
+console.log("🔍 배우자 제외 상속인의 일괄 공제 계산 기준:", totalNonSpouseExemptions);
+console.log("🔍 배우자가 받을 상속 금액:", spouse ? (spouse.sharePercentage / 100) * totalAssetValue : 0);
+
+
     // ✅ 개별 상속인 결과를 `individualResults` 배열에 저장 (forEach 내부에 위치해야 함)
     individualResults.push(`
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
