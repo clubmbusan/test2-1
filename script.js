@@ -789,7 +789,7 @@ function calculateGroupMode() {
     let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? (500000000 - totalNonSpouseExemptions) : 0;
     let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
 
-    // ✅ 개별 상속세 계산
+   // ✅ 개별 상속세 계산
 heirs.forEach((heir) => {
     const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
     const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
@@ -812,7 +812,7 @@ heirs.forEach((heir) => {
     const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
     totalInheritanceTax += individualTax;
 
-    // ✅ 개별 상속인 결과를 `individualResults` 배열에 저장
+    // ✅ 개별 상속인 결과를 `individualResults` 배열에 저장 (백틱 정상 닫기)
     individualResults.push(`
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
         <p>상속 금액: ${shareAmount.toLocaleString()} 원</p>
@@ -827,7 +827,7 @@ heirs.forEach((heir) => {
     `);
 }); // ✅ forEach 블록 닫기
 
-// ✅ 최종 결과 출력
+// ✅ 최종 결과 출력 (백틱 정상 닫기)
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
     ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
@@ -836,7 +836,7 @@ document.getElementById('result').innerHTML = `
     ${lumpSumExemption > 0 ? `<h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>` : ""}
     ${individualResults.join("")}
     <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
-`;
+`; // ✅ 반드시 `백틱` 정상 닫기
 } // ✅ 함수 `calculateGroupMode()` 닫기
                   
  /**                  
