@@ -726,15 +726,28 @@ function calculateGroupMode() {
         return { name, relationship, age, sharePercentage, relationshipExemption };
     });
 
-    // ✅ 배우자 정보 설정
+   // ✅ 배우자 정보 설정
     let spouse = heirs.find(h => h.relationship === 'spouse');
-    let spouseExemptions = { spouseBasicExemption: 0, spouseAdditionalExemption: 0 };
 
+    // ✅ 배우자가 사용하지 못한 관계 공제 계산 (최대 5억)
+    let spouseRemainingExemption = 0;
     if (spouse) {
-        let spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
-        let spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
-        spouseExemptions.spouseAdditionalExemption = (spouseInheritanceAmount - spouseFinancialExemption - 500000000) * 0.5;
-        spouseExemptions.spouseAdditionalExemption = Math.min(spouseExemptions.spouseAdditionalExemption, 3000000000);
+        let spouseUsedExemption = spouse.relationshipExemption; // 배우자가 사용한 공제
+        spouseRemainingExemption = Math.max(500000000 - spouseUsedExemption, 0);
+    }
+
+    // ✅ 배우자 제외한 상속인에게 관계 공제 배분
+    if (spouseRemainingExemption > 0) {
+        let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse");
+
+        if (nonSpouseHeirs.length > 0) {
+            let totalNonSpouseShare = nonSpouseHeirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
+
+            nonSpouseHeirs.forEach(heir => {
+                let additionalExemption = Math.floor(spouseRemainingExemption * (heir.sharePercentage / totalNonSpouseShare));
+                heir.relationshipExemption += additionalExemption;
+            });
+        }
     }
 
     // ✅ 배우자 제외한 상속인의 개수 계산
