@@ -709,8 +709,8 @@ function calculateGroupMode() {
     // ✅ 금융 재산 공제 (총 금융자산의 20%, 최대 2억)
     let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
 
-    // ✅ 상속인 정보 가져오기 (객체 배열로 변환)
-    let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+    // ✅ 상속인 정보 가져오기 (객체 배열로 변환, 배우자 공제 이전 초기화 추가)
+    let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map(heir => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
         let age = 0;
@@ -723,7 +723,14 @@ function calculateGroupMode() {
         const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
         let relationshipExemption = calculateRelationshipExemption(relationship, age);
 
-        return { name, relationship, age, sharePercentage, relationshipExemption };
+        return { 
+            name, 
+            relationship, 
+            age, 
+            sharePercentage, 
+            relationshipExemption, 
+            spouseTransferredExemption: 0 // 🔥 배우자 공제 이전을 위한 초기화
+        };
     });
 
    // ✅ 배우자 정보 설정
@@ -845,8 +852,7 @@ function calculateGroupMode() {
         <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
     `;
 }
-
-                  
+                 
  /**                  
  * ✅ 법정 상속 계산 함수 (민법에 따른 법정 상속 비율 자동 적용)
  * @description 법정 상속 방식으로 상속인의 법정 지분을 자동 계산하고, 
