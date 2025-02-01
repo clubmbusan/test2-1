@@ -791,6 +791,7 @@ function calculateGroupMode() {
     
     // ✅ 개별 상속인 데이터 가공 ("관계공제 이월" 반영)
     let processedHeirs = heirs.map((heir) => {
+        console.log("현재 상속인:", heir.name); // 디버깅
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
         const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
         let relationshipExemption = heir.relationshipExemption || 0;
