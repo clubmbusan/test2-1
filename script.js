@@ -782,8 +782,10 @@ function calculateGroupMode() {
         }
      }
 
- 
-    // ✅ 개별 상속인 데이터 가공 (객체 배열 반환)
+     // ✅ 개별 상속인의 최대 일괄 공제 계산
+    let maxIndividualLumpSumExemption = lumpSumExemption / Math.max(nonSpouseHeirs, 1);
+
+     // ✅ 개별 상속인 데이터 가공 (객체 배열 반환)
     let processedHeirs = heirs.map((heir) => {
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
         const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
@@ -796,24 +798,24 @@ function calculateGroupMode() {
             0
         );
 
-       // ✅ 배우자 추가 공제 수정
+      // ✅ 배우자 추가 공제 수정
         if (heir.relationship === 'spouse') {
-            finalTaxableAmount = Math.max(finalTaxableAmount - spouseRemainingExemption, 0);
-        }
+        finalTaxableAmount = Math.max(finalTaxableAmount - spouseRemainingExemption, 0);
+       }
 
-        const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
-        totalInheritanceTax += individualTax;
+       const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
+       totalInheritanceTax += individualTax;
 
-        return {
-            ...heir,
-            shareAmount,
-            basicExemption,
-            financialExemption: individualFinancialExemption,
-            lumpSumExemption: individualLumpSumExemption,
-            finalTaxableAmount,
-            individualTax
-        };
-    });
+       return {
+           ...heir,
+           shareAmount,
+           basicExemption,
+           financialExemption: individualFinancialExemption,
+           lumpSumExemption: individualLumpSumExemption,
+           finalTaxableAmount,
+           individualTax
+       };
+   });
 
     // ✅ 총 일괄 공제 계산 (기초공제 + 관계공제 + 개별 일괄 공제 보정액의 합이 5억을 넘으면 5억으로 제한)
     lumpSumExemption = Math.min(processedHeirs.reduce((sum, heir) => {
