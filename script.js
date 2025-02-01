@@ -791,12 +791,18 @@ function calculateGroupMode() {
     
     // ✅ 개별 상속인 데이터 가공 ("관계공제 이월" 반영)
     let processedHeirs = heirs.map((heir) => {
-        console.log("현재 상속인:", heir.name); // 디버깅
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
         const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
         let relationshipExemption = heir.relationshipExemption || 0;
         let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
      
+        // ✅ 관계공제 이월 계산 (초기화 추가)
+        let relationshipExcessShare = 0; // 🔥 반드시 초기화해야 오류 해결됨!
+
+        if (spouseExemptions.relationshipExcess > 0 && spouse.sharePercentage < 100) { 
+            relationshipExcessShare = (spouseExemptions.relationshipExcess * heir.sharePercentage) / (100 - spouse.sharePercentage);
+        }
+       
         // ✅ 최종 과세 표준 계산
         let finalTaxableAmount = Math.max(
             shareAmount - relationshipExemption - basicExemption - individualFinancialExemption,
