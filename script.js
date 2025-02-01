@@ -743,19 +743,14 @@ function calculateGroupMode() {
         let spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
         let spouseRelationshipExemption = 500000000; // 배우자 관계 공제(5억)
 
-        // ✅ 배우자 공제 후 초과분 (관계 공제 이월 대상)
-       let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
-       
-        spouseRemainingAmount = Math.max(spouseRemainingAmount, 0); // 🔥 음수 값 방지
+    // ✅ 배우자 공제 후 초과분 (관계 공제 이월 대상)
+    let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
+    spouseRemainingAmount = Math.max(spouseRemainingAmount, 0); // 🔥 음수 값 방지
 
-       if (spouseRemainingAmount > 0) {
-           spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
-        } else {
-        spouseExemptions.additionalExemption = 0; // 🔥 초과 금액이 없으면 0 처리
-        }
-
-        // 🔥 배우자가 사용하지 못한 관계 공제 이월 (최대 5억)
-        spouseExemptions.relationshipExcess = Math.max(spouseRelationshipExemption - spouseInheritanceAmount, 0);
+    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {  // ✅ 배우자 지분 100%일 때 추가 공제 불가
+        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
+    } else {
+        spouseExemptions.additionalExemption = 0;  // ✅ 초과 금액이 없으면 추가 공제 없음
     }
 
      // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
