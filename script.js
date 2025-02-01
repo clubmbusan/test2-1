@@ -791,11 +791,7 @@ function calculateGroupMode() {
     if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
         lumpSumExemption = 0;
     }
-
-    // ✅ 디버깅 로그 추가
-    console.log("📌 최종 일괄 공제 계산:", lumpSumExemption);
-
-
+  
     // ✅ 개별 상속인의 일괄 공제 보정 계산
     let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
     
@@ -803,11 +799,7 @@ function calculateGroupMode() {
     if (spouseExemptions.additionalExemption < 0 || spouseExemptions.relationshipExcess > 0) {
         spouseExemptions.additionalExemption = 0;  // 🔥 배우자 관계 공제 이월 시 추가 공제 불가
      }
-
-    // ✅ 디버깅 로그 추가
-    console.log("📌 최종 일괄 공제 계산:", lumpSumExemption);
-    console.log("📌 최종 배우자 추가 공제 계산:", spouseExemptions.additionalExemption);
-   
+     
     // ✅ 개별 상속인 데이터 가공 ("관계공제 이월" + "일괄 공제 보정" 반영)
    let processedHeirs = heirs.map((heir) => {
        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
