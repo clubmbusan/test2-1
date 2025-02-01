@@ -736,12 +736,14 @@ function calculateGroupMode() {
     // ✅ 배우자 정보 설정 및 배우자 추가 공제 계산
     let spouse = heirs.find(h => h.relationship === 'spouse');
     let spouseAdditionalExemption = 0;
+    let spouseRelationshipExemption = 0;  // 🔥 변수 선언 추가 (오류 해결)
 
     if (spouse) {
         let spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
         let spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
         let spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
-        let spouseRelationshipExemption = 500000000; // 배우자 관계 공제(5억)
+    
+        spouseRelationshipExemption = 500000000; // 배우자 관계 공제(5억)
 
         // 🔥 배우자 공제 적용 후 남는 금액이 없으면 추가 공제 없음
         let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
@@ -751,14 +753,11 @@ function calculateGroupMode() {
         } else {
             spouseAdditionalExemption = 0; // 🔥 배우자 공제 후 남는 금액이 없으면 추가 공제 없음
         }
-    }
+     }
 
-    // ✅ 배우자가 사용하지 못한 관계 공제 계산 (최대 5억)
-    let spouseRemainingExemption = 0;
-    if (spouse) {
-        let spouseUsedExemption = spouseRelationshipExemption; // 배우자가 사용한 공제
-        spouseRemainingExemption = Math.max(500000000 - spouseUsedExemption, 0);
-    }
+// ✅ 배우자가 사용하지 못한 관계 공제 계산 (최대 5억)
+let spouseRemainingExemption = Math.max(500000000 - spouseRelationshipExemption, 0); // 🔥 이 부분 오류 해결
+
 
     // ✅ 배우자 제외한 상속인에게 관계 공제 배분
     if (spouseRemainingExemption > 0) {
