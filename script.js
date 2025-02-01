@@ -768,29 +768,20 @@ function calculateGroupMode() {
         return sum;
     }, 0);
 
-     // ✅ 배우자가 사용하지 못한 관계 공제를 다른 상속인에게 이전
-     let spouseRemainingExemption = 0; // 🔥 초기화 추가 (오류 해결)
+    // ✅ 배우자가 사용하지 못한 관계 공제를 다른 상속인에게 이전
+    if (spouseRemainingExemption > 0) {
+        let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse");
 
-     // ✅ 배우자가 있는 경우, 사용하지 못한 관계 공제를 계산
-     if (spouse) {
-         let spouseUsedExemption = spouse.relationshipExemption; // 배우자가 사용한 관계 공제
-         spouseRemainingExemption = Math.max(500000000 - spouseUsedExemption, 0); // 🔥 사용하지 못한 관계 공제 계산
+        if (nonSpouseHeirs.length > 0) {
+            let totalNonSpouseShare = nonSpouseHeirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
+
+            nonSpouseHeirs.forEach(heir => {
+                let additionalExemption = Math.floor(spouseRemainingExemption * (heir.sharePercentage / totalNonSpouseShare));
+                heir.relationshipExemption += additionalExemption; // 🔥 관계 공제에 직접 추가
+            });
+        }
      }
 
-     if (spouseRemainingExemption > 0) {
-         let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse");
-     
-         if (nonSpouseHeirs.length > 0) {
-             let totalNonSpouseShare = nonSpouseHeirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
-        
-             nonSpouseHeirs.forEach(heir => {
-                 let additionalExemption = Math.floor(spouseRemainingExemption * (heir.sharePercentage / totalNonSpouseShare));
-
-                 // 🔥 오류 해결: `spouseTransferredExemption` 초기화 추가
-                 heir.spouseTransferredExemption = (heir.spouseTransferredExemption || 0) + additionalExemption;
-             });
-         } 
-     }
  
     // ✅ 개별 상속인 데이터 가공 (객체 배열 반환)
     let processedHeirs = heirs.map((heir) => {
