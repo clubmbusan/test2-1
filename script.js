@@ -749,18 +749,19 @@ function calculateGroupMode() {
     }, 0);
 
     // ✅ 배우자가 사용하지 못한 관계 공제를 다른 상속인에게 이전
-    if (spouseExemptions.remainingExemption > 0 && nonSpouseHeirs > 0) {
-        let totalNonSpouseShare = heirs.filter(h => h.relationship !== "spouse").reduce((sum, h) => sum + h.sharePercentage, 0);
+    if (spouseRemainingExemption > 0) {
+        let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse");
     
-        heirs.forEach(heir => {
-           if (heir.relationship !== "spouse") {
-                // 🔹 spouseTransferredExemption을 명확히 초기화 후 추가
-                heir.spouseTransferredExemption = Math.floor(spouseExemptions.remainingExemption * (heir.sharePercentage / totalNonSpouseShare)) || 0;
-            } else {
-                // 🔹 배우자일 경우에는 0으로 초기화 (undefined 방지)
-                heir.spouseTransferredExemption = 0;
-            }
-        });
+        if (nonSpouseHeirs.length > 0) {
+            let totalNonSpouseShare = nonSpouseHeirs.reduce((sum, heir) => sum + heir.sharePercentage, 0);
+        
+            nonSpouseHeirs.forEach(heir => {
+                let additionalExemption = Math.floor(spouseRemainingExemption * (heir.sharePercentage / totalNonSpouseShare));
+
+                // 🔥 오류 해결: `spouseTransferredExemption` 초기화 추가
+                heir.spouseTransferredExemption = (heir.spouseTransferredExemption || 0) + additionalExemption;
+            });
+        }
     }
    
     // ✅ 개별 상속인 데이터 가공 (객체 배열 반환)
