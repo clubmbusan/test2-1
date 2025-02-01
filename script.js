@@ -772,9 +772,10 @@ function calculateGroupMode() {
         }
     }
    
-    // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산    let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
+    // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산   
+    let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
         if (heir.relationship !== "spouse") {
-            return sum + heir.relationshipExemption + (totalBasicExemption * heir.sharePercentage) / 100;
+            return sum + heir.relationshipExemption + (totalBasicExemption * heir.sharePercentage) / 100);
         }
         return sum;
     }, 0);
