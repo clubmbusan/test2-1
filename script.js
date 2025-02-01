@@ -796,8 +796,9 @@ function calculateGroupMode() {
             0
         );
 
+       // ✅ 배우자 추가 공제 수정
         if (heir.relationship === 'spouse') {
-            finalTaxableAmount = Math.max(finalTaxableAmount - spouseExemptions.spouseAdditionalExemption, 0);
+            finalTaxableAmount = Math.max(finalTaxableAmount - spouseRemainingExemption, 0);
         }
 
         const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
