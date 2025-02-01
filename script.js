@@ -757,29 +757,14 @@ function calculateGroupMode() {
    
      // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
      let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
-    
-     // ✅ 배우자가 사용하지 못한 관계 공제를 다른 상속인에게 이월
-        if (spouseExemptions.relationshipExcess > 0) {
-        let nonSpouseHeirsList = heirs.filter(h => h.relationship !== "spouse");
-
-        if (nonSpouseHeirsList.length > 0) {
-            let totalNonSpouseShare = nonSpouseHeirsList.reduce((sum, heir) => sum + heir.sharePercentage, 0);
-
-            nonSpouseHeirsList.forEach(heir => {
-                let additionalExemption = Math.floor(spouseExemptions.relationshipExcess * (heir.sharePercentage / totalNonSpouseShare));
-                heir.relationshipExemption += additionalExemption;
-                heir.spouseTransferredExemption = additionalExemption; // 🔥 개별 상속인에게 이월된 금액 반영
-            });
-        }
-    }
-   
-    // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산   
-    let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
+     
+     // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산   
+     let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
         if (heir.relationship !== "spouse") {
             return sum + (heir.relationshipExemption || 0) + ((totalBasicExemption * (heir.sharePercentage || 0)) / 100);
         }
         return sum;
-    }, 0);
+     }, 0);
 
     // ✅ 일괄 공제 계산 (5억 초과 시 제한)
     lumpSumExemption = Math.min(
