@@ -772,22 +772,26 @@ function calculateGroupMode() {
         }
     }
    
-    // ✅ 배우자 제외한 상속인의 개수 계산
-    let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
-
-    // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
-    let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
+    // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산    let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
         if (heir.relationship !== "spouse") {
             return sum + heir.relationshipExemption + (totalBasicExemption * heir.sharePercentage) / 100;
         }
         return sum;
     }, 0);
 
-    // ✅ 일괄 공제 계산 (배우자 제외한 상속인의 기초공제 + 관계공제 합이 5억 미만일 때만 적용)
-    let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? (500000000 - totalNonSpouseExemptions) : 0;
+    // ✅ 일괄 공제 계산 (5억 초과 시 제한)
+    let lumpSumExemption = Math.min(
+        500000000 - totalNonSpouseExemptions,
+        500000000
+    );
+
+    // ❗️ NaN 방지: 계산된 값이 음수일 경우 0으로 처리
+    if (lumpSumExemption < 0 || isNaN(lumpSumExemption)) {
+        lumpSumExemption = 0;
+    }
+
+    // ✅ 개별 상속인의 일괄 공제 보정 계산
     let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
-
-
     
     // ✅ 개별 상속인 데이터 가공 ("관계공제 이월" 반영)
     let processedHeirs = heirs.map((heir) => {
@@ -795,10 +799,10 @@ function calculateGroupMode() {
         const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
         let relationshipExemption = heir.relationshipExemption || 0;
         let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
-     
-        // ✅ 관계공제 이월 계산 (초기화 추가)
-        let relationshipExcessShare = 0; // 🔥 반드시 초기화해야 오류 해결됨!
+        let lumpSumExemptionShare = (heir.relationship !== 'spouse') ? maxIndividualLumpSumExemption : 0;
 
+        // ✅ 배우자 공제 이월 반영
+        let relationshipExcessShare = 0;
         if (spouseExemptions.relationshipExcess > 0 && spouse.sharePercentage < 100) { 
             relationshipExcessShare = (spouseExemptions.relationshipExcess * heir.sharePercentage) / (100 - spouse.sharePercentage);
         }
@@ -823,6 +827,7 @@ function calculateGroupMode() {
             shareAmount,
             basicExemption,
             financialExemption: individualFinancialExemption,
+            lumpSumExemption: lumpSumExemptionShare,
             relationshipExcessShare,
             finalTaxableAmount,
             individualTax
