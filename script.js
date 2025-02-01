@@ -747,13 +747,18 @@ function calculateGroupMode() {
     let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
     spouseRemainingAmount = Math.max(spouseRemainingAmount, 0); // 🔥 음수 값 방지
 
-    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {  // ✅ 배우자 지분 100%일 때 추가 공제 불가
+    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {  
+        // ✅ 배우자 지분 100%일 때 추가 공제 불가
         spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
     } else {
         spouseExemptions.additionalExemption = 0;  // ✅ 초과 금액이 없으면 추가 공제 없음
     }
 
-     // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
+     // 🔥 배우자가 사용하지 못한 관계 공제 이월 (최대 5억)
+     spouseExemptions.relationshipExcess = Math.max(spouseRelationshipExemption - spouseInheritanceAmount, 0);
+      }
+  
+    // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
      let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
     
      // ✅ 배우자가 사용하지 못한 관계 공제를 다른 상속인에게 이월
