@@ -811,7 +811,6 @@ function calculateGroupMode() {
             basicExemption,
             financialExemption: individualFinancialExemption,
             lumpSumExemption: individualLumpSumExemption,
-            spouseTransferredExemption,
             finalTaxableAmount,
             individualTax
         };
