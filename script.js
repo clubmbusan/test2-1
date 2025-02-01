@@ -752,6 +752,17 @@ function calculateGroupMode() {
     let lumpSumExemption = (totalNonSpouseExemptions < 500000000) ? (500000000 - totalNonSpouseExemptions) : 0;
     let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
 
+    // ✅ 배우자가 사용하지 못한 관계 공제를 다른 상속인에게 이전
+    if (spouseExemptions.remainingExemption > 0 && nonSpouseHeirs > 0) {
+        let totalNonSpouseShare = heirs.filter(h => h.relationship !== "spouse").reduce((sum, h) => sum + h.sharePercentage, 0);
+        
+        heirs.forEach(heir => {
+            if (heir.relationship !== "spouse") {
+                heir.spouseTransferredExemption = Math.floor(spouseExemptions.remainingExemption * (heir.sharePercentage / totalNonSpouseShare));
+            }
+        });
+    }
+   
     // ✅ 개별 상속인 데이터 가공 (객체 배열 반환)
     let processedHeirs = heirs.map((heir) => {
         const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
@@ -778,6 +789,7 @@ function calculateGroupMode() {
             basicExemption,
             financialExemption: individualFinancialExemption,
             lumpSumExemption: individualLumpSumExemption,
+            spouseTransferredExemption,
             finalTaxableAmount,
             individualTax
         };
