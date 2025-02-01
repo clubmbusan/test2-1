@@ -810,6 +810,7 @@ function calculateGroupMode() {
             ${heir.financialExemption > 0 ? `<p>금융재산 공제: ${heir.financialExemption.toLocaleString()} 원</p>` : ""}
             <p>기초 공제: ${heir.basicExemption.toLocaleString()} 원</p>
             <p>관계 공제: ${heir.relationshipExemption.toLocaleString()} 원</p>
+            ${(heir.spouseTransferredExemption > 0) ? `<p>배우자 공제 이월: ${heir.spouseTransferredExemption.toLocaleString()} 원</p>` : ""}
             ${(heir.relationship === "spouse" && spouseExemptions.spouseAdditionalExemption > 0) ? `<p>배우자 추가 공제: ${spouseExemptions.spouseAdditionalExemption.toLocaleString()} 원</p>` : ""}
             ${heir.lumpSumExemption > 0 ? `<p>일괄 공제 보정액: ${heir.lumpSumExemption.toLocaleString()} 원</p>` : ""}
             <p>과세 표준: ${heir.finalTaxableAmount.toLocaleString()} 원</p>
