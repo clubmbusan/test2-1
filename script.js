@@ -757,8 +757,11 @@ function calculateGroupMode() {
      // 🔥 배우자가 사용하지 못한 관계 공제 이월 (최대 5억)
      spouseExemptions.relationshipExcess = Math.max(spouseRelationshipExemption - spouseInheritanceAmount, 0);
       }
-  
-    // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
+
+     // ✅ 추가: 배우자 공제가 0 이하이면 로그 출력 (디버깅)
+     console.log("📌 배우자 추가 공제 계산:", spouseExemptions.additionalExemption);
+   
+     // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
      let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
     
      // ✅ 배우자가 사용하지 못한 관계 공제를 다른 상속인에게 이월
@@ -785,15 +788,19 @@ function calculateGroupMode() {
     }, 0);
 
     // ✅ 일괄 공제 계산 (5억 초과 시 제한)
-    let lumpSumExemption = Math.min(
-        500000000 - totalNonSpouseExemptions,
+    lumpSumExemption = Math.min(
+        processedHeirs.reduce((sum, heir) => sum + heir.basicExemption + heir.relationshipExemption + heir.lumpSumExemption, 0), 
         500000000
     );
 
     // ❗️ NaN 방지: 계산된 값이 음수일 경우 0으로 처리
-    if (lumpSumExemption < 0 || isNaN(lumpSumExemption)) {
+    if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
         lumpSumExemption = 0;
     }
+
+    // ✅ 디버깅 로그 추가
+    console.log("📌 최종 일괄 공제 계산:", lumpSumExemption);
+
 
     // ✅ 개별 상속인의 일괄 공제 보정 계산
     let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
