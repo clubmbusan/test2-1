@@ -744,10 +744,13 @@ function calculateGroupMode() {
         let spouseRelationshipExemption = 500000000; // 배우자 관계 공제(5억)
 
         // ✅ 배우자 공제 후 초과분 (관계 공제 이월 대상)
-        let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
-        
-        if (spouseRemainingAmount > 0) {
-            spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
+       let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
+       spouseRemainingAmount = Math.max(spouseRemainingAmount, 0); // 🔥 음수 값 방지
+
+       if (spouseRemainingAmount > 0) {
+           spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
+        } else {
+        spouseExemptions.additionalExemption = 0; // 🔥 초과 금액이 없으면 0 처리
         }
 
         // 🔥 배우자가 사용하지 못한 관계 공제 이월 (최대 5억)
