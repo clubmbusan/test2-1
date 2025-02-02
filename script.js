@@ -878,7 +878,7 @@ document.getElementById('result').innerHTML = `
     ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
     <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
 
-    ${Array.isArray(processedHeirs) ? processedHeirs.map((heir) => `
+   ${processedHeirs.map((heir) => `
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
         <p>상속 금액: ${Math.round(heir.shareAmount).toLocaleString()} 원</p>
         ${heir.financialExemption > 0 ? `<p>금융재산 공제: ${Math.round(heir.financialExemption).toLocaleString()} 원</p>` : ""}
@@ -890,7 +890,7 @@ document.getElementById('result').innerHTML = `
         <p>과세 표준: ${Math.round(heir.finalTaxableAmount).toLocaleString()} 원</p>
         <p>개별 상속세: ${Math.round(heir.individualTax).toLocaleString()} 원</p>
         <hr>
-    `).join("") : ""}
+     `).join("")}  
 
     <h3>최종 상속세 합계: ${Math.round(totalInheritanceTax).toLocaleString()} 원</h3>
 `;
