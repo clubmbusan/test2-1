@@ -735,8 +735,7 @@ function calculateGroupMode() {
     
    // ✅ 변수 선언 (초기값 0 설정) - 중복 선언 방지
     let lumpSumExemption = 0;  
-    let maxIndividualLumpSumExemption = 0;  
-    let totalInheritanceTax = 0;  
+    let maxIndividualLumpSumExemption = 0;      
 
     // ✅ 배우자 정보 설정 (배우자 공제 후 초과분 계산)
     let spouse = heirs.find(h => h.relationship === 'spouse');
