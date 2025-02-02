@@ -775,6 +775,11 @@ function calculateGroupMode() {
      });
  }
 
+   // ✅ 기존에 선언된 lumpSumExemption이 있는지 확인하고, 중복 선언을 방지
+   if (typeof lumpSumExemption === "undefined") {
+       var lumpSumExemption = 0; // 처음 선언할 경우만 초기화
+   }
+   
     // ✅ 일괄 공제 (5억 한도 내에서 계산)
    let lumpSumExemption = Math.min(
        heirs.reduce((sum, heir) => sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0) + (heir.spouseTransferredExemption || 0), 0),
