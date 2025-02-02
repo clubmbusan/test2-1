@@ -871,7 +871,7 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 
 // ✅ 최종 결과 출력 (디버깅용)
 console.log(`최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원`);
-
+         
 // ✅ 최종 결과 출력 (객체 배열을 활용한 동적 HTML 생성)
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
@@ -880,8 +880,8 @@ document.getElementById('result').innerHTML = `
     ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
     <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
 
-    ${processedHeirs.map((heir) => `
-        <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
+    ${Array.isArray(processedHeirs) ? processedHeirs.map((heir) => `
+        <h4>${heir.name} (${parseFloat(heir.sharePercentage.toFixed(2))}% 지분)</h4>
         <p>상속 금액: ${Math.round(heir.shareAmount).toLocaleString()} 원</p>
         ${heir.financialExemption > 0 ? `<p>금융재산 공제: ${Math.round(heir.financialExemption).toLocaleString()} 원</p>` : ""}
         <p>기초 공제: ${Math.round(heir.basicExemption).toLocaleString()} 원</p>
@@ -892,11 +892,11 @@ document.getElementById('result').innerHTML = `
         <p>과세 표준: ${Math.round(heir.finalTaxableAmount).toLocaleString()} 원</p>
         <p>개별 상속세: ${Math.round(heir.individualTax).toLocaleString()} 원</p>
         <hr>
-    `).join("")}  
+    `).join("") : ""}  <!-- 🔥 `join("")`을 추가하여 템플릿 리터럴을 올바르게 닫음 -->
 
     <h3>최종 상속세 합계: ${Math.round(totalInheritanceTax).toLocaleString()} 원</h3>
 `;
-}
+}  // ✅ 불필요한 `}` 제거 가능성 있음
                  
  /**                  
  * ✅ 법정 상속 계산 함수 (민법에 따른 법정 상속 비율 자동 적용)
