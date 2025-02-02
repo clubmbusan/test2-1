@@ -664,7 +664,7 @@ document.getElementById('calculateButton')?.addEventListener('click', function (
 });
 
 /**
- * ✅ 전원 상속 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
+ * ✅ 전원 협의 상속 관계 공제 계산 함수 (미성년자 나이 입력 문제 해결)
  * @param {string} relationship - 상속인의 관계 (배우자, 성년 자녀, 미성년 자녀, 부모 등)
  * @param {number} age - 상속인의 나이
  * @returns {number} - 관계 공제 금액
@@ -780,13 +780,16 @@ function calculateGroupMode() {
     // ✅ 개별 상속인의 일괄 공제 보정 계산
     let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
              
+    // ✅ processedHeirs 변수를 먼저 선언하고 초기화
+    let processedHeirs = [];
+ 
     // ✅ 개별 상속인 데이터 가공 ("관계공제 이월" + "일괄 공제 보정" 반영)
-   let processedHeirs = heirs.map((heir) => {
+    processedHeirs = heirs.map((heir) => {
        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
        const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
        let relationshipExemption = heir.relationshipExemption || 0;
-       let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
-
+       let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;            
+       
        // ✅ 배우자 공제 이월 반영
        let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
 
