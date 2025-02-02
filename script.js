@@ -764,8 +764,7 @@ function calculateGroupMode() {
             ...heir,
             spouseTransferredExemption  // 🔥 배우자 공제 이월 추가
         };
-    });
-
+ 
      // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
      let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
      
