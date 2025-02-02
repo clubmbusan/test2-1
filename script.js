@@ -837,7 +837,7 @@ processedHeirs = processedHeirs.map(heir => {
 });
 
 // ✅ 개별 상속인 데이터 가공
-let processedHeirs = heirs?.map((heir) => {
+processedHeirs = heirs?.map((heir) => {
     const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
     const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
     let relationshipExemption = heir.relationshipExemption || 0;
