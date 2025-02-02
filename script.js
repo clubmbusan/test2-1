@@ -821,14 +821,7 @@ heirs = heirs.map((heir) => {
 // ✅ processedHeirs를 먼저 선언하고 빈 배열로 초기화
 let processedHeirs = heirs.map(heir => ({ ...heir }));  
 
-// ✅ 배우자 제외한 상속인의 공제 총합이 5억 미만이면 5억으로 보정
-let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
-    if (heir.relationship !== "spouse") {
-        return sum + (heir.relationshipExemption || 0) + ((totalBasicExemption * (heir.sharePercentage || 0)) / 100);
-    }
-    return sum;
-}, 0);
-
+// ✅ 배우자 제외한 상속인의 공제 총합이 5억 미만이면 5억으로 보정 (🔥 기존 코드 유지)
 let correctedLumpSumExemption = Math.max(totalNonSpouseExemptions, 500000000); 
 
 // ✅ 상속인별 공제 배분 (🔥 수정된 코드)
