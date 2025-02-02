@@ -821,31 +821,35 @@ function calculateGroupMode() {
         let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;            
 
         let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
-        let individualLumpSumExemption = (heir.relationship !== 'spouse') ? (lumpSumExemption * heir.sharePercentage) / 100 : 0;
+    let individualLumpSumExemption = (heir.relationship !== 'spouse') ? (lumpSumExemption * heir.sharePercentage) / 100 : 0;
 
-        let finalTaxableAmount = Math.max(
-            shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption,
-            0
-        );
+    // ✅ 소수점 처리 (반올림 또는 내림 적용)
+    spouseTransferredExemption = Math.round(spouseTransferredExemption);  // 🔥 배우자 공제 이월 정수 변환
+    let finalTaxableAmount = Math.round(
+        shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
+    );
 
-        if (heir.relationship === "spouse") {
-            finalTaxableAmount = 0;
-        }
+    // ✅ 배우자는 과세 표준 0 처리
+    if (heir.relationship === "spouse") {
+        finalTaxableAmount = 0;
+    }
 
-        const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
-        totalInheritanceTax += individualTax;
+    // ✅ 개별 상속세 계산
+    const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
+    totalInheritanceTax += individualTax;
 
-        return {
-            ...heir,
-            shareAmount,
-            basicExemption,
-            financialExemption: individualFinancialExemption,
-            lumpSumExemption: individualLumpSumExemption,
-            spouseTransferredExemption,
-            finalTaxableAmount,
-            individualTax
-        };
-    }) || [];
+    return {
+        ...heir,
+        shareAmount,
+        basicExemption,
+        financialExemption: individualFinancialExemption,
+        lumpSumExemption: individualLumpSumExemption,
+        spouseTransferredExemption,  // 🔥 반올림 적용된 값 저장
+        finalTaxableAmount,  // 🔥 반올림 적용된 값 저장
+        individualTax
+    };
+}) || [];
+
 
     // ✅ 총 일괄 공제 계산 (기초공제 + 관계공제 + 개별 일괄 공제 보정액의 합이 5억을 넘으면 5억으로 제한)
     lumpSumExemption = Math.min(processedHeirs.reduce((sum, heir) => {
