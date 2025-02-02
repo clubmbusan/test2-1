@@ -837,10 +837,29 @@ let processedHeirs = heirs?.map((heir) => {
         shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
     );
 
-    // ✅ 배우자는 과세 표준 0 처리
-    if (heir.relationship === "spouse") {
-        finalTaxableAmount = 0;
-    }
+    // ✅ 배우자의 과세 표준을 올바르게 계산
+    if (spouse) {
+    let spouseFinalTaxableAmount = spouseInheritanceAmount  
+                                   - spouseFinancialExemption 
+                                   - spouseBasicExemption 
+                                   - spouseRelationshipExemption 
+                                   - spouseExemptions.additionalExemption;  
+
+    // ✅ 과세표준이 음수가 되지 않도록 최소값 0으로 보정
+    spouseFinalTaxableAmount = Math.max(spouseFinalTaxableAmount, 0);  
+
+    // ✅ 배우자의 과세표준이 남아 있으면 그대로 반영
+    processedHeirs = processedHeirs.map(heir => {
+        if (heir.relationship === "spouse") {
+            return {
+                ...heir,
+                finalTaxableAmount: spouseFinalTaxableAmount,  // 🔥 기존 0으로 처리된 부분 수정
+                individualTax: (spouseFinalTaxableAmount > 0) ? calculateInheritanceTax(spouseFinalTaxableAmount) : 0  // 상속세 계산
+            };
+        }
+        return heir;
+    });
+}
 
     // ✅ 개별 상속세 계산
     const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
