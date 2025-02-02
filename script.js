@@ -779,9 +779,12 @@ function calculateGroupMode() {
    if (typeof lumpSumExemption === "undefined") {
        lumpSumExemption = 0; // 처음 선언할 경우만 초기화
    }
-   
+
+    // ✅ 먼저 변수 선언 (초기값 0)
+    let lumpSumExemption = 0; 
+
     // ✅ 일괄 공제 (5억 한도 내에서 계산)
-   let lumpSumExemption = Math.min(
+    lumpSumExemption = Math.min(
        heirs.reduce((sum, heir) => sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0) + (heir.spouseTransferredExemption || 0), 0),
        500000000
    );
