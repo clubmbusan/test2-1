@@ -775,6 +775,30 @@ function calculateGroupMode() {
      });
  }
 
+    // ✅ 일괄 공제 (5억 한도 내에서 계산)
+   let lumpSumExemption = Math.min(
+       heirs.reduce((sum, heir) => sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0) + (heir.spouseTransferredExemption || 0), 0),
+       500000000
+   );
+
+   // ❗️ NaN 방지: 계산된 값이 음수일 경우 0으로 처리
+   if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
+       lumpSumExemption = 0;
+   }
+
+   // ✅ 배우자 제외한 상속인의 개별 일괄 공제 보정 계산
+   let maxIndividualLumpSumExemption = (totalNonSpouseShare > 0) ? lumpSumExemption / totalNonSpouseShare : 0;
+
+   // ✅ 상속인 개별 데이터에 일괄 공제 반영
+   heirs = heirs.map((heir) => {
+       let individualLumpSumExemption = (heir.relationship !== 'spouse') ? (maxIndividualLumpSumExemption * heir.sharePercentage) : 0;
+
+       return {
+           ...heir,
+           lumpSumExemption: individualLumpSumExemption  // 🔥 일괄 공제 보정 추가
+       };
+   });
+    
      // ✅ 배우자 제외한 상속인의 개수 계산 (🚀 여기에 추가!)
      let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
      
