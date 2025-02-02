@@ -880,7 +880,7 @@ function calculateGroupMode() {
         ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
         <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
 
-        ${processedHeirs.map((heir) => `
+        ${Array.isArray(processedHeirs) ? processedHeirs.map((heir) => `
             <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
             <p>상속 금액: ${heir.shareAmount.toLocaleString()} 원</p>
             ${heir.financialExemption > 0 ? `<p>금융재산 공제: ${heir.financialExemption.toLocaleString()} 원</p>` : ""}
