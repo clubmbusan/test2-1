@@ -775,10 +775,10 @@ function calculateGroupMode() {
      });
  }
 
-   // ✅ 기존에 선언된 lumpSumExemption이 있는지 확인하고, 중복 선언을 방지
-   if (typeof lumpSumExemption === "undefined") {
+    // ✅ 기존에 선언된 lumpSumExemption이 있는지 확인하고, 중복 선언을 방지
+    if (typeof globalThis.lumpSumExemption === "undefined") { 
        lumpSumExemption = 0; // 처음 선언할 경우만 초기화
-   }
+    }
 
     // ✅ 먼저 변수 선언 (초기값 0)
     let lumpSumExemption = 0; 
