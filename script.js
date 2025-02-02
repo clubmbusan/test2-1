@@ -753,7 +753,8 @@ function calculateGroupMode() {
        let spouseAdditionalExemption = Math.min(spouseExcessAmount * 1.5, 3000000000); // 1.5배 또는 30억 중 작은 값 적용
 
        // 🔥 배우자 추가 공제 적용
-       spouseExemptions.additionalExemption = spouseAdditionalExemption;
+       spouseExemptions.additionalExemption = spouseAdditionalExemption; 
+       }
 
        // ✅ 배우자 공제 후 초과분 계산
        let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
