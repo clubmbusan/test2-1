@@ -816,7 +816,7 @@ function calculateGroupMode() {
      }, 0);   
 
     // ✅ 변수 선언 (초기값 0 설정)
-   let lumpSumExemption = 0;
+    lumpSumExemption = 0;
 
    // ✅ 개별 상속인의 일괄 공제 보정 계산
    let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
