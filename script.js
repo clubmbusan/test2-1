@@ -819,7 +819,7 @@ function calculateGroupMode() {
     lumpSumExemption = 0;
 
    // ✅ 개별 상속인의 일괄 공제 보정 계산
-   let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
+   maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
              
    // ✅ 개별 상속인 데이터 가공 ("관계공제 이월" + "일괄 공제 보정" 반영)
    let processedHeirs = heirs?.map((heir) => {
