@@ -764,8 +764,7 @@ function calculateGroupMode() {
 
       // 🔥 배우자가 사용하지 못한 관계 공제 이월 (최대 5억)
       let spouseExcessExemption = Math.max(spouseRelationshipExemption + spouseAdditionalExemption - spouseInheritanceAmount, 0);
-  }
-   
+     
      // ✅ 배우자 제외한 상속인의 총 지분 계산
      let totalNonSpouseShare = heirs.reduce((sum, heir) => {
          return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
