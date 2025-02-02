@@ -892,7 +892,7 @@ function calculateGroupMode() {
             <p>과세 표준: ${heir.finalTaxableAmount.toLocaleString()} 원</p>
             <p>개별 상속세: ${heir.individualTax.toLocaleString()} 원</p>
             <hr>
-        `).join("")}
+        `).join("") : ""}
 
         <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
     `;
