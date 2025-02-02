@@ -733,7 +733,7 @@ function calculateGroupMode() {
         };
     });
     
-// ✅ 변수 선언 (초기값 0 설정) - 중복 선언 방지
+   // ✅ 변수 선언 (초기값 0 설정) - 중복 선언 방지
 let lumpSumExemption = 0;  
 let maxIndividualLumpSumExemption = 0;      
 
@@ -756,16 +756,17 @@ if (spouse) {
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
     // ✅ 배우자 공제 후 초과분 계산 (이전 코드 오류 수정)
-    let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption - spouseAdditionalExemption;
+    let spouseRemainingAmount = spouseInheritanceAmount - (spouseFinancialExemption + spouseBasicExemption + spouseRelationshipExemption + spouseAdditionalExemption);
     spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
 
     if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {  
-        spouseExemptions.additionalExemption += Math.min(spouseRemainingAmount * 0.5, 3000000000);  // 🔥 기존 값에 추가 적용
+        spouseExemptions.additionalExemption += Math.min(spouseRemainingAmount * 0.5, 3000000000);  // ✅ 괄호 오류 수정
     }
 
     // 🔥 배우자가 사용하지 못한 관계 공제 이월 (최대 5억)
     let spouseExcessExemption = Math.max(spouseRelationshipExemption + spouseAdditionalExemption - spouseInheritanceAmount, 0);
 }
+
 
     // ✅ 배우자 제외한 상속인의 총 지분 계산
     let totalNonSpouseShare = heirs.reduce((sum, heir) => {
