@@ -754,8 +754,7 @@ function calculateGroupMode() {
 
        // 🔥 배우자 추가 공제 적용
        spouseExemptions.additionalExemption = spouseAdditionalExemption;
-   }  // ✅ `if (spouse) { ... }` 블록 닫음
-
+ 
        // ✅ 배우자 공제 후 초과분 계산
        let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
        spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
