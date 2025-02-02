@@ -748,28 +748,11 @@ function calculateGroupMode() {
       let spouseRelationshipExemption = 500000000; // ✅ 배우자 관계 공제(5억)
 
       // ✅ 배우자 추가 공제 계산 (배우자 관계 공제 초과분 적용)
-let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);  
-let spouseAdditionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000);  
+      let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);  
+      let spouseAdditionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000);  
 
-// 🔥 디버깅 1: 배우자 추가 공제 최초 계산 값 확인
-console.log("📌 [초기 계산] 배우자 추가 공제:", spouseAdditionalExemption);
-
-// ✅ 배우자 추가 공제 적용
-spouseExemptions.additionalExemption = spouseAdditionalExemption;
-
-// 🔥 디버깅 2: 적용 후 값 확인
-console.log("📌 [배우자 추가 공제 적용 후] spouseExemptions.additionalExemption:", spouseExemptions.additionalExemption);
-
-// ✅ 배우자 추가 공제 값이 변하는 부분 확인
-if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {  
-    spouseExemptions.additionalExemption += Math.min(spouseRemainingAmount * 0.5, 3000000000);  
-
-    // 🔥 디버깅 3: if 문 실행 후 값 확인
-    console.log("📌 [배우자 추가 공제 if 실행 후] spouseExemptions.additionalExemption:", spouseExemptions.additionalExemption);
-}
-
-// 🔥 디버깅 4: 결과지에 반영하기 직전 값 확인
-console.log("📌 [결과지 반영 직전] 배우자 추가 공제:", spouseExemptions.additionalExemption);
+      // ✅ 배우자 추가 공제 적용
+      spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
       // ✅ 배우자 공제 후 초과분 계산 (이전 코드 오류 수정)
       let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption - spouseAdditionalExemption;
