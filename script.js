@@ -773,20 +773,19 @@ function calculateGroupMode() {
             return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
         }, 0);
 
-        // ✅ 배우자 제외한 상속인에게 이월 공제 배분
-        heirs = heirs.map((heir) => {
-            let spouseTransferredExemption = 0;
+       // ✅ 배우자 제외한 상속인에게 이월 공제 배분
+      heirs = heirs.map((heir) => {
+          let spouseTransferredExemption = 0;
 
-            if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
-                spouseTransferredExemption = (spouseExcessExemption * heir.sharePercentage) / totalNonSpouseShare;
-            }
+          if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
+              spouseTransferredExemption = (spouseExcessExemption * heir.sharePercentage) / totalNonSpouseShare;
+          }
 
-            return {
-                ...heir,
-               spouseTransferredExemption
-            };
-        });
-    }
+          return {
+              ...heir,
+              spouseTransferredExemption: spouseTransferredExemption  // ✅ 올바르게 수정
+          };
+      });  // ✅ map() 함수 정상적으로 닫힘
 
     // ✅ 일괄 공제 (5억 한도 내에서 계산)
     lumpSumExemption = Math.min(
