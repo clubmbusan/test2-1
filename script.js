@@ -764,18 +764,7 @@ function calculateGroupMode() {
             return sum + (heir.relationshipExemption || 0) + ((totalBasicExemption * (heir.sharePercentage || 0)) / 100);
         }
         return sum;
-     }, 0);
-
-    // ✅ 일괄 공제 계산 (5억 초과 시 제한)
-    lumpSumExemption = Math.min(
-        processedHeirs.reduce((sum, heir) => sum + heir.basicExemption + heir.relationshipExemption + heir.lumpSumExemption, 0), 
-        500000000
-    );
-
-    // ❗️ NaN 방지: 계산된 값이 음수일 경우 0으로 처리
-    if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
-        lumpSumExemption = 0;
-    }
+     }, 0);   
   
     // ✅ 개별 상속인의 일괄 공제 보정 계산
     let maxIndividualLumpSumExemption = (nonSpouseHeirs > 0) ? lumpSumExemption / nonSpouseHeirs : 0;
