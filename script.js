@@ -808,19 +808,29 @@ let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
     return sum;
 }, 0);
 
+// ✅ processedHeirs를 먼저 선언하고 빈 배열로 초기화
+let processedHeirs = heirs.map(heir => ({ ...heir }));  
+
 // ✅ 배우자 제외한 상속인의 공제 총합이 5억 미만이면 5억으로 보정
+let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
+    if (heir.relationship !== "spouse") {
+        return sum + (heir.relationshipExemption || 0) + ((totalBasicExemption * (heir.sharePercentage || 0)) / 100);
+    }
+    return sum;
+}, 0);
+
 let correctedLumpSumExemption = Math.max(totalNonSpouseExemptions, 500000000); 
 
 // ✅ 상속인별 공제 배분 (🔥 수정된 코드)
-heirs = heirs.map(heir => {
-    let adjustedLumpSumExemption = (heir.relationship !== "spouse") 
-        ? (Math.max(totalNonSpouseExemptions, 500000000) * heir.sharePercentage) / 100 
-        : 0;
-
-    return {
-        ...heir,
-        lumpSumExemption: adjustedLumpSumExemption
-    };
+processedHeirs = processedHeirs.map(heir => {
+    if (heir.relationship !== "spouse") {
+        let adjustedLumpSumExemption = (correctedLumpSumExemption * heir.sharePercentage) / 100;
+        return {
+            ...heir,
+            lumpSumExemption: adjustedLumpSumExemption
+        };
+    }
+    return heir;
 });
 
 // ✅ 상속인 개별 데이터에 일괄 공제 반영
