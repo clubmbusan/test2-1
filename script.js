@@ -772,7 +772,7 @@ if (spouse) {
     }, 0);
 
     // ✅ 배우자 제외한 상속인에게 이월 공제 배분
-    heirs = heirs.map((heir) => {
+    heirs = heirs.map(heir => {
         let spouseTransferredExemption = 0;
 
         if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
@@ -784,7 +784,7 @@ if (spouse) {
             spouseTransferredExemption
         };
     });
-}  // ✅ if (spouse) 블록 닫음
+} // ✅ if (spouse) 블록 닫음
 
 // ✅ 일괄 공제 (5억 한도 내에서 계산)
 lumpSumExemption = Math.min(
@@ -811,7 +811,7 @@ let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
 }, 0);
 
 // 🔥 디버깅 로그 추가
-console.log("📌 배우자 제외한 상속인의 총 기초 공제 + 관계 공제 합:", totalNonSpouseExemptions);  
+console.log("📌 배우자 제외한 상속인의 총 기초 공제 + 관계 공제 합:", totalNonSpouseExemptions);
 
 // ✅ 🔹 추가할 코드: 개별 `basicExemption` 값을 `undefined`가 아니도록 설정 (1번 수정)
 heirs = heirs.map(heir => {
@@ -827,21 +827,21 @@ heirs = heirs.map(heir => {
 
 // 🔥 추가한 `basicExemption` 값 확인 로그
 console.log("📌 개별 기초 공제 값 확인:", heirs.map(h => ({ name: h.name, basicExemption: h.basicExemption })));
-    
+
 // ✅ 부족한 일괄 공제 계산 (최대 5억)
 let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseExemptions, 0);
 
 // 🔥 디버깅 로그 추가
 console.log("📌 부족한 일괄 공제 계산 (최대 5억 적용 후):", correctedLumpSumExemption);
 
-    // ✅ 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
+// ✅ 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
 let totalNonSpouseShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
 }, 0);
 
 // 🔥 디버깅 로그 추가
 console.log("📌 배우자 제외한 상속인의 총 지분:", totalNonSpouseShare);
-    
+
 // ✅ 부족한 일괄 공제를 배우자 제외한 상속인의 지분 비율에 따라 배분 (기존 코드)
 heirs = heirs.map(heir => {
     let additionalLumpSumExemption = (heir.relationship !== "spouse" && totalNonSpouseShare > 0) 
@@ -887,9 +887,9 @@ heirs.forEach(heir => {
     console.log("   👉 최종 과세 표준:", heir.finalTaxableAmount);
     console.log("   👉 개별 상속세:", heir.individualTax);
 });
-    
+
 // ✅ 확인 로그 추가 (일괄 공제 보정값이 5억이 되는지 확인)
-console.log("📌 보정된 일괄 공제 총합:", correctedLumpSumExemption); 
+console.log("📌 보정된 일괄 공제 총합:", correctedLumpSumExemption);
 
  // ✅ 배우자 관련 변수를 먼저 선언하여 어디서든 접근 가능하도록 수정
 let spouseInheritanceAmount = 0;
