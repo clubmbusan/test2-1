@@ -801,7 +801,7 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
 
 // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
-let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
+totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
     if (heir.relationship !== "spouse") {
         let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
         let relationshipExemption = heir.relationshipExemption || 0;
