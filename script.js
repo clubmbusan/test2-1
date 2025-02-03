@@ -851,7 +851,32 @@ heirs = heirs.map((heir) => {
 
 // ✅ 확인 로그 추가 (일괄 공제 보정값이 5억이 되는지 확인)
 console.log("📌 보정된 일괄 공제 총합:", correctedLumpSumExemption); 
- 
+
+ // ✅ 배우자 관련 변수를 먼저 선언하여 어디서든 접근 가능하도록 수정
+let spouseInheritanceAmount = 0;
+let spouseFinancialExemption = 0;
+let spouseBasicExemption = 0;
+let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
+
+// ✅ 배우자가 있을 경우, 실제 상속 금액 계산
+if (spouse) {
+    spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
+    spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
+    spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
+
+    let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);
+    let spouseAdditionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000);
+
+    spouseExemptions.additionalExemption = spouseAdditionalExemption;
+
+    let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
+    spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
+
+    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {
+        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
+    }
+}
+
 // ✅ 배우자의 과세 표준을 올바르게 계산 (한 번만 계산하고 저장)
 let spouseFinalTaxableAmount = spouseInheritanceAmount  
                                - spouseFinancialExemption 
