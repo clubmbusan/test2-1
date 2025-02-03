@@ -813,6 +813,21 @@ let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
 // 🔥 디버깅 로그 추가
 console.log("📌 배우자 제외한 상속인의 총 기초 공제 + 관계 공제 합:", totalNonSpouseExemptions);  
 
+// ✅ 🔹 추가할 코드: 개별 `basicExemption` 값을 `undefined`가 아니도록 설정 (1번 수정)
+heirs = heirs.map(heir => {
+    let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
+    let relationshipExemption = heir.relationshipExemption || 0;
+
+    return { 
+        ...heir, 
+        basicExemption: basicExemption,
+        relationshipExemption: relationshipExemption
+    };
+});
+
+// 🔥 추가한 `basicExemption` 값 확인 로그
+console.log("📌 개별 기초 공제 값 확인:", heirs.map(h => ({ name: h.name, basicExemption: h.basicExemption })));
+    
 // ✅ 부족한 일괄 공제 계산 (최대 5억)
 let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseExemptions, 0);
 
@@ -827,7 +842,7 @@ let totalNonSpouseShare = heirs.reduce((sum, heir) => {
 // 🔥 디버깅 로그 추가
 console.log("📌 배우자 제외한 상속인의 총 지분:", totalNonSpouseShare);
     
-// ✅ 부족한 일괄 공제를 배우자 제외한 상속인의 지분 비율에 따라 배분
+// ✅ 부족한 일괄 공제를 배우자 제외한 상속인의 지분 비율에 따라 배분 (기존 코드)
 heirs = heirs.map(heir => {
     let additionalLumpSumExemption = (heir.relationship !== "spouse" && totalNonSpouseShare > 0) 
         ? ((500000000 - totalNonSpouseExemptions) * (heir.sharePercentage / totalNonSpouseShare)) 
@@ -844,6 +859,23 @@ heirs = heirs.map(heir => {
 
 // 🔥 최종 디버깅 로그 추가
 console.log("📌 최종 보정된 일괄 공제 총합:", heirs.reduce((sum, heir) => sum + heir.lumpSumExemption, 0));
+
+// ✅ 🔹 추가할 코드: 개별 `finalTaxableAmount`(과세 표준) 계산 (2번 수정)
+heirs = heirs.map(heir => {
+    let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+    let finalTaxableAmount = shareAmount - heir.relationshipExemption - heir.basicExemption - heir.lumpSumExemption;
+    
+    // ✅ 음수 방지 (과세 표준이 0 미만이면 0으로 처리)
+    finalTaxableAmount = Math.max(finalTaxableAmount, 0);
+
+    return { 
+        ...heir, 
+        finalTaxableAmount: finalTaxableAmount
+    };
+});
+
+// 🔥 추가한 `finalTaxableAmount` 값 확인 로그
+console.log("📌 개별 과세 표준 값 확인:", heirs.map(h => ({ name: h.name, finalTaxableAmount: h.finalTaxableAmount })));
 
 // 🔥 개별 상속인 정보 확인 로그 추가
 heirs.forEach(heir => {
@@ -915,8 +947,25 @@ let processedHeirs = heirs?.map((heir) => {
         finalTaxableAmount = spouseFinalTaxableAmount;
     }
 
+  // ✅ 개별 상속세 계산
+ heirs = heirs.map(heir => {
+    let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+    let basicExemption = heir.basicExemption || 0; // 🔥 undefined 방지
+    let relationshipExemption = heir.relationshipExemption || 0; // 🔥 undefined 방지
+    let individualFinancialExemption = heir.financialExemption || 0; // 🔥 undefined 방지
+    let spouseTransferredExemption = heir.spouseTransferredExemption || 0; // 🔥 undefined 방지
+    let individualLumpSumExemption = heir.lumpSumExemption || 0; // 🔥 undefined 방지
+    
+    // ✅ 최종 과세 표준 계산
+    let finalTaxableAmount = shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption;
+    
+    // ✅ 음수 방지 (과세 표준이 0 미만이면 0으로 처리)
+    finalTaxableAmount = Math.max(finalTaxableAmount, 0);
+
     // ✅ 개별 상속세 계산
-    const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
+    let individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
+
+    // ✅ 총 상속세 합산
     totalInheritanceTax += individualTax;
 
     return {
