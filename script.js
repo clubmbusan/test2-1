@@ -812,7 +812,7 @@ let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
 }, 0);
 
 // ✅ 부족한 일괄 공제 계산 (최대 5억)
-let missingLumpSumExemption = Math.max(500000000 - totalNonSpouseExemptions, 0);
+let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseExemptions, 0);
 
 // ✅ 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
 let totalNonSpouseShare = heirs.reduce((sum, heir) => {
