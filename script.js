@@ -821,7 +821,7 @@ let totalNonSpouseShare = heirs.reduce((sum, heir) => {
 // ✅ 부족한 일괄 공제를 배우자 제외한 상속인의 지분 비율에 따라 배분
 heirs = heirs.map(heir => {
     let individualLumpSumExemption = (heir.relationship !== "spouse" && totalNonSpouseShare > 0) 
-        ? (missingLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare 
+        ? (correctedLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare 
         : 0;
     
     return { ...heir, lumpSumExemption: individualLumpSumExemption };
