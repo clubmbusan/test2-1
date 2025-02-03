@@ -811,16 +811,6 @@ let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
     return sum;
 }, 0);
 
-// ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
-totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
-    if (heir.relationship !== "spouse") {
-        let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
-        let relationshipExemption = heir.relationshipExemption || 0;
-        return sum + basicExemption + relationshipExemption;
-    }
-    return sum;
-}, 0);
-
 // ✅ 부족한 일괄 공제 계산 (최대 5억)
 let missingLumpSumExemption = Math.max(500000000 - totalNonSpouseExemptions, 0);
 
