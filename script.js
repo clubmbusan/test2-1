@@ -770,6 +770,9 @@ if (spouse) {
     }
 }
 
+    // ✅ 확인 로그 추가 (배우자 추가 공제가 정상적으로 업데이트되는지 확인)
+    console.log("📌 배우자 추가 공제 업데이트 확인:", spouseExemptions.additionalExemption);
+    
     // ✅ 배우자 공제 후 초과분 계산 (이전 코드에서 `if` 바깥에 있어서 오류 발생 가능)
     let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
     spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
@@ -846,7 +849,10 @@ heirs = heirs.map((heir) => {
     };
 });
 
-// ✅ 배우자 관련 변수를 먼저 선언하여 어디서든 접근 가능하도록 수정
+// ✅ 확인 로그 추가 (일괄 공제 보정값이 5억이 되는지 확인)
+console.log("📌 보정된 일괄 공제 총합:", correctedLumpSumExemption); 
+
+ // ✅ 배우자 관련 변수를 먼저 선언하여 어디서든 접근 가능하도록 수정
 let spouseInheritanceAmount = 0;
 let spouseFinancialExemption = 0;
 let spouseBasicExemption = 0;
