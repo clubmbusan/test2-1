@@ -832,6 +832,11 @@ heirs = heirs.map(heir => {
     let additionalLumpSumExemption = (heir.relationship !== "spouse" && totalNonSpouseShare > 0) 
         ? ((500000000 - totalNonSpouseExemptions) * (heir.sharePercentage / totalNonSpouseShare)) // 🔥 부족한 공제 추가 반영
         : 0;
+
+     // 🔥 NaN 방지를 위해 추가 보정
+    additionalLumpSumExemption = isNaN(additionalLumpSumExemption) ? 0 : additionalLumpSumExemption;
+
+    return { 
     
     return { 
         ...heir, 
