@@ -748,12 +748,27 @@ if (spouse) {
     let spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
     let spouseRelationshipExemption = 500000000; // ✅ 배우자 관계 공제(5억)
 
-    // ✅ 배우자 추가 공제 계산 (배우자 관계 공제 초과분 적용)
-    let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);  
-    let spouseAdditionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000); 
+   // ✅ 배우자 추가 공제 초기화 (매번 새롭게 계산하도록 수정)
+   spouseExemptions.additionalExemption = 0;
 
-    // 🔥 배우자 추가 공제 적용
-    spouseExemptions.additionalExemption = spouseAdditionalExemption;
+   if (spouse) {
+       let spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
+       let spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
+       let spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
+       let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
+
+    // ✅ 배우자 초과 금액 계산
+    let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);
+    spouseExemptions.additionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000);
+
+    // ✅ 배우자 공제 후 남은 금액 계산
+    let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
+    spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
+
+    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {
+        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
+    }
+}
 
     // ✅ 배우자 공제 후 초과분 계산 (이전 코드에서 `if` 바깥에 있어서 오류 발생 가능)
     let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
