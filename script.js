@@ -740,10 +740,7 @@ let maxIndividualLumpSumExemption = 0;
 // ✅ 배우자 정보 설정 (배우자 공제 후 초과분 계산)
 let spouse = heirs.find(h => h.relationship === 'spouse');
 let spouseExemptions = { relationshipExcess: 0, additionalExemption: 0 };
-
- // ✅ 배우자 추가 공제 초기화 (매번 새롭게 계산하도록 수정)
- spouseExemptions.additionalExemption = 0;
-
+ 
  // ✅ 배우자 추가 공제 적용 (배우자 관계 공제를 초과한 금액에 대해 공제)
  if (spouse) {
     let spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
@@ -756,7 +753,10 @@ let spouseExemptions = { relationshipExcess: 0, additionalExemption: 0 };
 
     console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString(), "원");
      } 
-  
+
+    // ✅ 배우자 추가 공제 초기화 (매번 새롭게 계산하도록 수정)
+    spouseExemptions.additionalExemption = 0;
+   
     // ✅ 배우자 초과 금액 계산
     let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);
     spouseExemptions.additionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000);
