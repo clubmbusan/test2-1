@@ -805,7 +805,6 @@ let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
     if (heir.relationship !== "spouse") {
         let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100; // 기초 공제
         let relationshipExemption = heir.relationshipExemption || 0; // 관계 공제
-
         return sum + basicExemption + relationshipExemption; 
     }
     return sum;
@@ -828,13 +827,16 @@ let totalNonSpouseShare = heirs.reduce((sum, heir) => {
 // 🔥 디버깅 로그 추가
 console.log("📌 배우자 제외한 상속인의 총 지분:", totalNonSpouseShare);
     
-// ✅ 부족한 일괄 공제를 배우자 제외한 상속인의 지분 비율에 따라 배분
+// ✅ 부족한 일괄 공제를 배우자 제외한 상속인의 지분 비율에 따라 배분 (수정된 코드)
 heirs = heirs.map(heir => {
-    let individualLumpSumExemption = (heir.relationship !== "spouse" && totalNonSpouseShare > 0) 
-        ? (correctedLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare  // 
+    let additionalLumpSumExemption = (heir.relationship !== "spouse" && totalNonSpouseShare > 0) 
+        ? ((500000000 - totalNonSpouseExemptions) * (heir.sharePercentage / totalNonSpouseShare)) // 🔥 부족한 공제 추가 반영
         : 0;
     
-    return { ...heir, lumpSumExemption: individualLumpSumExemption };
+    return { 
+        ...heir, 
+        lumpSumExemption: heir.lumpSumExemption + additionalLumpSumExemption // 🔥 기존 값에 추가 배분 적용
+    };
 });
 
 // 🔥 개별 상속인 정보 확인 로그 추가
