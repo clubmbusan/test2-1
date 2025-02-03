@@ -752,7 +752,8 @@ if (spouse) {
 
     // ✅ 배우자 추가 공제 적용
     let spouseAdditionalExemption = 140000000; // 예제 값 (1억 4천만 원)
-
+}
+    
 // ✅ 배우자 추가 공제 초기화 (매번 새롭게 계산하도록 수정)
 spouseExemptions.additionalExemption = 0;
 
