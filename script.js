@@ -903,7 +903,7 @@ let processedHeirs = heirs?.map((heir) => {
     let relationshipExemption = heir.relationshipExemption || 0;
     let basicExemption = heir.basicExemption ?? (totalBasicExemption * heir.sharePercentage) / 100;
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
-    let individualLumpSumExemption = (lumpSumExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
+    let individualLumpSumExemption = (heir.relationship !== 'spouse') ? (lumpSumExemption * heir.sharePercentage) / 100 : 0;
 
     // 🔥 추가: 금융재산 공제 변수 선언 및 초기화
     let individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
