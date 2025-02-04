@@ -905,6 +905,9 @@ let processedHeirs = heirs?.map((heir) => {
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = (lumpSumExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
 
+    // 🔥 추가: 금융재산 공제 변수 선언 및 초기화
+    let individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
+
     // 🔥 반올림 처리
     spouseTransferredExemption = Math.round(spouseTransferredExemption);
     basicExemption = Math.round(basicExemption);
