@@ -892,24 +892,39 @@ spouseFinalTaxableAmount = Math.max(spouseFinalTaxableAmount, 0);
     
 // ✅ 개별 상속인 데이터 가공
 let processedHeirs = heirs?.map((heir) => {
-    console.log(`📌 처리 중: ${heir.name} (${heir.relationship})`);
-    console.log("   🟢 처리 전 - 기초 공제 (basicExemption):", heir.basicExemption);
-    console.log("   🟢 처리 전 - 관계 공제 (relationshipExemption):", heir.relationshipExemption);
-    
-    const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
-    const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
-    
-    // 🔥 undefined 방지: 관계 공제, 기초 공제 초기화
+   console.log(`📌 처리 중: ${heir.name} (${heir.relationship})`);
+
+    const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;    
+   
+     // 🔥 undefined 방지: 기본 값 설정 / 관계 공제, 기초 공제 초기화
     let relationshipExemption = heir.relationshipExemption || 0;
     let basicExemption = heir.basicExemption ?? (totalBasicExemption * heir.sharePercentage) / 100;
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = (heir.relationship !== 'spouse') ? (lumpSumExemption * heir.sharePercentage) / 100 : 0;
 
+     // ✅ 금융 재산 공제 (undefined 방지)
+    let individualFinancialExemption = heir.sharePercentage 
+        ? Math.round((maxFinancialExemption * heir.sharePercentage) / 100) 
+        : 0;
+    
+   // 🔥 undefined 값이 있는 경우 0으로 초기화
+    relationshipExemption = relationshipExemption || 0;
+    basicExemption = basicExemption || 0;
+    individualFinancialExemption = individualFinancialExemption || 0;
+    spouseTransferredExemption = spouseTransferredExemption || 0;
+    individualLumpSumExemption = individualLumpSumExemption || 0;
+
     // ✅ 소수점 처리 (반올림 적용)
     spouseTransferredExemption = Math.round(spouseTransferredExemption);
-    let finalTaxableAmount = Math.round(
+    individualLumpSumExemption = Math.round(individualLumpSumExemption);
+    individualFinancialExemption = Math.round(individualFinancialExemption);
+    basicExemption = Math.round(basicExemption);
+    relationshipExemption = Math.round(relationshipExemption);
+    
+    // ✅ 최종 과세 표준 계산
+    let finalTaxableAmount = Math.max(0, Math.round(
         shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
-    );
+    ));
     
     // ✅ 배우자일 경우 미리 계산된 과세표준 적용
     if (heir.relationship === "spouse") {
@@ -920,8 +935,7 @@ let processedHeirs = heirs?.map((heir) => {
     const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
     totalInheritanceTax += individualTax;
 
-    console.log("   ✅ 처리 후 - 기초 공제 (basicExemption):", basicExemption);
-    console.log("   ✅ 처리 후 - 관계 공제 (relationshipExemption):", relationshipExemption);
+    // ✅ 디버깅 로그
     console.log("   ✅ 처리 후 - 최종 과세 표준 (finalTaxableAmount):", finalTaxableAmount);
     console.log("   ✅ 처리 후 - 개별 상속세 (individualTax):", individualTax);
 
