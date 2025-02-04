@@ -809,20 +809,10 @@ let totalNonSpouseShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
 }, 0);
 
-// ✅ 2. 배우자 제외한 상속인의 상속 금액을 기준으로 비율 변환
+// ✅ 2. 배우자 제외한 상속인의 총 상속 금액 계산
 let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + ((totalAssetValue * heir.sharePercentage) / 100) : sum;
 }, 0);
-
-heirs = heirs.map(heir => {
-    if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
-        return { 
-            ...heir, 
-            adjustedSharePercentage: ((totalAssetValue * heir.sharePercentage) / 100) / totalNonSpouseInheritanceAmount
-        };
-    }
-    return heir;
-});
 
 // ✅ 3. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
 let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
@@ -832,7 +822,7 @@ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
 // ✅ 4. 부족한 일괄 공제 보정액 계산 (정확히 5억 맞추기)
 let correctedLumpSumExemption = 500000000 - totalNonSpouseBasicAndRelationshipExemptions;
 
-// ✅ 5. 보정액 배분 (반올림 오류 방지)
+// ✅ 5. 보정액 배분 (올바른 비율 적용)
 let remainingError = correctedLumpSumExemption;
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
@@ -841,7 +831,7 @@ heirs = heirs.map((heir, index) => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         let heirInheritanceAmount = (totalAssetValue * heir.sharePercentage) / 100;
         
-        // ✅ `Math.round()` 적용하여 반올림 후 정확한 배분
+        // ✅ "배우자 제외한 상속인의 상속 금액 비율"을 정확히 사용
         let allocatedExemption = Math.round((correctedLumpSumExemption * heirInheritanceAmount) / totalNonSpouseInheritanceAmount);
         remainingError -= allocatedExemption;
 
@@ -856,7 +846,7 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 6. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분 (반올림 오차 보정)
+// ✅ 6. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분
 remainingError = 500000000 - heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 
 if (largestInheritanceHeirIndex !== -1) {
