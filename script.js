@@ -757,13 +757,7 @@ if (spouse) {
 
     // ✅ 배우자 추가 공제는 초과분의 50%만 적용 (최대 30억 한도)
     let spouseAdditionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000);
-
-    // ✅ 배우자 추가 공제 적용
-    spouseExemptions.additionalExemption = spouseAdditionalExemption;
-
-    console.log("📌 [디버깅] 배우자 추가 공제 적용 후 값:", spouseExemptions.additionalExemption);
-  }
-
+    
     // ✅ 배우자 공제 후 초과분 계산 (이전 코드에서 if 바깥에 있어서 오류 발생 가능)
     let spouseRemainingAmount = spouseInheritanceAmount - spouseFinancialExemption - spouseBasicExemption - spouseRelationshipExemption;
     spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
