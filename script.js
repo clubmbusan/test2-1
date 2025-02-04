@@ -811,10 +811,8 @@ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
         : sum;
 }, 0);
 
-// ✅ 2. 부족한 일괄 공제 보정액 계산 (5억에서 부족한 만큼 채움) - **5억 초과 시 보정하지 않음!**
-let correctedLumpSumExemption = totalNonSpouseBasicAndRelationshipExemptions < 500000000 
-    ? 500000000 - totalNonSpouseBasicAndRelationshipExemptions 
-    : 0;  // 🔥 **5억을 초과하면 보정하지 않음!** 🔥
+// ✅ 2. 일괄 공제 보정액 계산 (5억에서 부족한 만큼 보정)
+let correctedLumpSumExemption = 500000000 - totalNonSpouseBasicAndRelationshipExemptions;
 
 // ✅ 3. 배우자 제외한 상속인의 총 상속 금액 계산
 let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
@@ -823,7 +821,7 @@ let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
         : sum;
 }, 0);
 
-// ✅ 4. 배우자 제외한 상속인의 상속 금액 비율 재조정 (전체 상속 금액이 아니라 배우자 제외한 상속인들의 총 금액을 기준으로)
+// ✅ 4. 상속인의 지분 비율을 **배우자 제외 상속인의 총 상속 금액을 100%로 변환하여 재계산**
 heirs = heirs.map(heir => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         return { 
@@ -834,7 +832,7 @@ heirs = heirs.map(heir => {
     return heir;
 });
 
-// ✅ 5. 부족한 일괄 공제 보정액을 계산된 비율로 배분 (반올림 적용)
+// ✅ 5. 부족한 일괄 공제 보정액을 재계산된 비율로 배분 (반올림 적용)
 let remainingError = correctedLumpSumExemption;
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
@@ -842,8 +840,8 @@ let maxInheritance = 0;
 heirs = heirs.map((heir, index) => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         let heirInheritanceAmount = (totalAssetValue * heir.sharePercentage) / 100;
-        
-        // ✅ "배우자 제외한 상속인의 상속 금액 비율"을 기준으로 일괄 공제 보정액 배분 (반올림 적용)
+
+        // ✅ **배우자 제외한 상속인의 상속 금액 비율을 기준으로 정확한 배분**
         let allocatedExemption = Math.round((correctedLumpSumExemption * heirInheritanceAmount) / totalNonSpouseInheritanceAmount);
         remainingError -= allocatedExemption;
 
@@ -858,7 +856,7 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 6. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분 (소수점 오차 보정)
+// ✅ 6. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분
 if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     heirs[largestInheritanceHeirIndex] = {
         ...heirs[largestInheritanceHeirIndex],
