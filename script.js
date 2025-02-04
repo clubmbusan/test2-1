@@ -901,10 +901,10 @@ let processedHeirs = heirs?.map((heir) => {
     
     // 🔥 undefined 방지: 관계 공제, 기초 공제 초기화
     let relationshipExemption = heir.relationshipExemption || 0;
-    let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100; // 배우자 포함  
+    let basicExemption = heir.basicExemption ?? (totalBasicExemption * heir.sharePercentage) / 100;
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = (lumpSumExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
-
+    
     // 🔥 반올림 처리
     spouseTransferredExemption = Math.round(spouseTransferredExemption);
     basicExemption = Math.round(basicExemption);
