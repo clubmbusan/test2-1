@@ -881,9 +881,16 @@ heirs = heirs.map(heir => {
     let finalTaxableAmount = Math.max(0, Math.round(
         shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
     ));
-    
-    return { ...heir, finalTaxableAmount };
-});
+
+    // ✅ 개별 상속세 계산 추가 (상속세 계산 함수 적용)
+    let individualTax = calculateInheritanceTax(finalTaxableAmount);
+   
+   return { 
+        ...heir, 
+        finalTaxableAmount, 
+        individualTax // ✅ 개별 상속세 추가
+     };
+ });
     
 // ✅ 7. 최종 일괄 공제 보정액이 5억을 초과하지 않는지 확인
 let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
