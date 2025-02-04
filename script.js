@@ -812,19 +812,14 @@ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
     return sum;
 }, 0);
 
-
 // ✅ 3. 부족한 부분을 보정하여 "기초 공제 + 관계 공제 + 일괄 공제 보정액" 총합이 5억이 되도록 조정
 let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseBasicAndRelationshipExemptions, 0);
-    
+console.log("📌 [디버깅] correctedLumpSumExemption 값:", correctedLumpSumExemption);   
 
 // ✅ 4. 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
 let totalNonSpouseShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
 }, 0);
-
- console.log("📌 [디버깅] correctedLumpSumExemption 값:", correctedLumpSumExemption);
- console.log("📌 [디버깅] 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합:", totalNonSpouseBasicAndRelationshipExemptions);
- console.log("📌 [디버깅] 배우자 제외한 총 지분 비율:", totalNonSpouseShare);
    
 // ✅ 5. 부족한 일괄 공제 보정액을 배우자 제외한 상속인의 지분 비율에 따라 배분
 heirs = heirs.map(heir => {
@@ -843,7 +838,6 @@ heirs = heirs.map(heir => {
     }
     return heir;
 });
-
     
 // ✅ 6. 최종 과세 표준 계산 시 undefined 방지
 heirs = heirs.map(heir => {
@@ -860,8 +854,16 @@ heirs = heirs.map(heir => {
         shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
     ));
 
+    console.log(`🔍 [디버깅] 최종 과세 표준 계산 - ${heir.name}`);
+    console.log(`   👉 상속 금액: ${shareAmount}`);
+    console.log(`   👉 일괄 공제 보정액: ${individualLumpSumExemption}`);
+    console.log(`   👉 최종 과세 표준: ${finalTaxableAmount}`);
+    
     return { ...heir, finalTaxableAmount };
 });
+
+// ✅ 최종 heirs 배열 확인
+console.log("📌 [디버깅] 최종 heirs 배열 확인:", JSON.stringify(heirs, null, 2));
     
 // ✅ 7. 최종 일괄 공제 보정액이 5억을 초과하지 않는지 확인
 let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
