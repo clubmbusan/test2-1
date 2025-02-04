@@ -809,31 +809,40 @@ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0) : sum;
 }, 0);
 
-// ✅ 3. 부족한 부분을 보정하여 "기초 공제 + 관계 공제 + 일괄 공제 보정액" 총합이 5억이 되도록 조정
+// ✅ 부족한 일괄 공제 보정액 계산
 let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseBasicAndRelationshipExemptions, 0);
-    
-// ✅ 4. 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
+
+// ✅ 배우자 제외한 상속인의 총 지분 계산
 let totalNonSpouseShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
 }, 0);
-   
-// ✅ 5. 부족한 일괄 공제 보정액을 배우자 제외한 상속인의 지분 비율에 따라 배분
-heirs = heirs.map(heir => {
+
+// ✅ 부족한 보정액을 분배할 때 오차 방지
+let remainingError = correctedLumpSumExemption; // 보정액 총합 추적
+let largestShareHeirIndex = -1; // 가장 높은 지분을 가진 상속인 인덱스
+let maxShare = 0;
+
+// ✅ 보정액 분배 (반올림 오차 조정)
+heirs = heirs.map((heir, index) => {
     if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
-        let allocatedExemption = Math.round((correctedLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare);
+        let allocatedExemption = Math.floor((correctedLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare);
+        remainingError -= allocatedExemption;
 
-        // ✅ 개별 상속인의 `기초 공제 + 관계 공제 + 보정액` 합이 5억을 넘지 않도록 제한
-        let maxAllowableExemption = 500000000 - ((heir.basicExemption || 0) + (heir.relationshipExemption || 0));
-        allocatedExemption = Math.min(allocatedExemption, maxAllowableExemption);
+        // ✅ 가장 높은 지분을 가진 상속인 추적
+        if (heir.sharePercentage > maxShare) {
+            maxShare = heir.sharePercentage;
+            largestShareHeirIndex = index;
+        }
 
-        console.log(`🔍 [디버깅] 상속인: ${heir.name}`);
-        console.log(`   👉 지분 비율: ${heir.sharePercentage}%`);
-        console.log(`   👉 할당된 일괄 공제 보정액(allocatedExemption): ${allocatedExemption}`);
-        console.log(`   👉 최대 허용 가능한 일괄 공제 보정액: ${maxAllowableExemption}`);
         return { ...heir, lumpSumExemption: allocatedExemption };
     }
     return heir;
 });
+
+// ✅ 남은 차액(200만 원)을 가장 높은 지분을 가진 상속인에게 추가
+if (largestShareHeirIndex !== -1) {
+    heirs[largestShareHeirIndex].lumpSumExemption += remainingError;
+}
 
 // ✅ 5. 최종 일괄 공제 합산 (최대 5억 초과 방지)
 lumpSumExemption = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
