@@ -905,11 +905,11 @@ let processedHeirs = heirs?.map((heir) => {
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = (heir.relationship !== 'spouse') ? (lumpSumExemption * heir.sharePercentage) / 100 : 0;
 
-    // 🔥 반올림 처리
+    // ✅ 소수점 처리 (반올림 적용)
     spouseTransferredExemption = Math.round(spouseTransferredExemption);
-    basicExemption = Math.round(basicExemption);
-    individualLumpSumExemption = Math.round(individualLumpSumExemption);
-    individualFinancialExemption = Math.round(individualFinancialExemption); // 🔥 반올림 추가
+    let finalTaxableAmount = Math.round(
+        shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
+    );
     
     // ✅ 배우자일 경우 미리 계산된 과세표준 적용
     if (heir.relationship === "spouse") {
