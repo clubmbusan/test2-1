@@ -858,17 +858,19 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 8. 남은 차액을 가장 높은 지분을 가진 상속인에게 추가 배분
-if (largestInheritanceHeirIndex !== -1) {
-    heirs[largestInheritanceHeirIndex].lumpSumExemption += remainingError;
-}
+ // ✅ 8. 남은 차액을 가장 높은 지분을 가진 상속인에게 추가 배분
+ remainingError = 500000000 - heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 
-// ✅ 9. 최종 일괄 공제 합산 (최대 5억 초과 방지)
-lumpSumExemption = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
-lumpSumExemption = Math.min(lumpSumExemption, 500000000);
+ if (largestInheritanceHeirIndex !== -1) {
+     heirs[largestInheritanceHeirIndex].lumpSumExemption += remainingError;
+ }
 
-    // ✅ 6. 최종 과세 표준 계산 시 undefined 방지
-heirs = heirs.map(heir => {
+ // ✅ 9. 최종 일괄 공제 합산 (최대 5억 초과 방지)
+ lumpSumExemption = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
+ lumpSumExemption = Math.min(lumpSumExemption, 500000000);
+
+ // ✅ 6. 최종 과세 표준 계산 시 undefined 방지
+ heirs = heirs.map(heir => {
     let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
     // 🔥 NaN 방지
