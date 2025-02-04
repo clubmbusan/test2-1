@@ -836,15 +836,16 @@ heirs = heirs.map(heir => {
     return { ...heir, lumpSumExemption: individualLumpSumExemption };
 });
     
-// 🔥 개별 상속인 정보 확인 로그 추가
-heirs.forEach(heir => {
-    console.log(`🔹 ${heir.name} (${heir.relationship})`);
-    console.log("   👉 지분 비율:", heir.sharePercentage);
-    console.log("   👉 개별 기초 공제:", heir.basicExemption);
-    console.log("   👉 개별 관계 공제:", heir.relationshipExemption);
-    console.log("   👉 개별 일괄 공제 보정액:", heir.lumpSumExemption);
-    console.log("   👉 최종 과세 표준:", heir.finalTaxableAmount);
-    console.log("   👉 개별 상속세:", heir.individualTax);
+heirs.forEach((heir) => {
+    console.log(`🔍 상속인: ${heir.name} (${heir.relationship})`);
+    console.log(`   👉 지분 비율: ${heir.sharePercentage}`);
+    console.log(`   👉 개별 기초 공제 (basicExemption):`, heir.basicExemption);
+    console.log(`   👉 개별 관계 공제 (relationshipExemption):`, heir.relationshipExemption);
+    console.log(`   👉 개별 금융재산 공제 (financialExemption):`, heir.financialExemption);
+    console.log(`   👉 배우자 공제 이월 (spouseTransferredExemption):`, heir.spouseTransferredExemption);
+    console.log(`   👉 개별 일괄 공제 보정액 (lumpSumExemption):`, heir.lumpSumExemption);
+    console.log(`   👉 최종 과세 표준 (finalTaxableAmount):`, heir.finalTaxableAmount);
+    console.log(`   👉 개별 상속세 (individualTax):`, heir.individualTax);
 });
     
 // ✅ 확인 로그 추가 (일괄 공제 보정값이 5억이 되는지 확인)
