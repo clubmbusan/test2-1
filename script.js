@@ -836,6 +836,24 @@ heirs = heirs.map(heir => {
     return heir;
 });
 
+// ✅ 4. 최종 과세 표준 계산 시 undefined 방지
+heirs = heirs.map(heir => {
+    let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+
+    // 🔥 NaN 방지
+    let relationshipExemption = heir.relationshipExemption || 0;
+    let basicExemption = heir.basicExemption || 0;
+    let individualFinancialExemption = heir.financialExemption || 0;
+    let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
+    let individualLumpSumExemption = heir.lumpSumExemption || 0;
+
+    let finalTaxableAmount = Math.max(0, Math.round(
+        shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
+    ));
+
+    return { ...heir, finalTaxableAmount };
+});
+    
 // ✅ 5. 최종 일괄 공제 보정액이 5억을 초과하지 않는지 확인
 let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 console.log("📌 최종 일괄 공제 보정액 총합 (5억 초과 방지):", finalLumpSumExemptionTotal);
