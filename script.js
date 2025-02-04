@@ -811,8 +811,10 @@ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
         : sum;
 }, 0);
 
-// ✅ 2. 부족한 일괄 공제 보정액 계산 (5억에서 부족한 만큼 채움)
-let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseBasicAndRelationshipExemptions, 0);
+// ✅ 2. 부족한 일괄 공제 보정액 계산 (5억에서 부족한 만큼 채움) - **5억 초과 시 보정하지 않음!**
+let correctedLumpSumExemption = totalNonSpouseBasicAndRelationshipExemptions < 500000000 
+    ? 500000000 - totalNonSpouseBasicAndRelationshipExemptions 
+    : 0;  // 🔥 **5억을 초과하면 보정하지 않음!** 🔥
 
 // ✅ 3. 배우자 제외한 상속인의 총 상속 금액 계산
 let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
@@ -821,7 +823,7 @@ let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
         : sum;
 }, 0);
 
-// ✅ 4. 배우자 제외한 상속인의 새로운 배분 비율 계산
+// ✅ 4. 배우자 제외한 상속인의 상속 금액 비율 재조정 (전체 상속 금액이 아니라 배우자 제외한 상속인들의 총 금액을 기준으로)
 heirs = heirs.map(heir => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         return { 
@@ -832,7 +834,7 @@ heirs = heirs.map(heir => {
     return heir;
 });
 
-// ✅ 5. 부족한 일괄 공제 보정액을 계산된 비율로 배분 (소수점 오차 방지)
+// ✅ 5. 부족한 일괄 공제 보정액을 계산된 비율로 배분 (반올림 적용)
 let remainingError = correctedLumpSumExemption;
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
@@ -841,8 +843,8 @@ heirs = heirs.map((heir, index) => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         let heirInheritanceAmount = (totalAssetValue * heir.sharePercentage) / 100;
         
-        // ✅ "배우자 제외한 상속인의 상속 금액 비율"을 기준으로 일괄 공제 보정액 배분
-        let allocatedExemption = Math.floor((correctedLumpSumExemption * heirInheritanceAmount) / totalNonSpouseInheritanceAmount);
+        // ✅ "배우자 제외한 상속인의 상속 금액 비율"을 기준으로 일괄 공제 보정액 배분 (반올림 적용)
+        let allocatedExemption = Math.round((correctedLumpSumExemption * heirInheritanceAmount) / totalNonSpouseInheritanceAmount);
         remainingError -= allocatedExemption;
 
         // ✅ 가장 높은 상속 금액을 가진 상속인 찾기 (추후 남은 차액 보정)
@@ -901,7 +903,7 @@ heirs = heirs.map(heir => ({
     ...heir,
     lumpSumExemption: heir.lumpSumExemption || 0,
     finalTaxableAmount: heir.finalTaxableAmount || 0
-}));
+}));  
 
 // ✅ 11. 최종 상속세 합계 계산
 totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
