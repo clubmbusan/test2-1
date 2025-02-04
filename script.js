@@ -805,40 +805,41 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
 
 // ✅ 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
-totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
+let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
     if (heir.relationship !== "spouse") {
-        let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;
-        let relationshipExemption = heir.relationshipExemption || 0;
-        return sum + basicExemption + relationshipExemption;
+        return sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0);
     }
     return sum;
 }, 0);
 
-// 🔥 디버깅 로그 추가
-console.log("📌 배우자 제외한 상속인의 총 기초 공제 + 관계 공제 합:", totalNonSpouseExemptions);
-    
+
 // ✅ 부족한 부분을 보정하여 "기초 공제 + 관계 공제 + 일괄 공제 보정액" 총합이 5억이 되도록 조정
-let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseExemptions, 0);
+let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseBasicAndRelationshipExemptions, 0);
     
- // 🔥 디버깅 로그 추가
-console.log("📌 부족한 일괄 공제 계산 (최대 5억 적용 후):", correctedLumpSumExemption);
-   
+
 // ✅ 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
 let totalNonSpouseShare = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
 }, 0);
 
- // 🔥 디버깅 로그 추가
-console.log("📌 배우자 제외한 상속인의 총 지분:", totalNonSpouseShare);
-    
-// ✅ 부족한 일괄 공제를 배우자 제외한 상속인의 지분 비율에 따라 배분
+// ✅ 4. 부족한 일괄 공제 보정액을 배우자 제외한 상속인의 지분 비율에 따라 배분
 heirs = heirs.map(heir => {
-    let individualLumpSumExemption = (heir.relationship !== "spouse" && totalNonSpouseShare > 0) 
-        ? (correctedLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare 
-        : 0;
-    
-    return { ...heir, lumpSumExemption: individualLumpSumExemption };
+    if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
+        let allocatedExemption = Math.round((missingLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare);
+
+        // ✅ 개별 상속인의 `기초 공제 + 관계 공제 + 보정액` 합이 5억을 넘지 않도록 제한
+        let maxAllowableExemption = 500000000 - ((heir.basicExemption || 0) + (heir.relationshipExemption || 0));
+        allocatedExemption = Math.min(allocatedExemption, maxAllowableExemption);
+
+        return { ...heir, lumpSumExemption: allocatedExemption };
+    }
+    return heir;
 });
+
+// ✅ 5. 최종 일괄 공제 보정액이 5억을 초과하지 않는지 확인
+let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
+console.log("📌 최종 일괄 공제 보정액 총합 (5억 초과 방지):", finalLumpSumExemptionTotal);
+ 
     
 heirs.forEach((heir) => {
     console.log(`🔍 상속인: ${heir.name} (${heir.relationship})`);
