@@ -905,12 +905,14 @@ let processedHeirs = heirs?.map((heir) => {
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = (lumpSumExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
 
-    // ✅ `individualFinancialExemption`이 처음 선언되었는지 확인 후, 필요한 경우 선언
-    let individualFinancialExemption =
-    typeof individualFinancialExemption !== "undefined"
-        ? individualFinancialExemption
-        : (maxFinancialExemption * heir.sharePercentage) / 100 || 0;
-
+    // 🔥 기존 선언된 변수가 있는지 확인하고 값만 재할당 (중복 선언 방지)
+   if (typeof individualFinancialExemption !== "undefined") {
+       individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100 || 0;
+    } else {
+       // 변수 선언이 안 되어 있다면, 한 번만 선언
+       var individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100 || 0;
+    }
+    
     // 🔥 반올림 처리
     spouseTransferredExemption = Math.round(spouseTransferredExemption);
     basicExemption = Math.round(basicExemption);
