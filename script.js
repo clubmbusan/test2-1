@@ -755,7 +755,7 @@ if (spouse) {
     // ✅ 배우자 추가 공제 계산 (배우자 관계 공제 초과분 적용)
     let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);  
     let spouseAdditionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000); 
-
+       
     // 🔥 배우자 추가 공제 적용
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
@@ -765,6 +765,12 @@ if (spouse) {
 
     if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {  
         spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
+    }
+
+    // ✅ 배우자 추가 공제 적용
+    spouseExemptions.additionalExemption = spouseAdditionalExemption;
+
+    console.log("📌 [디버깅] 배우자 추가 공제 적용 후 값:", spouseExemptions.additionalExemption);
     }
 
     // 🔥 배우자가 사용하지 못한 관계 공제 이월 (최대 5억)
