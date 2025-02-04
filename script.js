@@ -804,34 +804,30 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 // ✅ 1. 배우자 제외한 상속인의 개수 계산 (🚀 필수 추가!)
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== 'spouse').length;
 
-// ✅ 1. 배우자 제외 상속인의 기초공제 및 관계공제 총합 계산
-let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse" ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0) : sum;
+// ✅ 1. 배우자 제외한 상속인의 총 상속 금액 계산
+let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
+    return heir.relationship !== "spouse" ? sum + ((totalAssetValue * heir.sharePercentage) / 100) : sum;
 }, 0);
 
-// ✅ 부족한 일괄 공제 보정액 계산
-let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseBasicAndRelationshipExemptions, 0);
+// ✅ 2. 부족한 일괄 공제 보정액 계산 (정확히 5억 맞추기)
+let correctedLumpSumExemption = 500000000 - totalNonSpouseBasicAndRelationshipExemptions;
 
-// ✅ 배우자 제외한 상속인의 총 지분 계산
-let totalNonSpouseShare = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
-}, 0);
-
-// ✅ 부족한 보정액을 분배할 때 오차 방지
+// ✅ 3. 보정액 배분 (반올림 오차 방지)
 let remainingError = correctedLumpSumExemption; // 보정액 총합 추적
-let largestShareHeirIndex = -1; // 가장 높은 지분을 가진 상속인 인덱스
-let maxShare = 0;
+let largestInheritanceHeirIndex = -1; // 가장 높은 상속 금액을 가진 상속인 인덱스
+let maxInheritance = 0;
 
-// ✅ 보정액 분배 (반올림 오차 조정)
+// ✅ 4. 보정액 배분 (상속 금액 비율로 배분)
 heirs = heirs.map((heir, index) => {
-    if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
-        let allocatedExemption = Math.floor((correctedLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare);
+    if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
+        let heirInheritanceAmount = (totalAssetValue * heir.sharePercentage) / 100;
+        let allocatedExemption = Math.floor((correctedLumpSumExemption * heirInheritanceAmount) / totalNonSpouseInheritanceAmount);
         remainingError -= allocatedExemption;
 
-        // ✅ 가장 높은 지분을 가진 상속인 추적
-        if (heir.sharePercentage > maxShare) {
-            maxShare = heir.sharePercentage;
-            largestShareHeirIndex = index;
+        // ✅ 가장 높은 상속 금액을 가진 상속인 찾기
+        if (heirInheritanceAmount > maxInheritance) {
+            maxInheritance = heirInheritanceAmount;
+            largestInheritanceHeirIndex = index;
         }
 
         return { ...heir, lumpSumExemption: allocatedExemption };
@@ -839,9 +835,9 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 남은 차액(200만 원)을 가장 높은 지분을 가진 상속인에게 추가
-if (largestShareHeirIndex !== -1) {
-    heirs[largestShareHeirIndex].lumpSumExemption += remainingError;
+// ✅ 5. 남은 차액(200만 원)을 가장 높은 상속 금액을 가진 상속인에게 추가 배분
+if (largestInheritanceHeirIndex !== -1) {
+    heirs[largestInheritanceHeirIndex].lumpSumExemption += remainingError;
 }
 
 // ✅ 5. 최종 일괄 공제 합산 (최대 5억 초과 방지)
