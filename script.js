@@ -893,10 +893,7 @@ heirs = heirs.map(heir => {
 });
 
 // ✅ 9. 최종 상속세 합계 계산
-let totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
-
-// ✅ 10. 최종 결과 출력
-console.log(`최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원`);
+totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
 
  // ✅ 배우자 관련 변수를 먼저 선언하여 어디서든 접근 가능하도록 수정
 let spouseInheritanceAmount = 0;
