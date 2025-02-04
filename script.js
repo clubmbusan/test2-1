@@ -912,25 +912,10 @@ let processedHeirs = heirs?.map((heir) => {
     individualFinancialExemption = Math.round(individualFinancialExemption); // 🔥 반올림 추가
     
     // ✅ 배우자일 경우 미리 계산된 과세표준 적용
-    let finalTaxableAmount;
     if (heir.relationship === "spouse") {
         finalTaxableAmount = spouseFinalTaxableAmount;
-    } else {
-        finalTaxableAmount = Math.round(
-            Math.max( // 음수 방지
-                (shareAmount || 0) - 
-                (relationshipExemption || 0) - 
-                (basicExemption || 0) - 
-                (individualFinancialExemption || 0) - 
-                (spouseTransferredExemption || 0) - 
-                (individualLumpSumExemption || 0),
-                0
-            )
-        );
     }
-
-    heir.finalTaxableAmount = finalTaxableAmount;
-
+   
     // ✅ 개별 상속세 계산
     const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
     totalInheritanceTax += individualTax;
