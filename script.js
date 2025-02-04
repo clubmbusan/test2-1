@@ -889,16 +889,26 @@ spouseFinalTaxableAmount = Math.max(spouseFinalTaxableAmount, 0);
 let processedHeirs = heirs?.map((heir) => {
     const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
     const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
+    
+    // 🔥 undefined 방지: 관계 공제, 기초 공제 초기화
     let relationshipExemption = heir.relationshipExemption || 0;
-    let basicExemption = (totalBasicExemption * heir.sharePercentage) / 100;            
-
+    let basicExemption = heir.relationship !== 'spouse' ? (totalBasicExemption * heir.sharePercentage) / 100 : 0;
+    
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = (heir.relationship !== 'spouse') ? (lumpSumExemption * heir.sharePercentage) / 100 : 0;
-
+ 
     // ✅ 소수점 처리 (반올림 적용)
     spouseTransferredExemption = Math.round(spouseTransferredExemption);
+    basicExemption = Math.round(basicExemption);
+    individualLumpSumExemption = Math.round(individualLumpSumExemption);
+
     let finalTaxableAmount = Math.round(
-        shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
+        (shareAmount || 0) - 
+        (relationshipExemption || 0) - 
+        (basicExemption || 0) - 
+        (individualFinancialExemption || 0) - 
+        (spouseTransferredExemption || 0) - 
+        (individualLumpSumExemption || 0)
     );
 
    // ✅ 배우자일 경우 미리 계산된 과세표준 적용
