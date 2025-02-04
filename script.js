@@ -729,10 +729,14 @@ function calculateGroupMode() {
             age, 
             sharePercentage, 
             relationshipExemption, 
+            basicExemption: (totalBasicExemption * sharePercentage) / 100,  // ✅ 기본 공제 값 추가
             spouseTransferredExemption: 0 // 🔥 배우자 공제 이월을 위한 초기화
         };
     });
-    
+
+// ✅ 디버깅: heirs 배열이 올바르게 생성되었는지 확인
+console.log("🔍 [디버깅] 초기 상속인 데이터:", heirs);    
+
 // ✅ 변수 선언 (초기값 0 설정) - 중복 선언 방지
 let lumpSumExemption = 0;  
 let maxIndividualLumpSumExemption = 0;      
@@ -888,6 +892,10 @@ spouseFinalTaxableAmount = Math.max(spouseFinalTaxableAmount, 0);
     
 // ✅ 개별 상속인 데이터 가공
 let processedHeirs = heirs?.map((heir) => {
+    console.log(`📌 처리 중: ${heir.name} (${heir.relationship})`);
+    console.log("   🟢 처리 전 - 기초 공제 (basicExemption):", heir.basicExemption);
+    console.log("   🟢 처리 전 - 관계 공제 (relationshipExemption):", heir.relationshipExemption);
+    
     const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
     const individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100;
     
@@ -925,6 +933,11 @@ let processedHeirs = heirs?.map((heir) => {
     // ✅ 개별 상속세 계산
     const individualTax = (finalTaxableAmount > 0) ? calculateInheritanceTax(finalTaxableAmount) : 0;
     totalInheritanceTax += individualTax;
+
+    console.log("   ✅ 처리 후 - 기초 공제 (basicExemption):", basicExemption);
+    console.log("   ✅ 처리 후 - 관계 공제 (relationshipExemption):", relationshipExemption);
+    console.log("   ✅ 처리 후 - 최종 과세 표준 (finalTaxableAmount):", finalTaxableAmount);
+    console.log("   ✅ 처리 후 - 개별 상속세 (individualTax):", individualTax);
 
     return {
         ...heir,
