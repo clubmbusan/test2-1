@@ -809,6 +809,11 @@ let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse" ? sum + ((totalAssetValue * heir.sharePercentage) / 100) : sum;
 }, 0);
 
+ // ✅ 2. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산 (변수 선언 및 초기화)
+ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
+     return heir.relationship !== "spouse" ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0) : sum;
+  }, 0);  
+    
 // ✅ 2. 부족한 일괄 공제 보정액 계산 (정확히 5억 맞추기)
 let correctedLumpSumExemption = 500000000 - totalNonSpouseBasicAndRelationshipExemptions;
 
