@@ -804,25 +804,35 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 // ✅ 0. 배우자 제외한 상속인의 개수 확인
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse").length;
 
-// ✅ 1. 배우자 제외한 상속인의 총 지분 계산 (100%로 변환)
-let totalNonSpouseShare = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
-}, 0);
-
-// ✅ 2. 배우자 제외한 상속인의 총 상속 금액 계산
-let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse" ? sum + ((totalAssetValue * heir.sharePercentage) / 100) : sum;
-}, 0);
-
-// ✅ 3. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
+// ✅ 1. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
 let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse" ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0) : sum;
+    return heir.relationship !== "spouse"
+        ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0)
+        : sum;
 }, 0);
 
-// ✅ 4. 부족한 일괄 공제 보정액 계산 (정확히 5억 맞추기)
-let correctedLumpSumExemption = 500000000 - totalNonSpouseBasicAndRelationshipExemptions;
+// ✅ 2. 부족한 일괄 공제 보정액 계산 (5억에서 부족한 만큼 채움)
+let correctedLumpSumExemption = Math.max(500000000 - totalNonSpouseBasicAndRelationshipExemptions, 0);
 
-// ✅ 5. 보정액 배분 (올바른 비율 적용)
+// ✅ 3. 배우자 제외한 상속인의 총 상속 금액 계산
+let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
+    return heir.relationship !== "spouse"
+        ? sum + ((totalAssetValue * heir.sharePercentage) / 100)
+        : sum;
+}, 0);
+
+// ✅ 4. 배우자 제외한 상속인의 상속 금액을 100% 기준으로 변환하여 배분 비율 계산
+heirs = heirs.map(heir => {
+    if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
+        return { 
+            ...heir, 
+            adjustedSharePercentage: ((totalAssetValue * heir.sharePercentage) / 100) / totalNonSpouseInheritanceAmount
+        };
+    }
+    return heir;
+});
+
+// ✅ 5. 부족한 일괄 공제 보정액을 계산된 비율로 배분
 let remainingError = correctedLumpSumExemption;
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
@@ -831,11 +841,11 @@ heirs = heirs.map((heir, index) => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         let heirInheritanceAmount = (totalAssetValue * heir.sharePercentage) / 100;
         
-        // ✅ "배우자 제외한 상속인의 상속 금액 비율"을 정확히 사용
+        // ✅ "배우자 제외한 상속인의 상속 금액 비율"을 기준으로 일괄 공제 보정액 배분
         let allocatedExemption = Math.round((correctedLumpSumExemption * heirInheritanceAmount) / totalNonSpouseInheritanceAmount);
         remainingError -= allocatedExemption;
 
-        // ✅ 가장 높은 상속 금액을 가진 상속인 찾기
+        // ✅ 가장 높은 상속 금액을 가진 상속인 찾기 (추후 남은 차액 보정)
         if (heirInheritanceAmount > maxInheritance) {
             maxInheritance = heirInheritanceAmount;
             largestInheritanceHeirIndex = index;
@@ -846,7 +856,7 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 6. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분
+// ✅ 6. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분 (반올림 오차 보정)
 remainingError = 500000000 - heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 
 if (largestInheritanceHeirIndex !== -1) {
