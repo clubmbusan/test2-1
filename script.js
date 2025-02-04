@@ -905,11 +905,9 @@ let processedHeirs = heirs?.map((heir) => {
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = (lumpSumExemption * heir.sharePercentage) / 100 || 0; // 🔥 undefined 방지
 
-     // ✅ 금융재산 공제 변수 (이미 선언되었으면 재할당, 없으면 선언)
+    // ✅ 기존 `individualFinancialExemption` 변수를 재선언하지 않고 값만 할당
     if (typeof individualFinancialExemption === "undefined") {
-        var individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100 || 0;
-    } else {
-        individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100 || 0;
+       individualFinancialExemption = (maxFinancialExemption * heir.sharePercentage) / 100 || 0;
     }
 
     // 🔥 반올림 처리
