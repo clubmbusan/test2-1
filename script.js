@@ -825,7 +825,7 @@ let totalNonSpouseShare = heirs.reduce((sum, heir) => {
 // ✅ 4. 부족한 일괄 공제 보정액을 배우자 제외한 상속인의 지분 비율에 따라 배분
 heirs = heirs.map(heir => {
     if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
-        let allocatedExemption = Math.round((missingLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare);
+        let allocatedExemption = Math.round((correctedLumpSumExemption * heir.sharePercentage) / totalNonSpouseShare);
 
         // ✅ 개별 상속인의 `기초 공제 + 관계 공제 + 보정액` 합이 5억을 넘지 않도록 제한
         let maxAllowableExemption = 500000000 - ((heir.basicExemption || 0) + (heir.relationshipExemption || 0));
