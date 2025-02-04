@@ -936,6 +936,9 @@ let processedHeirs = heirs?.map((heir) => {
     totalInheritanceTax += individualTax;
 
     // ✅ 디버깅 로그
+    console.log("   ✅ 처리 후 - 개별 금융재산 공제 (financialExemption):", individualFinancialExemption);
+    console.log("   ✅ 처리 후 - 배우자 공제 이월 (spouseTransferredExemption):", spouseTransferredExemption);
+    console.log("   ✅ 처리 후 - 개별 일괄 공제 보정액 (lumpSumExemption):", individualLumpSumExemption);
     console.log("   ✅ 처리 후 - 최종 과세 표준 (finalTaxableAmount):", finalTaxableAmount);
     console.log("   ✅ 처리 후 - 개별 상속세 (individualTax):", individualTax);
 
