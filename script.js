@@ -1022,19 +1022,19 @@ document.getElementById('result').innerHTML = `
 
     ${processedHeirs.map((heir) => `
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
-        <p>상속 금액: ${Math.round(heir.shareAmount).toLocaleString()} 원</p>
-        ${heir.financialExemption > 0 ? `<p>금융재산 공제: ${Math.round(heir.financialExemption).toLocaleString()} 원</p>` : ""}
-        <p>기초 공제: ${Math.round(heir.basicExemption).toLocaleString()} 원</p>
-        <p>관계 공제: ${Math.round(heir.relationshipExemption).toLocaleString()} 원</p>
-        ${(heir.spouseTransferredExemption > 0) ? `<p>배우자 공제 이월: ${Math.round(heir.spouseTransferredExemption).toLocaleString()} 원</p>` : ""}
-        ${(heir.relationship === "spouse" && spouseExemptions.additionalExemption > 0) ? `<p>배우자 추가 공제: ${Math.round(spouseExemptions.additionalExemption).toLocaleString()} 원</p>` : ""}
-        ${heir.lumpSumExemption > 0 ? `<p>일괄 공제 보정액: ${Math.round(heir.lumpSumExemption).toLocaleString()} 원</p>` : ""}
-        <p>과세 표준: ${Math.round(heir.finalTaxableAmount).toLocaleString()} 원</p>
-        <p>개별 상속세: ${Math.round(heir.individualTax).toLocaleString()} 원</p>
+        <p>상속 금액: ${Math.round(heir.shareAmount || 0).toLocaleString()} 원</p>
+        ${heir.financialExemption > 0 ? `<p>금융재산 공제: ${Math.round(heir.financialExemption || 0).toLocaleString()} 원</p>` : ""}
+        <p>기초 공제: ${Math.round(heir.basicExemption || 0).toLocaleString()} 원</p>
+        <p>관계 공제: ${Math.round(heir.relationshipExemption || 0).toLocaleString()} 원</p>
+        ${(heir.spouseTransferredExemption > 0) ? `<p>배우자 공제 이월: ${Math.round(heir.spouseTransferredExemption || 0).toLocaleString()} 원</p>` : ""}
+        ${(heir.relationship === "spouse" && spouseExemptions.additionalExemption > 0) ? `<p>배우자 추가 공제: ${Math.round(spouseExemptions.additionalExemption || 0).toLocaleString()} 원</p>` : ""}
+        ${heir.lumpSumExemption > 0 ? `<p>일괄 공제 보정액: ${Math.round(heir.lumpSumExemption || 0).toLocaleString()} 원</p>` : ""}
+        <p>과세 표준: ${Math.round(heir.finalTaxableAmount || 0).toLocaleString()} 원</p>
+        <p>개별 상속세: ${Math.round(heir.individualTax || 0).toLocaleString()} 원</p>
         <hr>
     `).join("")}  
 
-    <h3>최종 상속세 합계: ${Math.round(totalInheritanceTax).toLocaleString()} 원</h3>
+    <h3>최종 상속세 합계: ${Math.round(totalInheritanceTax || 0).toLocaleString()} 원</h3>
 `;
 }
           
