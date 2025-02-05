@@ -813,8 +813,10 @@ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
 
 // ✅ 2. 기초공제 + 관계공제 합이 5억을 초과하면 그대로 사용, 아니면 부족한 만큼 보정
 let correctedLumpSumExemption = (totalNonSpouseBasicAndRelationshipExemptions < 500000000)
-    ? (500000000 - totalNonSpouseBasicAndRelationshipExemptions)
+    ? (500000000 - totalNonSpouseBasicAndRelationshipExemptions)  // 부족한 만큼 보정
     : 0;
+
+console.log(`🧐 디버깅 - 보정된 일괄공제 (correctedLumpSumExemption):`, correctedLumpSumExemption);
 
 // ✅ 3. 배우자 제외한 상속인의 총 상속 금액 계산
 let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
@@ -870,6 +872,8 @@ if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
 lumpSumExemption = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 lumpSumExemption = Math.min(lumpSumExemption, 500000000);
 
+console.log(`🧐 디버깅 - 최종 일괄공제 합산 (5억이 되어야 함):`, lumpSumExemption);
+
 // ✅ 8. 최종 과세 표준 및 개별 상속세 계산 (중복 제거 및 상속세 적용)
 heirs = heirs.map(heir => {
     let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
@@ -880,19 +884,19 @@ heirs = heirs.map(heir => {
     let spouseTransferredExemption = heir.spouseTransferredExemption || 0;
     let individualLumpSumExemption = heir.lumpSumExemption || 0;
 
-    // ✅ 디버깅 로그: 개별 상속인의 공제 내역 확인
+    // ✅ 디버깅 로그: 개별 상속인의 공제 내역 확인 (문구 수정)
     console.log(`🧐 디버깅 - ${heir.name}의 공제 내역`);
     console.log(`   - 기초 공제:`, basicExemption);
     console.log(`   - 관계 공제:`, relationshipExemption);
     console.log(`   - 금융재산 공제:`, individualFinancialExemption);
     console.log(`   - 배우자 공제 이월:`, spouseTransferredExemption);
-    console.log(`   - 일괄 공제:`, individualLumpSumExemption);
+    console.log(`   - 일괄공제:`, individualLumpSumExemption); // 🔥 "개별 일괄공제 보정액" → "일괄공제"
 
     let finalTaxableAmount = Math.max(0, Math.round(
         shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
     ));
 
-    // ✅ 개별 상속세 계산 추가 (상속세 계산 함수 적용)
+    // ✅ 개별 상속세 계산 추가
     let individualTax = calculateInheritanceTax(finalTaxableAmount);
 
     // ✅ 디버깅 로그: 과세 표준 및 상속세 결과 확인
@@ -917,7 +921,7 @@ heirs = heirs.map(heir => ({
     finalTaxableAmount: heir.finalTaxableAmount || 0
 }));
 
-// ✅ 11.최종 디버깅 로그: 상속세 합계 확인
+// ✅ 11. 최종 디버깅 로그: 상속세 합계 확인
 totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
 console.log(`🧐 디버깅 - 최종 상속세 합계:`, totalInheritanceTax);
 
