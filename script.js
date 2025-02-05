@@ -1175,13 +1175,15 @@ function calculateLegalInheritance() {
     let siblingFinancialExemption = numSiblings > 0 ? Math.round(siblingShare * totalFinancialExemption) : 0;
     let otherFinancialExemption = numOthers > 0 ? Math.round(otherShare * totalFinancialExemption) : 0;
 
-    // ✅ 기초공제 (2억 원) 추가 및 배분
+    // ✅ 기초공제 (2억 원) 배분 (배우자 제외)
     let totalBasicExemption = 200000000;
-    let spouseBasicExemption = spouseExists ? Math.round(spouseShare * totalBasicExemption) : 0;
-    let childBasicExemption = numChildren > 0 ? Math.round(childShare * totalBasicExemption) : 0;
-    let parentBasicExemption = numParents > 0 ? Math.round(parentShare * totalBasicExemption) : 0;
-    let siblingBasicExemption = numSiblings > 0 ? Math.round(siblingShare * totalBasicExemption) : 0;
-    let otherBasicExemption = numOthers > 0 ? Math.round(otherShare * totalBasicExemption) : 0;
+    let nonSpouseTotalInheritance = numChildren + numParents + numSiblings + numOthers;
+
+    let childBasicExemption = numChildren > 0 ? Math.round((1 / nonSpouseTotalInheritance) * totalBasicExemption) : 0;
+    let parentBasicExemption = numParents > 0 ? Math.round((1 / nonSpouseTotalInheritance) * totalBasicExemption) : 0;
+    let siblingBasicExemption = numSiblings > 0 ? Math.round((1 / nonSpouseTotalInheritance) * totalBasicExemption) : 0;
+    let otherBasicExemption = numOthers > 0 ? Math.round((1 / nonSpouseTotalInheritance) * totalBasicExemption) : 0;
+    let spouseBasicExemption = 0; // 배우자 제외
   
     // ✅ 배우자 상속 금액 계산 (배우자 지분 적용)
     let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
