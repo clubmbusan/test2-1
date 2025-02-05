@@ -1014,7 +1014,7 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 }
 
 // ✅ 배우자 제외 기초공제 + 관계공제 합이 5억 이상이면, 일괄공제(5억) 대신 관계공제 합 표시
-let topExemptionText = totalNonSpouseBasicAndRelationshipExemptions >= 500000000
+topExemptionText = totalNonSpouseBasicAndRelationshipExemptions >= 500000000
     ? `<h3>배우자 제외 관계 공제 합: ${totalNonSpouseBasicAndRelationshipExemptions.toLocaleString()} 원</h3>`
     : `<h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>`; // 🔥 5억 미만이면 일괄공제 표시
 
