@@ -1029,8 +1029,8 @@ document.getElementById('result').innerHTML = `
     ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
-    ${topExemptionText} <!-- 🔥 상단에서 "일괄공제" 또는 "관계공제 합"만 표시 -->
-
+    <h3>일괄 공제: ${finalLumpSumExemptionTotal.toLocaleString()} 원</h3> <!-- 🔥 하단 개별 일괄공제 합과 일치하도록 변경 -->
+  
     ${processedHeirs.map((heir) => `
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
         <p>상속 금액: ${Math.round(heir.shareAmount).toLocaleString()} 원</p>
