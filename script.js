@@ -811,7 +811,14 @@ let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
         : sum;
 }, 0);
 
-// ✅ 2. 배우자 제외한 상속인의 지분을 100% 기준으로 변환
+// ✅ 2. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산 (🔄 변수 선언 복구)
+let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
+    return heir.relationship !== "spouse"
+        ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0)
+        : sum;
+}, 0);
+
+// ✅ 3. 배우자 제외한 상속인의 지분을 100% 기준으로 변환
 heirs = heirs.map(heir => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         return { 
@@ -822,7 +829,7 @@ heirs = heirs.map(heir => {
     return heir;
 });
 
-// ✅ 3. 개별 일괄공제 배분 (무조건 5억 배분)
+// ✅ 4. 개별 일괄공제 배분 (무조건 5억 배분)
 let remainingError = 500000000;
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
@@ -843,7 +850,7 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 4. 남은 차액을 가장 높은 상속 비율을 가진 상속인에게 추가 배분
+// ✅ 5. 남은 차액을 가장 높은 상속 비율을 가진 상속인에게 추가 배분
 if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     heirs[largestInheritanceHeirIndex] = {
         ...heirs[largestInheritanceHeirIndex],
@@ -851,20 +858,19 @@ if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     };
 }
 
-// ✅ 5. 최종 개별 일괄공제 합산 (5억 확인)
+// ✅ 6. 최종 개별 일괄공제 합산 (5억 확인)
 let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.individualLumpSumExemption || 0), 0);
 finalLumpSumExemptionTotal = Math.min(finalLumpSumExemptionTotal, 500000000);
 
-console.log(`🧐 디버깅 - 최종 개별 일괄공제 합산 (무조건 5억이어야 함):`, lumpSumExemption);
+console.log(`🧐 디버깅 - 최종 개별 일괄공제 합산 (무조건 5억이어야 함):`, finalLumpSumExemptionTotal);
 
-// ✅ 6. 상단 결과지의 "일괄공제"를 개별 일괄공제 합으로 수정
+// ✅ 7. 상단 결과지의 "일괄공제"를 개별 일괄공제 합으로 수정
 let finalLumpSumOrRelationExemption = finalLumpSumExemptionTotal < 500000000 
     ? finalLumpSumExemptionTotal
     : totalNonSpouseBasicAndRelationshipExemptions;
 
-    
-// ✅ 7. 디버깅 로그 수정 ("개별 일괄공제 보정액" → "개별 일괄공제")
-    heirs = heirs.map(heir => {
+// ✅ 8. 디버깅 로그 수정 ("개별 일괄공제 보정액" → "개별 일괄공제")
+heirs = heirs.map(heir => {
     let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
     let relationshipExemption = heir.relationshipExemption || 0;
@@ -899,7 +905,7 @@ let finalLumpSumOrRelationExemption = finalLumpSumExemptionTotal < 500000000
     };
 });
 
-// ✅ 8. 최종 디버깅 로그: 상속세 합계 확인
+// ✅ 9. 최종 디버깅 로그: 상속세 합계 확인
 totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
 console.log(`🧐 디버깅 - 최종 상속세 합계:`, totalInheritanceTax);
 
@@ -908,7 +914,7 @@ let spouseInheritanceAmount = 0;
 let spouseFinancialExemption = 0;
 let spouseBasicExemption = 0;
 let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
-
+ 
 // ✅ 배우자가 있을 경우, 실제 상속 금액 계산
 if (spouse) {
     spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
