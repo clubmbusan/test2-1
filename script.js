@@ -827,10 +827,7 @@ let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
         : sum;
 }, 0);
 
-// ✅ 4. 일괄공제 사용 여부 결정 (5억 미만이면 일괄공제 적용)
-let useLumpSumExemption = totalNonSpouseBasicAndRelationshipExemptions < 500000000;
-
-// ✅ 5. 일괄공제 5억을 환산된 비율대로 배분
+// ✅ 4. 일괄공제 5억을 환산된 비율대로 배분
 let remainingError = 500000000;  // 🔥 무조건 5억을 배분
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
@@ -851,7 +848,7 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 6. 남은 차액을 가장 높은 상속 비율을 가진 상속인에게 추가 배분
+// ✅ 5. 남은 차액을 가장 높은 상속 비율을 가진 상속인에게 추가 배분
 if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     heirs[largestInheritanceHeirIndex] = {
         ...heirs[largestInheritanceHeirIndex],
@@ -859,13 +856,13 @@ if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     };
 }
 
-// ✅ 7. 최종 일괄 공제 합산 (5억 확인)
+// ✅ 6. 최종 일괄 공제 합산 (5억 확인)
 lumpSumExemption = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 lumpSumExemption = Math.min(lumpSumExemption, 500000000);
 
 console.log(`🧐 디버깅 - 최종 일괄공제 합산 (무조건 5억이어야 함):`, lumpSumExemption);
 
-// ✅ 8. 디버깅 로그 수정 ("개별 일괄공제 보정액" → "일괄공제")
+// ✅ 7. 디버깅 로그 수정 ("개별 일괄공제 보정액" → "일괄공제")
 heirs = heirs.map(heir => {
     let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
@@ -901,18 +898,18 @@ heirs = heirs.map(heir => {
     };
 });
 
-// ✅ 9. 최종 일괄 공제가 5억을 초과하지 않는지 확인
+// ✅ 8. 최종 일괄 공제가 5억을 초과하지 않는지 확인
 let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 finalLumpSumExemptionTotal = Math.min(finalLumpSumExemptionTotal, 500000000);
 
-// ✅ 10. 최종 heirs 배열 정리 (undefined 값 방지)
+// ✅ 9. 최종 heirs 배열 정리 (undefined 값 방지)
 heirs = heirs.map(heir => ({
     ...heir,
     lumpSumExemption: heir.lumpSumExemption || 0,
     finalTaxableAmount: heir.finalTaxableAmount || 0
 }));
 
-// ✅ 11. 최종 디버깅 로그: 상속세 합계 확인
+// ✅ 10. 최종 디버깅 로그: 상속세 합계 확인
 totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
 console.log(`🧐 디버깅 - 최종 상속세 합계:`, totalInheritanceTax);
 
