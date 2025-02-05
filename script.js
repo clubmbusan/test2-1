@@ -1325,9 +1325,10 @@ document.getElementById('result').innerHTML = `
     ${individualResults.join("")}
     <h3>최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원</h3>  
 `;
-
-// ✅ 계산 버튼 클릭 시 실행
-document.getElementById('calculateButton').addEventListener('click', calculateLegalInheritance);
+}
+              
+  // ✅ 계산 버튼 클릭 시 실행
+  document.getElementById('calculateButton').addEventListener('click', calculateLegalInheritance);
 
     /**
  * 가업 공제 계산 (공용)
