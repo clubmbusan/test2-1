@@ -924,7 +924,7 @@ heirs = heirs.map(heir => ({
 }));
 
 // ✅ 최종 디버깅 로그: 상속세 합계 확인
-let totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
+totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
 console.log(`🧐 디버깅 - 최종 상속세 합계:`, totalInheritanceTax);
 
 
