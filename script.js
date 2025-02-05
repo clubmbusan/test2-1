@@ -804,29 +804,19 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 // ✅ 0. 배우자 제외한 상속인의 개수 확인
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse").length;
 
-// ✅ 1. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
-let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse"
-        ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0)
-        : sum;
-}, 0);
-
-// ✅ 디버깅 로그: 배우자 제외 상속인의 기초 공제 + 관계 공제 총합 확인
-console.log(`🧐 디버깅 - 배우자 제외 상속인의 기초 공제 + 관계 공제 총합:`, totalNonSpouseBasicAndRelationshipExemptions);
-
-// ✅ 2. 기초공제 + 관계공제 합이 5억을 초과하면 그대로 사용, 아니면 부족한 만큼 보정
-let correctedLumpSumExemption = (totalNonSpouseBasicAndRelationshipExemptions < 500000000)
-    ? (500000000 - totalNonSpouseBasicAndRelationshipExemptions)
-    : 0;
-
-// ✅ 3. 배우자 제외한 상속인의 총 상속 금액 계산
+// ✅ 1. 배우자 제외한 상속인의 총 상속 금액 계산
 let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse"
         ? sum + ((totalAssetValue * heir.sharePercentage) / 100)
         : sum;
 }, 0);
 
-// ✅ 4. 배우자 제외한 상속인의 상속 금액을 기준으로 배분 비율 계산
+// ✅ 2. 기초공제 + 관계공제 합이 5억을 초과하면 그대로 사용, 아니면 부족한 만큼 보정
+let correctedLumpSumExemption = (totalNonSpouseBasicAndRelationshipExemptions < 500000000)
+    ? (500000000 - totalNonSpouseBasicAndRelationshipExemptions)
+    : 0;
+
+// ✅ 3. 배우자 제외한 상속인의 상속 금액을 기준으로 배분 비율 계산
 heirs = heirs.map(heir => {
     if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
         return { 
@@ -837,7 +827,7 @@ heirs = heirs.map(heir => {
     return heir;
 });
 
-// ✅ 5. 일괄공제 보정액을 상속 비율에 따라 배분
+// ✅ 4. 일괄공제를 상속 비율에 따라 배분
 let remainingError = correctedLumpSumExemption;
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
@@ -861,7 +851,7 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 6. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분
+// ✅ 5. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분
 if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     heirs[largestInheritanceHeirIndex] = {
         ...heirs[largestInheritanceHeirIndex],
@@ -869,14 +859,11 @@ if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     };
 }
 
-// ✅ 디버깅 로그: 최종 일괄공제 보정액 합계 확인
-console.log(`🧐 디버깅 - 최종 일괄공제 보정액 합계:`, heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0));
-
-// ✅ 7. 최종 일괄 공제 합산 (최대 5억 초과 방지)
+// ✅ 6. 최종 일괄 공제 합산 (최대 5억 초과 방지)
 lumpSumExemption = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 lumpSumExemption = Math.min(lumpSumExemption, 500000000);
 
-// ✅ 8. 최종 과세 표준 및 개별 상속세 계산 (중복 제거 및 상속세 적용)
+// ✅ 7. 최종 과세 표준 및 개별 상속세 계산 (중복 제거 및 상속세 적용)
 heirs = heirs.map(heir => {
     let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
@@ -892,7 +879,7 @@ heirs = heirs.map(heir => {
     console.log(`   - 관계 공제:`, relationshipExemption);
     console.log(`   - 금융재산 공제:`, individualFinancialExemption);
     console.log(`   - 배우자 공제 이월:`, spouseTransferredExemption);
-    console.log(`   - 일괄공제 보정액:`, individualLumpSumExemption);
+    console.log(`   - 일괄 공제:`, individualLumpSumExemption);
 
     let finalTaxableAmount = Math.max(0, Math.round(
         shareAmount - relationshipExemption - basicExemption - individualFinancialExemption - spouseTransferredExemption - individualLumpSumExemption
@@ -912,11 +899,11 @@ heirs = heirs.map(heir => {
     };
 });
 
-// ✅ 9. 최종 일괄 공제 보정액이 5억을 초과하지 않는지 확인
+// ✅ 8. 최종 일괄 공제가 5억을 초과하지 않는지 확인
 let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 finalLumpSumExemptionTotal = Math.min(finalLumpSumExemptionTotal, 500000000);
 
-// ✅ 10. 최종 heirs 배열 정리 (undefined 값 방지)
+// ✅ 9. 최종 heirs 배열 정리 (undefined 값 방지)
 heirs = heirs.map(heir => ({
     ...heir,
     lumpSumExemption: heir.lumpSumExemption || 0,
@@ -1036,26 +1023,31 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
     lumpSumExemption = 0;
 }
 
-// ✅ 최종 결과 출력 (디버깅용)
-console.log(`최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원`);
+// ✅ 배우자 제외 기초공제 + 관계공제 합이 5억 이상이면, 일괄공제(5억) 대신 관계공제 합 표시
+let topExemptionText = totalNonSpouseBasicAndRelationshipExemptions >= 500000000
+    ? `<h3>배우자 제외 관계 공제 합: ${totalNonSpouseBasicAndRelationshipExemptions.toLocaleString()} 원</h3>`
+    : `<h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>`; // 🔥 5억 미만이면 일괄공제 표시
 
-// ✅ 최종 결과 출력 (객체 배열을 활용한 동적 HTML 생성)
+// ✅ 최종 결과 출력 (중복 없이 정리)
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
     ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
-    <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
+    ${topExemptionText} <!-- 🔥 상단에서 "일괄공제" 또는 "관계공제 합"만 표시 -->
 
     ${processedHeirs.map((heir) => `
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
         <p>상속 금액: ${Math.round(heir.shareAmount).toLocaleString()} 원</p>
         ${heir.financialExemption > 0 ? `<p>금융재산 공제: ${Math.round(heir.financialExemption).toLocaleString()} 원</p>` : ""}
-        <p>기초 공제: ${Math.round(heir.basicExemption).toLocaleString()} 원</p>
-        <p>관계 공제: ${Math.round(heir.relationshipExemption).toLocaleString()} 원</p>
+        ${
+            totalNonSpouseBasicAndRelationshipExemptions < 500000000 && heir.relationship !== "spouse"
+            ? `<p>일괄 공제: ${Math.round(heir.lumpSumExemption).toLocaleString()} 원</p>`  // 🔥 5억 미만이면 기초/관계공제 숨기고 일괄공제만 표시
+            : `<p>기초 공제: ${Math.round(heir.basicExemption).toLocaleString()} 원</p>
+               <p>관계 공제: ${Math.round(heir.relationshipExemption).toLocaleString()} 원</p>` // 🔥 5억 이상이면 기존대로 표시
+        }
         ${(heir.spouseTransferredExemption > 0) ? `<p>배우자 공제 이월: ${Math.round(heir.spouseTransferredExemption).toLocaleString()} 원</p>` : ""}
         ${(heir.relationship === "spouse" && spouseExemptions.additionalExemption > 0) ? `<p>배우자 추가 공제: ${Math.round(spouseExemptions.additionalExemption).toLocaleString()} 원</p>` : ""}
-        ${heir.lumpSumExemption > 0 ? `<p>일괄 공제 보정액: ${Math.round(heir.lumpSumExemption).toLocaleString()} 원</p>` : ""}
         <p>과세 표준: ${Math.round(heir.finalTaxableAmount).toLocaleString()} 원</p>
         <p>개별 상속세: ${Math.round(heir.individualTax).toLocaleString()} 원</p>
         <hr>
@@ -1063,6 +1055,7 @@ document.getElementById('result').innerHTML = `
 
     <h3>최종 상속세 합계: ${Math.round(totalInheritanceTax).toLocaleString()} 원</h3>
 `;
+
 }
           
  /**                  
