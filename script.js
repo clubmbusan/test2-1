@@ -1191,9 +1191,9 @@ function calculateLegalInheritance() {
     // ✅ 배우자 기본 공제는 0으로 설정하여 배우자에게 기초공제가 배분되지 않도록 함
     spouseBasicExemption = 0;
 
-    // ✅ 배우자 추가 공제 계산 (소수점 없는 정수 값으로 반올림)
-    let spouseAdditionalExemption = spouseExists 
-        ? Math.min(Math.round((spouseInheritanceAmount - spouseBasicExemption - 500000000) * 0.5), 3000000000) 
+   // ✅ 배우자 추가 공제 계산 (배우자 상속 지분과 30억 중 작은 값 적용)
+   let spouseAdditionalExemption = spouseExists 
+        ? Math.min(spouseInheritanceAmount - 500000000, 3000000000) 
         : 0;
 
     // ✅ 최종 배우자 추가 공제 값 로그 확인 (소수점 없는 정수 값 출력)
