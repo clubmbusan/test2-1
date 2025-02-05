@@ -804,11 +804,13 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 // ✅ 0. 배우자 제외한 상속인의 개수 확인
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse").length;
 
-// ✅ 1. 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
-let totalNonSpouseShare = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
+// ✅ 1. 배우자 제외한 상속인의 총 상속 금액 계산
+let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
+    return heir.relationship !== "spouse"
+        ? sum + ((totalAssetValue * heir.sharePercentage) / 100)
+        : sum;
 }, 0);
-
+    
 // ✅ 2. 배우자 제외한 상속인의 지분을 100% 기준으로 변환
 heirs = heirs.map(heir => {
     if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
