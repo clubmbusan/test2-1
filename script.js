@@ -804,39 +804,45 @@ if (isNaN(lumpSumExemption) || lumpSumExemption < 0) {
 // ✅ 0. 배우자 제외한 상속인의 개수 확인
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse").length;
 
-// ✅ 1. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
+// ✅ 1. 배우자 제외한 상속인의 총 지분 계산 (배우자 제외)
+let totalNonSpouseShare = heirs.reduce((sum, heir) => {
+    return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
+}, 0);
+
+// ✅ 2. 배우자 제외한 상속인의 지분을 100% 기준으로 변환
+heirs = heirs.map(heir => {
+    if (heir.relationship !== "spouse" && totalNonSpouseShare > 0) {
+        return { 
+            ...heir, 
+            adjustedSharePercentage: (heir.sharePercentage / totalNonSpouseShare) * 100
+        };
+    }
+    return heir;
+});
+
+// ✅ 3. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
 let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse"
         ? sum + (heir.basicExemption || 0) + (heir.relationshipExemption || 0)
         : sum;
 }, 0);
 
-// ✅ 2. 기초공제 + 관계공제 합이 5억 이상이면 그대로 사용
+// ✅ 4. 일괄공제 사용 여부 결정 (5억 미만이면 일괄공제 적용)
 let useLumpSumExemption = totalNonSpouseBasicAndRelationshipExemptions < 500000000;
 
-// ✅ 3. 배우자 제외한 상속인의 총 상속 금액 계산
-let totalNonSpouseInheritanceAmount = heirs.reduce((sum, heir) => {
-    return heir.relationship !== "spouse"
-        ? sum + ((totalAssetValue * heir.sharePercentage) / 100)
-        : sum;
-}, 0);
-
-// ✅ 4. 배우자 제외 상속인의 상속 비율에 따라 "무조건 5억을 배분" (기존 방식 제거)
+// ✅ 5. 일괄공제 5억을 환산된 비율대로 배분
 let remainingError = 500000000;  // 🔥 무조건 5억을 배분
 let largestInheritanceHeirIndex = -1;
 let maxInheritance = 0;
 
 heirs = heirs.map((heir, index) => {
-    if (heir.relationship !== "spouse" && totalNonSpouseInheritanceAmount > 0) {
-        let heirInheritanceAmount = (totalAssetValue * heir.sharePercentage) / 100;
-        
-        // ✅ 정확한 배분 (비율 기반)
-        let allocatedExemption = Math.round((500000000 * heirInheritanceAmount) / totalNonSpouseInheritanceAmount);
+    if (heir.relationship !== "spouse") {
+        let allocatedExemption = Math.round((500000000 * heir.adjustedSharePercentage) / 100);
         remainingError -= allocatedExemption;
 
-        // ✅ 가장 높은 상속 금액을 가진 상속인 저장 (남은 차액 조정용)
-        if (heirInheritanceAmount > maxInheritance) {
-            maxInheritance = heirInheritanceAmount;
+        // ✅ 가장 큰 상속인을 저장 (남은 금액을 추가 배분하기 위함)
+        if (heir.adjustedSharePercentage > maxInheritance) {
+            maxInheritance = heir.adjustedSharePercentage;
             largestInheritanceHeirIndex = index;
         }
 
@@ -845,7 +851,7 @@ heirs = heirs.map((heir, index) => {
     return heir;
 });
 
-// ✅ 5. 남은 차액을 가장 높은 상속 금액을 가진 상속인에게 추가 배분
+// ✅ 6. 남은 차액을 가장 높은 상속 비율을 가진 상속인에게 추가 배분
 if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     heirs[largestInheritanceHeirIndex] = {
         ...heirs[largestInheritanceHeirIndex],
@@ -853,13 +859,13 @@ if (largestInheritanceHeirIndex !== -1 && remainingError !== 0) {
     };
 }
 
-// ✅ 6. 최종 일괄 공제 합산 (무조건 5억 확인)
+// ✅ 7. 최종 일괄 공제 합산 (5억 확인)
 lumpSumExemption = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 lumpSumExemption = Math.min(lumpSumExemption, 500000000);
 
 console.log(`🧐 디버깅 - 최종 일괄공제 합산 (무조건 5억이어야 함):`, lumpSumExemption);
 
-// ✅ 7. 디버깅 로그 수정 ("개별 일괄공제 보정액" → "일괄공제")
+// ✅ 8. 디버깅 로그 수정 ("개별 일괄공제 보정액" → "일괄공제")
 heirs = heirs.map(heir => {
     let shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
@@ -895,18 +901,18 @@ heirs = heirs.map(heir => {
     };
 });
 
-// ✅ 8. 최종 일괄 공제가 5억을 초과하지 않는지 확인
+// ✅ 9. 최종 일괄 공제가 5억을 초과하지 않는지 확인
 let finalLumpSumExemptionTotal = heirs.reduce((sum, heir) => sum + (heir.lumpSumExemption || 0), 0);
 finalLumpSumExemptionTotal = Math.min(finalLumpSumExemptionTotal, 500000000);
 
-// ✅ 9. 최종 heirs 배열 정리 (undefined 값 방지)
+// ✅ 10. 최종 heirs 배열 정리 (undefined 값 방지)
 heirs = heirs.map(heir => ({
     ...heir,
     lumpSumExemption: heir.lumpSumExemption || 0,
     finalTaxableAmount: heir.finalTaxableAmount || 0
 }));
 
-// ✅ 10. 최종 디버깅 로그: 상속세 합계 확인
+// ✅ 11. 최종 디버깅 로그: 상속세 합계 확인
 totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
 console.log(`🧐 디버깅 - 최종 상속세 합계:`, totalInheritanceTax);
 
