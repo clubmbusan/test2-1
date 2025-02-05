@@ -915,15 +915,6 @@ heirs = heirs.map(heir => ({
 totalInheritanceTax = heirs.reduce((sum, heir) => sum + (heir.individualTax || 0), 0);
 console.log(`🧐 디버깅 - 최종 상속세 합계:`, totalInheritanceTax);
 
-// ✅ 상단 결과지에 적용
-document.getElementById('result').innerHTML = `
-    <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
-    ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
-    <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
-    ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
-    <h3>일괄 공제: ${finalLumpSumOrRelationExemption.toLocaleString()} 원</h3>
-`;
-
  // ✅ 배우자 관련 변수를 먼저 선언하여 어디서든 접근 가능하도록 수정
 let spouseInheritanceAmount = 0;
 let spouseFinancialExemption = 0;
