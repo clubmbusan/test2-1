@@ -795,6 +795,21 @@ function calculateGroupMode() {
 // ✅ 0. 배우자 제외한 상속인의 개수 확인
 let nonSpouseHeirs = heirs.filter(h => h.relationship !== "spouse").length;
 
+// ✅ 배우자 제외한 상속인의 총 지분 계산
+let totalNonSpouseShare = heirs.reduce((sum, heir) => {
+    return heir.relationship !== "spouse" ? sum + heir.sharePercentage : sum;
+}, 0);
+
+// ✅ 배우자 제외한 상속인의 지분에 맞게 기초 공제 2억 배분
+heirs = heirs.map(heir => {
+    return {
+        ...heir,
+        basicExemption: heir.relationship !== "spouse" && totalNonSpouseShare > 0
+            ? (totalBasicExemption * heir.sharePercentage) / totalNonSpouseShare
+            : 0
+    };
+});
+    
 // ✅ 1. 배우자 제외한 상속인의 기초 공제 + 관계 공제 총합 계산
 let totalNonSpouseBasicAndRelationshipExemptions = heirs.reduce((sum, heir) => {
     return heir.relationship !== "spouse"
