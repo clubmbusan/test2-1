@@ -1613,8 +1613,9 @@ document.getElementById("saveCost").addEventListener("click", function () {
     document.getElementById("costModal").style.display = "none";
     document.getElementById("modalOverlay").style.display = "none";
 
-    // ✅ 🔥 결과지 업데이트 함수 호출 (상속 비용 차감된 값 반영)
-    updateResultWithDeductedCost();
+    // ✅ 🔥 결과지 업데이트 함수 대신 그룹 모드 재계산 실행
+    calculateGroupMode(); // ✅ 저장 후 상속세 재계산
+});
 
 // ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
 document.addEventListener("DOMContentLoaded", function () {
