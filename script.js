@@ -1591,28 +1591,27 @@ function calculateInheritanceCosts() {
     document.getElementById('calculateButton').click();
 }
 
-// ✅ 3️⃣ "저장" 버튼 클릭 시 비용을 계산하고 상속 금액 차감
+// ✅ "저장" 버튼 클릭 시 비용을 반영하고 결과 업데이트
 document.getElementById("saveCost").addEventListener("click", function () {
     calculateInheritanceCosts(); // ✅ 비용 계산 실행
 
-    console.log("✅ 저장된 상속 비용 합계:", window.totalDeductibleCost);
-
-    // ✅ 비용 차감된 금액을 상속 총액으로 업데이트
     let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    let adjustedAssetValue = Math.max(0, totalAssetValue - window.totalDeductibleCost); // 음수 방지
+    let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 음수 방지
+
+    updateResultWithDeductedCost(adjustedAssetValue); // ✅ 수정된 함수 호출
+
+    console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
 
     // ✅ 상속 비용을 모달 외부에서도 업데이트
-    document.getElementById("costSummary").textContent = `총 상속 비용: ${window.totalDeductibleCost.toLocaleString()} 원`;
+    document.getElementById("costSummary").textContent = `총 상속 비용: ${inheritanceCosts.toLocaleString()} 원`;
 
     console.log("🔍 비용 차감 후 상속 금액:", adjustedAssetValue);
 
     // ✅ 모달 닫기
     document.getElementById("costModal").style.display = "none";
     document.getElementById("modalOverlay").style.display = "none";
-
-    // ✅ 🔥 총 상속 금액 업데이트 (결과지에서 반영)
-    updateResultWithDeductedCost(adjustedAssetValue);
 });
+
 
 // ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
 document.addEventListener("DOMContentLoaded", function () {
