@@ -1505,123 +1505,135 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
  
- (function () {
-    console.log("✅ 상속 비용 모달 실행");
+   // ✅ 상속비용 모달 (즉시 실행 함수)
+(function () {
+    console.log("✅ 강제 실행 테스트 시작");
 
     let openModalButton = document.getElementById("openModal");
     let closeModalButton = document.getElementById("closeModal");
     let saveCostButton = document.getElementById("saveCost");
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay");
-    let costInputs = document.querySelectorAll(".inheritanceCostField"); // ✅ 클래스 통일
+    let costInputs = document.querySelectorAll(".cost-input");
     let modalCostSummary = document.getElementById("modalCostSummary");
     let costSummary = document.getElementById("costSummary");
+
+    // ✅ 모달 요소 확인
+    console.log("🔍 openModalButton:", openModalButton);
+    console.log("🔍 modal:", modal);
+    console.log("🔍 overlay:", overlay);
 
     if (!openModalButton || !modal || !overlay || !modalCostSummary || !costSummary) {
         console.error("❌ 모달 관련 요소를 찾을 수 없습니다. HTML을 확인하세요.");
         return;
     }
 
+    // ✅ 실시간 입력값 변경 감지 -> 총 비용 합산 업데이트
     function updateCostSummary() {
         let totalCost = Array.from(costInputs).reduce((sum, input) => {
             let value = parseInt(input.value.replace(/,/g, "")) || 0;
             return sum + value;
         }, 0);
+
+        // ✅ 모달 내 비용 합계 업데이트
         modalCostSummary.textContent = `총 필요 경비: ${totalCost.toLocaleString()} 원`;
     }
 
-    costInputs.forEach(input => {
-        input.addEventListener("input", updateCostSummary);
-    });
-
-    openModalButton.addEventListener("click", () => {
-        console.log("✅ '상속비용' 버튼 클릭됨! 모달 열기");
+    // ✅ "상속비용" 버튼 클릭 시 모달 열기
+    openModalButton.addEventListener("click", function () {
+        console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
         modal.style.display = "block";
         overlay.style.display = "block";
     });
 
-    closeModalButton.addEventListener("click", () => {
-        console.log("✅ '닫기' 버튼 클릭됨! 모달 닫기");
+    // ✅ "닫기" 버튼 클릭 시 모달 닫기
+    closeModalButton.addEventListener("click", function () {
+        console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
         modal.style.display = "none";
         overlay.style.display = "none";
     });
 
-    overlay.addEventListener("click", () => {
-        console.log("✅ '오버레이' 클릭됨! 모달 닫기");
-        modal.style.display = "none";
-        overlay.style.display = "none";
+    // ✅ 입력 필드 변경 시 비용 합계 실시간 업데이트
+    costInputs.forEach(input => {
+        input.addEventListener("input", updateCostSummary);
     });
 
-    saveCostButton.addEventListener("click", () => {
-        let totalCost = Array.from(costInputs).reduce((sum, input) => {
-            let value = parseInt(input.value.replace(/,/g, "")) || 0;
-            return sum + value;
-        }, 0);
+    // ✅ "저장" 버튼 클릭 시 비용을 계산하고 상속 금액 차감
+    saveCostButton.addEventListener("click", function () {
+        calculateInheritanceCosts(); // ✅ 공통 비용 계산 함수 호출
+        calculateGroupMode(); // ✅ 저장 후 상속세 재계산
 
-        console.log("✅ 저장된 상속 비용 합계:", totalCost);
+        console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
 
-        // ✅ 상속 비용을 전역 변수로 저장 (다른 함수에서 참조 가능)
-        window.totalDeductibleCost = totalCost;
+        // ✅ 비용 차감된 금액을 상속 총액으로 업데이트
+        let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+        let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 음수 방지
 
-        // ✅ 총 재산 금액을 한 번만 계산하여 저장
-        window.totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-            const value = parseFloat(field.value.replace(/,/g, '')) || 0;
-            return sum + value;
-        }, 0);
-
-        let adjustedAssetValue = Math.max(0, window.totalAssetValue - totalCost); // 음수 방지
-        costSummary.textContent = `총 상속 비용: ${totalCost.toLocaleString()} 원`;
+        // ✅ 상속 비용을 모달 외부에서도 업데이트
+        costSummary.textContent = `총 상속 비용: ${inheritanceCosts.toLocaleString()} 원`;
 
         console.log("🔍 비용 차감 후 상속 금액:", adjustedAssetValue);
 
+        // ✅ 모달 닫기
         modal.style.display = "none";
         overlay.style.display = "none";
-
-        let inheritanceType = document.getElementById('inheritanceType').value;
-        executeCalculation(inheritanceType, adjustedAssetValue);
     });
 
-    console.log("✅ 상속 비용 모달 실행 완료");
+    // ✅ 오버레이 클릭 시 모달 닫기
+    overlay.addEventListener("click", function () {
+        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    console.log("✅ 강제 실행 완료");
 })();
 
-// ✅ 계산 버튼 클릭 시 실행하는 함수 (중복 코드 제거)
-function executeCalculation(inheritanceType, totalAssetValue) {
-    switch (inheritanceType) {
+    // ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
+document.getElementById('calculateButton').addEventListener('click', () => {
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+   
+    // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
+    let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseFloat(field.value.replace(/,/g, '')) || 0;
+        return sum + value;
+    }, 0);
+
+    // ✅ window.totalDeductibleCost에서 상속 비용을 가져와 차감
+    let totalDeductibleCost = window.totalDeductibleCost || 0;
+    totalAssetValue -= totalDeductibleCost;
+
+    // ✅ 음수 값 방지 (공제 후 0 이하가 되지 않도록 처리)
+    totalAssetValue = Math.max(totalAssetValue, 0);
+
+    console.log("📌 최종 상속 금액 (공제 적용 후):", totalAssetValue);
+    console.log("📌 현재 선택된 상속 유형:", document.getElementById('inheritanceType').value); // 디버깅 추가
+ 
+    // ✅ 상속 유형에 따라 계산 실행
+    switch (document.getElementById('inheritanceType').value) {
         case 'personal':
             calculatePersonalMode(totalAssetValue);
             break;
         case 'group':
             calculateGroupMode(totalAssetValue);
             break;
-        case 'legal':
-            calculateLegalInheritance(totalAssetValue);
-            break;
         case 'businessPersonal':
             calculateBusinessPersonalMode(totalAssetValue);
             break;
-        case 'other':
-            calculateSpecialInheritance();
+        case 'other':  // ✅ 특수상속 추가
+            calculateSpecialInheritance();  
+            break;
+        case 'legal': // ✅ 법정 상속 추가
+            calculateLegalInheritance(totalAssetValue);
             break;
         default:
-            console.error("⚠️ 올바른 상속 유형을 선택하세요.");
+            console.error('⚠️ 잘못된 계산 요청 - 올바른 상속 유형을 선택하세요.');
             alert("⚠️ 올바른 상속 유형을 선택하세요.");
             break;
     }
-}
-
-// ✅ "계산하기" 버튼 이벤트 리스너 (최적화)
-document.getElementById('calculateButton').addEventListener('click', () => {
-    let totalAssetValue = window.totalAssetValue || 0; // ✅ 저장된 값 사용
-    let totalDeductibleCost = window.totalDeductibleCost || 0; // ✅ 저장된 값 사용
-    totalAssetValue = Math.max(0, totalAssetValue - totalDeductibleCost); // ✅ 비용 차감 적용
-
-    console.log("📌 최종 상속 금액 (공제 적용 후):", totalAssetValue);
-    console.log("📌 현재 선택된 상속 유형:", document.getElementById('inheritanceType').value);
-
-    let inheritanceType = document.getElementById('inheritanceType').value;
-    executeCalculation(inheritanceType, totalAssetValue);
 });
-   
+       
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
     const target = event.target;
