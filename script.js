@@ -525,6 +525,46 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
     return Math.max(totalInheritance - exemptions.totalExemption, 0); // 음수일 경우 0 처리
 }
     
+/**  
+ * ✅ 상속 비용 변수 및 계산 함수 (공통 처리)  
+ * - 모든 상속 유형에서 공통으로 사용할 비용 계산 기능
+ */
+
+// ✅ 전역 변수 선언 (모든 상속 유형에서 공유)
+let inheritanceCosts = 0;         // 상속 비용 총합
+let taxableAssetValue = 0;        // 비용 차감 후 상속 금액
+ 
+// ✅ 1. 상속 비용 계산 함수  
+function calculateInheritanceCosts() {
+    let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+
+    let funeralExpense = parseInt(document.getElementById("funeralCost")?.value.replace(/,/g, "")) || 0;
+    let legalFees = parseInt(document.getElementById("legalFees")?.value.replace(/,/g, "")) || 0;
+    let unpaidTaxes = parseInt(document.getElementById("unpaidTaxes")?.value.replace(/,/g, "")) || 0;
+    let inheritanceDebt = parseInt(document.getElementById("debt")?.value.replace(/,/g, "")) || 0;
+
+    // ✅ 총 상속 비용 계산
+    inheritanceCosts = funeralExpense + legalFees + unpaidTaxes + inheritanceDebt;
+    
+    // ✅ 비용 차감 후 상속 금액 계산 (음수 방지)
+    taxableAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
+
+    console.log("🔍 상속 비용 합계:", inheritanceCosts);
+    console.log("🔍 비용 차감 후 상속 금액:", taxableAssetValue);
+}
+
+// ✅ 2. 저장 버튼 클릭 시 비용 계산 실행 후, 상속세 재계산  
+document.getElementById("saveCost")?.addEventListener("click", function () {
+    calculateInheritanceCosts();
+    calculateGroupMode();  // ✅ 저장 후 상속세 재계산
+    console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
+});
+
+// ✅ 3. 비용 차감 후 상속 금액 반환 함수   
+function getTaxableAssetValue() {
+    return taxableAssetValue; // 비용 반영된 상속 금액 반환
+}
+    
  /**
  * 상속세 계산 함수 (각 구간별 계산 후 누진공제 적용)
  * @param {number} taxableAmount - 과세 표준 금액
