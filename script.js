@@ -1631,6 +1631,17 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+// ✅ "계산하기" 버튼 클릭 시 최신 관계 값 반영
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ DOM 로드 완료!");
+
+    const calculateButton = document.getElementById("calculateButton");
+
+    if (!calculateButton) {
+        console.error("❌ 오류: `calculateButton` 요소를 찾을 수 없습니다!");
+        return;
+    }
+
     // ✅ "계산하기" 버튼 클릭 시 최신 관계 값 반영!
     calculateButton.addEventListener("click", function () {
         const inheritanceTypeElement = document.getElementById('inheritanceType');
