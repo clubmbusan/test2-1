@@ -1055,7 +1055,8 @@ document.getElementById('result').innerHTML = `
         <hr>
     `).join("")}  
 
-    <h3>최종 상속세 합계: ${Math.round(totalInheritanceTax).toLocaleString()} 원</h3>
+   <h3>최종 상속세 합계: ${Math.max(0, Math.round(totalInheritanceTax - inheritanceCosts)).toLocaleString()} 원</h3>
+
 `;
 }
 
