@@ -1596,8 +1596,26 @@ document.getElementById("saveCost").addEventListener("click", function () {
     let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
     let adjustedAssetValue = Math.max(0, totalAssetValue - window.totalDeductibleCost); // 음수 방지
 
+    // ✅ 상속 비용을 모달 외부에서도 업데이트
     document.getElementById("costSummary").textContent = `총 상속 비용: ${window.totalDeductibleCost.toLocaleString()} 원`;
-    document.getElementById("totalAssetDisplay").textContent = `총 상속 금액: ${adjustedAssetValue.toLocaleString()} 원`;
+
+    // ✅ 🔥 추가: "총 상속 금액" 표시가 없으면 자동 생성
+    let totalAssetElement = document.getElementById("totalAssetDisplay");
+
+    if (!totalAssetElement) {
+        totalAssetElement = document.createElement("p");
+        totalAssetElement.id = "totalAssetDisplay";
+        totalAssetElement.textContent = "총 상속 금액: - 원";
+
+        // ✅ 계산하기 버튼 위에 추가
+        let calculateButton = document.getElementById("calculateButton");
+        if (calculateButton) {
+            calculateButton.parentNode.insertBefore(totalAssetElement, calculateButton);
+        }
+    }
+
+    // ✅ 총 상속 금액 업데이트
+    totalAssetElement.textContent = `총 상속 금액: ${adjustedAssetValue.toLocaleString()} 원`;
 
     console.log("🔍 비용 차감 후 상속 금액:", adjustedAssetValue);
 
@@ -1605,6 +1623,7 @@ document.getElementById("saveCost").addEventListener("click", function () {
     document.getElementById("costModal").style.display = "none";
     document.getElementById("modalOverlay").style.display = "none";
 });
+
 
 // ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
 document.addEventListener("DOMContentLoaded", function () {
