@@ -1615,7 +1615,6 @@ document.getElementById("saveCost").addEventListener("click", function () {
 
     // ✅ 🔥 결과지 업데이트 함수 호출 (상속 비용 차감된 값 반영)
     updateResultWithDeductedCost();
-});
 
 // ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
 document.addEventListener("DOMContentLoaded", function () {
