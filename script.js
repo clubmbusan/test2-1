@@ -1518,7 +1518,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
  
-// ✅ 상속비용 모달 (즉시 실행 함수)
+// ✅ 1️⃣ 상속 비용 모달 (즉시 실행 함수 - IIFE)
 (function () {
     console.log("✅ 강제 실행 테스트 시작");
 
@@ -1548,7 +1548,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
             return sum + value;
         }, 0);
 
-    // ✅ 모달 내 비용 합계 업데이트
+        // ✅ 모달 내 비용 합계 업데이트
         modalCostSummary.textContent = `총 필요 경비: ${totalCost.toLocaleString()} 원`;
     }
 
@@ -1582,7 +1582,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 })();  // ✅ 즉시 실행 함수 끝 (calculateInheritanceCosts()는 이 바깥에 둬야 함!)
 
 
-// ✅ 💡 여기! 즉시 실행 함수(IIFE) 바깥에 위치해야 합니다.
+// ✅ 2️⃣ 공통 비용 계산 함수 (중복 제거)
 function calculateInheritanceCosts() {
     let totalCost = Array.from(document.querySelectorAll(".cost-input")).reduce((sum, input) => {
         let value = parseInt(input.value.replace(/,/g, "")) || 0;
@@ -1599,7 +1599,7 @@ function calculateInheritanceCosts() {
     document.getElementById('calculateButton').click();
 }
 
-// ✅ "저장" 버튼 클릭 시 비용을 계산하고 상속 금액 차감
+// ✅ 3️⃣ "저장" 버튼 클릭 시 비용을 계산하고 상속 금액 차감
 document.getElementById("saveCost").addEventListener("click", function () {
     calculateInheritanceCosts(); // ✅ 비용 계산 실행
     calculateGroupMode(); // ✅ 저장 후 상속세 재계산
@@ -1620,18 +1620,7 @@ document.getElementById("saveCost").addEventListener("click", function () {
     document.getElementById("modalOverlay").style.display = "none";
 });
 
-
-    // ✅ 오버레이 클릭 시 모달 닫기
-    overlay.addEventListener("click", function () {
-        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
-        modal.style.display = "none";
-        overlay.style.display = "none";
-    });
-
-    console.log("✅ 강제 실행 완료");
-})(); 
-
-// ✅ HTML이 로드된 후 실행되도록 `DOMContentLoaded` 이벤트 추가
+// ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ DOM 로드 완료!");
 
