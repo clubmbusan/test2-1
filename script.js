@@ -520,38 +520,7 @@ function handleAssetTypeChange(assetTypeSelect) {
 }
  
 
-// ✅ 과세표준 계산 함수 (기존 코드 유지)
-function calculateTaxableAmount(totalInheritance, exemptions) {
-    return Math.max(totalInheritance - exemptions.totalExemption, 0); // 음수일 경우 0 처리
-}
-   
-  // ✅ 1.공통 상속비용 ["저장" 버튼 클릭 시 실행] 입력된 상속 비용을 전역 변수에 저장
-saveCostButton.addEventListener("click", function () {
-    let totalCost = Array.from(costInputs).reduce((sum, input) => {
-        let value = parseInt(input.value.replace(/,/g, "")) || 0;
-        return sum + value;
-    }, 0);
 
-    console.log("✅ 저장된 상속 비용 합계:", totalCost);
-
-    // ✅ 2.전역 변수에 상속 비용 저장 (모든 상속 유형에서 사용할 수 있도록 함)
-    window.inheritanceCosts = totalCost;
-
-    let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    let adjustedAssetValue = Math.max(0, totalAssetValue - totalCost); // 음수 방지
-
-    costSummary.textContent = `총 상속 비용: ${totalCost.toLocaleString()} 원`;
-
-    console.log("🔍 비용 차감 후 상속 금액:", adjustedAssetValue);
-
-    modal.style.display = "none";
-    overlay.style.display = "none";
-
-    // ✅ 3.저장 후 현재 선택된 상속 유형에 맞는 계산 함수 실행
-    let inheritanceType = document.getElementById('inheritanceType').value;
-    executeCalculation(inheritanceType, adjustedAssetValue);
-});
-  
  /**
  * 상속세 계산 함수 (각 구간별 계산 후 누진공제 적용)
  * @param {number} taxableAmount - 과세 표준 금액
