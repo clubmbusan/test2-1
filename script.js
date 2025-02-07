@@ -190,7 +190,7 @@ document.querySelectorAll('.assetType').forEach(select => {
     select.addEventListener('change', () => handleAssetTypeChange(select));
 });
 
-    / ✅ 초기 로딩 시 상속 유형 선택 요소(`inheritanceType`)가 존재하는지 확인
+// ✅ 초기 로딩 시 상속 유형 선택 요소(`inheritanceType`)가 존재하는지 확인
 document.addEventListener("DOMContentLoaded", () => {
     const inheritanceTypeElement = document.getElementById('inheritanceType');
 
@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ `inheritanceType` 요소가 정상적으로 로드되었습니다.");
 });
 
-    // 초기화 호출
+ // ✅ 초기화 호출
 initializeDefaultView();
 
   // ✅ "다시 하기" 버튼 이벤트 리스너 (추가된 필드 숨기기 + 입력값 초기화)   
