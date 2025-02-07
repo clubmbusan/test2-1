@@ -977,7 +977,7 @@ let processedHeirs = heirs?.map((heir) => {
     }
 
     // ✅ 🆕 비용 차감 후 과세 표준 재계산 (비용을 상속 지분에 따라 나누어 차감)
-    let costDeduction = Math.round((inheritanceCosts * heir.sharePercentage) / 100);
+    let costDeduction = Math.round(((window.totalDeductibleCost || 0) * heir.sharePercentage) / 100);
     finalTaxableAmount = Math.max(0, finalTaxableAmount - costDeduction); // 음수 방지
    
     // ✅ 개별 상속세 재계산
