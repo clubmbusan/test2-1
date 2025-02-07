@@ -519,8 +519,11 @@ function handleAssetTypeChange(assetTypeSelect) {
     }
 }
  
-
-
+// ✅ 과세표준 계산 함수 (기존 코드 유지)
+function calculateTaxableAmount(totalInheritance, exemptions) {
+    return Math.max(totalInheritance - exemptions.totalExemption, 0); // 음수일 경우 0 처리
+}
+    
  /**
  * 상속세 계산 함수 (각 구간별 계산 후 누진공제 적용)
  * @param {number} taxableAmount - 과세 표준 금액
