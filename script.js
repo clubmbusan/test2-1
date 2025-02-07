@@ -1015,12 +1015,17 @@ let processedHeirs = heirs?.map((heir) => {
 // ✅ 최종 상속세 합계 계산 (개별 상속세 총합)
 totalInheritanceTax = processedHeirs.reduce((sum, heir) => sum + heir.individualTax, 0);
 
+// ✅ 상속 비용 차감 후 최종 상속 금액 계산
+let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 상속 비용 차감
+
 // ✅ 최종 상속세에서 상속 비용이 이미 반영되었는지 확인 후 조정
-let finalTotalTax = Math.max(0, totalInheritanceTax);   
+let finalTotalTax = Math.max(0, totalInheritanceTax);
 
 // ✅ 최종 결과 출력 (디버깅용)
+console.log(`총 상속 금액 (비용 차감 후): ${adjustedAssetValue.toLocaleString()} 원`);
+console.log(`총 상속 비용: ${inheritanceCosts.toLocaleString()} 원`);
 console.log(`최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원`);
-
+    
 // ✅ 최종 결과 출력 (객체 배열을 활용한 동적 HTML 생성)
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
