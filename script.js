@@ -1530,7 +1530,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
  
-// ✅ 1️⃣ 상속비용 모달 (즉시 실행 함수 - IIFE)
+// ✅ 1️⃣ 상속 비용 모달 (즉시 실행 함수 - IIFE)
 (function () {
     console.log("✅ 강제 실행 테스트 시작");
 
@@ -1593,32 +1593,29 @@ function calculateInheritanceCosts() {
     console.log("✅ 총 상속 비용:", totalCost.toLocaleString(), "원");
 
     document.getElementById("costSummary").textContent = `총 상속 비용: ${totalCost.toLocaleString()} 원`;
-
-    // ✅ 비용을 계산한 후, 최신 데이터로 상속 계산 다시 실행
-    document.getElementById('calculateButton').click();
 }
 
-// ✅ "저장" 버튼 클릭 시 비용을 반영하고 결과 업데이트
+// ✅ 3️⃣ "저장" 버튼 클릭 시 비용을 반영하고 결과 업데이트
 document.getElementById("saveCost").addEventListener("click", function () {
     calculateInheritanceCosts(); // ✅ 비용 계산 실행
 
     let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 음수 방지
+    let adjustedAssetValue = Math.max(0, totalAssetValue - window.totalDeductibleCost); // 음수 방지
 
-    updateResultWithDeductedCost(adjustedAssetValue); // ✅ 수정된 함수 호출
-
-    console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
+    console.log("✅ 저장된 상속 비용 합계:", window.totalDeductibleCost);
 
     // ✅ 상속 비용을 모달 외부에서도 업데이트
-    document.getElementById("costSummary").textContent = `총 상속 비용: ${inheritanceCosts.toLocaleString()} 원`;
+    document.getElementById("costSummary").textContent = `총 상속 비용: ${window.totalDeductibleCost.toLocaleString()} 원`;
 
     console.log("🔍 비용 차감 후 상속 금액:", adjustedAssetValue);
 
     // ✅ 모달 닫기
     document.getElementById("costModal").style.display = "none";
     document.getElementById("modalOverlay").style.display = "none";
-});
 
+    // ✅ 🔥 결과지 업데이트 함수 호출 (상속 비용 차감된 값 반영)
+    updateResultWithDeductedCost();
+});
 
 // ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
 document.addEventListener("DOMContentLoaded", function () {
