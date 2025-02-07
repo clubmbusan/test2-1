@@ -1613,11 +1613,22 @@ document.getElementById("saveCost").addEventListener("click", function () {
     document.getElementById("costModal").style.display = "none";
     document.getElementById("modalOverlay").style.display = "none";
 
-    // ✅ 🔥 그룹 모드 상속 계산 실행 (결과 자동 업데이트)
+    // ✅ 🔥 결과지 업데이트 (비용 차감된 금액 반영)
+    updateResultWithDeductedCost(adjustedAssetValue);
+
+    // ✅ 🔥 상속세 계산 다시 실행
     calculateGroupMode(adjustedAssetValue);
 });
 
-// ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
+// ✅ 4️⃣ 상속 비용 반영 후 결과 업데이트 함수 추가
+function updateResultWithDeductedCost(adjustedAssetValue) {
+    // ✅ 결과지에 총 상속 금액 업데이트
+    document.getElementById("resultTotalAsset").textContent = `총 상속 금액: ${adjustedAssetValue.toLocaleString()} 원`;
+
+    console.log(`✅ 최종 상속 금액 업데이트됨: ${adjustedAssetValue.toLocaleString()} 원`);
+}
+
+// ✅ 5️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ DOM 로드 완료!");
 
