@@ -534,7 +534,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 let inheritanceCosts = 0;         // 상속 비용 총합
 let taxableAssetValue = 0;        // 비용 차감 후 상속 금액
  
-✅ 1.상속 비용 계산 함수  
+// ✅ 1.상속 비용 계산 함수  
 function calculateInheritanceCosts() {
     let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
 
