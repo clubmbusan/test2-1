@@ -1506,105 +1506,90 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
     `;
 }
-    
- (function () {
-    console.log("✅ 상속 비용 모달 스크립트 실행");
+   // ✅ 상속비용 모달 (즉시 실행 함수)
+(function () {
+    console.log("✅ 강제 실행 테스트 시작");
 
     let openModalButton = document.getElementById("openModal");
     let closeModalButton = document.getElementById("closeModal");
     let saveCostButton = document.getElementById("saveCost");
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay");
-    let costSummary = document.getElementById("costSummary");
+    let costInputs = document.querySelectorAll(".cost-input");
     let modalCostSummary = document.getElementById("modalCostSummary");
+    let costSummary = document.getElementById("costSummary");
 
-    // ✅ 입력 필드 요소 가져오기
-    let funeralCostInput = document.getElementById("funeralCost");
-    let legalFeesInput = document.getElementById("legalFees");
-    let unpaidTaxesInput = document.getElementById("unpaidTaxes");
-    let debtInput = document.getElementById("debt");
+    // ✅ 모달 요소 확인
+    console.log("🔍 openModalButton:", openModalButton);
+    console.log("🔍 modal:", modal);
+    console.log("🔍 overlay:", overlay);
 
-    if (!openModalButton || !modal || !overlay || !costSummary || !modalCostSummary) {
+    if (!openModalButton || !modal || !overlay || !modalCostSummary || !costSummary) {
         console.error("❌ 모달 관련 요소를 찾을 수 없습니다. HTML을 확인하세요.");
         return;
     }
 
-    // ✅ 모달 열기
+    // ✅ 실시간 입력값 변경 감지 -> 총 비용 합산 업데이트
+    function updateCostSummary() {
+        let totalCost = Array.from(costInputs).reduce((sum, input) => {
+            let value = parseInt(input.value.replace(/,/g, "")) || 0;
+            return sum + value;
+        }, 0);
+
+        // ✅ 모달 내 비용 합계 업데이트
+        modalCostSummary.textContent = `총 필요 경비: ${totalCost.toLocaleString()} 원`;
+    }
+
+    // ✅ "상속비용" 버튼 클릭 시 모달 열기
     openModalButton.addEventListener("click", function () {
+        console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
         modal.style.display = "block";
         overlay.style.display = "block";
     });
 
-    // ✅ 모달 닫기
-    function closeModal() {
+    // ✅ "닫기" 버튼 클릭 시 모달 닫기
+    closeModalButton.addEventListener("click", function () {
+        console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
         modal.style.display = "none";
         overlay.style.display = "none";
-    }
-
-    closeModalButton.addEventListener("click", closeModal);
-    overlay.addEventListener("click", closeModal);
-
-    // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
-    function formatCurrency(value) {
-        return value.toLocaleString() + " 원";
-    }
-
-    // ✅ 실시간 비용 합계 계산 함수
-    function updateTotalCost() {
-        let funeralCost = parseFloat(funeralCostInput.value.replace(/,/g, '')) || 0;
-        let legalFees = parseFloat(legalFeesInput.value.replace(/,/g, '')) || 0;
-        let unpaidTaxes = parseFloat(unpaidTaxesInput.value.replace(/,/g, '')) || 0;
-        let debt = parseFloat(debtInput.value.replace(/,/g, '')) || 0;
-
-        let totalCost = funeralCost + legalFees + unpaidTaxes + debt;
-        
-        // ✅ 실시간 합계 업데이트
-        modalCostSummary.textContent = `총 필요 경비: ${formatCurrency(totalCost)}`;
-    }
-
-    // ✅ 입력값 변경 시 실시간 합계 업데이트
-    [funeralCostInput, legalFeesInput, unpaidTaxesInput, debtInput].forEach(input => {
-        input.addEventListener("input", updateTotalCost);
     });
 
-    // ✅ "저장" 버튼 클릭 시 총 상속 비용 저장 및 UI 업데이트
+    // ✅ 입력 필드 변경 시 비용 합계 실시간 업데이트
+    costInputs.forEach(input => {
+        input.addEventListener("input", updateCostSummary);
+    });
+
+    // ✅ "저장" 버튼 클릭 시 비용을 계산하고 상속 금액 차감
     saveCostButton.addEventListener("click", function () {
-        let funeralCost = parseFloat(funeralCostInput.value.replace(/,/g, '')) || 0;
-        let legalFees = parseFloat(legalFeesInput.value.replace(/,/g, '')) || 0;
-        let unpaidTaxes = parseFloat(unpaidTaxesInput.value.replace(/,/g, '')) || 0;
-        let debt = parseFloat(debtInput.value.replace(/,/g, '')) || 0;
+        calculateInheritanceCosts(); // ✅ 공통 비용 계산 함수 호출
+        calculateGroupMode(); // ✅ 저장 후 상속세 재계산
 
-        let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
+        console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
 
-        // ✅ 총 공제 비용을 전역 변수로 저장하여 다른 계산에서 활용 가능하도록 설정
-        window.totalDeductibleCost = totalDeductibleCost;
+        // ✅ 비용 차감된 금액을 상속 총액으로 업데이트
+        let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+        let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 음수 방지
 
-        // ✅ "총 상속 비용" 업데이트
-        costSummary.textContent = `총 상속 비용: ${formatCurrency(totalDeductibleCost)}`;
+        // ✅ 상속 비용을 모달 외부에서도 업데이트
+        costSummary.textContent = `총 상속 비용: ${inheritanceCosts.toLocaleString()} 원`;
+
+        console.log("🔍 비용 차감 후 상속 금액:", adjustedAssetValue);
 
         // ✅ 모달 닫기
-        closeModal();
+        modal.style.display = "none";
+        overlay.style.display = "none";
     });
 
-    console.log("✅ 상속 비용 모달 스크립트 로드 완료");
+    // ✅ 오버레이 클릭 시 모달 닫기
+    overlay.addEventListener("click", function () {
+        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    console.log("✅ 강제 실행 완료");
 })();
-
-// ✅ 계산 버튼 클릭 시 상속세 계산 (상속 비용 공제 적용)
-document.getElementById('calculateButton').addEventListener('click', () => {
-    let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        let value = parseFloat(field.value.replace(/,/g, '')) || 0;
-        return sum + value;
-    }, 0);
-
-    let totalDeductibleCost = window.totalDeductibleCost || 0;
-    totalAssetValue -= totalDeductibleCost;
-
-    // ✅ 음수 값 방지
-    totalAssetValue = Math.max(totalAssetValue, 0);
-
-    console.log("📌 최종 상속 금액 (공제 적용 후):", totalAssetValue);
-});
-
+ 
     // ✅ 상속 유형에 따라 계산 실행
     switch (document.getElementById('inheritanceType').value) {
         case 'personal':
