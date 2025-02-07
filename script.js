@@ -1530,72 +1530,86 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
  
-// ✅ 상속비용 모달
-(function () {
-    console.log("✅ 강제 실행 테스트 시작");
+ (function () {
+    console.log("✅ 상속 비용 모달 스크립트 실행");
 
     let openModalButton = document.getElementById("openModal");
     let closeModalButton = document.getElementById("closeModal");
     let saveCostButton = document.getElementById("saveCost");
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay");
+    let costSummary = document.getElementById("costSummary");
+    let modalCostSummary = document.getElementById("modalCostSummary");
 
-    // ✅ 모달 요소 확인
-    console.log("🔍 openModalButton:", openModalButton);
-    console.log("🔍 modal:", modal);
-    console.log("🔍 overlay:", overlay);
+    // ✅ 입력 필드 요소 가져오기
+    let funeralCostInput = document.getElementById("funeralCost");
+    let legalFeesInput = document.getElementById("legalFees");
+    let unpaidTaxesInput = document.getElementById("unpaidTaxes");
+    let debtInput = document.getElementById("debt");
 
-    if (!openModalButton || !modal || !overlay) {
+    if (!openModalButton || !modal || !overlay || !costSummary || !modalCostSummary) {
         console.error("❌ 모달 관련 요소를 찾을 수 없습니다. HTML을 확인하세요.");
         return;
     }
 
-    // ✅ "상속비용" 버튼 클릭 시 모달 열기
+    // ✅ 모달 열기
     openModalButton.addEventListener("click", function () {
-        console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
         modal.style.display = "block";
         overlay.style.display = "block";
     });
 
-    // ✅ "닫기" 버튼 클릭 시 모달 닫기
-    closeModalButton.addEventListener("click", function () {
-        console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
+    // ✅ 모달 닫기
+    function closeModal() {
         modal.style.display = "none";
         overlay.style.display = "none";
+    }
+
+    closeModalButton.addEventListener("click", closeModal);
+    overlay.addEventListener("click", closeModal);
+
+    // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
+    function formatCurrency(value) {
+        return value.toLocaleString() + " 원";
+    }
+
+    // ✅ 실시간 비용 합계 계산 함수
+    function updateTotalCost() {
+        let funeralCost = parseFloat(funeralCostInput.value.replace(/,/g, '')) || 0;
+        let legalFees = parseFloat(legalFeesInput.value.replace(/,/g, '')) || 0;
+        let unpaidTaxes = parseFloat(unpaidTaxesInput.value.replace(/,/g, '')) || 0;
+        let debt = parseFloat(debtInput.value.replace(/,/g, '')) || 0;
+
+        let totalCost = funeralCost + legalFees + unpaidTaxes + debt;
+        
+        // ✅ 실시간 합계 업데이트
+        modalCostSummary.textContent = 총 필요 경비: ${formatCurrency(totalCost)};
+    }
+
+    // ✅ 입력값 변경 시 실시간 합계 업데이트
+    [funeralCostInput, legalFeesInput, unpaidTaxesInput, debtInput].forEach(input => {
+        input.addEventListener("input", updateTotalCost);
     });
 
-    // ✅ "저장" 버튼 클릭 시 입력된 비용을 합산하여 totalDeductibleCost에 저장
+    // ✅ "저장" 버튼 클릭 시 총 상속 비용 저장 및 UI 업데이트
     saveCostButton.addEventListener("click", function () {
-        let funeralCost = parseFloat(document.getElementById("funeralCost").value.replace(/,/g, '')) || 0;
-        let legalFees = parseFloat(document.getElementById("legalFees").value.replace(/,/g, '')) || 0;
-        let unpaidTaxes = parseFloat(document.getElementById("unpaidTaxes").value.replace(/,/g, '')) || 0;
-        let debt = parseFloat(document.getElementById("debt").value.replace(/,/g, '')) || 0;
+        let funeralCost = parseFloat(funeralCostInput.value.replace(/,/g, '')) || 0;
+        let legalFees = parseFloat(legalFeesInput.value.replace(/,/g, '')) || 0;
+        let unpaidTaxes = parseFloat(unpaidTaxesInput.value.replace(/,/g, '')) || 0;
+        let debt = parseFloat(debtInput.value.replace(/,/g, '')) || 0;
 
-        // ✅ 총 공제 금액 계산
         let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
 
-        // ✅ 디버깅 로그 출력
-        console.log("총 공제 금액:", totalDeductibleCost);
-
-        // ✅ 공제 금액을 alert으로 출력하여 확인
-        alert(`총 공제 금액: ${totalDeductibleCost.toLocaleString()} 원`);
-
-        // ✅ 공제 금액을 window 객체에 저장하여 calculateButton에서 참조 가능하도록 설정
+        // ✅ 총 공제 비용을 전역 변수로 저장하여 다른 계산에서 활용 가능하도록 설정
         window.totalDeductibleCost = totalDeductibleCost;
 
+        // ✅ "총 상속 비용" 업데이트
+        costSummary.textContent = 총 상속 비용: ${formatCurrency(totalDeductibleCost)};
+
         // ✅ 모달 닫기
-        modal.style.display = "none";
-        overlay.style.display = "none";
+        closeModal();
     });
 
-    // ✅ 오버레이 클릭 시 모달 닫기
-    overlay.addEventListener("click", function () {
-        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
-        modal.style.display = "none";
-        overlay.style.display = "none";
-    });
-
-    console.log("✅ 강제 실행 완료");
+    console.log("✅ 상속 비용 모달 스크립트 로드 완료");
 })();
 
 // ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
