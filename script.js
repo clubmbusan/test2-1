@@ -1589,6 +1589,27 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
     console.log("✅ 강제 실행 완료");
 })();
+
+    // ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
+document.getElementById('calculateButton').addEventListener('click', () => {
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+   
+    // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
+    let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseFloat(field.value.replace(/,/g, '')) || 0;
+        return sum + value;
+    }, 0);
+
+    // ✅ window.totalDeductibleCost에서 상속 비용을 가져와 차감
+    let totalDeductibleCost = window.totalDeductibleCost || 0;
+    totalAssetValue -= totalDeductibleCost;
+
+    // ✅ 음수 값 방지 (공제 후 0 이하가 되지 않도록 처리)
+    totalAssetValue = Math.max(totalAssetValue, 0);
+
+    console.log("📌 최종 상속 금액 (공제 적용 후):", totalAssetValue);
+    console.log("📌 현재 선택된 상속 유형:", document.getElementById('inheritanceType').value); // 디버깅 추가
  
     // ✅ 상속 유형에 따라 계산 실행
     switch (document.getElementById('inheritanceType').value) {
