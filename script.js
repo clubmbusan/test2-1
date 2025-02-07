@@ -553,16 +553,16 @@ function calculateInheritanceCosts() {
     console.log("🔍 비용 차감 후 상속 금액:", taxableAssetValue);
 }
 
- // ✅ 2. 저장 버튼 클릭 시 비용 계산 실행  
-
-document.getElementById("saveCost")?.addEventListener("click", function() {
-    calculateInheritanceCosts();
-    console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
-});
-
+// ✅ 2. 저장 버튼 클릭 시 비용 계산 실행  
+const saveCostButton = document.getElementById("saveCost");
+if (saveCostButton) {
+    saveCostButton.addEventListener("click", function () {
+        calculateInheritanceCosts();
+        console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
+    });
+}
   
-// ✅ 3. 비용 차감 후 상속 금액 반환 함수  
- 
+// ✅ 3. 비용 차감 후 상속 금액 반환 함수   
 function getTaxableAssetValue() {
     return taxableAssetValue; // 비용 반영된 상속 금액 반환
 }
