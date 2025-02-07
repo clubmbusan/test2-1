@@ -295,9 +295,6 @@ function formatNumberWithCommas(value) {
     return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
 }
 
-Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
-Editing test2-1/script.js at main · clubmbusan/test2-1
-
 // 입력 필드에 콤마 추가 이벤트 등록
 function addCommaFormatting(inputField) {
     inputField.addEventListener('input', () => {
