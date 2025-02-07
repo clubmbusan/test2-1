@@ -1037,8 +1037,7 @@ document.getElementById('result').innerHTML = `
     ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
-    <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>
-   
+    <h3>일괄 공제: ${lumpSumExemption.toLocaleString()} 원</h3>  
   
     ${processedHeirs.map((heir) => `
         <h4>${heir.name} (${heir.sharePercentage.toFixed(2)}% 지분)</h4>
@@ -1058,6 +1057,9 @@ document.getElementById('result').innerHTML = `
 `;
 }
 
+// ✅ 함수 호출하여 결과지 업데이트
+updateResultWithDeductedCost();    
+    
 /**                  
  * ✅ 법정 상속 계산 함수 (민법에 따른 법정 상속 비율 자동 적용)
  * @description 법정 상속 방식으로 상속인의 법정 지분을 자동 계산하고, 
