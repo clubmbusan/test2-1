@@ -1051,9 +1051,6 @@ document.getElementById('result').innerHTML = `
     <h3>최종 상속세 합계: ${Math.max(0, Math.round(totalInheritanceTax - inheritanceCosts)).toLocaleString()} 원</h3>
 `;
 }
-
-// ✅ 함수 호출하여 결과지 업데이트
-updateResultWithDeductedCost();    
     
 /**                  
  * ✅ 법정 상속 계산 함수 (민법에 따른 법정 상속 비율 자동 적용)
