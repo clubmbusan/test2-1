@@ -1026,11 +1026,6 @@ console.log(`총 상속 금액 (비용 차감 후): ${adjustedAssetValue.toLocal
 console.log(`총 상속 비용: ${inheritanceCosts.toLocaleString()} 원`);
 console.log(`최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} 원`);
     
-// ✅ 1️⃣ 상속 비용 반영 후 결과 업데이트 함수 추가
-function updateResultWithDeductedCost() {
-    let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 상속 비용 차감 적용  
-    
 // ✅ 최종 결과 출력 (객체 배열을 활용한 동적 HTML 생성)
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
