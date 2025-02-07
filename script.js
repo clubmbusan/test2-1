@@ -1669,7 +1669,6 @@ document.getElementById('calculateButton')?.addEventListener('click', function (
             alert("⚠️ 올바른 상속 유형을 선택하세요.");
             break;
     }
-});
        
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
