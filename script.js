@@ -1655,6 +1655,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         }
     });
+});
     
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
