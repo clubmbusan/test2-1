@@ -943,26 +943,17 @@ if (spouse) {
     spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
     spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
 
-    // ✅ 배우자의 추가 공제 수정 (음수 값이 발생하지 않도록 보정)
-    if (spouseInheritanceAmount > spouseRelationshipExemption) {
-        spouseAdditionalExemption = Math.min(
-            spouseInheritanceAmount - spouseRelationshipExemption, 
-            3000000000 // 최대 30억
-        );
-    }
-
-    spouseExemptions.additionalExemption = spouseAdditionalExemption;
-
-    let spouseRemainingAmount = spouseInheritanceAmount 
-                               - spouseFinancialExemption 
-                               - spouseBasicExemption 
-                               - spouseRelationshipExemption;
-    spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
-
-    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {
-        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
-    }
+// ✅ 배우자의 추가 공제 수정 (음수 값 방지 & 중복 제거)
+let spouseAdditionalExemption = 0;
+if (spouseInheritanceAmount > spouseRelationshipExemption) {
+    spouseAdditionalExemption = Math.min(
+        (spouseInheritanceAmount - spouseRelationshipExemption) * 0.5, 
+        3000000000 // 최대 30억
+    );
 }
+
+// ✅ 배우자 추가 공제 반영
+spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
 // ✅ 배우자의 과세 표준 계산 (기초 공제 제외)
 let spouseFinalTaxableAmount = spouseInheritanceAmount  
