@@ -1524,7 +1524,8 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
     `;
 }
- 
+
+ // ✅ 상속 비용 모달   
  (function () {
     console.log("✅ 상속 비용 모달 스크립트 실행");
 
@@ -1575,9 +1576,9 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         let debt = parseFloat(debtInput.value.replace(/,/g, '')) || 0;
 
         let totalCost = funeralCost + legalFees + unpaidTaxes + debt;
-        
+
         // ✅ 실시간 합계 업데이트
-        modalCostSummary.textContent = 총 필요 경비: ${formatCurrency(totalCost)};
+        modalCostSummary.textContent = `총 필요 경비: ${formatCurrency(totalCost)}`;
     }
 
     // ✅ 입력값 변경 시 실시간 합계 업데이트
@@ -1594,11 +1595,11 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
         let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
 
-        // ✅ 총 공제 비용을 전역 변수로 저장하여 다른 계산에서 활용 가능하도록 설정
-        window.totalDeductibleCost = totalDeductibleCost;
+        // ✅ 전역 변수로 저장 (undefined 방지)
+        window.totalDeductibleCost = totalDeductibleCost || 0;
 
         // ✅ "총 상속 비용" 업데이트
-        costSummary.textContent = 총 상속 비용: ${formatCurrency(totalDeductibleCost)};
+        costSummary.textContent = `총 상속 비용: ${formatCurrency(totalDeductibleCost)}`;
 
         // ✅ 모달 닫기
         closeModal();
@@ -1609,42 +1610,58 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 
 // ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
 document.getElementById('calculateButton').addEventListener('click', () => {
-    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
-    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+    console.log("💰 계산 버튼 클릭됨! 총 상속 금액을 상속 비용 차감 후 계산합니다.");
 
-    // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
+    // ✅ 모든 재산 입력 필드 값을 합산하여 총 상속 금액을 계산
     let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseFloat(field.value.replace(/,/g, '')) || 0;
         return sum + value;
     }, 0);
 
-    // ✅ window.totalDeductibleCost에서 상속 비용을 가져와 차감
-    let totalDeductibleCost = window.totalDeductibleCost || 0;
-    totalAssetValue -= totalDeductibleCost;
+    console.log(`📌 입력된 총 상속 재산 금액: ${totalAssetValue.toLocaleString()} 원`);
 
-    // ✅ 음수 값 방지 (공제 후 0 이하가 되지 않도록 처리)
-    totalAssetValue = Math.max(totalAssetValue, 0);
+    // ✅ window.totalDeductibleCost에서 상속 비용을 가져옴 (없으면 0)
+    let totalDeductibleCost = parseFloat(window.totalDeductibleCost) || 0;
 
-    console.log("💰 최종 상속 금액 (공제 적용 후):", totalAssetValue);
+    console.log(`📌 총 상속 비용 차감 금액: ${totalDeductibleCost.toLocaleString()} 원`);
 
-    // ✅ 상속 유형에 따라 계산 실행
+    // ✅ 총 상속 금액에서 상속 비용을 차감
+    let adjustedAssetValue = Math.max(totalAssetValue - totalDeductibleCost, 0); // 음수 방지
+
+    console.log(`📌 상속 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
+
+    // ✅ 결과지 업데이트 (상속 비용 차감 반영)
+    document.getElementById('result').innerHTML = `
+        <h3>총 상속 금액 (비용 차감 후): ${adjustedAssetValue.toLocaleString()} 원</h3>
+        <p>총 상속 재산: ${totalAssetValue.toLocaleString()} 원</p>
+        <p>총 상속 비용 차감: -${totalDeductibleCost.toLocaleString()} 원</p>
+    `;
+
+    // ✅ 상속 유형에 따라 계산 실행 (차감된 금액 적용)
     switch (document.getElementById('inheritanceType').value) {
         case 'personal':
-            calculatePersonalMode(totalAssetValue);
+            calculatePersonalMode(adjustedAssetValue);
             break;
         case 'group':
-            calculateGroupMode(totalAssetValue);
+            calculateGroupMode(adjustedAssetValue);
             break;
         case 'businessPersonal':
-            calculateBusinessPersonalMode(totalAssetValue);
+            calculateBusinessPersonalMode(adjustedAssetValue);
             break;
         case 'businessGroup':
-            calculateBusinessGroupMode(totalAssetValue);
+            calculateBusinessGroupMode(adjustedAssetValue);
+            break;
+        case 'legal':
+            calculateLegalInheritance(adjustedAssetValue);
+            break;
+        case 'other':
+            calculateSpecialInheritance(adjustedAssetValue);
             break;
         default:
-            console.error('잘못된 계산 요청');
+            console.error('❌ 잘못된 상속 유형 선택');
             break;
     }
+});
     
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
