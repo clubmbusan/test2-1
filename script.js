@@ -1613,8 +1613,8 @@ document.getElementById("saveCost").addEventListener("click", function () {
     document.getElementById("costModal").style.display = "none";
     document.getElementById("modalOverlay").style.display = "none";
 
-    // ✅ 🔥 결과지 업데이트 함수 대신 그룹 모드 재계산 실행
-    calculateGroupMode(); // ✅ 저장 후 상속세 재계산
+    // ✅ 🔥 그룹 모드 상속 계산 실행 (결과 자동 업데이트)
+    calculateGroupMode(adjustedAssetValue);
 });
 
 // ✅ 4️⃣ "계산하기" 버튼 클릭 시 최신 관계 값 반영
@@ -1666,7 +1666,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         }
     });
- });
+});
     
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
