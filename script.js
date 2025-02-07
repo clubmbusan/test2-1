@@ -1505,23 +1505,25 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
  
-   // ✅ 상속비용 모달 (즉시 실행 함수)
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOMContentLoaded 이벤트 실행됨");
+  // ✅ 상속비용 모달 (즉시 실행 함수)
+(function () {
+    console.log("✅ 강제 실행 테스트 시작");
 
     let openModalButton = document.getElementById("openModal");
     let closeModalButton = document.getElementById("closeModal");
     let saveCostButton = document.getElementById("saveCost");
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay");
-    let costInputs = document.querySelectorAll(".inheritanceCostField"); // ✅ 클래스명 수정
+    let costInputs = document.querySelectorAll(".cost-input");
     let modalCostSummary = document.getElementById("modalCostSummary");
     let costSummary = document.getElementById("costSummary");
-    let totalAssetDisplay = document.getElementById("totalAssetDisplay");
-    let cashAmountInput = document.getElementById("cashAmount");
 
-    // ✅ 요소 존재 여부 확인
-    if (!openModalButton || !modal || !overlay || !costSummary || !totalAssetDisplay || !cashAmountInput) {
+    // ✅ 모달 요소 확인
+    console.log("🔍 openModalButton:", openModalButton);
+    console.log("🔍 modal:", modal);
+    console.log("🔍 overlay:", overlay);
+
+    if (!openModalButton || !modal || !overlay || !modalCostSummary || !costSummary) {
         console.error("❌ 모달 관련 요소를 찾을 수 없습니다. HTML을 확인하세요.");
         return;
     }
@@ -1529,22 +1531,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ 실시간 입력값 변경 감지 -> 총 비용 합산 업데이트
     function updateCostSummary() {
         let totalCost = Array.from(costInputs).reduce((sum, input) => {
-            let value = parseInt(input.value.replace(/[^0-9]/g, ""), 10) || 0;
+            let value = parseInt(input.value.replace(/,/g, "")) || 0;
             return sum + value;
         }, 0);
 
+        // ✅ 모달 내 비용 합계 업데이트
         modalCostSummary.textContent = `총 필요 경비: ${totalCost.toLocaleString()} 원`;
-        return totalCost;
     }
 
-    // ✅ 모달 열기
+    // ✅ "상속비용" 버튼 클릭 시 모달 열기
     openModalButton.addEventListener("click", function () {
         console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
         modal.style.display = "block";
         overlay.style.display = "block";
     });
 
-    // ✅ 모달 닫기
+    // ✅ "닫기" 버튼 클릭 시 모달 닫기
     closeModalButton.addEventListener("click", function () {
         console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
         modal.style.display = "none";
@@ -1558,16 +1560,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ "저장" 버튼 클릭 시 비용을 계산하고 상속 금액 차감
     saveCostButton.addEventListener("click", function () {
-        let totalCost = updateCostSummary();
-        let totalAssetValue = parseInt(cashAmountInput.value.replace(/[^0-9]/g, ""), 10) || 0;
+        calculateInheritanceCosts(); // ✅ 공통 비용 계산 함수 호출
+        calculateGroupMode(); // ✅ 저장 후 상속세 재계산
 
-        let adjustedAssetValue = Math.max(0, totalAssetValue - totalCost); // 음수 방지
+        console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
 
-        costSummary.textContent = `총 필요 경비: ${totalCost.toLocaleString()} 원`;
-        totalAssetDisplay.textContent = `총 상속 금액: ${adjustedAssetValue.toLocaleString()} 원`;
+        // ✅ 비용 차감된 금액을 상속 총액으로 업데이트
+        let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+        let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 음수 방지
+
+        // ✅ 상속 비용을 모달 외부에서도 업데이트
+        costSummary.textContent = `총 상속 비용: ${inheritanceCosts.toLocaleString()} 원`;
 
         console.log("🔍 비용 차감 후 상속 금액:", adjustedAssetValue);
 
+        // ✅ 모달 닫기
         modal.style.display = "none";
         overlay.style.display = "none";
     });
@@ -1579,8 +1586,8 @@ document.addEventListener("DOMContentLoaded", function () {
         overlay.style.display = "none";
     });
 
-    console.log("✅ 스크립트 실행 완료");
-});
+    console.log("✅ 강제 실행 완료");
+})(); 
 
     // ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
 document.getElementById('calculateButton').addEventListener('click', () => {
