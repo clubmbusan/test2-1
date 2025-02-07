@@ -550,6 +550,11 @@ document.getElementById("saveCost")?.addEventListener("click", function() {
     calculateInheritanceCosts();
     console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
 });
+
+// ✅ 비용 차감된 상속 금액 계산 (공통 사용)
+function getTaxableAssetValue(totalAssetValue) {
+    return Math.max(0, totalAssetValue - inheritanceCosts); // 비용 반영된 상속 금액
+} 
     
  /**
  * 상속세 계산 함수 (각 구간별 계산 후 누진공제 적용)
@@ -1035,6 +1040,7 @@ console.log(`최종 상속세 합계: ${totalInheritanceTax.toLocaleString()} �
 document.getElementById('result').innerHTML = `
     <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
     ${inheritanceCosts && inheritanceCosts > 0 ? `<h3>상속 비용 총합: ${inheritanceCosts.toLocaleString()} 원</h3>` : ""}
+    ${inheritanceCosts > 0 ? `<h3>비용 차감 후 상속 금액: ${taxableAssetValue.toLocaleString()} 원</h3>` : ""}
     ${maxFinancialExemption > 0 ? `<h3>금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원</h3>` : ""}
     <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
     ${spouse ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
