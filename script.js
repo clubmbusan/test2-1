@@ -519,7 +519,6 @@ function handleAssetTypeChange(assetTypeSelect) {
     }
 }
  
-
 // ✅ 과세표준 계산 함수 (기존 코드 유지)
 function calculateTaxableAmount(totalInheritance, exemptions) {
     return Math.max(totalInheritance - exemptions.totalExemption, 0); // 음수일 경우 0 처리
@@ -534,7 +533,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
 let inheritanceCosts = 0;         // 상속 비용 총합
 let taxableAssetValue = 0;        // 비용 차감 후 상속 금액
  
-// ✅ 1.상속 비용 계산 함수  
+// ✅ 1. 상속 비용 계산 함수  
 function calculateInheritanceCosts() {
     let totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
 
@@ -554,14 +553,16 @@ function calculateInheritanceCosts() {
 }
 
 // ✅ 2. 저장 버튼 클릭 시 비용 계산 실행  
-const saveCostButton = document.getElementById("saveCost");
-if (saveCostButton) {
-    saveCostButton.addEventListener("click", function () {
-        calculateInheritanceCosts();
-        console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
-    });
-}
-  
+document.addEventListener("DOMContentLoaded", function () {
+    const saveCostButton = document.getElementById("saveCost");
+    if (saveCostButton) {
+        saveCostButton.addEventListener("click", function () {
+            calculateInheritanceCosts();
+            console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
+        });
+    }
+});
+
 // ✅ 3. 비용 차감 후 상속 금액 반환 함수   
 function getTaxableAssetValue() {
     return taxableAssetValue; // 비용 반영된 상속 금액 반환
