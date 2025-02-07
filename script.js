@@ -1603,12 +1603,6 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
 
-    // ✅ 유효성 검사 실행
-    if (!validateHeirRelationship(heirType, relationship)) {
-        alert('선택한 후계자 유형과 관계가 맞지 않습니다. 올바른 조합을 선택해주세요.');
-        return; // 계산 중단
-    }
-
     // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
     let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseFloat(field.value.replace(/,/g, '')) || 0;
