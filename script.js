@@ -953,8 +953,12 @@ let spouseFinalTaxableAmount = spouseInheritanceAmount
 
 // ✅ 과세 표준이 음수가 되지 않도록 보정
 spouseFinalTaxableAmount = Math.max(spouseFinalTaxableAmount, 0);
-    
-// ✅ 개별 상속인 데이터 가공 (순서를 유지하면서 오류 수정)
+
+// ✅ 상속 비용 차감 후 최종 상속 금액 계산
+let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 상속 비용 차감 먼저 계산
+console.log(`📌 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
+
+    // ✅ 개별 상속인 데이터 가공 (순서를 유지하면서 오류 수정)
 let processedHeirs = heirs?.map((heir) => {
     console.log(`📌 처리 중: ${heir.name} (${heir.relationship})`);
 
