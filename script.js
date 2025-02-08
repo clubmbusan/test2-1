@@ -1029,7 +1029,7 @@ let processedHeirs = heirs?.map((heir) => {
 totalInheritanceTax = processedHeirs.reduce((sum, heir) => sum + heir.individualTax, 0);
 
 // ✅ 상속 비용 차감 후 최종 상속 금액 계산
-let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 상속 비용 차감
+adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 상속 비용 차감
 
 // ✅ 최종 상속세에서 상속 비용이 이미 반영되었는지 확인 후 조정
 let finalTotalTax = Math.max(0, totalInheritanceTax);
