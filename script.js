@@ -766,25 +766,28 @@ function calculateGroupMode() {
     let spouse = heirs.find(h => h.relationship === 'spouse');
     let spouseExemptions = { additionalExemption: 0 };
 
-    if (spouse) {
-    // ✅ 배우자 상속 금액 (비용 차감 후)
-    let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
-    let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
+  if (spouse) {
+     // ✅ 배우자 상속 금액 (비용 차감 후)
+     let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
+     let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
 
-// ✅ 배우자 추가 공제 계산: 배우자 상속 금액이 5억보다 큰 경우만 적용
-    let spouseAdditionalExemption = 0;
-    if (spouseInheritanceAmount > spouseRelationshipExemption) {
-        spouseAdditionalExemption = Math.min(
-            spouseInheritanceAmount - spouseRelationshipExemption,
-            3000000000  // 최대 30억
-        );
+     // ✅ 배우자 추가 공제: 배우자 상속 금액이 5억보다 큰 경우만 적용
+     let spouseAdditionalExemption = 0;
+     if (spouseInheritanceAmount > spouseRelationshipExemption) {
+         spouseAdditionalExemption = Math.min(
+             spouseInheritanceAmount - spouseRelationshipExemption, 
+             3000000000  // 최대 30억
+         );
+     }
 
-    // ✅ 🔍 계산 직후 로그 출력 (디버깅에 용이)
-    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString());
-    }
+    // ✅ 디버깅 로그
+    console.log("📌 adjustedAssetValue:", adjustedAssetValue.toLocaleString());
+    console.log("📌 spouseInheritanceAmount:", spouseInheritanceAmount.toLocaleString());
+    console.log("📌 spouseAdditionalExemption:", spouseAdditionalExemption.toLocaleString());
 
- // ✅ 배우자 공제 적용
- spouseExemptions.additionalExemption = spouseAdditionalExemption;
+    // ✅ 배우자 공제 적용
+    spouseExemptions.additionalExemption = spouseAdditionalExemption;
+}
 
  // ✅ 배우자 상속 금액도 계산 직후 출력
  console.log("📌 배우자 상속 금액:", spouseInheritanceAmount.toLocaleString());
