@@ -725,9 +725,9 @@ function calculateGroupMode() {
     });
 
     // ✅ 상속 비용 차감 후 최종 상속 재산 계산
-    let finalInheritanceAmount = Math.max(0, totalAssetValue - inheritanceCosts);
-    console.log(`📌 비용 차감 후 최종 상속 재산 금액: ${finalInheritanceAmount.toLocaleString()} 원`);
-    
+    let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
+    console.log(`📌 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
+
     // ✅ 금융 재산 공제 (총 금융자산의 20%, 최대 2억)
     let maxFinancialExemption = Math.min((adjustedAssetValue * 0.2), 200000000); // 비용 차감 후 상속 금액 기준
   
