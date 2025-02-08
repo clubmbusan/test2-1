@@ -784,7 +784,6 @@ function calculateGroupMode() {
 
      // ✅ 추가 공제를 spouseExemptions에 저장
      spouseExemptions.additionalExemption = spouseAdditionalExemption;
-  }
  
     // ✅ 배우자 공제 이월 수정 (배우자 상속 금액에서 최소 공제(5억) 차감 후 이월)
     let spouseRemainingExemption = Math.max(spouseRelationshipExemption - spouseInheritanceAmount, 0); // 5억 차감 후 남은 공제액
