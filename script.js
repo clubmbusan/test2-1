@@ -766,7 +766,7 @@ function calculateGroupMode() {
     let spouse = heirs.find(h => h.relationship === 'spouse');
     let spouseExemptions = { additionalExemption: 0 };
 
-   if (spouse) {
+  if (spouse) {
     // ✅ 배우자 상속 금액 (비용 차감 후 기준 - 유지)
     let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
     console.log("📌 배우자 상속 금액 (비용 차감 후):", spouseInheritanceAmount.toLocaleString());
@@ -778,21 +778,21 @@ function calculateGroupMode() {
     let spouseAdditionalExemption = 0;
     let spouseRemainingAfterRelationship = spouseInheritanceAmount - spouseRelationshipExemption;
 
-    // ✅ 조건 수정: 남은 금액이 30억 이하일 때는 남은 금액 전액 공제
+    // ✅ 조건 수정: 남은 금액이 25억 이하일 때는 전액 공제, 최대 25억까지만 공제
     if (spouseRemainingAfterRelationship > 0) {
-        if (spouseRemainingAfterRelationship <= 3000000000) {
+        if (spouseRemainingAfterRelationship <= 2500000000) {
             spouseAdditionalExemption = spouseRemainingAfterRelationship;  // 남은 금액 전부 공제
         } else {
-            spouseAdditionalExemption = 3000000000;  // 최대 30억 공제
+            spouseAdditionalExemption = 2500000000;  // 최대 25억 공제
         }
     }
 
     console.log("📌 수정된 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString());
   
-    // ✅ 배우자 공제를 spouseExemptions에 저장
+    // ✅ 배우자 공제를 spouseExemptions에 저장 (과세 표준 및 최종 결과에서 사용)
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
-    // ✅ 과세 표준 계산
+    // ✅ 과세 표준 계산 (비용 차감 후 기준)
     let taxableAmount = spouseInheritanceAmount 
                         - spouseRelationshipExemption 
                         - spouseAdditionalExemption;
