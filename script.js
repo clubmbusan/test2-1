@@ -940,7 +940,7 @@ if (spouse) {
     spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
 
     if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {
-        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount * 0.5, 3000000000);
+        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount, 3000000000);
     }
 }
 
