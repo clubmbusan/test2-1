@@ -948,7 +948,7 @@ if (spouse) {
     if (spouseInheritanceAmount > spouseRelationshipExemption) {
         spouseAdditionalExemption = Math.min(
             spouseInheritanceAmount - spouseRelationshipExemption, 
-            3000000000 // 최대 30억
+            2500000000 // 최대 30억
         );
     }
 
