@@ -1636,17 +1636,14 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         const value = parseFloat(field.value.replace(/,/g, '')) || 0;
         return sum + value;
     }, 0);
-
     console.log(`📌 입력된 총 상속 재산 금액: ${totalAssetValue.toLocaleString()} 원`);
 
     // ✅ window.totalDeductibleCost에서 상속 비용을 가져옴 (없으면 0)
     let totalDeductibleCost = parseFloat(window.totalDeductibleCost) || 0;
-
     console.log(`📌 총 상속 비용 차감 금액: ${totalDeductibleCost.toLocaleString()} 원`);
 
     // ✅ 총 상속 금액에서 상속 비용을 차감
     let adjustedAssetValue = Math.max(totalAssetValue - totalDeductibleCost, 0); // 음수 방지
-
     console.log(`📌 상속 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
 
     // ✅ 결과지 업데이트 (상속 비용 차감 반영)
@@ -1659,22 +1656,16 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     // ✅ 상속 유형에 따라 계산 실행 (차감된 금액 적용)
     switch (document.getElementById('inheritanceType').value) {
         case 'personal':
-            calculatePersonalMode(adjustedAssetValue);
+            calculatePersonalMode(adjustedAssetValue);  // **adjustedAssetValue 전달**
             break;
         case 'group':
-            calculateGroupMode(adjustedAssetValue);
+            calculateGroupMode(adjustedAssetValue);  // **adjustedAssetValue 전달**
             break;
         case 'businessPersonal':
             calculateBusinessPersonalMode(adjustedAssetValue);
             break;
         case 'businessGroup':
             calculateBusinessGroupMode(adjustedAssetValue);
-            break;
-        case 'legal':
-            calculateLegalInheritance(adjustedAssetValue);
-            break;
-        case 'other':
-            calculateSpecialInheritance(adjustedAssetValue);
             break;
         default:
             console.error('❌ 잘못된 상속 유형 선택');
