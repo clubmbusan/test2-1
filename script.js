@@ -958,7 +958,6 @@ if (spouse) {
 
     console.log("📌 최종 과세 표준 (배우자):", spouseRemainingAmount.toLocaleString());
   }
-}
 
 // ✅ 배우자의 과세 표준 계산 (기초 공제 제외)
 let spouseFinalTaxableAmount = spouseInheritanceAmount  
