@@ -787,7 +787,6 @@ function calculateGroupMode() {
 
     // ✅ 배우자 공제 적용
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
-}
 
  // ✅ 배우자 상속 금액도 계산 직후 출력
  console.log("📌 배우자 상속 금액:", spouseInheritanceAmount.toLocaleString());
