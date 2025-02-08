@@ -933,29 +933,31 @@ let spouseAdditionalExemption = 0; // ✅ 배우자 추가 공제 기본값 초�
 
 // ✅ 배우자가 있을 경우, 실제 상속 금액 계산
 if (spouse) {
-    spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
+    spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;  // ✅ 비용 차감 후 기준
     spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
     spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
 
-    // ✅ 배우자의 추가 공제 수정 (음수 값이 발생하지 않도록 보정)
-    if (spouseInheritanceAmount > spouseRelationshipExemption) {
-        spouseAdditionalExemption = Math.min(
-            spouseInheritanceAmount - spouseRelationshipExemption, 
-            2500000000 // 최대 30억
-        );
-    }
+    // ✅ 배우자 관계 공제 적용 (비용 차감 후 기준)
+    let spouseRelationshipExemption = Math.min(spouseInheritanceAmount, 500000000);
+    let spouseRemainingAfterRelationship = spouseInheritanceAmount - spouseRelationshipExemption;
+
+    console.log("📌 관계 공제 후 남은 금액:", spouseRemainingAfterRelationship.toLocaleString());
+
+    // ✅ 배우자 추가 공제 (최대 25억까지 적용)
+    let spouseAdditionalExemption = Math.min(spouseRemainingAfterRelationship, 2500000000);
+    console.log("📌 수정된 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
 
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
+    // ✅ 과세 표준 계산
     let spouseRemainingAmount = spouseInheritanceAmount 
                                - spouseFinancialExemption 
-                               - spouseBasicExemption 
-                               - spouseRelationshipExemption;
+                               - spouseRelationshipExemption 
+                               - spouseAdditionalExemption;
     spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
 
-    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {
-        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount, 2500000000);
-    }
+    console.log("📌 최종 과세 표준 (배우자):", spouseRemainingAmount.toLocaleString());
+  }
 }
 
 // ✅ 배우자의 과세 표준 계산 (기초 공제 제외)
