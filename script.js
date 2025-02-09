@@ -782,9 +782,12 @@ function calculateGroupMode() {
     let remainingAfterRelationship = remainingAfterFinancialExemption - spouseRelationshipExemption;
     console.log("📌 관계 공제 후 남은 금액:", remainingAfterRelationship.toLocaleString());
 
-    // ✅ 3. 배우자 추가 공제 (최대 25억 적용)
-    let spouseAdditionalExemption = Math.min(remainingAfterRelationship, 2500000000);
-    console.log("📌 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
+    // ✅ 3. 배우자 추가 공제 (과세 표준이 남아 있을 때만 적용)
+   let spouseAdditionalExemption = 0;
+   if (remainingAfterRelationship > 0) {
+       spouseAdditionalExemption = Math.min(remainingAfterRelationship, 2500000000);
+   }
+   console.log("📌 수정된 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
 
     // ✅ 최종 과세 표준 계산
     let taxableAmount = remainingAfterRelationship - spouseAdditionalExemption;
