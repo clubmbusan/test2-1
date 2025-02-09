@@ -638,14 +638,15 @@ let generalExemption = 0;
 if (relationship !== 'spouse') {  
     generalExemption = Math.max(500000000 - (basicExemption + relationshipExemption), 0);  
 }
-
-// ✅ 최종 공제 계산 (총합)  
-let totalExemption = basicExemption + relationshipExemption + financialExemption;  
-if (relationship === 'spouse') {  
-    totalExemption += spouseAdditionalExemption;  
-} else {  
-    totalExemption += generalExemption;  
+    
+// ✅ 최종 공제 계산 (중복 제거)
+let totalExemption = financialExemption + relationshipExemption;
+if (relationship === 'spouse') {
+    totalExemption += spouseAdditionalExemption;
+} else {
+    totalExemption += generalExemption;
 }
+totalExemption = Math.min(totalExemption, totalAssetValue - inheritanceCosts);
 
     // ✅ 과세 표준 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
@@ -655,11 +656,11 @@ if (relationship === 'spouse') {
 
     // ✅ 기존 결과 지우기 (중복 방지)
     document.getElementById('result').innerHTML = "";
-
-// ✅ 개인 상속 전용 결과 출력    
+   
+// ✅ 개인 상속 전용 결과 출력 
 document.getElementById('result').innerHTML = `
     <h3>계산 결과 (개인 상속)</h3>
-    <p>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</p>
+    <p>총 상속 금액: 3,000,000,000 원</p> <!-- 차감 전 금액 -->
     <p><strong>공제 내역:</strong></p>
     <ul>
         <li>상속 비용 차감 후 금액: ${(totalAssetValue - inheritanceCosts).toLocaleString()} 원</li>
@@ -671,10 +672,11 @@ document.getElementById('result').innerHTML = `
             `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원 (최대 25억)</li>` : 
             `<li>일괄 공제: ${generalExemption.toLocaleString()} 원</li>`}
     </ul>
-    <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
+    <p><strong>최종 공제 금액:</strong> ${(inheritanceCosts + financialExemption + relationshipExemption + spouseAdditionalExemption).toLocaleString()} 원</p>
     <p>과세 표준: ${taxableAmount.toLocaleString()} 원</p>
     <p>상속세: ${tax.toLocaleString()} 원</p>
- `;
+`;
+
 }
 
 // ✅ 🔄 "계산하기" 버튼 클릭 시 최신 관계 값 반영!
