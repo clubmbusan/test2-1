@@ -1070,7 +1070,7 @@ document.getElementById('result').innerHTML = `
         ${heir.relationship !== "spouse" ? `<p>기초 공제: ${Math.round(heir.basicExemption).toLocaleString()} 원</p>` : ""} <!-- ✅ 배우자 기초공제 제거 -->
         <p>관계 공제: ${Math.round(heir.relationshipExemption).toLocaleString()} 원</p>
         ${(heir.spouseTransferredExemption > 0) ? `<p>배우자 공제 이월: ${Math.round(heir.spouseTransferredExemption).toLocaleString()} 원</p>` : ""}
-        ${(heir.relationship === "spouse" && spouseExemptions.additionalExemption > 0) ? `<p>배우자 추가 공제: ${Math.round(spouseExemptions.additionalExemption).toLocaleString()} 원</p>` : ""}
+        ${(heir.relationship === "spouse" && spouseFinalTaxableAmount > 0 && spouseExemptions.additionalExemption > 0) ? `<p>배우자 추가 공제: ${Math.round(spouseExemptions.additionalExemption).toLocaleString()} 원</p>`: ""}
         ${heir.lumpSumExemption > 0 ? `<p>일괄 공제 보정액: ${Math.round(heir.lumpSumExemption).toLocaleString()} 원</p>` : ""}
         <p>과세 표준: ${Math.round(heir.finalTaxableAmount).toLocaleString()} 원</p>
         <p>개별 상속세: ${Math.round(heir.individualTax).toLocaleString()} 원</p>
