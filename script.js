@@ -1667,25 +1667,28 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         <p>총 상속 비용 차감: -${totalDeductibleCost.toLocaleString()} 원</p>
     `;
 
-    // ✅ 상속 유형에 따라 계산 실행 (차감된 금액 적용)
-    switch (document.getElementById('inheritanceType').value) {
-        case 'personal':
-            calculatePersonalMode(adjustedAssetValue);  // **adjustedAssetValue 전달**
-            break;
-        case 'group':
-            calculateGroupMode(adjustedAssetValue);  // **adjustedAssetValue 전달**
-            break;
-        case 'businessPersonal':
-            calculateBusinessPersonalMode(adjustedAssetValue);
-            break;
-        case 'businessGroup':
-            calculateBusinessGroupMode(adjustedAssetValue);
-            break;
-        default:
-            console.error('❌ 잘못된 상속 유형 선택');
-            break;
-    }
-});
+   // ✅ 상속 유형에 따라 계산 실행
+   switch (document.getElementById('inheritanceType').value) {
+       case 'personal':
+           calculatePersonalMode(adjustedAssetValue);  // 개인 상속 함수 호출
+           break;
+       case 'group':
+           calculateGroupMode(adjustedAssetValue);  // 협의 상속 함수 호출
+           break;
+       case 'legal':
+           calculateLegalMode(adjustedAssetValue);  // 법정 상속 함수 호출
+           break;
+       case 'other':  // ✅ 특수 상속 추가
+           calculateSpecialInheritanceMode(adjustedAssetValue);  // 특수 상속 함수 호출
+           break;
+       case 'businessPersonal':
+           calculateBusinessPersonalMode(adjustedAssetValue);  // 가업 상속
+           break;
+       default:
+           console.error('❌ 잘못된 상속 유형 선택');
+           break;
+     }
+ });
     
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
