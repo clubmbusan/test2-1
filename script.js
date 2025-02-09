@@ -1214,7 +1214,7 @@ function calculateLegalInheritance() {
     let spouseBasicExemption = 0; // 배우자 제외
   
     // ✅ 배우자 상속 금액 계산 (배우자 지분 적용)
-    let spouseInheritanceAmount = Math.round(totalAssetValue * spouseShare);
+   let spouseInheritanceAmount = Math.round(adjustedAssetValue * spouseShare);  // ✅ 비용 차감된 금액 사용
 
     // ✅ 배우자 기본 공제는 0으로 설정하여 배우자에게 기초공제가 배분되지 않도록 함
     spouseBasicExemption = 0;
