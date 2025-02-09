@@ -650,6 +650,10 @@ const minorChildAge = minorChildAgeElement ? parseInt(minorChildAgeElement.value
     // ✅ 기존 결과 지우기 (중복 방지)
     document.getElementById('result').innerHTML = "";
 
+function calculatePersonalMode(totalAssetValue) {
+// ✅ inheritanceCosts 값이 정의되지 않았으면 기본값 0으로 설정
+    const inheritanceCosts = window.inheritanceCosts || 0;
+
 // ✅ 개인 상속 전용 결과 출력
 document.getElementById('result').innerHTML = `
     <h3>계산 결과 (개인 상속)</h3>
