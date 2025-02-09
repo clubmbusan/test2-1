@@ -1147,6 +1147,13 @@ function calculateLegalInheritance() {
     // ✅ 총 상속 재산 계산
     let totalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
 
+    // ✅ 상속 비용 가져오기 (숫자로 변환)
+    let inheritanceCosts = parseInt(document.getElementById("inheritanceCosts")?.value.replace(/,/g, "")) || 0;
+
+    // ✅ 비용 차감된 총 상속 금액 계산
+    let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
+    console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
+
     // ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
     let totalFinancialExemption = Math.min((cashValue + stockValue) * 0.2, 200000000);
 
