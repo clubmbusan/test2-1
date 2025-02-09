@@ -644,13 +644,17 @@ if (relationship === 'spouse') {
         }
     }
     
-// ✅ 최종 공제 계산
+// ✅ 최종 공제 계산 (변수 선언은 한 번만)
 let basicAndRelationshipExemption = basicExemption + relationshipExemption;
-let generalExemptionAdjustment = 0;
+
+// ✅ 기존에 선언된 generalExemptionAdjustment 변수를 재사용
+if (typeof generalExemptionAdjustment === 'undefined') {
+    generalExemptionAdjustment = 0;  // 초기화 (이미 선언된 경우 생략 가능)
+}
 
 if (relationship !== 'spouse') {
     if (basicAndRelationshipExemption < 500000000) {
-        generalExemptionAdjustment = 500000000 - basicAndRelationshipExemption;  // 부족한 부분을 보정
+        generalExemptionAdjustment = 500000000 - basicAndRelationshipExemption;  // 부족한 부분 보정
     }
 }
 
