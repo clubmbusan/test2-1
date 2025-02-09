@@ -230,13 +230,22 @@ initializeDefaultView();
             if (index !== 0) asset.remove();
         });
 
-        // ✅ 결과창 초기화
+        // ✅ 결과창 및 내부 변수 초기화
         const resultArea = document.getElementById("result");
-        if (resultArea) resultArea.innerHTML = "";
+        if (resultArea) {
+            resultArea.innerHTML = "";  // 결과창 초기화
+            console.log("✅ 결과창 초기화 완료!");
+        }
 
-        console.log("✅ 초기화 완료! (최초 상속인 입력 필드는 유지됨)");
-    }
-});
+        // ✅ 내부 상태 변수 초기화
+        totalExemption = 0;
+        generalExemptionAdjustment = 0;
+        spouseAdditionalExemption = 0;
+        financialExemption = 0;
+
+        console.log("✅ 내부 변수 초기화 완료!");       
+       }
+    });
     
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
 const initialStockPriceField = document.querySelector('.stockPriceField');
