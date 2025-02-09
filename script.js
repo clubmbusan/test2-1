@@ -1323,7 +1323,6 @@ heirs.forEach(heir => {
     // ✅ 개별 상속세 계산
     let individualTax = calculateInheritanceTax(individualTaxableAmount);
     totalInheritanceTax += individualTax;
-});
 
     // ✅ 개별 상속인 결과 반영
 individualResults.push(`
