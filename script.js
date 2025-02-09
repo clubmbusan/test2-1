@@ -649,7 +649,7 @@ let totalExemption = financialExemption + relationshipExemption;
 if (relationship === 'spouse') {
     totalExemption += spouseAdditionalExemption;
 } else {
-    totalExemption += generalExemption;
+    totalExemption += generalExemptionAdjustment; 
 }
 totalExemption = Math.min(totalExemption, totalAssetValue - inheritanceCosts);
 
