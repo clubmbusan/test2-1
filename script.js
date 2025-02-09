@@ -613,13 +613,14 @@ const minorChildAge = minorChildAgeElement ? parseInt(minorChildAgeElement.value
        relationshipExemption = 10000000;
    }
 
-    // ✅ 배우자 추가 공제 (올바르게 계산)
+    // ✅ 배우자 추가 공제 로직 수정
     let spouseAdditionalExemption = 0;
     if (relationship === 'spouse') {
-        let spouseInheritanceAmount = totalAssetValue; // 배우자의 실제 상속분
-        spouseAdditionalExemption = Math.min((spouseInheritanceAmount - (basicExemption + relationshipExemption)) * 0.5, 3000000000); // ✅ 최대 30억 공제
-    }
+        let remainingAfterRelationshipExemption = totalAssetValue - relationshipExemption;
 
+        // ✅ 최대 공제: 관계 공제 5억 포함 최대 30억 공제
+        spouseAdditionalExemption = Math.min(remainingAfterRelationshipExemption, 2500000000);}
+   
     // ✅ 배우자가 아닐 경우, 일괄 공제 적용 (최소 5억 보장)
     let generalExemption = 0;
     if (relationship !== 'spouse') {
