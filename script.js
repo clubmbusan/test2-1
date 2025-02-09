@@ -656,6 +656,7 @@ document.getElementById('result').innerHTML = `
     <p>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</p>
     <p><strong>공제 내역:</strong></p>
     <ul>
+        <li>상속 비용 차감 후 금액: ${(totalAssetValue - inheritanceCosts).toLocaleString()} 원</li>
         ${(assetType === 'cash' || assetType === 'stock') ? 
             `<li>금융재산 공제: ${financialExemption.toLocaleString()} 원</li>` : ''}
         ${relationship !== 'spouse' ? `<li>기초 공제: ${basicExemption.toLocaleString()} 원</li>` : ''}
@@ -667,7 +668,7 @@ document.getElementById('result').innerHTML = `
     <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
     <p>과세 표준: ${taxableAmount.toLocaleString()} 원</p>
     <p>상속세: ${tax.toLocaleString()} 원</p>
-`;
+ `;
 }
 
 // ✅ 🔄 "계산하기" 버튼 클릭 시 최신 관계 값 반영!
