@@ -1547,7 +1547,7 @@ function calculateSpecialInheritance() {
     }
 
     // ✅ 과세 표준 및 상속세 계산
-    let taxableAmount = Math.max(0, totalInheritance - deduction);
+    let taxableAmount = Math.max(0, totalInheritance - deduction - inheritanceCosts);
     console.log("📌 과세 표준:", taxableAmount);
 
     // ✅ 공용 상속세 계산 함수 호출 (calculateProgressiveTax)
