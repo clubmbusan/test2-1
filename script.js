@@ -1550,7 +1550,8 @@ function calculateSpecialInheritance() {
     let taxableAmount = Math.max(0, totalInheritance - deduction);
     console.log("📌 과세 표준:", taxableAmount);
 
-    let inheritanceTax = taxableAmount > 0 ? calculateTax(taxableAmount) : 0;
+    // ✅ 공용 상속세 계산 함수 호출 (calculateProgressiveTax)
+    let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
     console.log("📌 최종 상속세 계산 완료:", inheritanceTax);
 
     // ✅ 최종 결과 출력
