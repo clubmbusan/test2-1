@@ -1147,9 +1147,9 @@ function calculateLegalInheritance() {
     // ✅ 총 상속 재산 계산
     let totalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
 
-    // ✅ 상속 비용 가져오기 (숫자로 변환)
-    let inheritanceCosts = parseInt(document.getElementById("inheritanceCosts")?.value.replace(/,/g, "")) || 0;
-    console.log("📌 입력된 상속 비용:", inheritanceCosts.toLocaleString(), "원");
+    // ✅ 비용 차감된 총 상속 금액 계산 (window.totalDeductibleCost 사용)
+    let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
+    console.log("📌 최종 상속 비용 (window.totalDeductibleCost):", inheritanceCosts.toLocaleString(), "원");
 
     // ✅ 비용 차감된 총 상속 금액 계산
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
