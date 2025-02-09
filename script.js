@@ -542,7 +542,9 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
  * @param {number} taxableAmount - 과세 표준 금액
  * @returns {number} 계산된 상속세 금액
  */   
- function calculateInheritanceTax(amount) {
+ function calculateProgressiveTax(amount) {
+    if (amount <= 0) return 0;
+
     let tax = 0;
     let previousThreshold = 0;
 
