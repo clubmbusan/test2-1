@@ -1687,7 +1687,7 @@ document.getElementById('calculateButton').addEventListener('click', () => {
            calculateLegalInheritance();  // ✅ 법정 상속 함수 호출 
            break;
        case 'other':  // ✅ 특수 상속 추가
-           calculateSpecialInheritanceMode(adjustedAssetValue);  // 특수 상속 함수 호출
+          calculateSpecialInheritance();  // ✅ 매개변수 없이 함수 호출
            break;
        case 'businessPersonal':
            calculateBusinessPersonalMode(adjustedAssetValue);  // 가업 상속
