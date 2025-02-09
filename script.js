@@ -1546,6 +1546,10 @@ function calculateSpecialInheritance() {
             return;
     }
 
+    // ✅ 상속 비용 가져오기 (window.totalDeductibleCost 사용)
+    let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
+    console.log("📌 최종 상속 비용 (window.totalDeductibleCost):", inheritanceCosts.toLocaleString(), "원");
+  
     // ✅ 과세 표준 및 상속세 계산
     let taxableAmount = Math.max(0, totalInheritance - deduction - inheritanceCosts);
     console.log("📌 과세 표준:", taxableAmount);
