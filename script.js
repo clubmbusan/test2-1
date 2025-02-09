@@ -542,11 +542,9 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
  * @param {number} taxableAmount - 과세 표준 금액
  * @returns {number} 계산된 상속세 금액
  */   
- function calculateProgressiveTax(amount) {
-    if (amount <= 0) return 0; // 과세 표준이 0 이하이면 세금 없음
-
+ function calculateInheritanceTax(amount) {
     let tax = 0;
-    let previousThreshold = 0; // 이전 구간의 상한선
+    let previousThreshold = 0;
 
     // ✅ 상속세 구간별 세율 및 누진 공제
     const taxBrackets = [
@@ -554,7 +552,7 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
         { threshold: 500000000, rate: 0.2, cumulativeTax: 10000000 },        // 5억 이하: 20% (누진공제 1천만 원)
         { threshold: 1000000000, rate: 0.3, cumulativeTax: 60000000 },       // 10억 이하: 30% (누진공제 6천만 원)
         { threshold: 3000000000, rate: 0.4, cumulativeTax: 160000000 },      // 30억 이하: 40% (누진공제 1억 6천만 원)
-        { threshold: Infinity, rate: 0.5, cumulativeTax: 460000000 }        // 30억 초과: 50% (누진공제 4억 6천만 원)
+        { threshold: Infinity, rate: 0.5, cumulativeTax: 460000000 }         // 30억 초과: 50% (누진공제 4억 6천만 원)
     ];
 
     for (let bracket of taxBrackets) {
@@ -564,13 +562,13 @@ function calculateTaxableAmount(totalInheritance, exemptions) {
         } else {
             // 마지막 해당 구간에서 남은 금액에 대한 세금 계산 후 종료
             tax += (amount - previousThreshold) * bracket.rate;
-            tax -= bracket.cumulativeTax; // ✅ 마지막 구간에서 누진 공제 적용
+            tax -= bracket.cumulativeTax; // ✅ 누진 공제 적용
             break;
         }
         previousThreshold = bracket.threshold;
     }
 
-    return Math.max(tax, 0); // 음수 방지
+    return Math.max(tax, 0); // ✅ 음수 방지
 }
     
 /**
