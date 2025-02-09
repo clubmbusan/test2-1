@@ -1466,8 +1466,8 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     // ✅ 과세 금액 계산
     let taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
 
-    // ✅ 상속세 계산
-    let tax = calculateTax(taxableAmount);
+    // ✅ 과세 표준 및 상속세 계산
+    let tax = calculateProgressiveTax(taxableAmount); 
 
     // ✅ 결과 출력
     document.getElementById('result').innerHTML = `
