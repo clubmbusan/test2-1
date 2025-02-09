@@ -621,12 +621,11 @@ if (assetTypeElement) {assetType = assetTypeElement.value;}
    }
 
     // ✅ 배우자 추가 공제 로직 수정
-    let spouseAdditionalExemption = 0;
-    if (relationship === 'spouse') {
-        let remainingAfterRelationshipExemption = totalAssetValue - relationshipExemption;
-
-        // ✅ 최대 공제: 관계 공제 5억 포함 최대 30억 공제
-        spouseAdditionalExemption = Math.min(remainingAfterRelationshipExemption, 2500000000);}
+   let spouseAdditionalExemption = 0;
+   if (relationship === 'spouse') {
+       let remainingAfterExemptions = totalAssetValue - inheritanceCosts - financialExemption - relationshipExemption;
+       spouseAdditionalExemption = Math.min(remainingAfterExemptions, 2500000000); // 최대 25억 공제 (관계 공제 제외)
+    }
    
     // ✅ 배우자가 아닐 경우, 일괄 공제 적용 (최소 5억 보장)
     let generalExemption = 0;
@@ -669,7 +668,7 @@ document.getElementById('result').innerHTML = `
         ${relationship !== 'spouse' ? `<li>기초 공제: ${basicExemption.toLocaleString()} 원</li>` : ''}
         <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
         ${relationship === 'spouse' ? 
-            `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원 (최대 30억)</li>` : 
+            `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원 (최대 25억)</li>` : 
             `<li>일괄 공제: ${generalExemption.toLocaleString()} 원</li>`}
     </ul>
     <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
