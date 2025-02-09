@@ -1149,6 +1149,7 @@ function calculateLegalInheritance() {
 
     // ✅ 상속 비용 가져오기 (숫자로 변환)
     let inheritanceCosts = parseInt(document.getElementById("inheritanceCosts")?.value.replace(/,/g, "")) || 0;
+    console.log("📌 입력된 상속 비용:", inheritanceCosts.toLocaleString(), "원");
 
     // ✅ 비용 차감된 총 상속 금액 계산
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
@@ -1215,6 +1216,7 @@ function calculateLegalInheritance() {
   
     // ✅ 배우자 상속 금액 계산 (배우자 지분 적용)
    let spouseInheritanceAmount = Math.round(adjustedAssetValue * spouseShare);  // ✅ 비용 차감된 금액 사용
+   console.log("📌 배우자 상속 금액 (비용 차감 적용):", spouseInheritanceAmount.toLocaleString(), "원");
 
     // ✅ 배우자 기본 공제는 0으로 설정하여 배우자에게 기초공제가 배분되지 않도록 함
     spouseBasicExemption = 0;
@@ -1223,6 +1225,7 @@ function calculateLegalInheritance() {
    let spouseAdditionalExemption = spouseExists 
         ? Math.min(spouseInheritanceAmount - 500000000, 3000000000) 
         : 0;
+    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString(), "원");
 
     // ✅ 최종 배우자 추가 공제 값 로그 확인 (소수점 없는 정수 값 출력)
     console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString(), "원");
