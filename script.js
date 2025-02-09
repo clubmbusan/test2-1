@@ -591,11 +591,13 @@ const minorChildAge = minorChildAgeElement ? parseInt(minorChildAgeElement.value
 
 // ✅ 수정된 초기화 코드 (assetType 및 inheritanceCosts 초기화)
 const inheritanceCosts = window.inheritanceCosts || 0; // 상속 비용 기본값 0
-let assetType = 'realEstate'; // 기본값: 'realEstate'
+    let assetType = 'realEstate'; // 기본값: 'realEstate'
 
-const assetTypeElement = document.getElementById('assetType');
-if (assetTypeElement) {assetType = assetTypeElement.value;}
-
+    const assetTypeElement = document.getElementById('assetType');
+    if (assetTypeElement) {
+        assetType = assetTypeElement.value;
+    }
+    
    // ✅ 기초 공제 (2억) & 관계 공제 적용
    let basicExemption = 200000000;
    let relationshipExemption = 0;
@@ -634,10 +636,13 @@ if (relationship === 'spouse') {
 }
 
 // ✅ 배우자가 아닐 경우, 일괄 공제 적용 (최소 5억 보장)  
-let generalExemption = 0;  
-if (relationship !== 'spouse') {  
-    generalExemption = Math.max(500000000 - (basicExemption + relationshipExemption), 0);  
-}
+ let generalExemptionAdjustment = 0;
+    if (relationship !== 'spouse') {
+        let individualExemptionTotal = basicExemption + relationshipExemption;
+        if (individualExemptionTotal < 500000000) {
+            generalExemptionAdjustment = 500000000 - individualExemptionTotal; // 일괄공제 보정액 계산
+        }
+    }
     
 // ✅ 최종 공제 계산 (중복 제거)
 let totalExemption = financialExemption + relationshipExemption;
@@ -669,7 +674,7 @@ document.getElementById('result').innerHTML = `
         <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
         ${relationship === 'spouse' ? 
             `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원 (최대 25억)</li>` : 
-            `<li>일괄 공제: ${generalExemption.toLocaleString()} 원</li>`}
+             <li><strong>일괄공제 보정액: ${generalExemptionAdjustment.toLocaleString()} 원</strong></li>
     </ul>
     <p><strong>최종 공제 금액:</strong> ${(inheritanceCosts + financialExemption + relationshipExemption + spouseAdditionalExemption).toLocaleString()} 원</p>
     <p>과세 표준: ${taxableAmount.toLocaleString()} 원</p>
