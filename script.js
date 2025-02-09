@@ -1214,21 +1214,26 @@ function calculateLegalInheritance() {
     let otherBasicExemption = numOthers > 0 ? Math.round((1 / nonSpouseTotalInheritance) * totalBasicExemption) : 0;
     let spouseBasicExemption = 0; // 배우자 제외
   
-    // ✅ 배우자 상속 금액 계산 (배우자 지분 적용)
-   let spouseInheritanceAmount = Math.round(adjustedAssetValue * spouseShare);  // ✅ 비용 차감된 금액 사용
-   console.log("📌 배우자 상속 금액 (비용 차감 적용):", spouseInheritanceAmount.toLocaleString(), "원");
+    // ✅ 배우자 상속 금액 계산 (비용 차감된 금액 사용)
+    let spouseInheritanceAmount = Math.round(adjustedAssetValue * spouseShare);  
+    console.log("📌 배우자 상속 금액 (비용 차감 적용):", spouseInheritanceAmount.toLocaleString(), "원");
 
     // ✅ 배우자 기본 공제는 0으로 설정하여 배우자에게 기초공제가 배분되지 않도록 함
     spouseBasicExemption = 0;
 
-   // ✅ 배우자 추가 공제 계산 (배우자 상속 지분과 30억 중 작은 값 적용)
-   let spouseAdditionalExemption = spouseExists 
-        ? Math.min(spouseInheritanceAmount - 500000000, 3000000000) 
+    // ✅ 배우자 추가 공제 계산 (금융재산 공제와 관계 공제를 차감 후 남은 금액 기준으로 수정)
+    let remainingAfterExemptions = Math.max(
+        spouseInheritanceAmount - spouseFinancialExemption - 500000000, 
+        0
+    );
+    let spouseAdditionalExemption = spouseExists 
+        ? Math.min(remainingAfterExemptions, 3000000000)  // 30억 원 한도 적용
         : 0;
-    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString(), "원");
+
+    console.log("📌 최종 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString(), "원");
 
     // ✅ 최종 배우자 추가 공제 값 로그 확인 (소수점 없는 정수 값 출력)
-    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString(), "원");
+    console.log("📌 배우자 추가 공제 최종 적용:", spouseAdditionalExemption.toLocaleString(), "원");
 
     // ✅ 배우자 제외한 상속인의 기초공제 + 관계공제 합계
     let totalNonSpouseExemptions = heirs.reduce((sum, heir) => {
