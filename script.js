@@ -1257,7 +1257,7 @@ function calculateLegalInheritance() {
         ? 500000000  
         : totalNonSpouseExemptions;
 
-   // ✅ 개별 상속인별 과세 표준 및 상속세 계산
+// ✅ 개별 상속인별 과세 표준 및 상속세 계산
 heirs.forEach(heir => {
     let name = heir.querySelector(".heirName")?.value || "상속인";
     let relationship = heir.querySelector(".relationship")?.value;
@@ -1272,32 +1272,35 @@ heirs.forEach(heir => {
     
     // ✅ 상속 금액 계산 (비용 차감된 금액 기준)
     let inheritanceAmount = Math.round(adjustedAssetValue * share);  // 기존 totalAssetValue → adjustedAssetValue로 변경
-    
+    console.log(`📌 ${name} 상속 금액:`, inheritanceAmount.toLocaleString(), "원");
+
+    // ✅ 개별 공제 계산
     let individualFinancialExemption = (relationship === "spouse") ? spouseFinancialExemption :
                                        (relationship === "adultChild" || relationship === "minorChild") ? childFinancialExemption :
                                        (relationship === "parent") ? parentFinancialExemption :
                                        (relationship === "sibling") ? siblingFinancialExemption :
                                        (relationship === "other") ? otherFinancialExemption : 0;
+
     let individualBasicExemption = (relationship === "spouse") ? spouseBasicExemption :
                                    (relationship === "adultChild" || relationship === "minorChild") ? childBasicExemption :
                                    (relationship === "parent") ? parentBasicExemption :
                                    (relationship === "sibling") ? siblingBasicExemption :
                                    (relationship === "other") ? otherBasicExemption : 0;
 
-    // ✅ 관계 공제 (배우자 5억, 부모 5천만, 성년 자녀 5천만, 미성년 자녀 연령에 따라 계산, 형제 1천만, 기타 1천만)
+    // ✅ 관계 공제 계산
     let individualRelationshipExemption = 0;
     if (relationship === "spouse") {
-        individualRelationshipExemption = 500000000; // 배우자 (5억)
+        individualRelationshipExemption = 500000000;
     } else if (relationship === "parent") {
-        individualRelationshipExemption = 50000000; // 부모 (5천만)
+        individualRelationshipExemption = 50000000;
     } else if (relationship === "adultChild") {
-        individualRelationshipExemption = 50000000; // 성년 자녀 (5천만)
+        individualRelationshipExemption = 50000000;
     } else if (relationship === "minorChild") {
-        individualRelationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000); // 미성년 자녀 (최대 3천만)
+        individualRelationshipExemption = Math.min((19 - minorChildAge) * 10000000, 30000000);
     } else if (relationship === "sibling") {
-        individualRelationshipExemption = 10000000; // 형제자매 (1천만)
+        individualRelationshipExemption = 10000000;
     } else {
-        individualRelationshipExemption = 10000000; // 기타 상속인 (1천만)
+        individualRelationshipExemption = 10000000;
     }
 
     // ✅ 개별 상속인의 기초공제 + 관계공제 합산
@@ -1308,7 +1311,7 @@ heirs.forEach(heir => {
         ? Math.max(0, maxIndividualLumpSumExemption - totalIndividualExemption)
         : 0;
 
-    // ✅ 배우자 추가 공제는 배우자에게만 적용되도록 수정
+    // ✅ 배우자 추가 공제 적용
     let individualSpouseAdditionalExemption = (relationship === "spouse") ? spouseAdditionalExemption : 0;
 
     // ✅ 개별 상속인의 과세 표준 계산
@@ -1320,6 +1323,7 @@ heirs.forEach(heir => {
     // ✅ 개별 상속세 계산
     let individualTax = calculateInheritanceTax(individualTaxableAmount);
     totalInheritanceTax += individualTax;
+});
 
     // ✅ 개별 상속인 결과 반영
 individualResults.push(`
