@@ -759,41 +759,43 @@ function calculateGroupMode() {
     // ✅ 디버깅: heirs 배열이 올바르게 생성되었는지 확인
     console.log("🔍 [디버깅] 초기 상속인 데이터:", heirs);    
 
-    // ✅ 변수 선언 (초기값 0 설정) - 중복 선언 방지
-    let lumpSumExemption = 0;  
+// ✅ 변수 선언 (초기값 0 설정) - 중복 선언 방지
+let lumpSumExemption = 0;
 
-    // ✅ 배우자 정보 설정
-    let spouse = heirs.find(h => h.relationship === 'spouse');
-    let spouseExemptions = { additionalExemption: 0 };
+// ✅ 배우자 정보 설정
+let spouse = heirs.find(h => h.relationship === 'spouse');
+let spouseExemptions = { additionalExemption: 0 };
 
-    if (spouse) {
+if (spouse) {
     // ✅ 배우자 상속 금액 (비용 차감 후 기준)
     let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
     console.log("📌 배우자 상속 금액 (비용 차감 후):", spouseInheritanceAmount.toLocaleString());
 
-    // ✅ 1. 기존 결과값에서 금융재산 공제 사용
-    let spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
-
+    // ✅ 1. 금융재산 공제 적용 (최대 2억 원)
+    let spouseFinancialExemption = Math.min((maxFinancialExemption * spouse.sharePercentage) / 100, 200000000);
     let remainingAfterFinancialExemption = spouseInheritanceAmount - spouseFinancialExemption;
     console.log("📌 금융재산 공제 후 남은 금액:", remainingAfterFinancialExemption.toLocaleString());
-       
-    // ✅ 2. 배우자 관계 공제 적용 (비용 차감 후 기준에서 5억 적용)
+    
+    // ✅ 2. 배우자 관계 공제 적용 (최대 5억 원)
     let spouseRelationshipExemption = Math.min(remainingAfterFinancialExemption, 500000000);
     let remainingAfterRelationship = remainingAfterFinancialExemption - spouseRelationshipExemption;
     console.log("📌 관계 공제 후 남은 금액:", remainingAfterRelationship.toLocaleString());
 
-    // ✅ 3. 배우자 추가 공제 (과세 표준이 남아 있을 때만 적용)
-   let spouseAdditionalExemption = 0;
-   if (remainingAfterRelationship > 0) {
-       spouseAdditionalExemption = Math.min(remainingAfterRelationship, 2500000000);
-   }
-   console.log("📌 수정된 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
+    // ✅ 3. 배우자 추가 공제 적용 (남은 금액이 있을 때 최대 25억 원 공제)
+    let spouseAdditionalExemption = 0;
+    if (remainingAfterRelationship > 0) {
+        spouseAdditionalExemption = Math.min(remainingAfterRelationship, 2500000000);
+        remainingAfterRelationship -= spouseAdditionalExemption;
+    }
+    console.log("📌 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
 
     // ✅ 최종 과세 표준 계산
-    let taxableAmount = remainingAfterRelationship - spouseAdditionalExemption;
-    taxableAmount = Math.max(0, taxableAmount);  // 음수 방지
+    let taxableAmount = Math.max(0, remainingAfterRelationship);  // 음수 방지
     console.log("📌 최종 과세 표준:", taxableAmount.toLocaleString());
-  
+    
+    // ✅ 결과 저장 (필요하면 spouseExemptions에 값을 추가)
+    spouseExemptions.additionalExemption = spouseAdditionalExemption;
+ 
     // ✅ 배우자 공제 이월 수정 (배우자 상속 금액에서 최소 공제(5억) 차감 후 이월)
     let spouseRemainingExemption = Math.max(spouseRelationshipExemption - spouseInheritanceAmount, 0); // 5억 차감 후 남은 공제액
 
