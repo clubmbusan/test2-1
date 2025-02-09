@@ -589,6 +589,10 @@ if (!relationshipElement) {
 const relationship = relationshipElement.value || 'other';
 const minorChildAge = minorChildAgeElement ? parseInt(minorChildAgeElement.value) : 0; // 나이 값이 없을 경우 기본값 0
 
+   // ✅ assetType 초기화
+   const assetTypeElement = document.getElementById('assetType');
+   const assetType = assetTypeElement ? assetTypeElement.value : 'realEstate'; // 기본값 설정
+    
    // ✅ 기초 공제 (2억) & 관계 공제 적용
    let basicExemption = 200000000;
    let relationshipExemption = 0;
