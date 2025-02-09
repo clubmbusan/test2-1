@@ -965,7 +965,6 @@ if (spouse) {
 // ✅ 배우자의 과세 표준 계산 (기초 공제 제외)
 let spouseFinalTaxableAmount = spouseInheritanceAmount  
                                - spouseFinancialExemption 
-                               - spouseBasicExemption   // 🔥 배우자의 기본 공제도 차감
                                - spouseRelationshipExemption 
                                - spouseExemptions.additionalExemption;
 
