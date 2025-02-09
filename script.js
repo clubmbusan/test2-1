@@ -654,7 +654,11 @@ const minorChildAge = minorChildAgeElement ? parseInt(minorChildAgeElement.value
     // ✅ 기존 결과 지우기 (중복 방지)
     document.getElementById('result').innerHTML = "";
 
-// ✅ 개인 상속 전용 결과 출력
+// ✅ 개인 상속 전용 결과 출력 (inheritanceCosts와 assetType 초기화 추가)
+const inheritanceCosts = window.inheritanceCosts || 0;
+const assetTypeElement = document.getElementById('assetType');
+const assetType = assetTypeElement ? assetTypeElement.value : 'realEstate'; // 기본값: 'realEstate'
+   
 document.getElementById('result').innerHTML = `
     <h3>계산 결과 (개인 상속)</h3>
     <p>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</p>
