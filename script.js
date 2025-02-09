@@ -1267,8 +1267,9 @@ heirs.forEach(heir => {
                 (relationship === "sibling") ? siblingShare : 
                 (relationship === "other") ? otherShare : 0;
     
-    let inheritanceAmount = Math.round(totalAssetValue * share);
-
+    // ✅ 상속 금액 계산 (비용 차감된 금액 기준)
+    let inheritanceAmount = Math.round(adjustedAssetValue * share);  // 기존 totalAssetValue → adjustedAssetValue로 변경
+    
     let individualFinancialExemption = (relationship === "spouse") ? spouseFinancialExemption :
                                        (relationship === "adultChild" || relationship === "minorChild") ? childFinancialExemption :
                                        (relationship === "parent") ? parentFinancialExemption :
@@ -1346,7 +1347,7 @@ if (totalNonSpouseExemptions >= 500000000) {
 
 // ✅ 최종 결과 출력
 document.getElementById('result').innerHTML = `
-    <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
+    <h3>총 상속 금액 (비용 차감): ${adjustedAssetValue.toLocaleString()} 원</h3>
     ${totalFinancialExemption > 0 ? `<h3>금융재산 공제: ${totalFinancialExemption.toLocaleString()} 원</h3>` : ""}
     ${exemptionDisplay}
     ${spouseExists ? `<h3>배우자 관계공제: 500,000,000 원</h3>` : ""}
