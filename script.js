@@ -662,7 +662,7 @@ totalExemption = Math.min(totalExemption, totalAssetValue - inheritanceCosts);
     // ✅ 기존 결과 지우기 (중복 방지)
     document.getElementById('result').innerHTML = "";
    
-// ✅ 개인 상속 전용 결과 출력 
+// ✅ 개인 상속 전용 결과 출력
 document.getElementById('result').innerHTML = `
     <h3>계산 결과 (개인 상속)</h3>
     <p>총 상속 금액 (비용 차감): ${(totalAssetValue - inheritanceCosts).toLocaleString()} 원</p> <!-- 비용 차감 후 금액 -->
@@ -674,12 +674,12 @@ document.getElementById('result').innerHTML = `
         <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
         ${relationship === 'spouse' ? 
             `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원 (최대 25억)</li>` : 
-             <li><strong>일괄공제 보정액: ${generalExemptionAdjustment.toLocaleString()} 원</strong></li>
+            `<li><strong>일괄공제 보정액: ${generalExemptionAdjustment.toLocaleString()} 원</strong></li>`}
     </ul>
-    <p><strong>최종 공제 금액:</strong> ${(inheritanceCosts + financialExemption + relationshipExemption + spouseAdditionalExemption).toLocaleString()} 원</p>
+    <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
     <p>과세 표준: ${taxableAmount.toLocaleString()} 원</p>
     <p>상속세: ${tax.toLocaleString()} 원</p>
- `;
+`;
 }
 
 // ✅ 🔄 "계산하기" 버튼 클릭 시 최신 관계 값 반영!
