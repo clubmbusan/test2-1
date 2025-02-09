@@ -620,32 +620,32 @@ if (assetTypeElement) {assetType = assetTypeElement.value;}
        relationshipExemption = 10000000;
    }
 
-    // ✅ 배우자 추가 공제 로직 수정
-   let spouseAdditionalExemption = 0;
-   if (relationship === 'spouse') {
-       let remainingAfterExemptions = totalAssetValue - inheritanceCosts - financialExemption - relationshipExemption;
-       spouseAdditionalExemption = Math.min(remainingAfterExemptions, 2500000000); // 최대 25억 공제 (관계 공제 제외)
-    }
-   
-    // ✅ 배우자가 아닐 경우, 일괄 공제 적용 (최소 5억 보장)
-    let generalExemption = 0;
-    if (relationship !== 'spouse') {
-        generalExemption = Math.max(500000000 - (basicExemption + relationshipExemption), 0);
-    }
+// ✅ 배우자 추가 공제 로직과 금융재산 공제 로직
+let financialExemption = 0;  
+if (assetType === 'cash' || assetType === 'stock') {  
+    financialExemption = Math.min(totalAssetValue * 0.2, 200000000);  // 최대 2억  
+}
 
-    // ✅ 금융재산 공제 추가 (현금 또는 주식 선택 시에만 적용, 최대 2억)
-    let financialExemption = 0;
-    if (assetType === 'cash' || assetType === 'stock') {
-        financialExemption = Math.min(totalAssetValue * 0.2, 200000000);
-    }
+// ✅ 배우자 추가 공제 로직 (단일 적용)  
+let spouseAdditionalExemption = 0;  
+if (relationship === 'spouse') {  
+    let remainingAfterExemptions = totalAssetValue - inheritanceCosts - financialExemption - relationshipExemption;  
+    spouseAdditionalExemption = Math.max(0, Math.min(remainingAfterExemptions, 2500000000)); // 최대 25억 공제  
+}
 
-    // ✅ 최종 공제 계산 (총합)
-    let totalExemption = basicExemption + relationshipExemption + financialExemption;
-    if (relationship === 'spouse') {
-        totalExemption += spouseAdditionalExemption;
-    } else {
-        totalExemption += generalExemption;
-    }
+// ✅ 배우자가 아닐 경우, 일괄 공제 적용 (최소 5억 보장)  
+let generalExemption = 0;  
+if (relationship !== 'spouse') {  
+    generalExemption = Math.max(500000000 - (basicExemption + relationshipExemption), 0);  
+}
+
+// ✅ 최종 공제 계산 (총합)  
+let totalExemption = basicExemption + relationshipExemption + financialExemption;  
+if (relationship === 'spouse') {  
+    totalExemption += spouseAdditionalExemption;  
+} else {  
+    totalExemption += generalExemption;  
+}
 
     // ✅ 과세 표준 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
