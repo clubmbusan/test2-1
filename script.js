@@ -1554,17 +1554,17 @@ function calculateSpecialInheritance() {
     let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
     console.log("📌 최종 상속세 계산 완료:", inheritanceTax);
 
-    // ✅ 최종 결과 출력
-    document.getElementById("result").innerHTML = `
-        <h3>특수상속 계산 결과</h3>
-        <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
-        <p>총 상속 재산: <strong>${totalInheritance.toLocaleString()} 원</strong></p>
-        <p>공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
-        <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
-        <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
-        <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
-        <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
-    `;
+// ✅ 최종 결과 출력 (비용 차감 후 총 상속 재산으로 표시)
+document.getElementById("result").innerHTML = `
+    <h3>특수상속 계산 결과</h3>
+    <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
+    <p>총 상속 재산 (비용 차감): <strong>${(totalInheritance - inheritanceCosts).toLocaleString()} 원</strong></p>
+    <p>공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
+    <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
+    <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
+    <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
+    <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
+ `;
 }
 
  // ✅ 상속 비용 모달   
