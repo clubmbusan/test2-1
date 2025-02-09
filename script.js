@@ -230,6 +230,14 @@ initializeDefaultView();
             if (index !== 0) asset.remove();
         });
 
+        // ✅ 상속 비용 초기화
+          window.totalDeductibleCost = 0;  // 상속 비용 초기화
+          const costSummary = document.getElementById("costSummary");
+          if (costSummary) {
+              costSummary.textContent = "총 상속 비용: 0 원";  // UI 업데이트
+              console.log("✅ 상속 비용 초기화 완료!");
+          }
+     
         // ✅ 결과창 및 내부 변수 초기화
         const resultArea = document.getElementById("result");
         if (resultArea) {
