@@ -927,49 +927,24 @@ finalLumpSumExemptionTotal = heirs
 
 console.log(`✅ 최종 일괄 공제 보정액 합계 (기대값: 5억):`, finalLumpSumExemptionTotal);
 
-// ✅ 배우자 관련 변수를 먼저 선언하여 어디서든 접근 가능하도록 수정
-let spouseInheritanceAmount = 0;
-let spouseFinancialExemption = 0;
-let spouseBasicExemption = 0;
-let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
-let spouseAdditionalExemption = 0; // ✅ 배우자 추가 공제 기본값 초기화
+// ✅ 배우자 관련 변수 선언 (중복 제거 및 일관성 유지)
+let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
+let spouseFinancialExemption = Math.min((maxFinancialExemption * spouse.sharePercentage) / 100, 200000000);
+let spouseRelationshipExemption = Math.min(spouseInheritanceAmount - spouseFinancialExemption, 500000000); 
+let remainingAfterRelationship = spouseInheritanceAmount - spouseFinancialExemption - spouseRelationshipExemption;
 
-// ✅ 배우자가 있을 경우, 실제 상속 금액 계산
-if (spouse) {
-    spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;  // ✅ 비용 차감 후 기준
-    spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
-    spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
+console.log("📌 관계 공제 후 남은 금액:", remainingAfterRelationship.toLocaleString());
 
-    // ✅ 배우자 관계 공제 적용 (비용 차감 후 기준)
-    let spouseRelationshipExemption = Math.min(spouseInheritanceAmount, 500000000);
-    let spouseRemainingAfterRelationship = spouseInheritanceAmount - spouseRelationshipExemption;
+// ✅ 배우자 추가 공제 적용 (최대 25억)
+let spouseAdditionalExemption = Math.max(0, Math.min(remainingAfterRelationship, 2500000000));
+remainingAfterRelationship -= spouseAdditionalExemption;
+console.log("📌 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
 
-    console.log("📌 관계 공제 후 남은 금액:", spouseRemainingAfterRelationship.toLocaleString());
+spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
-    // ✅ 배우자 추가 공제 (최대 25억까지 적용)
-    let spouseAdditionalExemption = Math.min(spouseRemainingAfterRelationship, 2500000000);
-    console.log("📌 수정된 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
-
-    spouseExemptions.additionalExemption = spouseAdditionalExemption;
-
-    // ✅ 과세 표준 계산
-    let spouseRemainingAmount = spouseInheritanceAmount 
-                               - spouseFinancialExemption 
-                               - spouseRelationshipExemption 
-                               - spouseAdditionalExemption;
-    spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
-
-    console.log("📌 최종 과세 표준 (배우자):", spouseRemainingAmount.toLocaleString());
-  }
-
-// ✅ 배우자의 과세 표준 계산 (기초 공제 제외)
-let spouseFinalTaxableAmount = spouseInheritanceAmount  
-                               - spouseFinancialExemption 
-                               - spouseRelationshipExemption 
-                               - spouseExemptions.additionalExemption;
-
-// ✅ 과세 표준이 음수가 되지 않도록 보정
-spouseFinalTaxableAmount = Math.max(spouseFinalTaxableAmount, 0);
+// ✅ 최종 과세 표준 계산
+let spouseFinalTaxableAmount = Math.max(0, remainingAfterRelationship);
+console.log("📌 최종 과세 표준 (배우자):", spouseFinalTaxableAmount.toLocaleString());
 
 // ✅ 상속 비용 차감 후 최종 상속 금액 계산
 adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts); // 상속 비용 차감 먼저 계산
