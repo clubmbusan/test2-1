@@ -1676,7 +1676,7 @@ document.getElementById('calculateButton').addEventListener('click', () => {
            calculateGroupMode(adjustedAssetValue);  // 협의 상속 함수 호출
            break;
        case 'legal':
-           calculateLegalMode(adjustedAssetValue);  // 법정 상속 함수 호출
+           calculateLegalInheritance();  // ✅ 법정 상속 함수 호출 
            break;
        case 'other':  // ✅ 특수 상속 추가
            calculateSpecialInheritanceMode(adjustedAssetValue);  // 특수 상속 함수 호출
