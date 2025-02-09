@@ -781,17 +781,14 @@ if (spouse) {
     let remainingAfterRelationship = remainingAfterFinancialExemption - spouseRelationshipExemption;
     console.log("📌 관계 공제 후 남은 금액:", remainingAfterRelationship.toLocaleString());
 
-    // ✅ 3. 배우자 추가 공제 적용 (남은 금액이 0 이상일 때만)
+    // ✅ 3. 배우자 추가 공제 적용 (단일 적용, 중복 방지)
     let spouseAdditionalExemption = 0;
-    let taxableAmount = remainingAfterRelationship;  // 과세 표준 초기값
-
-     if (taxableAmount > 0) {
-        spouseAdditionalExemption = Math.min(taxableAmount, 2500000000);
-        taxableAmount -= spouseAdditionalExemption;
+    if (remainingAfterRelationship > 0) {
+        spouseAdditionalExemption = Math.min(remainingAfterRelationship, 2500000000);
     }
-    taxableAmount = Math.max(0, taxableAmount);  // 음수 방지
+    let finalTaxableAmount = Math.max(0, remainingAfterRelationship - spouseAdditionalExemption);
     console.log("📌 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
-    console.log("📌 최종 과세 표준:", taxableAmount.toLocaleString());
+    console.log("📌 최종 과세 표준:", finalTaxableAmount.toLocaleString());
 
     // ✅ 결과 저장 (배우자 추가 공제를 변경하지 않고 유지)
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
