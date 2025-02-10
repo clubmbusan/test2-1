@@ -1451,10 +1451,7 @@ function calculateTotalAssetValue() {
     if (!otherType) {
     alert("올바른 특수상속 유형을 선택하세요.");
     return;
-    }
-
-    console.log("📌 선택된 특수상속 유형:", otherType);
-
+      
     // ✅ 공제 금액 및 메시지 초기화
     let deduction = 0;
     let policyMessage = "";
