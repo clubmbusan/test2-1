@@ -355,6 +355,25 @@ function calculateRelationshipExemption(relationship, age) {
     }
 }
 
+    // 기존 상속 비율 필드 이벤트 등록 (최초 로딩 시 적용)
+document.querySelectorAll('.sharePercentageField').forEach((field) => {
+    field.addEventListener('input', () => {
+        const value = parseFloat(field.value) || 0;
+
+        // 비율 검증: 범위 제한 (0~100)
+        if (value < 0 || value > 100) {
+            alert('상속 비율은 0%에서 100% 사이여야 합니다.');
+            field.value = ''; // 잘못된 입력 초기화
+            return;
+        }
+
+        // 전체 합 검증
+        if (!validateSharePercentage()) {
+            field.value = ''; // 잘못된 입력 초기화
+        }
+    });
+});
+    
     // 새로 추가된 상속 비율 필드 이벤트 등록
     const sharePercentageField = newHeirEntry.querySelector('.sharePercentageField');
     sharePercentageField.addEventListener('input', () => {
@@ -376,26 +395,7 @@ function calculateRelationshipExemption(relationship, age) {
     heirContainer.appendChild(newHeirEntry);
 });
 
-// 기존 상속 비율 필드 이벤트 등록 (최초 로딩 시 적용)
-document.querySelectorAll('.sharePercentageField').forEach((field) => {
-    field.addEventListener('input', () => {
-        const value = parseFloat(field.value) || 0;
-
-        // 비율 검증: 범위 제한 (0~100)
-        if (value < 0 || value > 100) {
-            alert('상속 비율은 0%에서 100% 사이여야 합니다.');
-            field.value = ''; // 잘못된 입력 초기화
-            return;
-        }
-
-        // 전체 합 검증
-        if (!validateSharePercentage()) {
-            field.value = ''; // 잘못된 입력 초기화
-        }
-    });
-});
-
-     // ✅ 법정 상속: 상속인 추가 기능 (협의 상속과 동일)
+    // ✅ 법정 상속: 상속인 추가 기능 (협의 상속과 동일)
     addLegalHeirButton.addEventListener('click', () => {
         const newHeir = document.createElement('div');
         newHeir.classList.add('heir-entry');
@@ -1627,21 +1627,26 @@ document.addEventListener('input', (event) => {
     }
 });
 
-// 숫자 입력 필드에 콤마 추가 (클래스 기반 적용)
+// ✅ 숫자 입력 필드에 콤마 추가 (클래스 기반 적용)
 document.addEventListener('input', function (event) {
     const target = event.target;
 
     // 적용할 클래스 목록
-    const applicableClasses = ['assetValue', 'stockQuantityField', 'stockPriceField'];
+    const applicableClasses = [
+        'assetValue',          // 재산 가치 필드
+        'stockQuantityField',  // 주식 수량 필드
+        'stockPriceField',     // 주식 가격 필드
+        'inheritanceCostField' // 상속 비용 필드
+    ];
 
-    // 클래스가 포함된 경우에만 콤마 적용
+    // 해당 클래스가 있는 경우 콤마 적용
     if (applicableClasses.some(className => target.classList.contains(className))) {
-        const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 이외 문자 제거
+        const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
         target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : ''; // 숫자에 콤마 추가
     }
 });
 
-// ✅ 주식 총 금액을 계산하고 assetValue 클래스를 추가하는 함수
+// ✅ 주식 총 금액을 계산하는 함수
 function calculateStockTotal(stockQuantityId, stockPriceId, stockTotalId) {
     const stockQuantity = document.getElementById(stockQuantityId);
     const stockPrice = document.getElementById(stockPriceId);
@@ -1673,41 +1678,24 @@ document.addEventListener('input', () => {
     }
 });
 
-// ✅ 입력 필드에 콤마 추가 이벤트 등록
-function addCommaFormatting(inputField) {
-    inputField.addEventListener('input', () => {
-        const numericValue = inputField.value.replace(/,/g, ''); // 콤마 제거
-        if (!isNaN(numericValue)) {
-            inputField.value = formatNumberWithCommas(numericValue); // 콤마 추가
-        }
-    });
-}
-
-// ✅ 초기 주식 입력 필드에 콤마 이벤트 등록
-const initialStockPriceField = document.querySelector('.stockPriceField');
-if (initialStockPriceField) {
-    addCommaFormatting(initialStockPriceField);
-}
-
-// ✅ 재산 추가 버튼 클릭 이벤트 (중복 제거 후)
+// ✅ 재산 추가 버튼 클릭 이벤트 (새 필드에 이벤트 등록)
 document.getElementById('addAssetButton').addEventListener('click', () => {
-    createAssetEntry();
+    createAssetEntry();  // 새 재산 입력 필드 생성
 
+    // 새롭게 추가된 .assetValue, .stockQuantityField, .stockPriceField 필드에 콤마 이벤트 등록
+    const newFields = document.querySelectorAll('.asset-entry:last-child .assetValue, .stockQuantityField, .stockPriceField');
+    newFields.forEach((field) => {
+        field.addEventListener('input', () => {
+            const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+            field.value = numericValue ? parseInt(numericValue, 10).toLocaleString() : ''; // 콤마 추가
+        });
+    });
+
+    // 새롭게 추가된 .assetType 필드에 이벤트 등록
     const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
     if (newAssetTypeSelect) {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
-});
-    
-// ✅ 모든 상속 비용 입력 필드에 자동으로 콤마 추가
-document.querySelectorAll('.inheritanceCostField').forEach((input) => {
-    input.addEventListener('input', function (event) {
-        let value = event.target.value.replace(/,/g, ''); // 기존 콤마 제거
-        if (value !== '') { 
-            value = parseFloat(value).toLocaleString(); // 숫자로 변환 후 콤마 추가
-        }
-        event.target.value = value; // 입력 필드에 반영
-    });
 });
 
 }); // document.addEventListener 닫는 괄호 
