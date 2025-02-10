@@ -1676,9 +1676,7 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     // ✅ 결과지 업데이트 (상속 비용 차감 반영)
     document.getElementById('result').innerHTML = `
         <h3>총 상속 금액 (비용 차감 후): ${adjustedAssetValue.toLocaleString()} 원</h3>
-        <p>총 상속 재산: ${totalAssetValue.toLocaleString()} 원</p>
-        <p>총 상속 비용 차감: -${totalDeductibleCost.toLocaleString()} 원</p>
-    `;
+      `;
 
    // ✅ 상속 유형에 따라 계산 실행
    switch (document.getElementById('inheritanceType').value) {
