@@ -1338,9 +1338,6 @@ function calculateGaupExemption(heirAssetValue, heirType, years) {
     return gaupExemption;
 }
 
-    /**
- * ✅ 특수 상속 계산 함수
- */    
     // ✅ 가업 개인 상속 계산 함수 (일괄 공제 + 가업 공제 + 금융재산 공제 반영)
 function calculateBusinessPersonalMode(totalAssetValue) {
     // ✅ 후계자 유형 가져오기
