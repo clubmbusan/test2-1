@@ -1431,12 +1431,14 @@ function calculateSpecialInheritance() {
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
 
-    // ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
-    let cashValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    let stockValue = parseInt(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;
-    let financialAssets = cashValue + stockValue;
-    let financialExemption = Math.min(financialAssets * 0.2, 200000000);
-    console.log("📌 금융재산 공제 적용 가능 금액:", financialExemption.toLocaleString(), "원");
+// ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
+let cashValue = parseFloat(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;  // 현금
+let stockValue = parseFloat(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;  // 주식
+let financialAssets = cashValue + stockValue;  // 금융 자산 합계
+
+// ✅ 금융재산 공제는 금융 자산(현금 + 주식)에 대해서만 적용 (최대 2억 원)
+let financialExemption = Math.min(financialAssets * 0.2, 200000000);
+console.log("📌 금융재산 공제 적용 가능 금액:", financialExemption.toLocaleString(), "원");
 
     // ✅ 특수 상속 유형 확인
     let otherAssetType = document.getElementById("otherAssetType");
