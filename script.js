@@ -1415,7 +1415,7 @@ function calculateSpecialInheritance() {
     let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
-   
+
     // ✅ 상속 재산 입력 필드 확인
     let inheritanceInput = document.getElementById("realEstateValue");
     if (!inheritanceInput) {
@@ -1470,29 +1470,25 @@ function calculateSpecialInheritance() {
             return;
     }
 
-    // ✅ 상속 비용 가져오기 (window.totalDeductibleCost 사용)
-    let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
-    console.log("📌 최종 상속 비용 (window.totalDeductibleCost):", inheritanceCosts.toLocaleString(), "원");
-  
-    // ✅ 과세 표준 및 상속세 계산
-    let taxableAmount = Math.max(0, totalInheritance - deduction - inheritanceCosts);
+    // ✅ 과세 표준 및 상속세 계산 (adjustedAssetValue 사용)
+    let taxableAmount = Math.max(0, adjustedAssetValue - deduction);
     console.log("📌 과세 표준:", taxableAmount);
 
     // ✅ 공용 상속세 계산 함수 호출 (calculateProgressiveTax)
     let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
     console.log("📌 최종 상속세 계산 완료:", inheritanceTax);
 
-// ✅ 최종 결과 출력 (비용 차감 후 총 상속 재산으로 표시)
-document.getElementById("result").innerHTML = `
-    <h3>특수상속 계산 결과</h3>
-    <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
-    <p>총 상속 재산 (비용 차감): <strong>${(totalInheritance - inheritanceCosts).toLocaleString()} 원</strong></p>
-    <p>공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
-    <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
-    <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
-    <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
-    <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
- `;
+    // ✅ 최종 결과 출력 (비용 차감 후 총 상속 재산으로 표시)
+    document.getElementById("result").innerHTML = `
+        <h3>특수상속 계산 결과</h3>
+        <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
+        <p>총 상속 재산 (비용 차감): <strong>${adjustedAssetValue.toLocaleString()} 원</strong></p>
+        <p>공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
+        <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
+        <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
+        <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
+        <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
+     `;
 }
 
  // ✅ 상속 비용 모달   
