@@ -1664,34 +1664,42 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
     createAssetEntry();  // 새 재산 입력 필드 생성
 
     // 새롭게 추가된 주식 관련 필드 가져오기
-    const newStockQuantity = document.querySelector('.asset-entry:last-child .stockQuantityField');
-    const newStockPrice = document.querySelector('.asset-entry:last-child .stockPriceField');
-    const newStockTotal = document.querySelector('.asset-entry:last-child .stockTotalField');
+    const newAssetEntry = document.querySelector('.asset-entry:last-child');
+    const newStockQuantity = newAssetEntry.querySelector('.stockQuantityField');
+    const newStockPrice = newAssetEntry.querySelector('.stockPriceField');
+    const newStockTotal = newAssetEntry.querySelector('.stockTotalField');
 
-    // 새 필드에도 자동 계산 이벤트 추가
+    // 새 필드에도 자동 계산 이벤트 추가 (Element 기반)
     if (newStockQuantity && newStockPrice && newStockTotal) {
         newStockQuantity.addEventListener('input', () => {
-            calculateStockTotal(newStockQuantity, newStockPrice, newStockTotal);
+            calculateStockTotalByElement(newStockQuantity, newStockPrice, newStockTotal);
         });
         newStockPrice.addEventListener('input', () => {
-            calculateStockTotal(newStockQuantity, newStockPrice, newStockTotal);
+            calculateStockTotalByElement(newStockQuantity, newStockPrice, newStockTotal);
         });
     }
 
     // 새롭게 추가된 필드에 콤마 적용 이벤트 등록
-    const newFields = document.querySelectorAll('.asset-entry:last-child .assetValue, .stockQuantityField, .stockPriceField');
+    const newFields = newAssetEntry.querySelectorAll('.assetValue, .stockQuantityField, .stockPriceField');
     newFields.forEach((field) => {
         field.addEventListener('input', () => {
-            const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-            field.value = numericValue ? parseInt(numericValue, 10).toLocaleString() : ''; // 콤마 추가
+            const numericValue = field.value.replace(/[^0-9]/g, '');
+            field.value = numericValue ? parseInt(numericValue, 10).toLocaleString() : '';
         });
     });
 
     // 새롭게 추가된 .assetType 필드에 이벤트 등록
-    const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
+    const newAssetTypeSelect = newAssetEntry.querySelector('.assetType');
     if (newAssetTypeSelect) {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
- });
+});
+
+// ✅ 주식 총 금액을 계산하는 함수 (Element 기반)
+function calculateStockTotalByElement(stockQuantityEl, stockPriceEl, stockTotalEl) {
+    const quantity = parseInt(stockQuantityEl.value.replace(/[^0-9]/g, '') || '0', 10);
+    const price = parseInt(stockPriceEl.value.replace(/[^0-9]/g, '') || '0', 10);
+    stockTotalEl.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
+ }
 
 }); // document.addEventListener 닫는 괄호 
