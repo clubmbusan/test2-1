@@ -668,7 +668,11 @@ function calculateGroupMode() {
         }
     });
 
-    // ✅ 상속 비용 차감 후 최종 상속 재산 계산
+    // ✅ 상속 비용 (전역 변수 window.totalDeductibleCost에서 가져옴)
+    let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
+    console.log(`📌 적용된 상속 비용: ${inheritanceCosts.toLocaleString()} 원`);
+
+    // ✅ 비용 차감 후 최종 상속 재산 계산
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log(`📌 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
 
