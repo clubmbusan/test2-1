@@ -1663,16 +1663,7 @@ document.addEventListener('input', () => {
 document.getElementById('addAssetButton').addEventListener('click', () => {
     createAssetEntry();  // 새 재산 입력 필드 생성
 
-    // 새롭게 추가된 필드에 콤마 적용 이벤트 등록
-    const newFields = document.querySelectorAll('.asset-entry:last-child .assetValue, .stockQuantityField, .stockPriceField');
-    newFields.forEach((field) => {
-        field.addEventListener('input', () => {
-            const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
-            field.value = numericValue ? parseInt(numericValue, 10).toLocaleString() : ''; // 콤마 추가
-        });
-    });
-
-   // 새롭게 추가된 주식 관련 필드 가져오기
+    // 새롭게 추가된 주식 관련 필드 가져오기
     const newStockQuantity = document.querySelector('.asset-entry:last-child .stockQuantityField');
     const newStockPrice = document.querySelector('.asset-entry:last-child .stockPriceField');
     const newStockTotal = document.querySelector('.asset-entry:last-child .stockTotalField');
@@ -1686,12 +1677,21 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
             calculateStockTotal(newStockQuantity, newStockPrice, newStockTotal);
         });
     }
-    
+
+    // 새롭게 추가된 필드에 콤마 적용 이벤트 등록
+    const newFields = document.querySelectorAll('.asset-entry:last-child .assetValue, .stockQuantityField, .stockPriceField');
+    newFields.forEach((field) => {
+        field.addEventListener('input', () => {
+            const numericValue = field.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+            field.value = numericValue ? parseInt(numericValue, 10).toLocaleString() : ''; // 콤마 추가
+        });
+    });
+
     // 새롭게 추가된 .assetType 필드에 이벤트 등록
     const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
     if (newAssetTypeSelect) {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
-  });
+ });
 
 }); // document.addEventListener 닫는 괄호 
