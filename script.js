@@ -1400,6 +1400,24 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
 
+    /**
+ * ✅ 특수 상속 모든 재산의 합산 금액 계산 함수
+ * @returns {number} 총 재산 합계
+ */
+function calculateTotalAssetValue() {
+    console.log("✅ 모든 재산 합산 금액 계산 시작");
+
+    let cashValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+    let stockValue = parseInt(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;
+    let realEstateValue = parseInt(document.getElementById("realEstateValue")?.value.replace(/,/g, "")) || 0;
+    let othersValue = parseInt(document.getElementById("othersValue")?.value.replace(/,/g, "")) || 0;
+
+    let totalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
+    console.log("📌 계산된 총 재산 금액:", totalAssetValue.toLocaleString(), "원");
+
+    return totalAssetValue;
+}
+
 /**
  * ✅ 특수 상속 계산 함수
  */    
