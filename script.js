@@ -1615,7 +1615,7 @@ document.addEventListener('input', (event) => {
     const applicableIds = [
         'cashAmount',
         'realEstateValue',
-        'stockQuantity',
+        'stockQuantity',       // 주식 수량 (콤마 적용)
         'stockPrice',
         'stockTotal',
         'mixedCashAmount',
@@ -1630,6 +1630,7 @@ document.addEventListener('input', (event) => {
         'inheritanceCostField' // 상속 비용 필드
     ];
 
+    // 해당 ID 또는 클래스가 적용 대상일 때 콤마 추가
     if (
         applicableIds.includes(target.id) || 
         applicableClasses.some(className => target.classList.contains(className))
@@ -1662,6 +1663,7 @@ document.addEventListener('input', () => {
 document.getElementById('addAssetButton').addEventListener('click', () => {
     createAssetEntry();  // 새 재산 입력 필드 생성
 
+    // 새롭게 추가된 필드에 콤마 적용 이벤트 등록
     const newFields = document.querySelectorAll('.asset-entry:last-child .assetValue, .stockQuantityField, .stockPriceField');
     newFields.forEach((field) => {
         field.addEventListener('input', () => {
@@ -1670,10 +1672,11 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
         });
     });
 
+    // 새롭게 추가된 .assetType 필드에 이벤트 등록
     const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
     if (newAssetTypeSelect) {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
- });
+  });
 
 }); // document.addEventListener 닫는 괄호 
