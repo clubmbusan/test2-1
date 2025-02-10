@@ -646,9 +646,12 @@ document.getElementById('calculateButton')?.addEventListener('click', function (
 function calculateGroupMode() {
     console.log("✅ 협의 상속 계산 시작");
      
-    // ✅ 상속 비용 (전역 변수에서 가져옴, 값이 없으면 0으로 설정)
-    let inheritanceCosts = window.totalDeductibleCost || 0;
-    console.log(`📌 적용된 상속 비용: ${inheritanceCosts.toLocaleString()} 원`);
+    // ✅ 모든 입력된 재산 값을 합산하여 상속 총액 계산
+    let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseFloat(field.value.replace(/,/g, '')) || 0;
+        return sum + value;
+    }, 0);
+    console.log(`📌 입력된 총 상속 재산 금액: ${totalAssetValue.toLocaleString()} 원`);
  
     // ✅ 상속 재산 총액 가져오기
     const totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
