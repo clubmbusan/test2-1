@@ -1400,11 +1400,10 @@ function calculateBusinessPersonalMode(totalAssetValue) {
     `;
 }
 
-  /**
- * 특수 상속 유형별 공제 계산
- * @description 동거주택, 농림재산, 공장 상속에 대한 공제 계산 및 상속세 결과 출력
- */
-function calculateSpecialInheritance() {
+/**
+ * ✅ 특수 상속 계산 함수
+ */    
+ function calculateSpecialInheritance() {
     console.log("✅ 특수상속 계산 시작");
 
     // ✅ 모든 재산의 합산 금액 계산 (calculateTotalAssetValue 함수 사용)
@@ -1415,20 +1414,6 @@ function calculateSpecialInheritance() {
     let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
-
-    // ✅ 상속 재산 입력 필드 확인
-    let inheritanceInput = document.getElementById("realEstateValue");
-    if (!inheritanceInput) {
-        alert("상속 재산 입력 필드를 찾을 수 없습니다.");
-        return;
-    }
-
-    // ✅ 입력값 변환 (쉼표 제거 후 숫자 변환)
-    let totalInheritance = parseInt(inheritanceInput.value.replace(/,/g, "")) || 0;
-    if (totalInheritance <= 0) {
-        alert("총 상속 재산을 올바르게 입력하세요.");
-        return;
-    }
 
     // ✅ 특수 상속 유형 확인
     let otherAssetType = document.getElementById("otherAssetType");
@@ -1448,19 +1433,19 @@ function calculateSpecialInheritance() {
     // ✅ 특수 상속 유형별 공제 계산
     switch (otherType) {
         case "dwelling": // 동거주택 (최대 6억 공제)
-            deduction = Math.min(totalInheritance, 600000000);
-            policyMessage = "동거주택 상속 공제는 피상속인이 1세대 1주택자이며, 상속인은 상속 개시일(사망일)까지 10년 이상 동거하며 무주택자여야 하며, 상속 개시일(사망일) 이후 3년간 보유해야 합니다. (최대 6억 공제)";
+            deduction = Math.min(totalAssetValue, 600000000);
+            policyMessage = "동거주택 상속 공제는 피상속인이 1세대 1주택자이며, 상속인은 상속 개시일(사망일)까지 10년 이상 동거하며 무주택자여야 합니다. (최대 6억 공제)";
             eligibilityMessage = "✅ 10년 이상 동거 및 무주택 조건 충족";
             break;
 
         case "farming": // 농림재산 (최대 15억 공제)
-            deduction = Math.min(totalInheritance, 1500000000);
-            policyMessage = "농림재산 상속 공제는 피상속인이 10년 이상 직접 경작했어야 하며, 상속인은 상속 개시일(사망일)까지 10년 이상 함께 영농했어야 합니다. 상속 개시일 이후 3년 이상 영농을 지속해야 합니다. (최대 15억 공제)";
+            deduction = Math.min(totalAssetValue, 1500000000);
+            policyMessage = "농림재산 상속 공제는 피상속인이 10년 이상 직접 경작했어야 하며, 상속인은 상속 개시일(사망일)까지 10년 이상 함께 영농했어야 합니다. (최대 15억 공제)";
             eligibilityMessage = "✅ 10년 이상 자경 요건 충족";
             break;
 
         case "factory": // 공장 상속 (80% 공제, 최대 20억)
-            deduction = Math.min(totalInheritance * 0.8, 2000000000);
+            deduction = Math.min(totalAssetValue * 0.8, 2000000000);
             policyMessage = "공장 상속 공제는 피상속인이 10년 이상 직접 운영했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 공장을 운영해야 합니다. (80% 또는 최대 20억 공제)";
             eligibilityMessage = "✅ 10년 이상 공장 운영 요건 충족";
             break;
@@ -1470,15 +1455,15 @@ function calculateSpecialInheritance() {
             return;
     }
 
-    // ✅ 과세 표준 및 상속세 계산 (adjustedAssetValue 사용)
+    // ✅ 과세 표준 및 상속세 계산
     let taxableAmount = Math.max(0, adjustedAssetValue - deduction);
     console.log("📌 과세 표준:", taxableAmount);
 
-    // ✅ 공용 상속세 계산 함수 호출 (calculateProgressiveTax)
+    // ✅ 상속세 계산
     let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
     console.log("📌 최종 상속세 계산 완료:", inheritanceTax);
 
-    // ✅ 최종 결과 출력 (비용 차감 후 총 상속 재산으로 표시)
+    // ✅ 최종 결과 출력
     document.getElementById("result").innerHTML = `
         <h3>특수상속 계산 결과</h3>
         <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
@@ -1488,7 +1473,7 @@ function calculateSpecialInheritance() {
         <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
         <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
         <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
-     `;
+    `;
 }
 
  // ✅ 상속 비용 모달   
