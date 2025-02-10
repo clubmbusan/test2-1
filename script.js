@@ -1407,6 +1407,15 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 function calculateSpecialInheritance() {
     console.log("✅ 특수상속 계산 시작");
 
+    // ✅ 모든 재산의 합산 금액 계산 (calculateTotalAssetValue 함수 사용)
+    let totalAssetValue = calculateTotalAssetValue();
+    console.log("📌 최종 재산 합산 금액:", totalAssetValue.toLocaleString(), "원");
+
+    // ✅ 상속 비용 차감 후 최종 상속 금액 계산
+    let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
+    let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
+    console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
+   
     // ✅ 상속 재산 입력 필드 확인
     let inheritanceInput = document.getElementById("realEstateValue");
     if (!inheritanceInput) {
