@@ -330,53 +330,7 @@ function addCommaFormatting(inputField) {
             inputField.value = formatNumberWithCommas(numericValue); // 콤마 추가
         }
     });
-} 
-
-// 주식 총 금액 계산
-document.addEventListener('input', () => {
-    const stockQuantity = document.getElementById('stockQuantity');
-    const stockPrice = document.getElementById('stockPrice');
-    const stockTotal = document.getElementById('stockTotal');
-
-    if (stockQuantity && stockPrice && stockTotal) {
-        const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
-        const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
-    }
-
-    const mixedStockQuantity = document.getElementById('mixedStockQuantity');
-    const mixedStockPrice = document.getElementById('mixedStockPrice');
-    const mixedTotalAmount = document.getElementById('mixedTotalAmount');
-
-    if (mixedStockQuantity && mixedStockPrice && mixedTotalAmount) {
-        const quantity = parseInt(mixedStockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
-        const price = parseInt(mixedStockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-        const total = quantity * price;
-        const cash = parseInt(document.getElementById('mixedCashAmount').value.replace(/[^0-9]/g, '') || '0', 10);
-        const realEstate = parseInt(document.getElementById('mixedRealEstateValue').value.replace(/[^0-9]/g, '') || '0', 10);
-
-        mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 금액 계산 및 콤마 추가
-    }
-});
-    
-    // 계산 시 숫자만 추출
-function getNumericValue(field) {
-    return parseFloat(field.value.replace(/[^0-9]/g, '')) || 0; // 숫자로 변환 (기본값 0)
-}
-
-       // 주식 총액을 assetValue에 포함
-document.addEventListener('input', () => {
-    const stockQuantity = document.getElementById('stockQuantity');
-    const stockPrice = document.getElementById('stockPrice');
-    const stockTotal = document.getElementById('stockTotal');
-
-    if (stockQuantity && stockPrice && stockTotal) {
-        const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
-        const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산
-        stockTotal.classList.add('assetValue'); // assetValue 클래스를 추가하여 총액 계산에 포함
-    }
-});    
+}  
     
 // 상속 비율 입력값 검증 함수
     function validateSharePercentage() {
@@ -1750,8 +1704,45 @@ document.addEventListener('input', function (event) {
     }
 });
      
-// 주식 총 금액 계산
-document.addEventListener('input', function () {
+// ✅ 주식 총 금액을 계산하고 assetValue 클래스를 추가하는 함수
+function calculateStockTotal(stockQuantityId, stockPriceId, stockTotalId) {
+    const stockQuantity = document.getElementById(stockQuantityId);
+    const stockPrice = document.getElementById(stockPriceId);
+    const stockTotal = document.getElementById(stockTotalId);
+
+    if (stockQuantity && stockPrice && stockTotal) {
+        const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
+        const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
+        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산 및 콤마 추가
+        stockTotal.classList.add('assetValue'); // assetValue 클래스를 추가하여 합산에 포함
+    }
+}
+
+// ✅ 주식 및 혼합 자산 총액 계산
+document.addEventListener('input', () => {
+    calculateStockTotal('stockQuantity', 'stockPrice', 'stockTotal'); // 주식 필드 총액 계산
+    calculateStockTotal('mixedStockQuantity', 'mixedStockPrice', 'mixedTotalAmount'); // 혼합 자산 총액 계산
+
+    const mixedTotalAmount = document.getElementById('mixedTotalAmount');
+    const mixedCashAmount = document.getElementById('mixedCashAmount');
+    const mixedRealEstateValue = document.getElementById('mixedRealEstateValue');
+
+    if (mixedTotalAmount && mixedCashAmount && mixedRealEstateValue) {
+        const total = parseInt(mixedTotalAmount.value.replace(/[^0-9]/g, '') || '0', 10);
+        const cash = parseInt(mixedCashAmount.value.replace(/[^0-9]/g, '') || '0', 10);
+        const realEstate = parseInt(mixedRealEstateValue.value.replace(/[^0-9]/g, '') || '0', 10);
+
+        mixedTotalAmount.value = (total + cash + realEstate).toLocaleString(); // 총 합계 계산 및 콤마 추가
+    }
+ });
+
+       // 계산 시 숫자만 추출
+function getNumericValue(field) {
+    return parseFloat(field.value.replace(/[^0-9]/g, '')) || 0; // 숫자로 변환 (기본값 0)
+}
+
+       // 주식 총액을 assetValue에 포함
+document.addEventListener('input', () => {
     const stockQuantity = document.getElementById('stockQuantity');
     const stockPrice = document.getElementById('stockPrice');
     const stockTotal = document.getElementById('stockTotal');
@@ -1759,22 +1750,9 @@ document.addEventListener('input', function () {
     if (stockQuantity && stockPrice && stockTotal) {
         const quantity = parseInt(stockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
         const price = parseInt(stockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-        stockTotal.value = (quantity * price).toLocaleString();
+        stockTotal.value = (quantity * price).toLocaleString(); // 총 금액 계산
+        stockTotal.classList.add('assetValue'); // assetValue 클래스를 추가하여 총액 계산에 포함
     }
-
-    const mixedStockQuantity = document.getElementById('mixedStockQuantity');
-    const mixedStockPrice = document.getElementById('mixedStockPrice');
-    const mixedTotalAmount = document.getElementById('mixedTotalAmount');
-
-    if (mixedStockQuantity && mixedStockPrice && mixedTotalAmount) {
-        const quantity = parseInt(mixedStockQuantity.value.replace(/[^0-9]/g, '') || '0', 10);
-        const price = parseInt(mixedStockPrice.value.replace(/[^0-9]/g, '') || '0', 10);
-        const total = quantity * price;
-        const cash = parseInt(document.getElementById('mixedCashAmount').value.replace(/[^0-9]/g, '') || '0', 10);
-        const realEstate = parseInt(document.getElementById('mixedRealEstateValue').value.replace(/[^0-9]/g, '') || '0', 10);
-
-        mixedTotalAmount.value = (total + cash + realEstate).toLocaleString();
-    }
-});
+});    
        
 }); // document.addEventListener 닫는 괄호 
