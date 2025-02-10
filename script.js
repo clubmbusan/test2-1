@@ -1409,18 +1409,20 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 function calculateSpecialInheritance() {
     console.log("✅ 특수상속 계산 시작");
 
-    // ✅ 모든 재산의 합산 금액 계산
-    let totalAssetValue = calculateTotalAssetValue();
-    console.log("📌 최종 재산 합산 금액:", totalAssetValue.toLocaleString(), "원");
+    // ✅ 모든 재산 값 가져오기 (쉼표 제거 후 숫자로 변환)
+    let cashValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+    let stockValue = parseInt(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;
+    let realEstateValue = parseInt(document.getElementById("realEstateValue")?.value.replace(/,/g, "")) || 0;
+    let othersValue = parseInt(document.getElementById("othersValue")?.value.replace(/,/g, "")) || 0;
+
+    // ✅ 모든 재산 값 합산
+    let totalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
+    console.log("📌 총 재산 합산 금액:", totalAssetValue.toLocaleString(), "원");
 
     // ✅ 상속 비용 차감 후 최종 상속 금액 계산
     let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
-
-    // ✅ 재산 항목 개별 값 가져오기
-    let cashValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    let stockValue = parseInt(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;
 
     // ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
     let financialAssets = cashValue + stockValue;
@@ -1437,7 +1439,7 @@ function calculateSpecialInheritance() {
 
     console.log("📌 선택된 특수상속 유형:", otherType);
 
-    // ✅ 공제 금액 및 정책 메시지 초기화
+    // ✅ 공제 금액 및 메시지 초기화
     let deduction = 0;
     let policyMessage = "";
     let eligibilityMessage = "";
@@ -1445,21 +1447,21 @@ function calculateSpecialInheritance() {
     // ✅ 특수 상속 유형별 공제 계산
     switch (otherType) {
         case "dwelling": // 동거주택 (최대 6억 공제)
-            deduction = Math.min(totalAssetValue, 600000000);
-            policyMessage = "동거주택 상속 공제: 10년 이상 동거 & 무주택 요건 충족 시 최대 6억 공제.";
-            eligibilityMessage = "✅ 요건 충족 여부 확인 필요.";
+            deduction = Math.min(realEstateValue, 600000000);
+            policyMessage = "동거주택 상속 공제는 피상속인이 1세대 1주택자이며, 상속인은 상속 개시일(사망일)까지 10년 이상 동거하며 무주택자여야 하며, 상속 개시일(사망일) 이후 3년간 보유해야 합니다. (최대 6억 공제)";
+            eligibilityMessage = "✅ 10년 이상 동거 및 무주택 조건 충족";
             break;
 
         case "farming": // 농림재산 (최대 15억 공제)
-            deduction = Math.min(totalAssetValue, 1500000000);
-            policyMessage = "농림재산 상속 공제: 10년 이상 직접 영농 시 최대 15억 공제.";
-            eligibilityMessage = "✅ 요건 충족 여부 확인 필요.";
+            deduction = Math.min(realEstateValue, 1500000000);
+            policyMessage = "농림재산 상속 공제는 피상속인이 10년 이상 직접 경작했어야 하며, 상속인은 상속 개시일(사망일)까지 10년 이상 함께 영농했어야 합니다. 상속 개시일 이후 3년 이상 영농을 지속해야 합니다. (최대 15억 공제)";
+            eligibilityMessage = "✅ 10년 이상 자경 요건 충족";
             break;
 
         case "factory": // 공장 상속 (80% 공제, 최대 20억)
-            deduction = Math.min(totalAssetValue * 0.8, 2000000000);
-            policyMessage = "공장 상속 공제: 10년 이상 운영 후 상속 시 80% 또는 최대 20억 공제.";
-            eligibilityMessage = "✅ 요건 충족 여부 확인 필요.";
+            deduction = Math.min(realEstateValue * 0.8, 2000000000);
+            policyMessage = "공장 상속 공제는 피상속인이 10년 이상 직접 운영했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 공장을 운영해야 합니다. (80% 또는 최대 20억 공제)";
+            eligibilityMessage = "✅ 10년 이상 공장 운영 요건 충족";
             break;
 
         default:
@@ -1468,20 +1470,20 @@ function calculateSpecialInheritance() {
     }
 
     // ✅ 과세 표준 및 상속세 계산
-    let taxableAmount = Math.max(0, adjustedAssetValue - deduction - financialExemption);
-    console.log("📌 과세 표준:", taxableAmount);
+    let taxableAmount = Math.max(0, adjustedAssetValue - deduction);
+    console.log("📌 과세 표준:", taxableAmount.toLocaleString(), "원");
 
     // ✅ 공용 상속세 계산 함수 호출 (calculateProgressiveTax)
     let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
-    console.log("📌 최종 상속세 계산 완료:", inheritanceTax);
+    console.log("📌 최종 상속세 계산 완료:", inheritanceTax.toLocaleString(), "원");
 
     // ✅ 최종 결과 출력 (비용 차감 후 총 상속 재산으로 표시)
     document.getElementById("result").innerHTML = `
         <h3>특수상속 계산 결과</h3>
         <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
         <p>총 상속 재산 (비용 차감): <strong>${adjustedAssetValue.toLocaleString()} 원</strong></p>
-        ${financialExemption > 0 ? `<p>금융재산 공제: <strong>${financialExemption.toLocaleString()} 원</strong></p>` : ""}
         <p>공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
+        ${financialExemption > 0 ? `<p>금융재산 공제: <strong>${financialExemption.toLocaleString()} 원</strong></p>` : ""}
         <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
         <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
         <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
