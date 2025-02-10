@@ -720,7 +720,7 @@ if (spouse) {
     console.log("📌 배우자 상속 금액 (비용 차감 후):", spouseInheritanceAmount.toLocaleString());
 
     // ✅ 1. 금융재산 공제 적용 (최대 2억 원)
-    let spouseFinancialExemption = Math.min((maxFinancialExemption * spouse.sharePercentage) / 100, 200000000);
+    let spouseFinancialExemption = Math.round(Math.min((maxFinancialExemption * spouse.sharePercentage) / 100, 200000000));
     let remainingAfterFinancialExemption = spouseInheritanceAmount - spouseFinancialExemption;
     console.log("📌 금융재산 공제 후 남은 금액:", remainingAfterFinancialExemption.toLocaleString());
 
@@ -733,10 +733,11 @@ if (spouse) {
     let spouseAdditionalExemption = 0;
     let taxableAmount = remainingAfterRelationship;  // 과세 표준 초기화
 
-    if (taxableAmount > 0) {
-        spouseAdditionalExemption = Math.min(taxableAmount, 2500000000);  // 최대 25억 원 공제
-        taxableAmount -= spouseAdditionalExemption;
+    if (remainingAfterRelationship > 0) {
+    spouseAdditionalExemption = Math.min(remainingAfterRelationship, 2500000000);  // 최대 25억 공제
+    remainingAfterRelationship -= spouseAdditionalExemption;
     }
+
     taxableAmount = Math.max(0, taxableAmount);  // 음수 방지
     console.log("📌 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
     console.log("📌 최종 과세 표준:", taxableAmount.toLocaleString());
@@ -877,7 +878,7 @@ console.log(`✅ 최종 일괄 공제 보정액 합계 (기대값: 5억):`, fina
 
 // ✅ 배우자 관련 변수 선언 (중복 제거 및 일관성 유지)
 let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
-let spouseFinancialExemption = Math.min((maxFinancialExemption * spouse.sharePercentage) / 100, 200000000);
+let spouseFinancialExemption = Math.round(Math.min((maxFinancialExemption * spouse.sharePercentage) / 100, 200000000));
 let spouseRelationshipExemption = Math.min(spouseInheritanceAmount - spouseFinancialExemption, 500000000); 
 let remainingAfterRelationship = spouseInheritanceAmount - spouseFinancialExemption - spouseRelationshipExemption;
 
