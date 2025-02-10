@@ -1401,7 +1401,7 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 }
 
 /**
- * ✅ 모든 재산 합산 금액 계산 함수
+ * ✅ 특수 상속 모든 재산 합산 금액 계산 함수
  * @returns {number} 모든 입력된 재산의 합계
  */
 function calculateTotalAssetValue() {
@@ -1477,25 +1477,30 @@ function calculateSpecialInheritance() {
             return;
     }
 
-    // ✅ 과세 표준 및 상속세 계산 (금융재산 공제 반영)
-    let taxableAmount = Math.max(0, adjustedAssetValue - deduction - financialExemption);
-    console.log("📌 과세 표준:", taxableAmount.toLocaleString(), "원");
+   // ✅ 금융재산 공제 적용 후 자산 금액 계산
+   let assetAfterFinancialExemption = Math.max(0, adjustedAssetValue - financialExemption);
+   console.log("📌 금융재산 공제 후 자산 금액:", assetAfterFinancialExemption.toLocaleString(), "원");
+
+   // ✅ 특수 상속 공제 적용 후 과세 표준 계산 (공제 가능한 금액만 적용)
+   let deductionApplied = assetAfterFinancialExemption > 0 ? deduction : 0;
+   let taxableAmount = Math.max(0, assetAfterFinancialExemption - deductionApplied);
+   onsole.log("📌 최종 과세 표준:", taxableAmount.toLocaleString(), "원");
 
     let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
     console.log("📌 최종 상속세 계산 완료:", inheritanceTax.toLocaleString(), "원");
 
     // ✅ 최종 결과 출력
     document.getElementById("result").innerHTML = `
-        <h3>특수상속 계산 결과</h3>
-        <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
-        <p>총 상속 재산 (비용 차감): <strong>${adjustedAssetValue.toLocaleString()} 원</strong></p>
-        <p>공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
-        ${financialExemption > 0 ? `<p>금융재산 공제: <strong>${financialExemption.toLocaleString()} 원</strong></p>` : ""}
-        <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
-        <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
-        <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
-        <p style="color: green; font-weight: bold;">${eligibilityMessage}</p>
-    `;
+    <h3>특수상속 계산 결과</h3>
+    <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
+    <p>총 상속 재산 (비용 차감): <strong>${adjustedAssetValue.toLocaleString()} 원</strong></p>
+    <p>금융재산 공제: <strong>${financialExemption.toLocaleString()} 원</strong></p>
+    <p>특수 상속 공제: <strong>${deduction.toLocaleString()} 원</strong></p>
+    <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
+    <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
+    <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
+    <p style="color: green; font-weight: bold;">${eligibilityMessage}</p>
+ `;
 }
 
  /**
