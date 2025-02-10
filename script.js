@@ -652,9 +652,7 @@ function calculateGroupMode() {
         return sum + value;
     }, 0);
     console.log(`📌 입력된 총 상속 재산 금액: ${totalAssetValue.toLocaleString()} 원`);
- 
-    // ✅ 상속 재산 총액 가져오기
-    const totalAssetValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+
     const heirContainer = document.querySelector('#groupSection #heirContainer');
 
     let totalBasicExemption = 200000000; // ✅ 기초 공제 (2억 원)
