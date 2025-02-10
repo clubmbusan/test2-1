@@ -1447,11 +1447,10 @@ function calculateTotalAssetValue() {
     console.log("📌 금융재산 공제 적용 가능 금액:", financialExemption.toLocaleString(), "원");
 
     // ✅ 특수 상속 유형 확인
-    let otherAssetType = document.getElementById("otherAssetType");
-    let otherType = otherAssetType ? otherAssetType.value : null;
+    let otherType = otherAssetType?.value || null;
     if (!otherType) {
-        alert("올바른 특수상속 유형을 선택하세요.");
-        return;
+    alert("올바른 특수상속 유형을 선택하세요.");
+    return;
     }
 
     console.log("📌 선택된 특수상속 유형:", otherType);
