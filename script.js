@@ -1700,16 +1700,25 @@ if (initialStockPriceField) {
     addCommaFormatting(initialStockPriceField);
 }
 
-// ✅ 재산 추가 버튼 클릭 시 새 필드에도 콤마 이벤트 등록
+// ✅ 재산 추가 버튼 클릭 이벤트 (중복 제거 후)
 document.getElementById('addAssetButton').addEventListener('click', () => {
+    createAssetEntry();  // 필수! 새 재산 입력 필드 생성
+
+    // 새롭게 추가된 .assetValue 필드에 콤마 이벤트 등록
     const newAssetValues = document.querySelectorAll('.asset-entry:last-child .assetValue');
     newAssetValues.forEach(addCommaFormatting);
 
+    // 새 주식 입력 필드에 콤마 이벤트 등록
     const newStockQuantity = document.querySelector('.asset-entry:last-child .stockQuantityField');
     const newStockPrice = document.querySelector('.asset-entry:last-child .stockPriceField');
+    if (newStockQuantity) addCommaFormatting(newStockQuantity);
+    if (newStockPrice) addCommaFormatting(newStockPrice);
 
-    if (newStockQuantity) addCommaFormatting(newStockQuantity); // 새 주식 수량 필드 콤마 추가
-    if (newStockPrice) addCommaFormatting(newStockPrice);       // 새 주당 가격 필드 콤마 추가
+    // 새롭게 추가된 .assetType 필드에 이벤트 등록
+    const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
+    if (newAssetTypeSelect) {
+        newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
+    }
 });
 
 // ✅ 모든 상속 비용 입력 필드에 자동으로 콤마 추가
