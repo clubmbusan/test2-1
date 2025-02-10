@@ -1639,6 +1639,9 @@ document.addEventListener('input', function (event) {
         'inheritanceCostField' // 상속 비용 필드
     ];
 
+    // 적용할 클래스 목록 (주식 수량은 제외)
+    const applicableClasses = ['assetValue', 'stockPriceField'];
+
     // 해당 클래스가 있는 경우 콤마 적용
     if (applicableClasses.some(className => target.classList.contains(className))) {
         const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
