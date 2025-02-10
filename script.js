@@ -1406,14 +1406,8 @@ function calculateBusinessPersonalMode(totalAssetValue) {
 function calculateSpecialInheritance() {
     console.log("✅ 특수상속 계산 시작");
 
-    // ✅ 모든 재산 값 가져오기 (쉼표 제거 후 숫자로 변환)
-    let cashValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
-    let stockValue = parseInt(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;
-    let realEstateValue = parseInt(document.getElementById("realEstateValue")?.value.replace(/,/g, "")) || 0;
-    let othersValue = parseInt(document.getElementById("othersValue")?.value.replace(/,/g, "")) || 0;
-
-    // ✅ 모든 재산 값 합산
-    let totalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
+    // ✅ 모든 재산 값 합산 (calculateTotalAssetValue 함수 사용)
+    let totalAssetValue = calculateTotalAssetValue();
     console.log("📌 총 재산 합산 금액:", totalAssetValue.toLocaleString(), "원");
 
     // ✅ 상속 비용 차감 후 최종 상속 금액 계산
@@ -1422,6 +1416,8 @@ function calculateSpecialInheritance() {
     console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
 
     // ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
+    let cashValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
+    let stockValue = parseInt(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;
     let financialAssets = cashValue + stockValue;
     let financialExemption = Math.min(financialAssets * 0.2, 200000000);
     console.log("📌 금융재산 공제 적용 가능 금액:", financialExemption.toLocaleString(), "원");
@@ -1444,19 +1440,19 @@ function calculateSpecialInheritance() {
     // ✅ 특수 상속 유형별 공제 계산
     switch (otherType) {
         case "dwelling": // 동거주택 (최대 6억 공제)
-            deduction = Math.min(realEstateValue, 600000000);
+            deduction = Math.min(adjustedAssetValue, 600000000);
             policyMessage = "동거주택 상속 공제는 피상속인이 1세대 1주택자이며, 상속인은 상속 개시일(사망일)까지 10년 이상 동거하며 무주택자여야 하며, 상속 개시일(사망일) 이후 3년간 보유해야 합니다. (최대 6억 공제)";
             eligibilityMessage = "✅ 10년 이상 동거 및 무주택 조건 충족";
             break;
 
         case "farming": // 농림재산 (최대 15억 공제)
-            deduction = Math.min(realEstateValue, 1500000000);
+            deduction = Math.min(adjustedAssetValue, 1500000000);
             policyMessage = "농림재산 상속 공제는 피상속인이 10년 이상 직접 경작했어야 하며, 상속인은 상속 개시일(사망일)까지 10년 이상 함께 영농했어야 합니다. 상속 개시일 이후 3년 이상 영농을 지속해야 합니다. (최대 15억 공제)";
             eligibilityMessage = "✅ 10년 이상 자경 요건 충족";
             break;
 
         case "factory": // 공장 상속 (80% 공제, 최대 20억)
-            deduction = Math.min(realEstateValue * 0.8, 2000000000);
+            deduction = Math.min(adjustedAssetValue * 0.8, 2000000000);
             policyMessage = "공장 상속 공제는 피상속인이 10년 이상 직접 운영했어야 하며, 상속인은 상속 개시일(사망일) 이후 3년 이상 공장을 운영해야 합니다. (80% 또는 최대 20억 공제)";
             eligibilityMessage = "✅ 10년 이상 공장 운영 요건 충족";
             break;
