@@ -1631,18 +1631,14 @@ document.addEventListener('input', (event) => {
 document.addEventListener('input', function (event) {
     const target = event.target;
 
-    // 적용할 클래스 목록
+    // 적용할 클래스 목록 (주식 수량은 제외)
     const applicableClasses = [
         'assetValue',          // 재산 가치 필드
-        'stockQuantityField',  // 주식 수량 필드
         'stockPriceField',     // 주식 가격 필드
         'inheritanceCostField' // 상속 비용 필드
     ];
 
-    // 적용할 클래스 목록 (주식 수량은 제외)
-    const applicableClasses = ['assetValue', 'stockPriceField'];
-
-    // 해당 클래스가 있는 경우 콤마 적용
+    // 해당 클래스가 있는 경우에만 콤마 적용
     if (applicableClasses.some(className => target.classList.contains(className))) {
         const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
         target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : ''; // 숫자에 콤마 추가
