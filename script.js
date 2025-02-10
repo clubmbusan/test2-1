@@ -943,9 +943,8 @@ console.log(`📌 비용 차감 후 최종 상속 재산 금액: ${adjustedAsset
         finalTaxableAmount = spouseFinalTaxableAmount;        
     }
 
-    // ✅ 🆕 비용 차감 후 과세 표준 재계산 (비용을 상속 지분에 따라 나누어 차감)
-    let costDeduction = Math.round((inheritanceCosts * heir.sharePercentage) / 100);
-    finalTaxableAmount = Math.max(0, finalTaxableAmount - costDeduction); // 음수 방지
+   // 🔥 상속 비용 공제는 이미 총 상속 금액에서 차감되었으므로, 개별 과세 표준에서는 다시 차감하지 않습니다.
+   finalTaxableAmount = Math.max(0, finalTaxableAmount);  // 그대로 과세 표준 유지
 
     // ✅ 개별 상속세 재계산
     let individualTax = finalTaxableAmount > 0 ? calculateInheritanceTax(finalTaxableAmount) : 0;
