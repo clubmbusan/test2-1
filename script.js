@@ -1627,26 +1627,15 @@ document.addEventListener('input', (event) => {
     }
 });
 
-// 숫자 입력 필드에 콤마 추가
+// 숫자 입력 필드에 콤마 추가 (클래스 기반 적용)
 document.addEventListener('input', function (event) {
     const target = event.target;
 
-// 콤마 적용 대상 필드 ID (보기 쉽게 정리)
-const applicableFields = [
-    'cashAmount',           // 현금
-    'realEstateValue',      // 부동산 평가액
-    'stockPrice',           // 주당 가격
-    'stockTotal',           // 주식 총액
-    'mixedCashAmount',      // 혼합 자산 현금
-    'mixedRealEstateValue', // 혼합 자산 부동산
-    'mixedStockPrice',      // 혼합 자산 주식
-    'fatherAmountInput',    // 아버지 금액
-    'motherAmountInput',    // 어머니 금액
-    'totalAssetValue'       // 추가된 필드
-];
+    // 적용할 클래스 목록
+    const applicableClasses = ['assetValue', 'stockQuantityField', 'stockPriceField'];
 
-    // 해당 필드에 대해 콤마 적용
-    if (applicableFields.includes(target.id)) {
+    // 클래스가 포함된 경우에만 콤마 적용
+    if (applicableClasses.some(className => target.classList.contains(className))) {
         const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 이외 문자 제거
         target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : ''; // 숫자에 콤마 추가
     }
