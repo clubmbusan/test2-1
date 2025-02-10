@@ -1421,12 +1421,18 @@ function calculateTotalAssetValue() {
 /**
  * ✅ 특수 상속 계산 함수
  */    
-function calculateSpecialInheritance() {
-    console.log("✅ 특수상속 계산 시작");
+function calculateTotalAssetValue() {
+    console.log("✅ 모든 재산 합산 금액 계산 시작");
 
-    // ✅ 모든 재산 값 합산 (calculateTotalAssetValue 함수 사용)
-    let totalAssetValue = calculateTotalAssetValue();
-    console.log("📌 총 재산 합산 금액:", totalAssetValue.toLocaleString(), "원");
+    // ✅ 모든 .assetValue 클래스의 입력 필드 값을 가져와 합산
+    let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseFloat(field.value.replace(/,/g, "")) || 0;
+        return sum + value;
+    }, 0);
+
+    console.log("📌 계산된 총 재산 금액:", totalAssetValue.toLocaleString(), "원");
+    return totalAssetValue;
+}
 
     // ✅ 상속 비용 차감 후 최종 상속 금액 계산
     let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
