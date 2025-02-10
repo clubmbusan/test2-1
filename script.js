@@ -1484,7 +1484,7 @@ function calculateSpecialInheritance() {
    // ✅ 특수 상속 공제 적용 후 과세 표준 계산 (공제 가능한 금액만 적용)
    let deductionApplied = assetAfterFinancialExemption > 0 ? deduction : 0;
    let taxableAmount = Math.max(0, assetAfterFinancialExemption - deductionApplied);
-   onsole.log("📌 최종 과세 표준:", taxableAmount.toLocaleString(), "원");
+   console.log("📌 최종 과세 표준:", taxableAmount.toLocaleString(), "원");
 
     let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
     console.log("📌 최종 상속세 계산 완료:", inheritanceTax.toLocaleString(), "원");
