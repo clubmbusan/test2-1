@@ -296,9 +296,6 @@ function createAssetEntry() {
         <select class="assetType">
             <option value="cash">현금</option>
             <option value="realEstate">부동산</option>
-Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
-Editing test2-1/script.js at main · clubmbusan/test2-1
-
             <option value="stock">주식</option>
             <option value="others">기타</option>
         </select>
@@ -1676,7 +1673,9 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     // ✅ 결과지 업데이트 (상속 비용 차감 반영)
     document.getElementById('result').innerHTML = `
         <h3>총 상속 금액 (비용 차감 후): ${adjustedAssetValue.toLocaleString()} 원</h3>
-      `;
+        <p>총 상속 재산: ${totalAssetValue.toLocaleString()} 원</p>
+        <p>총 상속 비용 차감: -${totalDeductibleCost.toLocaleString()} 원</p>
+    `;
 
    // ✅ 상속 유형에 따라 계산 실행
    switch (document.getElementById('inheritanceType').value) {
