@@ -253,24 +253,9 @@ initializeDefaultView();
 
         console.log("✅ 내부 변수 초기화 완료!");       
        }
-    });
-    
-     // 재산 추가 버튼 클릭 이벤트
-document.getElementById('addAssetButton').addEventListener('click', () => {
-    createAssetEntry();
+    });    
 
-    // 새롭게 추가된 .assetValue 필드에 콤마 이벤트 등록
-    const newAssetValues = document.querySelectorAll('.asset-entry:last-child .assetValue');
-    newAssetValues.forEach(addCommaFormatting);
-
-    // 새롭게 추가된 .assetType 필드에 이벤트 등록
-    const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
-    if (newAssetTypeSelect) {
-        newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
-    }
-});
-
-    // 재산 항목 생성
+// 재산 항목 생성
 function createAssetEntry() {
     const newAsset = document.createElement('div');
     newAsset.className = 'asset-entry';
