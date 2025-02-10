@@ -1672,6 +1672,21 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
         });
     });
 
+   // 새롭게 추가된 주식 관련 필드 가져오기
+    const newStockQuantity = document.querySelector('.asset-entry:last-child .stockQuantityField');
+    const newStockPrice = document.querySelector('.asset-entry:last-child .stockPriceField');
+    const newStockTotal = document.querySelector('.asset-entry:last-child .stockTotalField');
+
+    // 새 필드에도 자동 계산 이벤트 추가
+    if (newStockQuantity && newStockPrice && newStockTotal) {
+        newStockQuantity.addEventListener('input', () => {
+            calculateStockTotal(newStockQuantity, newStockPrice, newStockTotal);
+        });
+        newStockPrice.addEventListener('input', () => {
+            calculateStockTotal(newStockQuantity, newStockPrice, newStockTotal);
+        });
+    }
+    
     // 새롭게 추가된 .assetType 필드에 이벤트 등록
     const newAssetTypeSelect = document.querySelector('.asset-entry:last-child .assetType');
     if (newAssetTypeSelect) {
