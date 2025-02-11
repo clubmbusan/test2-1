@@ -1543,24 +1543,24 @@ function calculateSpecialInheritance() {
         return;
     }
 
-    // ✅ 모달 열기
-    openModalButton.addEventListener("click", function () {
-        modal.style.display = "block";     // ✅ 모달을 직접 보여줌
-        overlay.style.display = "block";   // ✅ 오버레이를 직접 보여줌
+   // ✅ 모달 열기
+   openModalButton.addEventListener("click", function () {
+        modal.classList.add("active");      // ✅ 모달 활성화 클래스 추가
+        overlay.classList.add("active");    // ✅ 오버레이 활성화 클래스 추가
         console.log("✅ 오버레이 및 모달 활성화");
     });
 
-    // ✅ 모달 닫기
-    function closeModal() {
-        modal.style.display = "none";      // ✅ 모달을 숨김
-        overlay.style.display = "none";    // ✅ 오버레이를 숨김
-        console.log("✅ 오버레이 및 모달 비활성화");
-    }
+   // ✅ 모달 닫기
+   function closeModal() {
+       modal.classList.remove("active");   // ✅ 모달 비활성화 클래스 제거
+       overlay.classList.remove("active"); // ✅ 오버레이 비활성화 클래스 제거
+       console.log("✅ 오버레이 및 모달 비활성화");
+   }
 
-    // ✅ 모달 닫기 버튼 클릭 시 모달을 닫는 함수 호출
+    // ✅ 모달 닫기 버튼 클릭 시
     closeModalButton.addEventListener("click", closeModal);
 
-    // ✅ 오버레이(배경)를 클릭하면 모달을 닫는 함수 호출
+    // ✅ 오버레이(배경) 클릭 시 모달 닫기
     overlay.addEventListener("click", closeModal);
 
     // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
