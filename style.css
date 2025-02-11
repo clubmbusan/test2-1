@@ -462,14 +462,6 @@ button {
     border-radius: 4px;
 }
 
-/* ✅ 모바일에서도 가로 정렬 유지 */
-@media screen and (max-width: 768px) {
-    .heir-entry select.relationship {
-        width: 100px;   /* ✅ 모바일에서 너비 더 줄이기 */
-        font-size: 13px; /* ✅ 폰트 크기도 줄여서 공간 확보 */
-    }
-}
-
 /* ✅ 버튼 스타일 */
 .btn {
     display: block;
@@ -492,3 +484,25 @@ button {
 .btn-close { background-color: #6c757d; }
 .btn-close:hover { background-color: #5a6268; }
 
+/* ✅ 관계 선택 필드 너비 조정 (기본) */
+.relationship {
+    width: 150px;
+    max-width: 100%;
+}
+
+/* ✅ 반응형 스타일 (모바일 전용) */
+@media screen and (max-width: 768px) {
+    .heir-entry {
+        flex-wrap: nowrap; /* ✅ 줄바꿈 방지 */
+    }
+
+    .heir-entry input,
+    .heir-entry select {
+        width: 30%; /* ✅ 모바일에서 너비를 더 줄임 */
+        font-size: 14px;
+    }
+
+    .relationship {
+        width: 100px; /* ✅ 관계 선택 필드 너비를 더 줄임 */
+    }
+}
