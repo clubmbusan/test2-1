@@ -1431,13 +1431,31 @@ function calculateSpecialInheritance() {
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
 
-// ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
-let cashValue = parseFloat(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;  // 현금
-let stockValue = parseFloat(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;  // 주식
+    // ✅ 모든 `.cashField` 값을 합산
+    let cashFields = document.querySelectorAll(".cashField");
+    let cashValue = Array.from(cashFields).reduce((sum, field) => {
+        let value = parseFloat(field.value.replace(/,/g, "")) || 0;
+        return sum + value;
+    }, 0);
 
-// ✅ 디버그용 로그 (정상적인 값 확인)
-console.log("📌 입력된 현금:", cashValue.toLocaleString(), "원");
-console.log("📌 입력된 주식:", stockValue.toLocaleString(), "원");
+// ✅ 모든 `.stockTotalField` 값을 합산
+let stockFields = document.querySelectorAll(".stockTotalField");
+let stockValue = Array.from(stockFields).reduce((sum, field) => {
+    let value = parseFloat(field.value.replace(/,/g, "")) || 0;
+    return sum + value;
+}, 0);
+
+// ✅ 디버그용 로그
+console.log("📌 모든 입력된 현금 값 합계:", cashValue.toLocaleString(), "원");
+console.log("📌 모든 입력된 주식 값 합계:", stockValue.toLocaleString(), "원");
+
+let financialAssets = cashValue + stockValue;  // 금융 자산 합계
+console.log("📌 최종 금융재산 합계:", financialAssets.toLocaleString(), "원");
+
+// ✅ 금융재산 공제는 금융 자산(현금 + 주식)에 대해서만 적용 (최대 2억 원)
+let financialExemption = Math.min(financialAssets * 0.2, 200000000);
+console.log("📌 금융재산 공제 적용 가능 금액:", financialExemption.toLocaleString(), "원");
+
 
 let financialAssets = cashValue + stockValue;  // 금융 자산 합계
 console.log("📌 금융재산 합계:", financialAssets.toLocaleString(), "원");
