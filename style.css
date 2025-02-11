@@ -431,6 +431,14 @@ button {
     z-index: 10000; /* ✅ 모달을 최상위로 배치 */
     width: 350px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box; /* ✅ 패딩 포함한 크기 계산 */
+}
+
+/* ✅ 입력 필드와 버튼의 너비 통일 */
+.modal-content input,
+.modal-content button {
+    width: 100%;  /* ✅ 너비를 100%로 맞춤 */
+    box-sizing: border-box;
 }
 
 /* ✅ 모달 내부 input 스타일 */
