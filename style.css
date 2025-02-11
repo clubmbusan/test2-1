@@ -466,14 +466,20 @@ button {
 @media screen and (max-width: 768px) {
     .heir-entry {
         display: flex;
-        flex-wrap: wrap;  /* ✅ 모바일에서는 줄바꿈 */
+        flex-wrap: wrap;
         gap: 10px;
     }
 
-    .heir-entry input,
-    .heir-entry select {
-        flex: 1 1 calc(33.33% - 10px);  /* ✅ 동일한 너비 유지 */
-        min-width: 100px;
+    /* 법정 상속: 이름과 관계 2칸 */
+    .heir-entry.legal-heir-entry input,
+    .heir-entry.legal-heir-entry select {
+        flex: 1 1 calc(50% - 10px);  /* ✅ 법정 상속은 2칸 */
+    }
+
+    /* 협의 상속: 이름, 관계, 상속 비율 3칸 */
+    .heir-entry.agreement-heir-entry input,
+    .heir-entry.agreement-heir-entry select {
+        flex: 1 1 calc(33.33% - 10px);  /* ✅ 협의 상속은 3칸 */
     }
 }
 
