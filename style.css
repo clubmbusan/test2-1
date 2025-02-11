@@ -1,4 +1,4 @@
- /* 전체 페이지 스타일 */
+/* 전체 페이지 스타일 */
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
@@ -17,27 +17,25 @@ body {
     box-sizing: border-box;
 }
 
-/* ✅ 반응형 스타일: 모바일 화면에서 입력 필드와 버튼 간격 및 너비 조정 */
+/* 반응형 스타일 */
 @media screen and (max-width: 768px) {
     .calculator {
         padding: 15px;
     }
 
     button {
-        font-size: 13px;   /* 모바일에서 버튼 글자 크기 축소 */
-        padding: 6px 10px; /* 버튼 높이 축소 */
+        font-size: 14px;
     }
 
-    .heir-entry input,
-    .heir-entry select {
-        width: 48%;        /* 두 개씩 가로 정렬 */
-        margin-bottom: 10px;
+    .heir-entry {
+        flex-direction: column;
     }
 
-    .sharePercentageField {
-        max-width: 48%;    /* 상속 비율 필드도 동일한 너비 */
+    .heir-entry input, .heir-entry select {
+        width: 100%;
     }
 }
+
 
 /* 폼 요소 공통 스타일 */
 form input, form select, #inheritanceType {
@@ -406,6 +404,20 @@ button {
     }
 </style>
 
+/* ✅ 개인 상속 유형에서만 부모 연령 선택 필드 크기 조정 */
+#personalSection #parentAgeContainer select {
+    width: 100% !important; /* 전체 너비 설정 */
+    max-width: 250px !important; /* 다른 입력 필드와 동일한 최대 너비 */
+    height: 40px !important; /* 동일한 높이 */
+    padding: 8px !important; /* 내부 여백 */
+    font-size: 16px !important; /* 글자 크기 */
+    border-radius: 5px !important; /* 둥근 모서리 */
+    border: 1px solid #ccc !important; /* 테두리 스타일 */
+    box-sizing: border-box !important; /* 패딩 포함 크기 유지 */
+    display: block !important; /* `display: none;`이 적용되지 않도록 */
+    visibility: visible !important; /* 숨겨진 상태에서도 크기 유지 */
+}
+
 /* ✅ 모달 배경 오버레이 */
 .modal-overlay {
     display: none;
@@ -471,17 +483,3 @@ button {
 
 .btn-close { background-color: #6c757d; }
 .btn-close:hover { background-color: #5a6268; }
-
-/* ✅ 모바일 화면에서는 입력 필드의 너비를 48%로 설정하여 두 개씩 가로 정렬합니다 */
-@media screen and (max-width: 768px) {
-    .heir-entry input,
-    .heir-entry select {
-        width: 48%;          /* 두 개씩 가로 정렬 */
-        margin-bottom: 10px; /* 입력 필드 간격 조정 */
-    }
-
-    .sharePercentageField {
-        max-width: 48%;      /* 상속 비율 필드도 동일한 너비로 설정 */
-    }
-}
-
