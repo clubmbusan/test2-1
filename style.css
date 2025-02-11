@@ -464,22 +464,26 @@ button {
 
 /* ✅ 모바일에서도 가로 정렬 유지 */
 @media screen and (max-width: 768px) {
+    /* 협의 상속: 이름, 관계, 비율 (세 칸 가로 정렬) */
+    #groupSection .heir-entry input,
+    #groupSection .heir-entry select {
+        flex: 0 1 32%;
+        box-sizing: border-box;
+    }
+
+    /* 법정 상속: 이름과 관계 (두 칸 가로 정렬) */
+    #legalInheritanceSection .heir-entry input,
+    #legalInheritanceSection .heir-entry select {
+        flex: 0 1 48%;
+        box-sizing: border-box;
+    }
+
+    /* 필드 간격 */
     .heir-entry {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-    }
-
-    /* 법정 상속: 이름과 관계 2칸 */
-    .heir-entry.legal-heir-entry input,
-    .heir-entry.legal-heir-entry select {
-        flex: 1 1 calc(50% - 10px);  /* ✅ 법정 상속은 2칸 */
-    }
-
-    /* 협의 상속: 이름, 관계, 상속 비율 3칸 */
-    .heir-entry.agreement-heir-entry input,
-    .heir-entry.agreement-heir-entry select {
-        flex: 1 1 calc(33.33% - 10px);  /* ✅ 협의 상속은 3칸 */
+        align-items: center;
     }
 }
 
