@@ -1546,19 +1546,23 @@ function calculateSpecialInheritance() {
         return;
     }
 
-  // ✅ 모달 열기
+  // ✅ 모달 열기 (JS로 강제 스타일 적용)
   openModalButton.addEventListener("click", function () {
       modal.classList.add("active");
       overlay.classList.add("active");
+
+      // ✅ 강제로 모달을 보여주기 위해 display: block 설정
+      modal.style.display = "block";
+      overlay.style.display = "block";
 
       console.log("✅ 오버레이 및 모달 열기 시도");
       console.log("overlay computed display:", window.getComputedStyle(overlay).display);
       console.log("modal computed display:", window.getComputedStyle(modal).display);
 
-      if (window.getComputedStyle(overlay).display === "block") {
-          console.log("✅ 오버레이 정상적으로 표시됨");
+      if (window.getComputedStyle(modal).display === "block") {
+          console.log("✅ 모달 정상적으로 표시됨");
       } else {
-          console.error("❌ 오버레이 표시 실패");
+          console.error("❌ 모달 표시 실패");
       }
   });
 
