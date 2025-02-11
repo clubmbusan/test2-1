@@ -17,25 +17,27 @@ body {
     box-sizing: border-box;
 }
 
-/* 반응형 스타일 */
+/* ✅ 반응형 스타일: 모바일 화면에서 입력 필드와 버튼 간격 및 너비 조정 */
 @media screen and (max-width: 768px) {
     .calculator {
         padding: 15px;
     }
 
     button {
-        font-size: 14px;
+        font-size: 13px;   /* 모바일에서 버튼 글자 크기 축소 */
+        padding: 6px 10px; /* 버튼 높이 축소 */
     }
 
-    .heir-entry {
-        flex-direction: column;
+    .heir-entry input,
+    .heir-entry select {
+        width: 48%;        /* 두 개씩 가로 정렬 */
+        margin-bottom: 10px;
     }
 
-    .heir-entry input, .heir-entry select {
-        width: 100%;
+    .sharePercentageField {
+        max-width: 48%;    /* 상속 비율 필드도 동일한 너비 */
     }
 }
-
 
 /* 폼 요소 공통 스타일 */
 form input, form select, #inheritanceType {
@@ -475,3 +477,15 @@ button {
 .btn-close { background-color: #6c757d; }
 .btn-close:hover { background-color: #5a6268; }
 
+/* ✅ 모바일 화면에서는 입력 필드의 너비를 48%로 설정하여 두 개씩 가로 정렬합니다 */
+@media screen and (max-width: 768px) {
+    .heir-entry input,
+    .heir-entry select {
+        width: 48%;          /* 두 개씩 가로 정렬 */
+        margin-bottom: 10px; /* 입력 필드 간격 조정 */
+    }
+
+    .sharePercentageField {
+        max-width: 48%;      /* 상속 비율 필드도 동일한 너비로 설정 */
+    }
+}
