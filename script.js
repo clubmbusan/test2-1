@@ -1546,20 +1546,23 @@ function calculateSpecialInheritance() {
         return;
     }
 
-    // ✅ 모달 열기
-    openModalButton.addEventListener("click", function () {
-        modal.style.display = "block";
-        overlay.style.display = "block";
-    });
+   // ✅ 모달 열기
+   openModalButton.addEventListener("click", function () {
+       modal.classList.add("active");
+       overlay.classList.add("active");
+   });
 
-    // ✅ 모달 닫기
-    function closeModal() {
-        modal.style.display = "none";
-        overlay.style.display = "none";
+   // ✅ 모달 닫기
+   function closeModal() {
+       modal.classList.remove("active");
+       overlay.classList.remove("active");
     }
 
-    closeModalButton.addEventListener("click", closeModal);
-    overlay.addEventListener("click", closeModal);
+   // ✅ 모달 닫기 버튼 클릭 시 모달을 닫는 함수 호출
+   closeModalButton.addEventListener("click", closeModal);
+
+   // ✅ 오버레이(배경)를 클릭하면 모달을 닫는 함수 호출
+   overlay.addEventListener("click", closeModal);
 
     // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
     function formatCurrency(value) {
