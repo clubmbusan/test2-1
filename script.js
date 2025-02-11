@@ -1521,6 +1521,9 @@ function calculateSpecialInheritance() {
  `;
 }
 
+  /**
+* ✅ 상속 비용 모달 
+ */       
 (function () {
     console.log("✅ 상속 비용 모달 스크립트 실행");
 
