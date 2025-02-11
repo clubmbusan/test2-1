@@ -408,14 +408,14 @@ button {
 
 /* ✅ 모달 배경 오버레이 */
 .modal-overlay {
-    display: none;
-    position: fixed;
+    display: block !important;
+    position: fixed !important;
     top: 0;
     left: 0;
-    width: 100vw !important;   /* ✅ 뷰포트 전체 너비 */
-    height: 100vh !important;  /* ✅ 뷰포트 전체 높이 */
-    background: rgba(0, 0, 0, 0.7) !important;  /* ✅ 배경 어둡게 강제 적용 */
-    z-index: 10000 !important;  /* ✅ z-index 우선순위 보장 */
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    z-index: 99999 !important;
 }
 
 /* ✅ 모달 스타일 (수정 후) */
