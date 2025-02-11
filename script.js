@@ -1545,15 +1545,15 @@ function calculateSpecialInheritance() {
 
     // ✅ 모달 열기
     openModalButton.addEventListener("click", function () {
-        modal.classList.add("active");
-        overlay.classList.add("active");  // ✅ 오버레이 활성화
+        modal.style.display = "block";     // ✅ 모달을 직접 보여줌
+        overlay.style.display = "block";   // ✅ 오버레이를 직접 보여줌
         console.log("✅ 오버레이 및 모달 활성화");
     });
 
     // ✅ 모달 닫기
     function closeModal() {
-        modal.classList.remove("active");
-        overlay.classList.remove("active");
+        modal.style.display = "none";      // ✅ 모달을 숨김
+        overlay.style.display = "none";    // ✅ 오버레이를 숨김
         console.log("✅ 오버레이 및 모달 비활성화");
     }
 
