@@ -1546,33 +1546,40 @@ function calculateSpecialInheritance() {
         return;
     }
 
-   // ✅ 모달 열기
-   openModalButton.addEventListener("click", function () {
-    modal.classList.add("active");
-    overlay.classList.add("active");
+  // ✅ 모달 열기
+  openModalButton.addEventListener("click", function () {
+      modal.classList.add("active");
+      overlay.classList.add("active");
 
-    console.log("✅ 오버레이 상태 확인:");
-    console.log("overlay classList:", overlay.classList);
-    console.log("overlay computed display:", window.getComputedStyle(overlay).display);
-});
+      console.log("✅ 모달 열기 시도 중");
+      console.log("overlay classList:", overlay.classList);
+      console.log("overlay computed display:", window.getComputedStyle(overlay).display);
 
-   // ✅ 모달 닫기
-   function closeModal() {
-       modal.classList.remove("active");   // ✅ 모달 비활성화 클래스 제거
-       overlay.classList.remove("active"); // ✅ 오버레이 비활성화 클래스 제거
-       console.log("✅ 오버레이 및 모달 비활성화");
-   }
+      if (window.getComputedStyle(overlay).display === "block") {
+          console.log("✅ 오버레이 정상적으로 표시됨");
+      } else {
+          console.error("❌ 오버레이 표시 실패");
+      }
+  });
 
-    // ✅ 모달 닫기 버튼 클릭 시
-    closeModalButton.addEventListener("click", closeModal);
+  // ✅ 모달 닫기
+  function closeModal() {
+      modal.classList.remove("active");   // ✅ 모달 비활성화 클래스 제거
+      overlay.classList.remove("active"); // ✅ 오버레이 비활성화 클래스 제거
+      console.log("✅ 모달 및 오버레이 비활성화");
+  }
 
-    // ✅ 오버레이(배경) 클릭 시 모달 닫기
-    overlay.addEventListener("click", closeModal);
+  // ✅ 모달 닫기 버튼 클릭 시
+  closeModalButton.addEventListener("click", closeModal);
 
-    // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
-    function formatCurrency(value) {
-        return value.toLocaleString() + " 원";
-    }
+  // ✅ 오버레이(배경) 클릭 시 모달 닫기
+  overlay.addEventListener("click", closeModal);
+
+  // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
+  function formatCurrency(value) {
+      return value.toLocaleString() + " 원";
+  }
+
 
     // ✅ 실시간 비용 합계 계산 함수
     function updateTotalCost() {
