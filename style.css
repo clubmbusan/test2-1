@@ -412,9 +412,9 @@ button {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6) !important;  /* ✅ 배경 어둡게 강제 적용 */
+    width: 100vw !important;   /* ✅ 뷰포트 전체 너비 */
+    height: 100vh !important;  /* ✅ 뷰포트 전체 높이 */
+    background: rgba(0, 0, 0, 0.7) !important;  /* ✅ 배경 어둡게 강제 적용 */
     z-index: 10000 !important;  /* ✅ z-index 우선순위 보장 */
 }
 
@@ -467,13 +467,11 @@ button {
     box-sizing: border-box;
 }
 
-/* ✅ 모달 활성화 시 스타일 */
+/* ✅ 모달 활성화 시 */
 .modal-overlay.active {
-    display: block !important;  /* ✅ 강제 활성화 */
-}
-
-.modal.active {
-    display: block;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* ✅ 버튼 스타일 */
