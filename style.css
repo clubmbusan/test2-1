@@ -483,3 +483,11 @@ button {
 
 .btn-close { background-color: #6c757d; }
 .btn-close:hover { background-color: #5a6268; }
+
+/* ✅ 모바일에서도 가로 정렬 유지 */
+@media screen and (max-width: 768px) {
+    .heir-entry {
+        flex-wrap: nowrap; /* ✅ 줄바꿈 방지 */
+    }
+}
+
