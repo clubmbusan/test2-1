@@ -212,48 +212,63 @@ initializeDefaultView();
         event.preventDefault();
         console.log("🔄 '다시 하기' 버튼 클릭됨! 추가된 입력 필드 닫기 & 입력값 초기화 실행!");
 
-        // ✅ 모든 입력값 초기화 (숫자 입력 필드만)
-        document.querySelectorAll("input").forEach(input => input.value = "");
+        // 1. 현재 선택된 상속 유형 값을 저장 (예: personal, group 등)
+        const inheritanceTypeEl = document.getElementById("inheritanceType");
+        const currentInheritanceValue = inheritanceTypeEl ? inheritanceTypeEl.value : null;
 
-        // ✅ 협의상속 - 추가된 상속인 입력 필드 삭제 (첫 번째 항목 유지)
+        // 2. 모든 input 요소 초기화 (단, 상속 유형 필드는 제외)
+        document.querySelectorAll("input").forEach(input => {
+            if (input.id !== "inheritanceType") {
+                input.value = "";
+            }
+        });
+
+        // 3. 모든 select 요소 초기화 (상속 유형 select는 제외)
+        document.querySelectorAll("select").forEach(select => {
+            if (select.id !== "inheritanceType") {
+                select.selectedIndex = 0; // 첫번째 옵션으로 초기화
+            }
+        });
+
+        // 4. 추가된 상속인 입력 필드 삭제 (첫 번째 항목은 유지)
         document.querySelectorAll("#heirContainer .heir-entry").forEach((heir, index) => {
-            if (index !== 0) heir.remove(); 
+            if (index !== 0) heir.remove();
         });
-
-        // ✅ 법정상속 - 추가된 상속인 입력 필드 삭제 (첫 번째 항목 유지)
         document.querySelectorAll("#legalHeirContainer .heir-entry").forEach((heir, index) => {
-            if (index !== 0) heir.remove(); 
+            if (index !== 0) heir.remove();
         });
 
-        // ✅ 협의상속 - 재산 입력 필드 초기화 (첫 번째 항목 유지)
+        // 5. 추가된 재산 입력 필드 삭제 (첫 번째 항목 유지)
         document.querySelectorAll("#assetContainer .asset-entry").forEach((asset, index) => {
             if (index !== 0) asset.remove();
         });
 
-        // ✅ 상속 비용 초기화
-          window.totalDeductibleCost = 0;  // 상속 비용 초기화
-          const costSummary = document.getElementById("costSummary");
-          if (costSummary) {
-              costSummary.textContent = "총 상속 비용: 0 원";  // UI 업데이트
-              console.log("✅ 상속 비용 초기화 완료!");
-          }
-     
-        // ✅ 결과창 및 내부 변수 초기화
-        const resultArea = document.getElementById("result");
-        if (resultArea) {
-            resultArea.innerHTML = "";  // 결과창 초기화
-            console.log("✅ 결과창 초기화 완료!");
+        // 6. 상속 비용 초기화
+        window.totalDeductibleCost = 0;
+        const costSummary = document.getElementById("costSummary");
+        if (costSummary) {
+            costSummary.textContent = "총 상속 비용: 0 원";
+            console.log("✅ 상속 비용 초기화 완료!");
         }
 
-        // ✅ 내부 상태 변수 초기화
+        // 7. 결과창 및 내부 변수 초기화
+        const resultArea = document.getElementById("result");
+        if (resultArea) {
+            resultArea.innerHTML = "";
+            console.log("✅ 결과창 초기화 완료!");
+        }
         totalExemption = 0;
         generalExemptionAdjustment = 0;
         spouseAdditionalExemption = 0;
         financialExemption = 0;
+        console.log("✅ 내부 변수 초기화 완료!");
 
-        console.log("✅ 내부 변수 초기화 완료!");       
-       }
-    });    
+        // 8. 상속 유형을 다시 복원 (혹은 그대로 유지)
+        if (inheritanceTypeEl && currentInheritanceValue !== null) {
+            inheritanceTypeEl.value = currentInheritanceValue;
+        }
+    }
+});
 
 // 재산 항목 생성
 function createAssetEntry() {
