@@ -1551,9 +1551,9 @@ function calculateSpecialInheritance() {
       modal.classList.add("active");
       overlay.classList.add("active");
 
-      console.log("✅ 모달 열기 시도 중");
-      console.log("overlay classList:", overlay.classList);
+      console.log("✅ 오버레이 및 모달 열기 시도");
       console.log("overlay computed display:", window.getComputedStyle(overlay).display);
+      console.log("modal computed display:", window.getComputedStyle(modal).display);
 
       if (window.getComputedStyle(overlay).display === "block") {
           console.log("✅ 오버레이 정상적으로 표시됨");
