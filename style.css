@@ -1,4 +1,4 @@
-/* 전체 페이지 스타일 */
+ /* 전체 페이지 스타일 */
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
@@ -404,7 +404,7 @@ button {
     }
 </style>
 
-/* ✅ 모달 배경 오버레이 (수정 후) */
+/* ✅ 모달 배경 오버레이 */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -412,7 +412,7 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* ✅ 배경을 더 어둡게 조정 */
+    background: rgba(0, 0, 0, 0.6); /* ✅ 배경을 더 어둡게 */
     z-index: 9998; /* ✅ 모달보다 낮은 레벨로 설정 */
 }
 
@@ -424,12 +424,13 @@ button {
     left: 50%;
     transform: translate(-50%, -50%);
     background: white;
-    padding: 20px;
+    padding: 20px;  /* ✅ .calculator와 동일한 패딩 */
     border-radius: 10px;
-    z-index: 9999; /* ✅ 모달이 최상위로 나타나도록 설정 */
-    width: 100%; /* ✅ 너비를 100%로 변경 */
-    max-width: 600px; /* ✅ `.calculator`와 동일한 최대 너비 */
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    width: 100%;   /* ✅ 반응형 너비 */
+    max-width: 600px; /* ✅ .calculator와 동일한 최대 너비 */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* ✅ 좀 더 자연스러운 그림자 */
+    box-sizing: border-box;
 }
 
 /* ✅ 모달 내부 input 스타일 */
@@ -439,10 +440,11 @@ button {
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 16px;  /* ✅ .calculator와 동일한 폰트 크기 */
     box-sizing: border-box;
 }
 
+/* ✅ 모달 활성화 시 스타일 */
 .modal-overlay.active {
     display: block;
 }
@@ -450,7 +452,6 @@ button {
 .modal.active {
     display: block;
 }
-
 
 /* ✅ 버튼 스타일 */
 .btn {
