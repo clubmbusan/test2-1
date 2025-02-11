@@ -429,8 +429,8 @@ button {
     padding: 20px;  /* ✅ .calculator와 동일한 패딩 */
     border-radius: 10px;
     z-index: 10001;
-    width: 70%;   /* ✅ 반응형 너비 */
-    max-width: 450px; /* ✅ .calculator와 동일한 최대 너비 */
+    width: 60%;   /* ✅ 반응형 너비 */
+    max-width: 400px; /* ✅ .calculator와 동일한 최대 너비 */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* ✅ 좀 더 자연스러운 그림자 */
     animation: fadeIn 0.3s ease-out;  /* 팝업 애니메이션 */
     box-sizing: border-box;
