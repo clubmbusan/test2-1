@@ -433,14 +433,6 @@ button {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* ✅ 모바일 반응형 스타일 */
-@media screen and (max-width: 768px) {
-    .modal {
-        width: 90%;          /* ✅ 모바일에서는 90% 너비로 제한 */
-        max-width: none;     /* ✅ 최대 너비 제한 해제 */
-    }
-}
-
 /* ✅ 모달 내부 input 스타일 */
 .modal-content input {
     width: 100%;
