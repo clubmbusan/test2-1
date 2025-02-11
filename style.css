@@ -406,18 +406,16 @@ button {
     }
 </style>
 
-/* ✅ 최적화된 모달 오버레이 스타일 */
+/* ✅ 모달 배경 오버레이 */
 .modal-overlay {
-    display: block !important;
-    position: fixed !important;
+    display: none;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.7);  /* ✅ 0.7 투명도로 통일 */
-    z-index: 99999;
-    opacity: 1;
-    visibility: visible;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);  /* ✅ 배경 어둡게 */
+    z-index: 9999;
 }
 
 /* ✅ 모달 스타일 (수정 후) */
@@ -469,12 +467,11 @@ button {
     box-sizing: border-box;
 }
 
-.modal-overlay {
+/* ✅ 모달 활성화 시 */
+.modal-overlay.active {
     display: block !important;
-    opacity: 1 !important;   /* ✅ 투명도 1로 강제 적용 */
     visibility: visible !important;
-    z-index: 10000 !important;  /* ✅ 항상 최상단 유지 */
-    background: rgba(0, 0, 0, 0.6) !important;  /* ✅ 배경 어둡게 */
+    opacity: 1 !important;
 }
 
 /* ✅ 버튼 스타일 */
