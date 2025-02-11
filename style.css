@@ -443,6 +443,15 @@ button {
     box-sizing: border-box;
 }
 
+.modal-overlay.active {
+    display: block;
+}
+
+.modal.active {
+    display: block;
+}
+
+
 /* ✅ 버튼 스타일 */
 .btn {
     display: block;
