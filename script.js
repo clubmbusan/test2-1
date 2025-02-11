@@ -1434,8 +1434,11 @@ function calculateSpecialInheritance() {
 // ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
 let cashValue = parseFloat(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;  // 현금
 let stockValue = parseFloat(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;  // 주식
+
+// ✅ 디버그용 로그 (정상적인 값 확인)
 console.log("📌 입력된 현금:", cashValue.toLocaleString(), "원");
 console.log("📌 입력된 주식:", stockValue.toLocaleString(), "원");
+
 let financialAssets = cashValue + stockValue;  // 금융 자산 합계
 console.log("📌 금융재산 합계:", financialAssets.toLocaleString(), "원");
 
