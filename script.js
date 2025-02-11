@@ -579,9 +579,18 @@ if (relationship !== 'spouse') {
     }
 }
 
-// ✅ 최종 공제 금액 = 5억 (기초 + 관계 공제 보정) + 금융재산 공제
-let totalExemption = 500000000 + financialExemption;
-totalExemption = Math.min(totalExemption, totalAssetValue - inheritanceCosts); // 공제액이 상속 재산을 초과하지 않도록 제한
+// ✅ 최종 공제 계산 (배우자 추가 공제 포함)
+let totalExemption = basicExemption + relationshipExemption + financialExemption;
+
+if (relationship === 'spouse') {
+    totalExemption += spouseAdditionalExemption;  // 배우자 추가 공제를 합산
+}
+
+// ✅ 상속 재산을 초과하는 공제 금액 제한
+totalExemption = Math.min(totalExemption, totalAssetValue - inheritanceCosts);
+
+// ✅ 과세 표준 계산 (0 미만일 경우 0으로 처리)
+const taxableAmount = Math.max(totalAssetValue - inheritanceCosts - totalExemption, 0);
 
     // ✅ 과세 표준 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
