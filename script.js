@@ -1548,10 +1548,13 @@ function calculateSpecialInheritance() {
 
    // ✅ 모달 열기
    openModalButton.addEventListener("click", function () {
-        modal.classList.add("active");      // ✅ 모달 활성화 클래스 추가
-        overlay.classList.add("active");    // ✅ 오버레이 활성화 클래스 추가
-        console.log("✅ 오버레이 및 모달 활성화");
-    });
+    modal.classList.add("active");
+    overlay.classList.add("active");
+
+    console.log("✅ 오버레이 상태 확인:");
+    console.log("overlay classList:", overlay.classList);
+    console.log("overlay computed display:", window.getComputedStyle(overlay).display);
+});
 
    // ✅ 모달 닫기
    function closeModal() {
