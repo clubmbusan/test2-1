@@ -1521,10 +1521,7 @@ function calculateSpecialInheritance() {
  `;
 }
 
- /**
- * ✅ 상속 비용 모달 
- */    
- (function () {
+(function () {
     console.log("✅ 상속 비용 모달 스크립트 실행");
 
     let openModalButton = document.getElementById("openModal");
@@ -1546,23 +1543,25 @@ function calculateSpecialInheritance() {
         return;
     }
 
-   // ✅ 모달 열기
-   openModalButton.addEventListener("click", function () {
-       modal.classList.add("active");
-       overlay.classList.add("active");
-   });
+    // ✅ 모달 열기
+    openModalButton.addEventListener("click", function () {
+        modal.classList.add("active");
+        overlay.classList.add("active");  // ✅ 오버레이 활성화
+        console.log("✅ 오버레이 및 모달 활성화");
+    });
 
-   // ✅ 모달 닫기
-   function closeModal() {
-       modal.classList.remove("active");
-       overlay.classList.remove("active");
+    // ✅ 모달 닫기
+    function closeModal() {
+        modal.classList.remove("active");
+        overlay.classList.remove("active");
+        console.log("✅ 오버레이 및 모달 비활성화");
     }
 
-   // ✅ 모달 닫기 버튼 클릭 시 모달을 닫는 함수 호출
-   closeModalButton.addEventListener("click", closeModal);
+    // ✅ 모달 닫기 버튼 클릭 시 모달을 닫는 함수 호출
+    closeModalButton.addEventListener("click", closeModal);
 
-   // ✅ 오버레이(배경)를 클릭하면 모달을 닫는 함수 호출
-   overlay.addEventListener("click", closeModal);
+    // ✅ 오버레이(배경)를 클릭하면 모달을 닫는 함수 호출
+    overlay.addEventListener("click", closeModal);
 
     // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
     function formatCurrency(value) {
