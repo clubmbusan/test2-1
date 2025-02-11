@@ -429,10 +429,18 @@ button {
     padding: 20px;  /* ✅ .calculator와 동일한 패딩 */
     border-radius: 10px;
     z-index: 9999;
-    width: 100%;   /* ✅ 반응형 너비 */
-    max-width: 600px; /* ✅ .calculator와 동일한 최대 너비 */
+    width: 80%;   /* ✅ 반응형 너비 */
+    max-width: 500px; /* ✅ .calculator와 동일한 최대 너비 */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* ✅ 좀 더 자연스러운 그림자 */
     box-sizing: border-box;
+}
+
+/* ✅ 모바일 반응형 스타일 */
+@media screen and (max-width: 768px) {
+    .modal {
+        width: 90%;          /* ✅ 모바일에서는 90% 너비로 제한 */
+        max-width: none;     /* ✅ 최대 너비 제한 해제 */
+    }
 }
 
 /* ✅ 모달 내부 input 스타일 */
@@ -489,3 +497,4 @@ button {
         max-width: 48%;      /* 상속 비율 필드도 동일한 너비로 설정 */
     }
 }
+
