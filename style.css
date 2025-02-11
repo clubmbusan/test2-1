@@ -462,6 +462,21 @@ button {
     border-radius: 4px;
 }
 
+/* ✅ 모바일에서도 가로 정렬 유지 */
+@media screen and (max-width: 768px) {
+    .heir-entry {
+        display: flex;
+        flex-wrap: wrap;  /* ✅ 모바일에서는 줄바꿈 */
+        gap: 10px;
+    }
+
+    .heir-entry input,
+    .heir-entry select {
+        flex: 1 1 calc(33.33% - 10px);  /* ✅ 동일한 너비 유지 */
+        min-width: 100px;
+    }
+}
+
 /* ✅ 버튼 스타일 */
 .btn {
     display: block;
@@ -483,26 +498,4 @@ button {
 
 .btn-close { background-color: #6c757d; }
 .btn-close:hover { background-color: #5a6268; }
-
-/* ✅ 모바일에서도 가로 정렬 유지 */
-@media screen and (max-width: 768px) {
-    .heir-entry {
-        display: flex;           /* ✅ flexbox 유지 */
-        flex-wrap: nowrap;       /* ✅ 줄바꿈 방지 */
-        gap: 5px;               /* ✅ 간격 추가 */
-        justify-content: space-between;  /* ✅ 요소 간 간격 균등 분배 */
-    }
-
-    .heir-entry input,
-    .heir-entry select {
-        flex: 1 1 auto;         /* ✅ 유동적인 크기 */
-        min-width: 100px;       /* ✅ 최소 너비 설정 */
-        box-sizing: border-box; /* ✅ 여백 포함한 너비 계산 */
-    }
-
-    .heir-entry input:last-child,
-    .heir-entry select:last-child {
-        margin-right: 0;        /* ✅ 마지막 요소는 오른쪽 여백 제거 */
-    }
-}
 
